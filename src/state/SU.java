@@ -530,6 +530,10 @@ public class SU extends State {
                     if (path != null) {
                         Point path_end = new Point(path.getLast().getX(), path.getLast().getY());
                         SU.findPath(path_end);
+                        path = game.getPath();
+                        if (path == null) {
+                            gui.setCurrentState(PW2.get());
+                        }
                     } else {
                         gui.getMainWindows().repaint();
                     }
