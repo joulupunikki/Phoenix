@@ -88,47 +88,21 @@ public class Game implements Serializable {
         jump_gates = galaxy.getJumpGates();
         units = galaxy.getUnits();
         structures = galaxy.getStructures();
-
-//        planet_grids = new PlanetGrid[planets.size()];
         galaxy_grid = new GalaxyGrid(galaxy);
-
-//        for (int i = 0; i < planet_grids.length; i++) {
-//            planet_grids[i] = new PlanetGrid();
-//        }
-        placeUnits();
-
-        placeStructures();
-
-        this.current_planet = current_planet;
-
-        year = 4956;
-        /*
-         * starts at -1 since beginGame() calls advanceTurn()
-         */
-        turn = -1;
         unit_types = UnitType.readUnitDat();
-
         str_build = StrBuild.readStrBuildDat();
-
-        for (int i = 0; i < str_build.length; i++) {
-            System.out.println("str_build = " + str_build[i].name);
-
-        }
-
         terr_cost = TerrCost.readTerrCost();
-
         damage = Damage.readDamageDat();
-        Damage.printDamage(damage);
         target = Target.readTargetDat();
-        Target.printTarget(target);
-
         human_ctrl = new boolean[14];
         human_ctrl[0] = true;
-
-        printMoveCost();
-
         unmoved_units = new LinkedList<>();
-//        endTurn();
+        this.current_planet = current_planet;
+        year = 4956;
+        turn = -1;
+
+        placeUnits();
+        placeStructures();
         resetMovePoints();
         resetUnmovedUnits();
 
@@ -139,6 +113,18 @@ public class Game implements Serializable {
 
         battle = new Battle();
 
+        for (int i = 0; i < str_build.length; i++) {
+            System.out.println("str_build = " + str_build[i].name);
+
+        }
+
+        Damage.printDamage(damage);
+
+        Target.printTarget(target);
+
+        printMoveCost();
+
+//        endTurn();
 //        setMoveCosts();
     }
 
