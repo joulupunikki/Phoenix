@@ -47,6 +47,8 @@ public class PlanetMap extends JPanel {
     Hex current_hex;
     int current_faction;
 
+    BufferedImage bi;
+
     public PlanetMap(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
@@ -54,6 +56,7 @@ public class PlanetMap extends JPanel {
         game = gui.getGame();
         pallette = gui.getPallette();
         color_scaler = gui.getResources().getColorScaler();
+        bi = new BufferedImage(ws.planet_map_width, ws.planet_map_height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
     }
 
     public void setGame(Game game) {
@@ -69,8 +72,7 @@ public class PlanetMap extends JPanel {
     public void renderPlanetMap(Graphics g) {
 
 //        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = new BufferedImage(ws.planet_map_width, ws.planet_map_height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
-
+//        BufferedImage bi = new BufferedImage(ws.planet_map_width, ws.planet_map_height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
 //        int tile_set_type = game.getGalaxy().game.getCurrentPlanetNr();
 //        hex_tiles = Util.loadHexTiles("bin/efstile0.bin", 134);
 //        structures = Util.loadHexTiles("bin/struct0.bin", 32);
@@ -880,6 +882,50 @@ public class PlanetMap extends JPanel {
 
         Point origin = game.getMapOrigin();
 
+        boolean stack_moving = gui.isStack_moving();
+        int stack_move_counter = gui.getStackMoveCounter();
+
+        if (stack_moving && 0 < stack_move_counter && 20 > stack_move_counter) {
+            return;
+        }
+        int a_x = wr.getWidth();
+        int a_y = wr.getHeight();
+        int d_x = 10;
+        int d_y = 20;
+        if (ws.is_double) {
+            d_x *= 2;
+            d_y *= 2;
+        }
+        int[] data = {0};
+        for (int i = 0; i < a_x; i++) {
+            for (int j = 0; j < d_y; j++) {
+                wr.setPixel(i, j, data);
+
+            }
+
+        }
+        for (int i = 0; i < a_x; i++) {
+            for (int j = a_y - d_y; j < a_y; j++) {
+                wr.setPixel(i, j, data);
+
+            }
+
+        }
+        for (int i = 0; i < d_x; i++) {
+            for (int j = d_y; j < a_y - d_y; j++) {
+                wr.setPixel(i, j, data);
+
+            }
+
+        }
+        for (int i = a_x - d_x; i < a_x; i++) {
+            for (int j = d_y; j < a_y - d_y; j++) {
+                wr.setPixel(i, j, data);
+
+            }
+
+        }
+
         int origin_x = origin.x;
         int origin_y = origin.y;
 
@@ -908,7 +954,9 @@ public class PlanetMap extends JPanel {
 
                     //skip top j when i % 2 == 0
 //                if (j != origin_y || (i % 2 != 0)) {
+                    if (!stack_moving || 0 >= stack_move_counter || 20 <= stack_move_counter) {
                     writeHex2(x, y, dip, pixel_data, hex_tiles, tile_no, wr);
+                    }
 //                }
                     //                int t_idx = 0;
 //                    writeUnit(g, x, y, dip, pixel_data, unit_icons, tile_no, wr);
