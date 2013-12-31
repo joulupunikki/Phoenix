@@ -4,8 +4,10 @@
  */
 package gui;
 
+import dat.UnitType;
 import galaxyreader.Unit;
 import game.Game;
+import game.Square;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -43,6 +45,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
@@ -54,6 +57,7 @@ import state.SU;
 import state.State;
 import state.StateRef;
 import util.C;
+import util.StackIterator;
 import util.Util;
 import util.WindowSize;
 
@@ -92,7 +96,8 @@ public class Gui extends JFrame {
     private JMenuItem menu_load;
     private JMenuItem menu_save;
 
-    
+    private JPopupMenu stack_menu;
+
     private Resources resources;
     //stack display window
     private JDialog stack_window;
@@ -245,13 +250,6 @@ public class Gui extends JFrame {
             }
         });
 
-        planet_window.addMouseWheelListener(new MouseAdapter() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-//                handleWheelMove(e);
-                state.wheelRotated(e);
-            }
-        });
-
         planet_map = new PlanetMap(this);
         planet_window.add(planet_map);
         planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
@@ -261,6 +259,13 @@ public class Gui extends JFrame {
             public void mousePressed(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 state.clickOnPlanetMap(e);
+            }
+        });
+
+        planet_map.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+//                handleWheelMove(e);
+                state.wheelRotated(e);
             }
         });
 
@@ -280,12 +285,6 @@ public class Gui extends JFrame {
                 state.clickOnSpaceWindow(e);
             }
         });
-        space_window.addMouseWheelListener(new MouseAdapter() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-//                handleWheelMove(e);
-                state.wheelRotated(e);
-            }
-        });
 
         space_map = new SpaceMap(this);
 
@@ -298,6 +297,13 @@ public class Gui extends JFrame {
             public void mousePressed(MouseEvent e) {
 //                clickOnSpaceMap(e);
                 state.clickOnSpaceMap(e);
+            }
+        });
+
+        space_map.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+//                handleWheelMove(e);
+                state.wheelRotated(e);
             }
         });
 
@@ -351,6 +357,8 @@ public class Gui extends JFrame {
 
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
         setMouseCursor();
+
+        setUpStackMenu();
 
 //        State.setReferences(this, game, ws);
         state = MM1.get();
@@ -428,10 +436,105 @@ public class Gui extends JFrame {
 
     }
 
+    public void showStackMenu(MouseEvent e) {
+        stack_menu.show(e.getComponent(), e.getX(), e.getY());
+    }
+
+    public void setUpStackMenu() {
+        stack_menu = new JPopupMenu("Select");
+        JMenuItem select_all = new JMenuItem("Select all");
+        JMenuItem select_combat = new JMenuItem(" -combat");
+        JMenuItem select_noncombat = new JMenuItem(" -noncombat");
+//        JMenuItem select_attack = new JMenuItem(" attack");
+        JMenuItem select_transport = new JMenuItem(" -transport");
+        stack_menu.add(select_all);
+        stack_menu.add(select_combat);
+        stack_menu.add(select_noncombat);
+//        stack_menu.add(select_attack);
+        stack_menu.add(select_transport);
+        select_all.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectUnits(C.S_ALL);
+            }
+        });
+        select_combat.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectUnits(C.S_COMBAT);
+            }
+        });
+        select_noncombat.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectUnits(C.S_NONCOMBAT);
+            }
+        });
+//        select_attack.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+//                selectUnits("attack");
+//            }
+//        });
+        select_transport.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectUnits(C.S_TRANSPORT);
+            }
+        });
+    }
+
+    public void selectUnits(String sel) {
+        List<Unit> stack = game.getSelectedStack();
+
+        StackIterator iterator = new StackIterator(stack);
+        Unit u = iterator.next();
+
+        while (u != null) {
+            switch (sel) {
+                case C.S_ALL:
+                    if (u.move_points > 0) {
+                        u.selected = true;
+                    } else {
+                        u.selected = false;
+                    }
+                    break;
+                case C.S_COMBAT:
+                    if (u.move_points > 0 && UnitType.isAttackCapable(u)) {
+                        u.selected = true;
+                    } else {
+                        u.selected = false;
+                    }
+                    if (u.carrier != null) {
+                        u.selected = u.carrier.selected;
+                    }
+                    break;
+                case C.S_NONCOMBAT:
+                    if (u.move_points > 0 && !UnitType.isAttackCapable(u)) {
+                        u.selected = true;
+                    } else {
+                        u.selected = false;
+                    }
+                    if (u.carrier != null) {
+                        u.selected = u.carrier.selected;
+                    }
+                    break;
+                case C.S_TRANSPORT:
+                    if (u.move_points > 0 && u.type_data.cargo > 0) {
+                        u.selected = true;
+                    } else {
+                        u.selected = false;
+                    }
+                    if (u.carrier != null) {
+                        u.selected = u.carrier.selected;
+                    }
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            u = iterator.next();
+        }
+    }
+
     public Resources getResources() {
         return resources;
     }
-    
+
     public void setLoadSaveWinUp(boolean state) {
         loadsave_win_up = state;
     }

@@ -184,7 +184,7 @@ public class C {
     public static final int STIGMATA = 11;
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
-    
+
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
     public static final String S_UNIT_INFO = "unit info";
@@ -196,16 +196,22 @@ public class C {
     public static final String S_TERRCOST_DAT = "DAT/TERRCOST.DAT";
     public static final String S_DAMAGE_DAT = "DAT/DAMAGE.DAT";
     public static final String S_TARGET_DAT = "DAT/TARGET.DAT";
+    public static final String S_ALL = "all";
+    public static final String S_COMBAT = "combat";
+    public static final String S_NONCOMBAT = "noncombat";
+    public static final String S_TRANSPORT = "transport";
+
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";
     public static final String SPACE_COMBAT = "space_combat";
-    
+
     public static final String ATTACKING_CMBT_STACK = "attacking_combat_stack";
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
+
     /**
      * Prints out the constants which determine unit, structure and planet
      * allegiance. For debugging purposes.

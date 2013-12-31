@@ -462,6 +462,8 @@ public class SU extends State {
 //            gui.showStackWindow();
             SU.showUnitInfoWindow();
 
+        } else if (e.getButton() == MouseEvent.BUTTON2) {
+            gui.showStackMenu(e);
         }
     }
 

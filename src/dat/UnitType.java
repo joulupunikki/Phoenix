@@ -4,6 +4,7 @@
  */
 package dat;
 
+import galaxyreader.Unit;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Serializable;
@@ -17,7 +18,7 @@ import util.Util;
  *
  * @author joulupunikki
  */
-public class UnitType implements Serializable{
+public class UnitType implements Serializable {
 
     public int index;
     public int t_lvl;
@@ -122,14 +123,13 @@ public class UnitType implements Serializable{
 
         m.find();
 
-
         move_type = processMoveType(stats.substring(m.start(), m.end()));
         Util.debugPrint("MoveType: " + move_type);
 
         stats_pattern = Pattern.compile("[0-9]+");
-        
+
         m = stats_pattern.matcher(stats);
-        
+
         m.find();
 
         // m.find() is done in processIntVal
@@ -158,7 +158,7 @@ public class UnitType implements Serializable{
         close_sp_acc = processIntVal(stats, m);
         close_sp_str = processIntVal(stats, m);
         cargo = processIntVal(stats, m);
-        
+
         can_b_cargo = processIntVal(stats, m);
         System.out.println("can_b_cargo = " + can_b_cargo);
         non_combat = processIntVal(stats, m);
@@ -195,7 +195,6 @@ public class UnitType implements Serializable{
         Util.debugPrint("rank: " + rank);
         rop = processIntVal(stats, m);
         Util.debugPrint("rop: " + rop);
-
 
     }
 
@@ -308,7 +307,8 @@ public class UnitType implements Serializable{
                             // else read data
                         } else {
                             /**
-                             * cannot ignore reserved since they appear in some galaxies
+                             * cannot ignore reserved since they appear in some
+                             * galaxies
                              */
 //                            matcher = reserved.matcher(s);
 //                            // if data is marked "Reserved"
@@ -316,8 +316,8 @@ public class UnitType implements Serializable{
 //                                unit_types[index][t_lvl] = null;
 //                                // else create new UnitType
 //                            } else {
-                                unit_types[index][t_lvl] = new UnitType(s, index, t_lvl);
-                                Util.debugPrint("Process record");
+                            unit_types[index][t_lvl] = new UnitType(s, index, t_lvl);
+                            Util.debugPrint("Process record");
 //                            }
                             t_lvl++;
 
@@ -358,4 +358,22 @@ public class UnitType implements Serializable{
 //        m.find();
 //        
 //    }
+
+    public static boolean isAttackCapable(Unit unit) {
+        boolean r_v = false;
+
+        if (unit.type_data.water_str > 0
+                || unit.type_data.indirect_str > 0
+                || unit.type_data.air_str > 0
+                || unit.type_data.direct_str > 0
+                || unit.type_data.close_str > 0
+                || unit.type_data.psy_str > 0
+                || unit.type_data.ranged_sp_str > 0
+                || unit.type_data.direct_sp_str > 0
+                || unit.type_data.close_sp_str > 0) {
+            r_v = true;
+        }
+
+        return r_v;
+    }
 }
