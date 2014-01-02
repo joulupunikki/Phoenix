@@ -29,10 +29,12 @@ public class Comments {
      * in a stack on Leagueheim at x:43 y:10. and at x:37 y:29
      * 
      
-    Faction positions on space squares is different from original EFS eg.
-    in original EFS league and church appear on the lower right corner but in
-    phoenix the are on the lower left corner. During unit placement space unit 
-    coordinates are now set using parent planet coordinates
-    
+     Faction positions on space squares is different from original EFS eg.
+     in original EFS league and church appear on the lower right corner but in
+     phoenix the are on the lower left corner. During unit placement space unit 
+     coordinates are now set using parent planet coordinates
+
+     Current spotting function only works at ranges <= 15 so for spotting ability greater
+     than 32 spotting doesn't work properly.
      */
 }

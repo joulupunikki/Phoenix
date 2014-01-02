@@ -147,104 +147,188 @@ public class Game implements Serializable {
 
         for (Structure structure : structures) {
             Hex hex = getPlanetGrid(structure.p_idx).getHex(structure.x, structure.y);
-            spot(hex, 5, structure.owner);
+            spot2(hex, 5, structure.owner);
         }
     }
 
-    /**
-     * Spotting function. Spots range squares around hex.
-     *
-     * @param hex
-     * @param range
-     */
-    public void spot(Hex hex, int range, int faction) {
+    public void spot2(Hex hex, int range, int faction) {
         hex.spot(faction);
-        //southwest
-        Hex current_x = hex;
-        for (int i = 0; i <= range; i++) {
-            Hex current_y = current_x;
-            current_y.spot(faction);
-            //north
-            for (int j = 0; j < range && current_y.getN(C.NORTH) != null; j++) {
-                current_y = current_y.getN(C.NORTH);
-//                System.out.println("current_y = " + current_y);
-                current_y.spot(faction);
-            }
-            //south
-            current_y = current_x;
-            for (int j = 0; j < (range - i) && current_y.getN(C.SOUTH) != null; j++) {
-                current_y = current_y.getN(C.SOUTH);
-                current_y.spot(faction);
-            }
-            current_x = current_x.getN(C.SOUTHWEST);
-            if (current_x == null) {
+        //NE
+        Hex radial = hex;
+        radial = radial.getN(C.NORTHEAST);
+        for (int i = 1; i <= range; i++) {
+            if (radial == null) {
                 break;
             }
+            Hex circ = radial;
+            circ.spot(faction);
+            for (int j = 1; j <= range && circ.getN(C.NORTHWEST) != null; j++) {
+                circ = circ.getN(C.NORTHWEST);
+                circ.spot(faction);
+            }
+            circ = radial;
+            for (int j = 1; j <= range && circ.getN(C.SOUTH) != null; j++) {
+                circ = circ.getN(C.SOUTH);
+                circ.spot(faction);
+            }
+            radial = radial.getN(C.NORTHEAST);
         }
-        //southeast
-        current_x = hex;
-        for (int i = 0; i <= range; i++) {
-            Hex current_y = current_x;
-//            current_y.spot(faction);
-            //north
-            for (int j = 0; j < range && current_y.getN(C.NORTH) != null; j++) {
-                current_y = current_y.getN(C.NORTH);
-                current_y.spot(faction);
-            }
-            //south
-            current_y = current_x;
-            for (int j = 0; j < (range - i) && current_y.getN(C.SOUTH) != null; j++) {
-                current_y = current_y.getN(C.SOUTH);
-                current_y.spot(faction);
-            }
-            current_x = current_x.getN(C.SOUTHEAST);
-            if (current_x == null) {
+        //SE
+        radial = hex;
+        radial = radial.getN(C.SOUTHEAST);
+        for (int i = 1; i <= range; i++) {
+            if (radial == null) {
                 break;
             }
+            Hex circ = radial;
+            circ.spot(faction);
+            for (int j = 1; j <= range && circ.getN(C.SOUTHWEST) != null; j++) {
+                circ = circ.getN(C.SOUTHWEST);
+                circ.spot(faction);
+            }
+            circ = radial;
+            for (int j = 1; j <= range && circ.getN(C.NORTH) != null; j++) {
+                circ = circ.getN(C.NORTH);
+                circ.spot(faction);
+            }
+            radial = radial.getN(C.SOUTHEAST);
         }
-        //northwest
-        current_x = hex;
-        for (int i = 0; i <= range; i++) {
-            Hex current_y = current_x;
-//            current_y.spot(faction);
-            //north
-            for (int j = 0; j < (range - i) && current_y.getN(C.NORTH) != null; j++) {
-                current_y = current_y.getN(C.NORTH);
-                current_y.spot(faction);
-            }
-            //south
-            current_y = current_x;
-            for (int j = 0; j < range && current_y.getN(C.SOUTH) != null; j++) {
-                current_y = current_y.getN(C.SOUTH);
-                current_y.spot(faction);
-            }
-            current_x = current_x.getN(C.NORTHWEST);
-            if (current_x == null) {
+        //SW
+        radial = hex;
+        radial = radial.getN(C.SOUTHWEST);
+        for (int i = 1; i <= range; i++) {
+            if (radial == null) {
                 break;
             }
+            Hex circ = radial;
+            circ.spot(faction);
+            for (int j = 1; j <= range && circ.getN(C.SOUTHEAST) != null; j++) {
+                circ = circ.getN(C.SOUTHEAST);
+                circ.spot(faction);
+            }
+            circ = radial;
+            for (int j = 1; j <= range && circ.getN(C.NORTH) != null; j++) {
+                circ = circ.getN(C.NORTH);
+                circ.spot(faction);
+            }
+            radial = radial.getN(C.SOUTHWEST);
         }
-        //northeast
-        current_x = hex;
-        for (int i = 0; i <= range; i++) {
-            Hex current_y = current_x;
-//            current_y.spot(faction);
-            //north
-            for (int j = 0; j < (range - i) && current_y.getN(C.NORTH) != null; j++) {
-                current_y = current_y.getN(C.NORTH);
-                current_y.spot(faction);
-            }
-            //south
-            current_y = current_x;
-            for (int j = 0; j < range && current_y.getN(C.SOUTH) != null; j++) {
-                current_y = current_y.getN(C.SOUTH);
-                current_y.spot(faction);
-            }
-            current_x = current_x.getN(C.NORTHEAST);
-            if (current_x == null) {
+        //NW
+        radial = hex;
+        radial = radial.getN(C.NORTHWEST);
+        for (int i = 1; i <= range; i++) {
+            if (radial == null) {
                 break;
             }
+            Hex circ = radial;
+            circ.spot(faction);
+            for (int j = 1; j <= range && circ.getN(C.NORTHEAST) != null; j++) {
+                circ = circ.getN(C.NORTHEAST);
+                circ.spot(faction);
+            }
+            circ = radial;
+            for (int j = 1; j <= range && circ.getN(C.SOUTH) != null; j++) {
+                circ = circ.getN(C.SOUTH);
+                circ.spot(faction);
+            }
+            radial = radial.getN(C.NORTHWEST);
         }
     }
+
+//    /**
+//     * Spotting function. Spots range squares around hex.
+//     *
+//     * @param hex
+//     * @param range
+//     */
+//    public void spot(Hex hex, int range, int faction) {
+//        hex.spot(faction);
+//        //southwest
+//        Hex current_x = hex;
+//        for (int i = 0; i <= range; i++) {
+//            Hex current_y = current_x;
+//            current_y.spot(faction);
+//            //north
+//            for (int j = 0; j < range && current_y.getN(C.NORTH) != null; j++) {
+//                current_y = current_y.getN(C.NORTH);
+////                System.out.println("current_y = " + current_y);
+//                current_y.spot(faction);
+//            }
+//            //south
+//            current_y = current_x;
+//            for (int j = 0; j < (range - i) && current_y.getN(C.SOUTH) != null; j++) {
+//                current_y = current_y.getN(C.SOUTH);
+//                current_y.spot(faction);
+//            }
+//            current_x = current_x.getN(C.SOUTHWEST);
+//            if (current_x == null) {
+//                break;
+//            }
+//        }
+//        //southeast
+//        current_x = hex;
+//        for (int i = 0; i <= range; i++) {
+//            Hex current_y = current_x;
+////            current_y.spot(faction);
+//            //north
+//            for (int j = 0; j < range && current_y.getN(C.NORTH) != null; j++) {
+//                current_y = current_y.getN(C.NORTH);
+//                current_y.spot(faction);
+//            }
+//            //south
+//            current_y = current_x;
+//            for (int j = 0; j < (range - i) && current_y.getN(C.SOUTH) != null; j++) {
+//                current_y = current_y.getN(C.SOUTH);
+//                current_y.spot(faction);
+//            }
+//            current_x = current_x.getN(C.SOUTHEAST);
+//            if (current_x == null) {
+//                break;
+//            }
+//        }
+//        //northwest
+//        current_x = hex;
+//        for (int i = 0; i <= range; i++) {
+//            Hex current_y = current_x;
+////            current_y.spot(faction);
+//            //north
+//            for (int j = 0; j < (range - i) && current_y.getN(C.NORTH) != null; j++) {
+//                current_y = current_y.getN(C.NORTH);
+//                current_y.spot(faction);
+//            }
+//            //south
+//            current_y = current_x;
+//            for (int j = 0; j < range && current_y.getN(C.SOUTH) != null; j++) {
+//                current_y = current_y.getN(C.SOUTH);
+//                current_y.spot(faction);
+//            }
+//            current_x = current_x.getN(C.NORTHWEST);
+//            if (current_x == null) {
+//                break;
+//            }
+//        }
+//        //northeast
+//        current_x = hex;
+//        for (int i = 0; i <= range; i++) {
+//            Hex current_y = current_x;
+////            current_y.spot(faction);
+//            //north
+//            for (int j = 0; j < (range - i) && current_y.getN(C.NORTH) != null; j++) {
+//                current_y = current_y.getN(C.NORTH);
+//                current_y.spot(faction);
+//            }
+//            //south
+//            current_y = current_x;
+//            for (int j = 0; j < range && current_y.getN(C.SOUTH) != null; j++) {
+//                current_y = current_y.getN(C.SOUTH);
+//                current_y.spot(faction);
+//            }
+//            current_x = current_x.getN(C.NORTHEAST);
+//            if (current_x == null) {
+//                break;
+//            }
+//        }
+//    }
 
 //    public void setMoveCosts() {
 //
