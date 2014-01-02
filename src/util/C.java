@@ -200,7 +200,8 @@ public class C {
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
     public static final String S_TRANSPORT = "transport";
-
+    public static final String S_LOG_FILE = "phoenixlog.txt";
+    
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
