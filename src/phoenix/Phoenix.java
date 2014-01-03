@@ -7,6 +7,7 @@ package phoenix;
 import gui.Gui;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Date;
 import util.C;
 
 /**
@@ -38,13 +39,15 @@ public class Phoenix {
         try (
             FileWriter log_stream = new FileWriter(C.S_LOG_FILE, true);
             PrintWriter log = new PrintWriter(log_stream)){
-            log.println("***** Begin Stack Trace *****");
+            Date date = new Date();
+            log.println("***** Begin Stack Trace " + date.toString() + " *****");
             if (t != null) {
                 log.println(t.toString());
                 System.out.println(t.toString());
             }
             e.printStackTrace(log);
-            log.println("***** End Stack Trace *****");
+            date = new Date();
+            log.println("***** End Stack Trace " + date.toString() + " *****");
             log.flush();           
             e.printStackTrace(System.out);
         } catch (Exception ex) {
