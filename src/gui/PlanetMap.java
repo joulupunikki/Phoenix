@@ -66,7 +66,7 @@ public class PlanetMap extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         renderPlanetMap(g);
-
+        
     }
 
     public void renderPlanetMap(Graphics g) {
@@ -955,7 +955,7 @@ public class PlanetMap extends JPanel {
                     //skip top j when i % 2 == 0
 //                if (j != origin_y || (i % 2 != 0)) {
                     if (!stack_moving || 0 >= stack_move_counter || 20 <= stack_move_counter) {
-                    writeHex2(x, y, dip, pixel_data, hex_tiles, tile_no, wr);
+                        writeHex2(x, y, dip, pixel_data, hex_tiles, tile_no, wr);
                     }
 //                }
                     //                int t_idx = 0;
