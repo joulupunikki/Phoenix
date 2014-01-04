@@ -118,7 +118,7 @@ public class UnitSpot {
             }
 
         } catch (Exception e) {
-            Phoenix.logEx(null, e);
+            Util.logEx(null, e);
             System.exit(1);
         }
 

@@ -1406,4 +1406,21 @@ public class Util {
             logFFErrorAndExit(file, line);
         }
     }
+
+    public static void logEx(Thread t, Throwable e) {
+        try (final FileWriter log_stream = new FileWriter(C.S_LOG_FILE, true);final PrintWriter log = new PrintWriter(log_stream)) {
+            Date date = new Date();
+            log.println("***** Begin Stack Trace " + date.toString() + " *****");
+            if (t != null) {
+                log.println(t.toString());
+                System.out.println(t.toString());
+            }
+            e.printStackTrace(log);
+            date = new Date();
+            log.println("***** End Stack Trace " + date.toString() + " *****");
+            log.flush();
+            e.printStackTrace(System.out);
+        } catch (Exception ex) {
+        }
+    }
 }
