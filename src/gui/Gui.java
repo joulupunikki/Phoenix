@@ -679,6 +679,7 @@ public class Gui extends JFrame {
                     SU.centerMapOnUnit(stack.get(0));
                 }
             } catch (Exception ex) {
+                Util.logEx(null, ex, "Load game failed");
                 showInfoWindow("Load failed");
             }
             return null;
@@ -716,6 +717,7 @@ public class Gui extends JFrame {
                 s.flush();
                 System.out.println("after flush");
             } catch (Exception ex) {
+                Util.logEx(null, ex, "Save game failed");
                 System.out.println(ex);
                 showInfoWindow("Save failed");
             }
