@@ -40,6 +40,8 @@ public class UnitInfoWindow extends JPanel {
     Game game;
     WindowSize ws;
     JButton exit_button;
+    JTextField spot_name;
+    JTextField spot_stat;
     JTextField attack1_stat;
     JTextField attack1_type;
     JTextField attack2_type;
@@ -149,7 +151,9 @@ public class UnitInfoWindow extends JPanel {
 
     public void setStats() {
         Unit u = gui.getInfo_unit();
-
+       
+        spot_stat.setText("");
+        
         attack1_type.setText("");
         attack1_stat.setText("");
 
@@ -166,6 +170,8 @@ public class UnitInfoWindow extends JPanel {
             return;
         }
 
+        spot_stat.setText("" + u.type_data.spot);
+        
         int field_no = 0;
         if (u.type_data.water_str > 0) {
             setAttkStat(field_no++, "Water", u.type_data.water_acc, u.type_data.water_str);
@@ -228,6 +234,30 @@ public class UnitInfoWindow extends JPanel {
 //    }
     public void setUpStatDisplay() {
 
+                spot_name = new JTextField("Spot");
+
+        this.add(spot_name);
+        spot_name.setBounds(ws.unit_info_left_stat_x, ws.unit_info_left_stat_y + 2 * ws.unit_info_left_stat_h,
+                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
+        spot_name.setBackground(Color.BLACK);
+        spot_name.setForeground(C.COLOR_GOLD);
+        spot_name.setEditable(false);
+        spot_name.setHorizontalAlignment(JTextField.LEFT);
+        spot_name.setBorder(null);
+        spot_name.setFont(ws.font_default);
+        
+        spot_stat = new JTextField("");
+
+        this.add(spot_stat);
+        spot_stat.setBounds(ws.unit_info_left_stat_x2, ws.unit_info_left_stat_y + 2 * ws.unit_info_left_stat_h,
+                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
+        spot_stat.setBackground(Color.BLACK);
+        spot_stat.setForeground(C.COLOR_GOLD);
+        spot_stat.setEditable(false);
+        spot_stat.setHorizontalAlignment(JTextField.RIGHT);
+        spot_stat.setBorder(null);
+        spot_stat.setFont(ws.font_default);
+        
         attack1_type = new JTextField("Indirect");
 
         this.add(attack1_type);

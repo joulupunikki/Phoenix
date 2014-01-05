@@ -306,7 +306,8 @@ public class PlanetMap extends JPanel {
                         dip = +20;
                     }
                     Structure city = game.getPlanetGrid(current_planet).getHex(i, j).getStructure();
-                    if (city != null) {
+                    Hex hex = game.getPlanetGrid(current_planet).getHex(i, j);
+                    if (city != null && hex.isSpotted(game.getTurn())) {
                         String name = game.getStrBuild(city.type).name;
 
                         dx = x + x_offset;
@@ -339,7 +340,7 @@ public class PlanetMap extends JPanel {
                     }
 
                     Structure resource = game.getPlanetGrid(current_planet).getHex(i, j).getResource();
-                    if (resource != null) {
+                    if (resource != null && hex.isSpotted(game.getTurn())) {
                         String name = game.getStrBuild(resource.type).name;
 
                         dx = x + x_offset;
@@ -1165,13 +1166,13 @@ public class PlanetMap extends JPanel {
         int current_planet = game.getCurrentPlanetNr();
 
         Structure city = game.getPlanetGrid(current_planet).getHex(u, v).getStructure();
-
-        if (city != null) {
+        Hex hex = game.getPlanetGrid(current_planet).getHex(u, v);
+        if (city != null && hex.isSpotted(game.getTurn())) {
             tile_no[11] = city.type;
         }
 
         Structure resource = game.getPlanetGrid(current_planet).getHex(u, v).getResource();
-        if (resource != null) {
+        if (resource != null && hex.isSpotted(game.getTurn())) {
             tile_no[3] = resource.type;
         }
 

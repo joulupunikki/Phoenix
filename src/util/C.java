@@ -69,6 +69,9 @@ public class C {
     public static final int TARGET_DAT_Y = 10;
     public static final int COMBAT_LOOP_ITER = 30;
     public static final int SKULL_SIDE = 40;
+    // HexProc procedures
+    public static final int INIT_SPOT = 0;
+    public static final int SPOT = 1;
 //    public static final int WATER_ATTK = 4;
 //    public static final int INDIRECT_ATTK = 2;
 //    public static final int AIR_ATTK = 2;

@@ -197,6 +197,15 @@ public class Unit  implements Serializable{
         return cargo_list.contains(u);
     }
     
+    public static int spotRange(int spot) {
+        int r_v = 0;
+        r_v = spot / 2 - 1;
+        if (r_v <= 0) {
+            r_v = 1;
+        }
+        return r_v;
+    }
+    
     /**
      * Prints the unit object. For debugging purposes.
      */

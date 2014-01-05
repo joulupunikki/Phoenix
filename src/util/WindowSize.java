@@ -116,6 +116,11 @@ public class WindowSize {
     public int unit_info_attack_type_h = 11;
     public int unit_info_attack_stat_w = 60;
     public int unit_info_attack_stat_h = unit_info_attack_type_h;
+    public int unit_info_left_stat_x = 135;
+    public int unit_info_left_stat_y = unit_info_attack_type_y;
+    public int unit_info_left_stat_w = 30;
+    public int unit_info_left_stat_h = unit_info_attack_type_h;
+     public int unit_info_left_stat_x2 = 180;   
     public int galactic_map_x_pos = 10;
     public int galactic_map_y_pos = 23;
     public int galactic_map_width = 100;
@@ -124,6 +129,7 @@ public class WindowSize {
     public int globe_map_y_pos = 28;
     public int globe_map_width = 88;
     public int globe_map_height = 63;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -238,12 +244,17 @@ public class WindowSize {
             unit_info_attack_type_h *= 2;
             unit_info_attack_stat_w *= 2;
             unit_info_attack_stat_h *= 2;
+            unit_info_left_stat_x *= 2;
+            unit_info_left_stat_y *= 2;
+            unit_info_left_stat_w *= 2;
+            unit_info_left_stat_h *= 2;
+            unit_info_left_stat_x2 *= 2;
 
             galactic_map_x_pos *= 2;
             galactic_map_y_pos *= 2;
             galactic_map_width *= 2;
             galactic_map_height *= 2;
-            
+
             globe_map_x_pos *= 2;
             globe_map_y_pos *= 2;
             globe_map_width *= 2;
