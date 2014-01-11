@@ -30,6 +30,7 @@ public class HexProc implements Serializable {
     private int spotting_a;
     private List<Unit> stack_a;
     private int max_spot_range;
+    private Planet planet;
 
     public HexProc(Game game) {
         this.game = game;
@@ -66,8 +67,6 @@ public class HexProc implements Serializable {
 //        int faction_a = this.stack_a.get(0).owner;
         int range_a = Unit.spotRange(this.spotting_a);
         if (range_a >= range) {
-            System.out.println("range_a = " + range_a);
-            System.out.println("range = " + range);
             hex.spot(faction_a);
         }
         List<Unit> stack_b = hex.getStack();
@@ -85,7 +84,7 @@ public class HexProc implements Serializable {
         }
 
         if (range_a >= range) {
-            spotStack(range, spotting_a, faction_a, stack_b);
+            spotStack(range, spotting_a, faction_a, stack_b, hex);
 //            int final_spot = UnitSpot.finalSpotting(this.spotting_a, range);
 ////            double camo_mul = 1;
 ////            boolean[] terrain = hex.getTerrain();
@@ -103,18 +102,39 @@ public class HexProc implements Serializable {
         int faction_b = stack_b.get(0).owner;
         int range_b = Unit.spotRange(spotting_b);
         if (range_b >= range) {
-            spotStack(range, spotting_b, faction_b, stack_a);
+            spotStack(range, spotting_b, faction_b, stack_a, this.hex);
         }
-        
+
     }
 
-    public void spotStack(int range, int spotting, int faction, List<Unit> stack) {
+    public void spotStack(int range, int spotting, int faction, List<Unit> stack, Hex hex) {
         int final_spot = UnitSpot.finalSpotting(spotting, range);
         for (Unit unit1 : stack) {
             if (unit1.spotted[faction]) {
                 continue;
             }
-            if (final_spot >= unit1.type_data.camo) {
+            double camo_mod = 1.0;
+            double[][][] unit_spot = game.getResources().getUnitSpot();
+            boolean[] terrain = hex.getTerrain();
+            for (int i = 0; i < terrain.length; i++) {
+                if (terrain[i]) {
+                    camo_mod *= (unit_spot[i][this.planet.tile_set_type][unit1.move_type.ordinal()] / 2);
+                    if (unit1.type == 49) {
+                        System.out.println("i = " + i);
+                        System.out.println("camo_mod = " + camo_mod);
+                    }
+                }
+
+            }
+            if (hex.getStructure() != null) {
+                camo_mod *= (unit_spot[C.STRUCTURE][this.planet.tile_set_type][unit1.move_type.ordinal()] / 2);
+                if (unit1.type == 49) {
+                    System.out.println("structure");
+                    System.out.println("camo_mod = " + camo_mod);
+                }
+            }
+            int final_camo = (int) (unit1.type_data.camo * camo_mod);
+            if (final_spot >= final_camo) {
                 unit1.spotted[faction] = true;
             }
 
@@ -168,6 +188,7 @@ public class HexProc implements Serializable {
 //            return;
 //        }
 //        int range = Unit.spotRange(spotting);
+        this.planet = game.getPlanet(stack.get(0).p_idx);
         this.faction_a = stack.get(0).owner;
         this.spotting_a = spotting;
         this.stack_a = stack;

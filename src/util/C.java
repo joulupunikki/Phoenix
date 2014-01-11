@@ -163,6 +163,7 @@ public class C {
 //   "FERTILE"     
 //   "METAL"       
 //   "ENERGY"
+    // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
     public static final int ARID_GRASS = 2;
@@ -175,6 +176,7 @@ public class C {
     public static final int RIVER = 9;
     public static final int DELTA = 10;
     public static final int ROAD = 11;
+    public static final int STRUCTURE = 12;
     // faction id's
     public static final int HOUSE1 = 0;
     public static final int HOUSE2 = 1;
