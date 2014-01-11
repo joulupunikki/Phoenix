@@ -19,7 +19,7 @@ import util.Util;
  *
  * @author joulupunikki
  */
-public class Planet  implements Serializable{
+public class Planet implements Serializable {
 
     public int index; // original code
     public int x; // short
@@ -40,7 +40,9 @@ public class Planet  implements Serializable{
     // units in space around planet
     public List<Unit>[] space_stacks;
     public PlanetGrid planet_grid;
-public List<JumpGate> jump_routes;
+    public List<JumpGate> jump_routes;
+    public boolean[] spotted;
+
     /**
      * Creates a planet object. Reads in positional coordinates, name, owner and
      * other fields.
@@ -158,17 +160,23 @@ public List<JumpGate> jump_routes;
         planet_grid = new PlanetGrid();
 
         planet_grid.setTerrainTypes(this);
+
+        spotted = new boolean[C.NR_FACTIONS];
+        for (int i = 0; i < spotted.length; i++) {
+            spotted[i] = false;
+            
+        }
         
     }
 
     public void addStack(List<Unit> stack, int faction) {
         space_stacks[faction].addAll(stack);
     }
-    
+
     public void minusStack(List<Unit> stack, int faction) {
         space_stacks[faction].removeAll(stack);
     }
-    
+
     public void placeUnit(Unit e) {
 //        if (space_stacks[e.owner] == null) {
 //            space_stacks[e.owner] = new LinkedList<>();
@@ -209,10 +217,8 @@ public List<JumpGate> jump_routes;
 //            }
 //            System.out.println("print buf");
 //        }
-
     }
 
-    
     public boolean[] resolveTerrainType(int u, int v) {
 
         boolean[] terr_type = new boolean[12];

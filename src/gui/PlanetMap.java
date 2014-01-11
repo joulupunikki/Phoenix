@@ -66,7 +66,7 @@ public class PlanetMap extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         renderPlanetMap(g);
-        
+
     }
 
     public void renderPlanetMap(Graphics g) {
@@ -832,21 +832,33 @@ public class PlanetMap extends JPanel {
 
                         List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
                         if (stack != null && Util.stackSize(stack) > 0) {
-                            Unit e = stack.get(0);
+                            Unit e = null;  //stack.get(0);
+                            int nr_spotted = 0;
+                            boolean spotted = false;
+                            for (Unit unit : stack) {
+                                if (unit.spotted[game.getTurn()]) {
+                                    spotted = true;
+                                    e = unit;
+                                    nr_spotted++;
+                                    nr_spotted += unit.cargo_list.size();
+                                }
+                            }
+                            if (spotted) {
 
-                            if (game.getPlanetGrid(current_planet).getHex(i, j).getStructure() == null) {
+                                if (game.getPlanetGrid(current_planet).getHex(i, j).getStructure() == null) {
 
-                                Util.fillRaster(wr, Util.getOwnerColor(e.owner));
-                                Util.drawUnitIconEdges(wr, ws);
-                                Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+                                    Util.fillRaster(wr, Util.getOwnerColor(e.owner));
+                                    Util.drawUnitIconEdges(wr, ws);
+                                    Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
 
-                                Graphics2D g2d = (Graphics2D) g;
+                                    Graphics2D g2d = (Graphics2D) g;
 
-                                g2d.drawImage(bi, null, dx, dy);
-                                Util.writeUnitCount(g2d, ws, Util.stackSize(stack), dx, dy);
-                            } else {
-                                g.setColor(Util.getColor(pallette, Util.getOwnerColor(e.owner)));
-                                Util.drawBlip(g, dx, dy, ws.blip_side);
+                                    g2d.drawImage(bi, null, dx, dy);
+                                    Util.writeUnitCount(g2d, ws, nr_spotted, dx, dy);
+                                } else {
+                                    g.setColor(Util.getColor(pallette, Util.getOwnerColor(e.owner)));
+                                    Util.drawBlip(g, dx, dy, ws.blip_side);
+                                }
                             }
                         }
                     }
@@ -1167,8 +1179,12 @@ public class PlanetMap extends JPanel {
 
         Structure city = game.getPlanetGrid(current_planet).getHex(u, v).getStructure();
         Hex hex = game.getPlanetGrid(current_planet).getHex(u, v);
-        if (city != null && hex.isSpotted(game.getTurn())) {
-            tile_no[11] = city.type;
+        if (city != null) {
+            if (hex.isSpotted(game.getTurn())) {
+                tile_no[11] = city.type;
+            } else {
+                tile_no[11] = 21;
+            }
         }
 
         Structure resource = game.getPlanetGrid(current_planet).getHex(u, v).getResource();

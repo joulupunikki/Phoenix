@@ -190,6 +190,28 @@ public class UnitSpot {
         }
     }
 
+    public static int finalSpotting(int spotting, int range) {
+
+        int r_v;
+        switch (spotting) {
+            case 1:
+                r_v = range == 1 ? 1 : -1;
+                break;
+            case 2:
+                r_v = range == 1 ? 2 : -1;
+                break;
+            case 3:
+                r_v = range == 1 ? 3 : -1;
+                break;
+            default:
+                r_v = 2 * spotting - 4 * range;
+                if (r_v < 4) {
+                    r_v = -1;
+                }
+        }
+        return r_v;
+    }
+    
     public static void printData(double[][][] data) {
 
         for (int i = 0; i < data.length; i++) {

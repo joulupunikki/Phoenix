@@ -19,6 +19,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,6 +43,9 @@ public class UnitInfoWindow extends JPanel {
     JButton exit_button;
     JTextField spot_name;
     JTextField spot_stat;
+    JTextField camo_name;
+    JTextField camo_stat;
+
     JTextField attack1_stat;
     JTextField attack1_type;
     JTextField attack2_type;
@@ -151,9 +155,10 @@ public class UnitInfoWindow extends JPanel {
 
     public void setStats() {
         Unit u = gui.getInfo_unit();
-       
+
         spot_stat.setText("");
-        
+        camo_stat.setText("");
+
         attack1_type.setText("");
         attack1_stat.setText("");
 
@@ -171,7 +176,8 @@ public class UnitInfoWindow extends JPanel {
         }
 
         spot_stat.setText("" + u.type_data.spot);
-        
+        camo_stat.setText("" + u.type_data.camo);
+
         int field_no = 0;
         if (u.type_data.water_str > 0) {
             setAttkStat(field_no++, "Water", u.type_data.water_acc, u.type_data.water_str);
@@ -234,7 +240,7 @@ public class UnitInfoWindow extends JPanel {
 //    }
     public void setUpStatDisplay() {
 
-                spot_name = new JTextField("Spot");
+        spot_name = new JTextField("Spot");
 
         this.add(spot_name);
         spot_name.setBounds(ws.unit_info_left_stat_x, ws.unit_info_left_stat_y + 2 * ws.unit_info_left_stat_h,
@@ -245,7 +251,7 @@ public class UnitInfoWindow extends JPanel {
         spot_name.setHorizontalAlignment(JTextField.LEFT);
         spot_name.setBorder(null);
         spot_name.setFont(ws.font_default);
-        
+
         spot_stat = new JTextField("");
 
         this.add(spot_stat);
@@ -257,7 +263,31 @@ public class UnitInfoWindow extends JPanel {
         spot_stat.setHorizontalAlignment(JTextField.RIGHT);
         spot_stat.setBorder(null);
         spot_stat.setFont(ws.font_default);
-        
+
+        camo_name = new JTextField("Camo");
+
+        this.add(camo_name);
+        camo_name.setBounds(ws.unit_info_left_stat_x, ws.unit_info_left_stat_y + 3 * ws.unit_info_left_stat_h,
+                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
+        camo_name.setBackground(Color.BLACK);
+        camo_name.setForeground(C.COLOR_GOLD);
+        camo_name.setEditable(false);
+        camo_name.setHorizontalAlignment(JTextField.LEFT);
+        camo_name.setBorder(null);
+        camo_name.setFont(ws.font_default);
+
+        camo_stat = new JTextField("");
+
+        this.add(camo_stat);
+        camo_stat.setBounds(ws.unit_info_left_stat_x2, ws.unit_info_left_stat_y + 3 * ws.unit_info_left_stat_h,
+                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
+        camo_stat.setBackground(Color.BLACK);
+        camo_stat.setForeground(C.COLOR_GOLD);
+        camo_stat.setEditable(false);
+        camo_stat.setHorizontalAlignment(JTextField.RIGHT);
+        camo_stat.setBorder(null);
+        camo_stat.setFont(ws.font_default);
+
         attack1_type = new JTextField("Indirect");
 
         this.add(attack1_type);
@@ -368,6 +398,17 @@ public class UnitInfoWindow extends JPanel {
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+        }
+
+        if (game.getTurn() != stack.get(0).owner) {
+
+            List<Unit> tmp = new LinkedList<>();
+            for (Unit unit : stack) {
+                if (unit.spotted[game.getTurn()]) {
+                    tmp.add(unit);
+                }
+            }
+            stack = tmp;
         }
 
 //        boolean is_cargo_listing = false;

@@ -57,6 +57,8 @@ public class Game implements Serializable {
     private UnitType[][] unit_types;
     private StrBuild[] str_build;
     private double[][][] terr_cost;
+    private int max_spot_range;
+    private GameResources resources;
 
 //    private List<Unit> current_stack;
     private List<Planet> planets;
@@ -101,7 +103,8 @@ public class Game implements Serializable {
         this.current_planet = current_planet;
         year = 4956;
         turn = -1;
-        hex_proc = new HexProc();
+        hex_proc = new HexProc(this);
+        resources = new GameResources();
 
         placeUnits();
         placeStructures();
@@ -112,6 +115,7 @@ public class Game implements Serializable {
         setUnitTypeData();
         setJumpRoutes();
         initVisibility();
+        setMaxSpotRange();
 
         battle = new Battle();
 
@@ -156,27 +160,24 @@ public class Game implements Serializable {
             for (int i = 0; i < planet_grid.length; i++) {
                 for (int j = 0; j < planet_grid[i].length; j++) {
                     Hex hex = planet_grid[i][j];
-
-//                    List<Unit> stack = hex.getStack();
-//                    if (!stack.isEmpty()) {
-//
-//                        int spotting = 0;
-//                        StackIterator iter = new StackIterator(stack);
-//                        Unit unit = iter.next();
-//                        while (unit != null) {
-//                            if (unit.type_data.spot > spotting) {
-//                                spotting = unit.type_data.spot;
-//                            }
-//                            unit = iter.next();
-//                        }
-//                        hex_proc.initSpotProc(hex, Unit.spotRange(spotting), stack.get(0).owner);
-//                    }
-                    hex_proc.initSpotProc(hex);
+                    hex_proc.initSpotProc(hex, planet);
 
                 }
 
             }
+            List<Unit>[] stacks = planet.space_stacks;
+            for (int i = 0; i < stacks.length; i++) {
+                if (!stacks[i].isEmpty()) {
+                    planet.spotted[i] = true;
+                    for (int j = 0; j < stacks.length; j++) {
+                        List<Unit> stack = stacks[j];
+                        for (Unit unit : stack) {
+                            unit.spotted[i] = true;
+                        }
 
+                    }
+                }
+            }
         }
 
     }
@@ -1083,6 +1084,7 @@ public class Game implements Serializable {
 
         resetUnmovedUnits();
         resetMovePoints();
+        setMaxSpotRange();
     }
 
     public List<Unit> getUnmovedUnits() {
@@ -1293,6 +1295,48 @@ public class Game implements Serializable {
         }
     }
 
+    public void unSpot(List<Unit> stack) {
+        for (Unit unit : stack) {
+            for (int i = 0; i < unit.spotted.length; i++) {
+                if (i != getTurn()) {
+                    unit.spotted[i] = false;
+                }
+            }
+        }
+    }
+
+    public void spotSpace(Planet planet, List<Unit> stack, int faction) {
+        int spotting_a = 0;
+        for (Unit unit : stack) {
+            if (unit.type_data.spot > spotting_a) {
+                spotting_a = unit.type_data.spot;
+            }
+        }
+        List<Unit>[] stacks = planet.space_stacks;
+        for (int i = 0; i < stacks.length; i++) {
+            List<Unit> stack_b = stacks[i];
+            if (!stack_b.isEmpty()) {
+                int spotting_b = 0;
+                for (Unit unit : stack_b) {
+                    if (unit.type_data.spot > spotting_b) {
+                        spotting_b = unit.type_data.spot;
+                    }
+                }
+                spotSpaceStack(stack_b, spotting_a, faction);
+                spotSpaceStack(stack, spotting_b, stack_b.get(0).owner);
+            }
+        }
+        planet.spotted[faction] = true;
+    }
+
+    public void spotSpaceStack(List<Unit> stack, int spotting, int faction) {
+        for (Unit unit : stack) {
+            if (spotting >= unit.type_data.camo) {
+                unit.spotted[faction] = true;
+            }
+        }
+    }
+
     public boolean moveStack() {
         boolean rv = false;
         Hex hex = path.getFirst();
@@ -1321,6 +1365,8 @@ public class Game implements Serializable {
 
             path.removeFirst();
             setSelectedPoint(new Point(hex2.getX(), hex2.getY()), -1);
+            unSpot(selected);
+            hex_proc.spotProc(hex2, selected);
             rv = true;
         }
         return rv;
@@ -1352,6 +1398,8 @@ public class Game implements Serializable {
             }
             destination.addStack(selected, selected_faction);
             source.minusStack(selected, selected_faction);
+            unSpot(selected);
+            spotSpace(destination, selected, selected_faction);
             setUnitCoords(true, destination.index, p.x, p.y, selected);
             rv = true;
         }
@@ -1383,6 +1431,8 @@ public class Game implements Serializable {
             subMovePointsSpace(selected);
             planet.addStack(selected, faction);
             target_hex.minusStack(selected);
+            unSpot(selected);
+            spotSpace(planet, selected, faction);
             setUnitCoords(true, planet.index, planet.x, planet.y, selected);
             //need to set it like this :(
             setSelectedPointFaction(new Point(planet.x, planet.y), faction, null, null);
@@ -1422,6 +1472,8 @@ public class Game implements Serializable {
             planet.minusStack(selected, selected_faction);
             setUnitCoords(false, planet.index, p.x, p.y, selected);
             setSelectedPointFaction(p, -1, null, null);
+            unSpot(selected);
+            hex_proc.spotProc(target_hex, selected);
             rv = true;
         }
         return rv;
@@ -1786,4 +1838,23 @@ public class Game implements Serializable {
     public void setUnitTypes(UnitType[][] unit_types) {
         this.unit_types = unit_types;
     }
+
+    public void setMaxSpotRange() {
+        int spotting = 0;
+        for (Unit unit : units) {
+            if (spotting < unit.type_data.spot) {
+                spotting = unit.type_data.spot;
+            }
+        }
+        hex_proc.setMaxSpotRange(Unit.spotRange(spotting));
+
+    }
+
+    public GameResources getResources() {
+        return resources;
+    }
+
+//    public int getMaxSpotRange() {
+//        return max_spot_range;
+//    }
 }

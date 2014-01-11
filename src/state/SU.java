@@ -90,15 +90,34 @@ public class SU extends State {
 
     }
 
+    public static boolean isSpotted(List<Unit> stack) {
+        boolean visible = false;
+        if (stack.get(0).owner == game.getTurn()) {
+            visible = true;
+        } else {
+            for (Unit unit : stack) {
+                if (unit.spotted[game.getTurn()]) {
+                    visible = true;
+                    break;
+                }
+            }
+        }
+        return visible;
+    }
+
     public static void clickOnPlanetMapButton3(Point p) {
         int map_point_x = p.x;
         int map_point_y = p.y;
 
         List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y).getStack();
+
         if (!stack.isEmpty()) {
-            game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
-            stack.get(0).selected = true;
-            gui.setCurrentState(PW2.get());
+
+            if (isSpotted(stack)) {
+                game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
+                stack.get(0).selected = true;
+                gui.setCurrentState(PW2.get());
+            }
         }
 
         //if destination selected gui.setCurrentState(PW3.get());
@@ -120,7 +139,7 @@ public class SU extends State {
         }
 
         game.setMapOrigin(new Point(map_origin_x, map_origin_y));
-       
+
         //draw new map location
         gui.getPlanetWindow().repaint();
 
@@ -165,9 +184,13 @@ public class SU extends State {
             if (checkForSpaceStacks(x, y, owner, galaxy_grid)) {
 //                    game.setSelectedPoint(new Point(x, y));
                 clickOnSpaceStack(x, y, owner, galaxy_grid);
-                gui.setCurrentState(SW2.get());
+//                gui.setCurrentState(SW2.get());
             }
         } else if (galaxy_grid[x][y].planet != null) {
+            if (!galaxy_grid[x][y].planet.spotted[game.getTurn()] ) {
+                JOptionPane.showMessageDialog(gui, "We lost our map of this planet long ago. We must send a ship there or buy the information from another party.", null, JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
             JPanel main_windows = gui.getMainWindows();
             game.setSelectedPointFaction(null, -1, null, null);
             game.setCurrentPlanetNr(galaxy_grid[x][y].planet.index);
@@ -208,24 +231,31 @@ public class SU extends State {
         if (owner < C.LEAGUE) {
 //            game.setSelectedPoint(new Point(x, y));
 //            game.setSelectedFaction(owner);
-            game.setSelectedPointFaction(new Point(x, y), owner, null, null);
-            galaxy_grid[x][y].parent_planet.space_stacks[owner].get(0).selected = true;
-            gui.setCurrentState(SW2.get());
+            List<Unit> stack = galaxy_grid[x][y].parent_planet.space_stacks[owner];
+            if (isSpotted(stack)) {
+                game.setSelectedPointFaction(new Point(x, y), owner, null, null);
+                stack.get(0).selected = true;
+                gui.setCurrentState(SW2.get());
+            }
             return;
         }
 
         List<Integer> stack_list = new LinkedList<>();
         int factions = 3;
         for (int i = 0; i < factions; i++) {
-            if (!galaxy_grid[x][y].parent_planet.space_stacks[owner + i].isEmpty()) {
-                stack_list.add(new Integer(owner + i));
+            List<Unit> stack = galaxy_grid[x][y].parent_planet.space_stacks[owner + i];
+            if (!stack.isEmpty()) {
+                if (isSpotted(stack)) {
+                    stack_list.add(new Integer(owner + i));
+                }
             }
-
         }
 
         int size = stack_list.size();
 
-        if (size == 1) {
+        if (size == 0) {
+            return;
+        } else if (size == 1) {
 //            game.setSelectedPoint(new Point(x, y));
 //            game.setSelectedFaction(stack_list.get(0).intValue());
             game.setSelectedPointFaction(new Point(x, y), stack_list.get(0).intValue(), null, null);

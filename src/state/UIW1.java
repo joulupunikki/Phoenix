@@ -14,12 +14,14 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import util.C;
 import util.Util;
 
 /**
  * Unit Info Window no unit dragged
+ *
  * @author joulupunikki
  */
 public class UIW1 extends State {
@@ -38,22 +40,21 @@ public class UIW1 extends State {
         gui.setCurrentState(main_game_state);
         main_game_state = null;
         gui.setInfo_unit(null);
-        
-        
+
     }
-    
+
     public void clickOnWindow(MouseEvent e) {
-        
+
         Point q = e.getPoint();
-        
-        if(e.getButton() == MouseEvent.BUTTON1) {
+
+        if (e.getButton() == MouseEvent.BUTTON1) {
             clickButton1(q);
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             clickButton3(q);
         }
     }
-    
-        public void clickButton3(Point q) {
+
+    public void clickButton3(Point q) {
 
         int faction = game.getSelectedFaction();
         Point p = game.getSelectedPoint();
@@ -68,7 +69,16 @@ public class UIW1 extends State {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
         }
-        
+        if (game.getTurn() != stack.get(0).owner) {
+
+            List<Unit> tmp = new LinkedList<>();
+            for (Unit unit : stack) {
+                if (unit.spotted[game.getTurn()]) {
+                    tmp.add(unit);
+                }
+            }
+            stack = tmp;
+        }
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;
@@ -91,22 +101,18 @@ public class UIW1 extends State {
 //                Util.fillRaster(wr, color);
 //                Util.drawUnitIconEdges(wr, ws);
 //                Util.writeUnit(pixel_data, u.type, unit_icons, wr, ws);
-
-
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
                 int dy = (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size);
 
-                if (dx <= q.x && q.x <= dx + ws.unit_icon_size &&
-                        dy <= q.y && q.y <= dy + ws.unit_icon_size) {
+                if (dx <= q.x && q.x <= dx + ws.unit_icon_size
+                        && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     gui.setInfo_unit(u);
                     return;
                 }
-                
-                
+
 //                g2d.drawImage(bi, null, dx, dy);
 //
 //                Util.drawUnitDetails(g, u, dx, dy);
-
 //                if (iterator.hasNext()) {
 //                    u = iterator.next();
 //                } else {
@@ -136,7 +142,7 @@ public class UIW1 extends State {
 
         }
     }
-    
+
     public void clickButton1(Point q) {
 
         int faction = game.getSelectedFaction();
@@ -156,7 +162,7 @@ public class UIW1 extends State {
         if (stack.get(0).owner != game.getTurn()) {
             return;
         }
-        
+
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;
@@ -179,24 +185,20 @@ public class UIW1 extends State {
 //                Util.fillRaster(wr, color);
 //                Util.drawUnitIconEdges(wr, ws);
 //                Util.writeUnit(pixel_data, u.type, unit_icons, wr, ws);
-
-
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
                 int dy = (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size);
 
-                if (dx <= q.x && q.x <= dx + ws.unit_icon_size &&
-                        dy <= q.y && q.y <= dy + ws.unit_icon_size) {
+                if (dx <= q.x && q.x <= dx + ws.unit_icon_size
+                        && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     gui.setDragUnit(u, q);
                     gui.setCurrentState(UIW2.get());
                     gui.getMainWindows().repaint();
                     return;
                 }
-                
-                
+
 //                g2d.drawImage(bi, null, dx, dy);
 //
 //                Util.drawUnitDetails(g, u, dx, dy);
-
 //                if (iterator.hasNext()) {
 //                    u = iterator.next();
 //                } else {
@@ -226,5 +228,5 @@ public class UIW1 extends State {
 
         }
     }
-    
+
 }

@@ -395,19 +395,31 @@ public class SpaceMap extends JPanel {
 
             List<Unit> stack = planet.space_stacks[owner + i];
             if (stack != null && Util.stackSize(stack) > 0) {
-                Unit e = stack.get(0);
-                WritableRaster wr = bi.getRaster();
-                Util.fillRaster(wr, Util.getOwnerColor(e.owner));
-                Util.drawUnitIconEdges(wr, ws);
-                Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
-
-                int dip = 4 * counter++;
-
-                if (ws.is_double) {
-                    dip *= 2;
+                Unit e = null;  //stack.get(0);
+                int nr_spotted = 0;
+                boolean spotted = false;
+                for (Unit unit : stack) {
+                    if (unit.spotted[game.getTurn()]) {
+                        spotted = true;
+                        e = unit;
+                        nr_spotted++;
+                        nr_spotted += unit.cargo_list.size();
+                    }
                 }
-                g2d.drawImage(bi, null, x, y + dip);
-                Util.writeUnitCount(g2d, ws, Util.stackSize(stack), x, y + dip);
+                if (spotted) {
+                    WritableRaster wr = bi.getRaster();
+                    Util.fillRaster(wr, Util.getOwnerColor(e.owner));
+                    Util.drawUnitIconEdges(wr, ws);
+                    Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+
+                    int dip = 4 * counter++;
+
+                    if (ws.is_double) {
+                        dip *= 2;
+                    }
+                    g2d.drawImage(bi, null, x, y + dip);
+                    Util.writeUnitCount(g2d, ws, nr_spotted, x, y + dip);
+                }
             }
         }
     }

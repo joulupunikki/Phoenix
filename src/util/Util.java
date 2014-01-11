@@ -485,6 +485,17 @@ public class Util {
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
         }
 
+        if (game.getTurn() != stack.get(0).owner) {
+            
+            List<Unit> tmp = new LinkedList<>();
+            for (Unit unit : stack) {
+                if (unit.spotted[game.getTurn()]) {
+                    tmp.add(unit);
+                }
+            }
+            stack = tmp;
+        }
+        
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;

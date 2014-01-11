@@ -5,6 +5,8 @@
  */
 package game;
 
+import dat.UnitSpot;
+import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import java.io.Serializable;
@@ -20,12 +22,18 @@ import util.StackIterator;
  */
 public class HexProc implements Serializable {
 
-    private int faction;
+    private Game game;
+    private int faction_a;
     private Hex hex;
 
     // variables for spotting
-    private int spotting;
-    private List<Unit> stack;
+    private int spotting_a;
+    private List<Unit> stack_a;
+    private int max_spot_range;
+
+    public HexProc(Game game) {
+        this.game = game;
+    }
 
     public void proc(Hex hex, int range, int oper) {
         switch (oper) {
@@ -33,7 +41,7 @@ public class HexProc implements Serializable {
                 initSpot(hex);
                 break;
             case C.SPOT:
-//                spot(h1, h2, stack, range, faction);
+                spot(hex, range);
                 break;
             default:
                 throw new AssertionError();
@@ -41,49 +49,93 @@ public class HexProc implements Serializable {
     }
 
     public void initSpot(Hex hex) {
-        hex.spot(faction);
+        hex.spot(faction_a);
         List<Unit> stack = hex.getStack();
         if (stack.isEmpty()) {
             return;
         }
         StackIterator iter = new StackIterator(stack);
         Unit unit = iter.next();
-        while(unit != null) {
-            unit.spotted[faction] = true;
+        while (unit != null) {
+            unit.spotted[faction_a] = true;
             unit = iter.next();
         }
     }
-    
-    public void spot(Hex h1, Hex h2, List<Unit> stack, int range, int faction) {
-        List<Unit> stack_b = h2.getStack();
-        if (stack_b.isEmpty() || stack_b.get(0).owner == stack.get(0).owner) {
+
+    public void spot(Hex hex, int range) {
+//        int faction_a = this.stack_a.get(0).owner;
+        int range_a = Unit.spotRange(this.spotting_a);
+        if (range_a >= range) {
+            System.out.println("range_a = " + range_a);
+            System.out.println("range = " + range);
+            hex.spot(faction_a);
+        }
+        List<Unit> stack_b = hex.getStack();
+        if (stack_b.isEmpty() || stack_b.get(0).owner == stack_a.get(0).owner) {
             return;
         }
-        int spotting = 0;
-        StackIterator iter = new StackIterator(stack);
+        int spotting_b = 0;
+        StackIterator iter = new StackIterator(stack_b);
         Unit unit = iter.next();
         while (unit != null) {
-            if (spotting < unit.type_data.spot) {
-                spotting = unit.type_data.spot;
+            if (spotting_b < unit.type_data.spot) {
+                spotting_b = unit.type_data.spot;
             }
+            unit = iter.next();
+        }
+
+        if (range_a >= range) {
+            spotStack(range, spotting_a, faction_a, stack_b);
+//            int final_spot = UnitSpot.finalSpotting(this.spotting_a, range);
+////            double camo_mul = 1;
+////            boolean[] terrain = hex.getTerrain();
+//            for (Unit unit1 : stack_b) {
+//                if (unit1.spotted[faction_a]) {
+//                    continue;
+//                }
+//                if (final_spot >= unit1.type_data.camo) {
+//                    unit1.spotted[faction_a] = true;
+//                }
+//
+//            }
+        }
+
+        int faction_b = stack_b.get(0).owner;
+        int range_b = Unit.spotRange(spotting_b);
+        if (range_b >= range) {
+            spotStack(range, spotting_b, faction_b, stack_a);
+        }
+        
+    }
+
+    public void spotStack(int range, int spotting, int faction, List<Unit> stack) {
+        int final_spot = UnitSpot.finalSpotting(spotting, range);
+        for (Unit unit1 : stack) {
+            if (unit1.spotted[faction]) {
+                continue;
+            }
+            if (final_spot >= unit1.type_data.camo) {
+                unit1.spotted[faction] = true;
+            }
+
         }
     }
 
-    public void initSpotProc(Hex hex) {
+    public void initSpotProc(Hex hex, Planet planet) {
         List<Unit> stack = hex.getStack();
         Structure struct = hex.getStructure();
         if (stack.isEmpty() && struct == null) {
             return;
         }
         int range = 0;
-        if(struct != null) {
+        if (struct != null) {
             range = 5;
-            this.faction = struct.owner;
+            this.faction_a = struct.owner;
         }
-        
+
         if (!stack.isEmpty()) {
 
-            this.faction = stack.get(0).owner;
+            this.faction_a = stack.get(0).owner;
             int spotting = 0;
             StackIterator iter = new StackIterator(stack);
             Unit unit = iter.next();
@@ -96,8 +148,9 @@ public class HexProc implements Serializable {
             int tmp = Unit.spotRange(spotting);
             range = range > tmp ? range : tmp;
         }
-    
+
         hexProc(hex, range, C.INIT_SPOT);
+        planet.spotted[this.faction_a] = true;
     }
 
     public void spotProc(Hex hex, List<Unit> stack) {
@@ -109,14 +162,17 @@ public class HexProc implements Serializable {
             if (spotting < unit.type_data.spot) {
                 spotting = unit.type_data.spot;
             }
+            unit = iter.next();
         }
-        if (spotting == 0) {
-            return;
-        }
-        int range = Unit.spotRange(spotting);
-        this.spotting = spotting;
-        this.stack = stack;
-//        hexProc(hex, null, )
+//        if (spotting == 0) {
+//            return;
+//        }
+//        int range = Unit.spotRange(spotting);
+        this.faction_a = stack.get(0).owner;
+        this.spotting_a = spotting;
+        this.stack_a = stack;
+        this.hex = hex;
+        hexProc(hex, this.max_spot_range, C.SPOT);
     }
 
     public void hexProc(Hex hex, int range, int oper) {
@@ -129,12 +185,12 @@ public class HexProc implements Serializable {
             }
             Hex circ = radial;
             proc(circ, i, oper);
-            for (int j = 1; j <= range && circ.getN(C.NORTHWEST) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.NORTHWEST) != null; j++) {
                 circ = circ.getN(C.NORTHWEST);
                 proc(circ, i, oper);
             }
             circ = radial;
-            for (int j = 1; j <= range && circ.getN(C.SOUTH) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.SOUTH) != null; j++) {
                 circ = circ.getN(C.SOUTH);
                 proc(circ, i, oper);
             }
@@ -148,12 +204,12 @@ public class HexProc implements Serializable {
             }
             Hex circ = radial;
             proc(circ, i, oper);
-            for (int j = 1; j <= range && circ.getN(C.SOUTHWEST) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.SOUTHWEST) != null; j++) {
                 circ = circ.getN(C.SOUTHWEST);
                 proc(circ, i, oper);
             }
             circ = radial;
-            for (int j = 1; j <= range && circ.getN(C.NORTH) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.NORTH) != null; j++) {
                 circ = circ.getN(C.NORTH);
                 proc(circ, i, oper);
             }
@@ -167,12 +223,12 @@ public class HexProc implements Serializable {
             }
             Hex circ = radial;
             proc(circ, i, oper);
-            for (int j = 1; j <= range && circ.getN(C.SOUTHEAST) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.SOUTHEAST) != null; j++) {
                 circ = circ.getN(C.SOUTHEAST);
                 proc(circ, i, oper);
             }
             circ = radial;
-            for (int j = 1; j <= range && circ.getN(C.NORTH) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.NORTH) != null; j++) {
                 circ = circ.getN(C.NORTH);
                 proc(circ, i, oper);
             }
@@ -186,17 +242,21 @@ public class HexProc implements Serializable {
             }
             Hex circ = radial;
             proc(circ, i, oper);
-            for (int j = 1; j <= range && circ.getN(C.NORTHEAST) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.NORTHEAST) != null; j++) {
                 circ = circ.getN(C.NORTHEAST);
                 proc(circ, i, oper);
             }
             circ = radial;
-            for (int j = 1; j <= range && circ.getN(C.SOUTH) != null; j++) {
+            for (int j = 1; j <= i && circ.getN(C.SOUTH) != null; j++) {
                 circ = circ.getN(C.SOUTH);
                 proc(circ, i, oper);
             }
             radial = radial.getN(C.NORTHWEST);
         }
+    }
+
+    public void setMaxSpotRange(int range) {
+        max_spot_range = range;
     }
 
 }
