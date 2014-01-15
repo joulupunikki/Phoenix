@@ -486,7 +486,7 @@ public class Util {
         }
 
         if (game.getTurn() != stack.get(0).owner) {
-            
+
             List<Unit> tmp = new LinkedList<>();
             for (Unit unit : stack) {
                 if (unit.spotted[game.getTurn()]) {
@@ -495,7 +495,7 @@ public class Util {
             }
             stack = tmp;
         }
-        
+
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;
@@ -1393,13 +1393,16 @@ public class Util {
         return move_capable;
     }
 
-    public static void logFileFormatError(String file, int line) {
+    public static void logFileFormatError(String file, int line, String log_msg) {
         try (
                 FileWriter log_stream = new FileWriter(C.S_LOG_FILE, true);
                 PrintWriter log = new PrintWriter(log_stream)) {
             Date date = new Date();
             log.println("***** Begin Log Entry " + date.toString() + " *****");
             log.println("Error reading file: " + file + ", line: " + line);
+            if (log_msg != null) {
+                log.println("Log msg: " + log_msg);
+            }
             log.flush();
 
         } catch (Exception ex) {
@@ -1407,7 +1410,12 @@ public class Util {
     }
 
     public static void logFFErrorAndExit(String file, int line) {
-        logFileFormatError(file, line);
+        logFileFormatError(file, line, null);
+        System.exit(1);
+    }
+
+    public static void logFFErrorAndExit(String file, int line, String log_msg) {
+        logFileFormatError(file, line, log_msg);
         System.exit(1);
     }
 

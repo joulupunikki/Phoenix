@@ -58,6 +58,9 @@ public class C {
     public static final int UNIT_SPOT_HEX = 13;
     public static final int UNIT_SPOT_PLANET = 5;
     public static final int UNIT_SPOT_MOVE = 10;
+    public static final int TER_COLOR_HEX = 12;
+    public static final int TER_COLOR_PLANET = 5;
+    
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
     public static final int STACK_WINDOW_UNITS_X = 5;
@@ -205,6 +208,7 @@ public class C {
     public static final String S_UNITSPOT_DAT = "DAT/UNITSPOT.DAT";
     public static final String S_DAMAGE_DAT = "DAT/DAMAGE.DAT";
     public static final String S_TARGET_DAT = "DAT/TARGET.DAT";
+    public static final String S_TERCOLOR_DAT = "DAT/TERCOLOR.DAT";
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";

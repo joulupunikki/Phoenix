@@ -5,7 +5,7 @@
  */
 package gui;
 
-import galaxyreader.Structure;
+import galaxyreader.Planet;
 import galaxyreader.Unit;
 import game.Game;
 import game.Hex;
@@ -66,14 +66,19 @@ public class GlobeMap extends JPanel {
 
     public void renderMapItems(Graphics g) {
         byte[][] pallette = gui.getPallette();
-        
+        int[][] ter_color = gui.getResources().getTerColor();
+        int[] color_scaler = gui.getResources().getColorScaler();
         Hex[][] map_array = game.getPlanetGrid(game.getCurrentPlanetNr()).getMapArray();
+        Planet planet = game.getPlanet(game.getCurrentPlanetNr());
+        int tile_set = planet.tile_set_type;
+        int color = 0;
         for (int i = 0; i < map_array.length; i++) {
             for (int j = 0; j < map_array[i].length; j++) {
                 boolean[] terrain = map_array[i][j].getTerrain();
                 List<Unit> stack = map_array[i][j].getStack();
+                boolean spotted = map_array[i][j].isSpotted(game.getTurn());
 //                Structure struct = map_array[i][j].getStructure();
-                if (!stack.isEmpty()) {
+                if (!stack.isEmpty() && spotted) {
                     Point p = game.getSelectedPoint();
                     if (p != null && p.x == i && p.y == j && !gui.getAnimationBlink()) {
                         g.setColor(Color.WHITE);
@@ -82,22 +87,91 @@ public class GlobeMap extends JPanel {
                         g.setColor(Util.getColor(pallette, Util.getOwnerColor(unit.owner)));
                     }
                 } else if (terrain[C.OCEAN]) {
-                    g.setColor(Color.BLUE);
+//                    g.setColor(Color.BLUE);
+                    color = ter_color[C.OCEAN][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
                 } else if (terrain[C.ROAD]) {
-                    g.setColor(Color.BLACK);
-                } else if (terrain[C.MOUNTAIN] || terrain[C.HILL]) {
-                    g.setColor(Color.DARK_GRAY);
+//                    g.setColor(Color.BLACK);
+                    color = ter_color[C.ROAD][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.MOUNTAIN]) {
+//                    g.setColor(Color.DARK_GRAY);
+                    color = ter_color[C.MOUNTAIN][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.HILL]) {
+//                    g.setColor(Color.DARK_GRAY);
+                    color = ter_color[C.HILL][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
                 } else if (terrain[C.TREE]) {
-                    g.setColor(C.COLOR_DARK_GREEN);
-                } else if (terrain[C.GRASS] || terrain[C.ARID_GRASS]) {
-                    g.setColor(C.COLOR_LIGHT_GREEN);
+//                    g.setColor(C.COLOR_DARK_GREEN);
+                    color = ter_color[C.TREE][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.GRASS]) {
+//                    g.setColor(C.COLOR_LIGHT_GREEN);
+                    color = ter_color[C.GRASS][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.ARID_GRASS]) {
+//                    g.setColor(C.COLOR_LIGHT_GREEN);
+                    color = ter_color[C.ARID_GRASS][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
                 } else if (terrain[C.DESERT]) {
-                    g.setColor(Color.YELLOW);
-                } else if (terrain[C.ICE] || terrain[C.TUNDRA]) {
-                    g.setColor(Color.WHITE);
+//                    g.setColor(Color.YELLOW);
+                    color = ter_color[C.DESERT][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.ICE]) {
+//                    g.setColor(Color.WHITE);
+                    color = ter_color[C.ICE][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
+                } else if (terrain[C.TUNDRA]) {
+//                    g.setColor(Color.WHITE);
+                    color = ter_color[C.TUNDRA][tile_set];
+                    if (spotted) {
+                        g.setColor(gui.getResources().getColor(color));
+                    } else {
+                        g.setColor(gui.getResources().getColor(color_scaler[color]));
+                    }
                 }
 
-                g.fillRect(i * yard, j * yard, yard, yard);
+                int dip = 0;
+                if (i % 2 == 0)
+                    dip = (int) (yard / 2);
+                g.fillRect(i * yard, j * yard + dip, yard, yard);
             }
 
         }
