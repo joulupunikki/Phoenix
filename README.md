@@ -26,8 +26,8 @@ If you get an error saying java not found then likely java is not in the path an
 Source distribution
 -------------------
 
-Unzip the package then go to `phoenix/src`,
-- on Windows click on `build.bat` to build `Phoenix.exe` or type `javac phoenix\Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt @classes.list`
+Unzip the package then go to `Phoenix/src`,
+- on Windows click on `build.bat` to build `Phoenix.jar` or type `javac phoenix\Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt @classes.list`
 
 - on Linux/Unix type `javac phoenix/Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt */*.class`. 
 
