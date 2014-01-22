@@ -46,7 +46,7 @@ stack display to open stack selection pop-up menu.
 
 Spotting, unseen planets and unexplored hexes implemented. Spotting works like in original EFS except space spotting which simply compares spot and camo values and spots if spot >= camo.
 
-NEW IN VERSION 7:
+New in version 7:
 -----------------
 
 Loading and saving games works, the progress bar displays are a bit off-tune yet.
@@ -60,7 +60,7 @@ Navigable global minimap added to planet window. Click on minimap to navigate.
 
 Navigable galactic minimap added to space window. Click on minimap to navigate.
 
-NEW IN VERSION 6:
+New in version 6:
 -----------------
 
 Turns and factions implemented. Game begins with a main menu window where you select which factions are human controlled. Since there is no AI, factions which are unselected are simply skipped during game. During game click on the end turn button to end turn and the green arrows to skip to next unmoved units.
@@ -73,12 +73,12 @@ Basic ground combat works; note that combat resolution differs from EFS so that 
 
 Capturing routed units works.
 
-NEW IN VERSION 5:
+New in version 5:
 -----------------
 
 Movement in space works, note its not possible to select a route spanning multiple jump points. PlanetToSpace movement not yet implemented. Right clicking the stack display on the left side of planet and space maps brings up the unit info window, which really doesn't do much yet.
 
-NEW IN VERSION 4:
+New in version 4:
 ----------------- 
 
 Structures added to map.
