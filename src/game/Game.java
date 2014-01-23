@@ -1854,6 +1854,10 @@ public class Game implements Serializable {
         return resources;
     }
 
+    public List<Structure> getStructures() {
+        return structures;
+    }
+    
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }

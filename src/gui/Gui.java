@@ -87,6 +87,8 @@ public class Gui extends JFrame {
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
     private CombatWindow combat_window;
+    private BuildPanel build_panel;
+    private JDialog build_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -95,7 +97,8 @@ public class Gui extends JFrame {
     private JMenuItem menu_exit;
     private JMenuItem menu_load;
     private JMenuItem menu_save;
-
+    private JMenu orders_menu;
+    private JMenuItem menu_build;
     private JPopupMenu stack_menu;
 
     private Resources resources;
@@ -232,8 +235,31 @@ public class Gui extends JFrame {
 
         menubar.add(file_menu);
 
+        orders_menu = new JMenu("Orders");
+        menu_build = new JMenuItem("Build units");
+
+        menu_build.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                build_panel.setPlanets();
+                build_window.setVisible(true);                
+            }
+        });
+
+        orders_menu.add(menu_build);
+        menubar.add(orders_menu);
         this.setJMenuBar(menubar);
 
+        build_window = new JDialog(this, true);
+        build_window.setLayout(null);
+        build_window.setPreferredSize(new Dimension(ws.planet_map_width,
+                ws.planet_map_height));
+        build_panel = new BuildPanel(this);
+                build_window.add(build_panel);
+        build_panel.setBounds(0, 0,
+                ws.planet_map_width, ws.planet_map_height);
+        build_window.add(build_panel);
+        build_window.pack();
+        
         /*
          * create planet map display
          */

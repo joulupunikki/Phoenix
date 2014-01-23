@@ -129,7 +129,9 @@ public class WindowSize {
     public int globe_map_y_pos = 28;
     public int globe_map_width = 88;
     public int globe_map_height = 63;
-
+    public int planet_list_cell_w = 100;
+    public int planet_list_cell_h = 10;
+    
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -259,6 +261,8 @@ public class WindowSize {
             globe_map_y_pos *= 2;
             globe_map_width *= 2;
             globe_map_height *= 2;
+            planet_list_cell_w *= 2;
+            planet_list_cell_h *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
