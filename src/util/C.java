@@ -60,7 +60,7 @@ public class C {
     public static final int UNIT_SPOT_MOVE = 10;
     public static final int TER_COLOR_HEX = 12;
     public static final int TER_COLOR_PLANET = 5;
-    
+
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
     public static final int STACK_WINDOW_UNITS_X = 5;
@@ -136,36 +136,40 @@ public class C {
         CRAWLER,
         LANDER
     }
-//        "PALACE"      
-//   "CHURCH"      
-//   "MONASTERY"   
-//   "FACTORY"     
-//   "AGORA"       
-//   "WETWARE"     
-//   "ELECTRONICS" 
-//   "HIVE"        
-//   "CERAMSTEEL"  
-//   BIOPLANT"    
-//   "VAU CITY"    
-//   "CHEMICALS"   
-//   "CYCLOTRON"   
-//   "FORT"        
-//   "STARPORT"    
+    public static final int PALACE = 0;
+    public static final int CHURCH = 1;
+    public static final int MONASTERY = 2;
+    public static final int FACTORY = 3;
+    public static final int AGORA = 4;
+    public static final int WETWARE = 5;
+    public static final int ELECTRONICS = 6;
+    public static final int HIVE = 7;
+    public static final int CERAMSTEEL = 8;
+    public static final int BIOPLANT = 9;
+    public static final int VAU_CITY = 10;
+    public static final int CHEMICALS = 11;
+    public static final int CYCLOTRON = 12;
+    public static final int FORT = 13;
+    public static final int STARPORT = 14;
     public static final int RUINS = 15;
     public static final int ALIEN_RUINS = 16;
-//   "MINE"        
-//   "WELL"        
-//   "FUSORIUM"    
-//   "UNIVERSITY"  
-//   "HOSPITAL"    
-//   "LAB"         
-//   "FARM"       
-//   "TRACE"       
-//   "GEMS"        
-//   "EXOTICA"     
-//   "FERTILE"     
-//   "METAL"       
-//   "ENERGY"
+    public static final int SHIELD = 17;
+    public static final int MINE = 18;
+    public static final int WELL = 19;
+    public static final int FUSORIUM = 20;
+    public static final int UNIVERSITY = 21;
+    public static final int HOSPITAL = 22;
+    public static final int LAB = 23;
+    public static final int FARM = 24;
+    public static final int ARBORIUM = 25;
+    public static final int TRACE = 26;
+    public static final int GEMS = 27;
+    public static final int EXOTICA = 28;
+    public static final int FERTILE = 29;
+    public static final int METAL = 30;
+    public static final int ENERGY = 31;
+    public static final int CITY_TYPES = 26;
+    public static final int STRUCTURE_TYPES = 32;
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
@@ -214,7 +218,7 @@ public class C {
     public static final String S_NONCOMBAT = "noncombat";
     public static final String S_TRANSPORT = "transport";
     public static final String S_LOG_FILE = "phoenixlog.txt";
-    
+
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);

@@ -240,8 +240,7 @@ public class Gui extends JFrame {
 
         menu_build.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                build_panel.setPlanets();
-                build_window.setVisible(true);                
+                showBuildWindow(e);
             }
         });
 
@@ -251,15 +250,28 @@ public class Gui extends JFrame {
 
         build_window = new JDialog(this, true);
         build_window.setLayout(null);
-        build_window.setPreferredSize(new Dimension(ws.planet_map_width,
+        build_window.setPreferredSize(new Dimension(ws.planet_map_width + 50,
                 ws.planet_map_height));
+        System.out.println("this.getX() = " + this.getX());
+        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.planet_map_width + 50, ws.planet_map_height);
+        build_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        build_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                build_panel.clearSelection();
+                build_window.setVisible(false);
+            }
+        });
         build_panel = new BuildPanel(this);
-                build_window.add(build_panel);
+        build_panel.setLayout(null);
+        build_window.add(build_panel);
         build_panel.setBounds(0, 0,
                 ws.planet_map_width, ws.planet_map_height);
         build_window.add(build_panel);
         build_window.pack();
-        
+
         /*
          * create planet map display
          */
@@ -460,6 +472,14 @@ public class Gui extends JFrame {
         Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
         cycle_timer.start();
 
+    }
+
+    public void showBuildWindow(ActionEvent e) {
+        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.build_window_width, ws.build_window_height);
+        build_panel.setPlanets();
+        build_window.setVisible(true);
     }
 
     public void showStackMenu(MouseEvent e) {

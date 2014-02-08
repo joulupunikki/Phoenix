@@ -120,7 +120,7 @@ public class WindowSize {
     public int unit_info_left_stat_y = unit_info_attack_type_y;
     public int unit_info_left_stat_w = 30;
     public int unit_info_left_stat_h = unit_info_attack_type_h;
-     public int unit_info_left_stat_x2 = 180;   
+    public int unit_info_left_stat_x2 = 180;
     public int galactic_map_x_pos = 10;
     public int galactic_map_y_pos = 23;
     public int galactic_map_width = 100;
@@ -131,7 +131,27 @@ public class WindowSize {
     public int globe_map_height = 63;
     public int planet_list_cell_w = 100;
     public int planet_list_cell_h = 10;
-    
+    public int planet_list_x_offset = 0;
+    public int planet_list_y_offset = 209;
+    public int planet_list_width = planet_map_width / 2;
+    public int planet_list_height = planet_map_height - 209;
+    public int city_table_x_offset = planet_map_width / 2;
+    public int city_table_row_height = 10;
+    public int build_window_width = planet_map_width + 18;
+    public int build_window_height = planet_map_height + 40;
+    public int build_table_x_offset = 60;
+    public int build_table_y_offset = 5;
+    public int build_table_width = planet_map_width / 2;
+    public int build_table_height = 105;
+    public int build_table_cell_1_width = build_table_width / 5;
+    public int build_table_cell_0_width = build_table_width - build_table_cell_1_width;
+    public int queue_table_x_offset = 317;
+    public int queue_table_y_offset = 10;
+    public int queue_table_width = 175;
+    public int queue_table_height = 150;
+    public int queue_table_cell_1_width = queue_table_width / 5;
+    public int queue_table_cell_0_width = queue_table_width - queue_table_cell_1_width;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -263,6 +283,27 @@ public class WindowSize {
             globe_map_height *= 2;
             planet_list_cell_w *= 2;
             planet_list_cell_h *= 2;
+            planet_list_x_offset *= 2;
+            planet_list_y_offset *= 2;
+            planet_list_width *= 2;
+            planet_list_height *= 2;
+            city_table_x_offset *= 2;
+
+            build_window_width = planet_map_width + 18;
+            build_window_height = planet_map_height + 40;
+            build_table_x_offset *= 2;
+            build_table_y_offset *= 2;
+            build_table_width *= 2;
+            build_table_height *= 2;
+            city_table_row_height *= 2;
+            build_table_cell_0_width *= 2;
+            build_table_cell_1_width *= 2;
+            queue_table_x_offset *= 2;
+            queue_table_y_offset *= 2;
+            queue_table_width *= 2;
+            queue_table_height *= 2;
+            queue_table_cell_1_width *= 2;
+            queue_table_cell_0_width *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

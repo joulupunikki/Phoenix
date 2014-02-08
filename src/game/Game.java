@@ -65,6 +65,7 @@ public class Game implements Serializable {
     private List<JumpGate> jump_gates;
     private List<Unit> units;
     private List<Structure> structures;
+    private List<Structure> faction_cities;
     private List<Unit> unmoved_units;
 
 //    private List<Unit> combat_stack_a;
@@ -105,7 +106,8 @@ public class Game implements Serializable {
         turn = -1;
         hex_proc = new HexProc(this);
         resources = new GameResources();
-
+        Structure.setCanBuild(unit_types);
+        
         placeUnits();
         placeStructures();
         resetMovePoints();
@@ -1082,11 +1084,34 @@ public class Game implements Serializable {
             turn++;
         }
 
+//        setFactionCities();
+//        buildUnits();
         resetUnmovedUnits();
         resetMovePoints();
         setMaxSpotRange();
     }
 
+    public void buildUnits() {
+        for (Structure city : faction_cities) {
+            Unit unit = null;
+            if (!city.build_queue.isEmpty()) {
+                Hex hex = planets.get(city.p_idx).planet_grid.getHex(city.x, city.y);
+                
+                unit = city.buildUnits(unit_types);
+                
+            }
+        }
+    }
+    
+    public void setFactionCities() {
+        faction_cities.clear();
+        for (Structure s : structures) {
+            if (s.owner == turn) {
+                faction_cities.add(s);
+            }
+        }
+    }
+    
     public List<Unit> getUnmovedUnits() {
         return unmoved_units;
     }
