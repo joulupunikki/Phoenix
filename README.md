@@ -36,6 +36,17 @@ Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS director
 Changes
 =======
 
+New in version 0.8.1
+--------------------
+
+Bugfix: Nova mod datafiles are supported.
+
+Bugfix: loading of datafiles will log failures to read files.
+
+Bugfix: java: loading and saving games will catch throwables.
+
+Errors, exceptions and failures to read data files will be logged to `phoenixlog.txt`. Previous log will be saved to `phoenixlog.txt.1`.
+
 New in version 0.8.0
 --------------------
 
