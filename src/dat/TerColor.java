@@ -108,7 +108,11 @@ public class TerColor {
             }
 
         } catch (Exception e) {
+            e.printStackTrace(System.out);
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Failed to read " + file_name);
             Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
             System.exit(1);
         }
 

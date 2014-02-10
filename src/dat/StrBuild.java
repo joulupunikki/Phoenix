@@ -16,20 +16,21 @@ import util.Util;
  *
  * @author joulupunikki
  */
-public class StrBuild implements Serializable{
+public class StrBuild implements Serializable {
+
     public String name;
 //    public int water public int land public int road public int barren public int neutral public int build public int area public int Crd/Trn public int Credits public int Turns2Bld public int Tech public int Value
 
-public StrBuild(String s) {
-    
-            Pattern name_pat = Pattern.compile("\"[0-9a-zA-Z ]+\"");
+    public StrBuild(String s) {
+
+        Pattern name_pat = Pattern.compile("\"[0-9a-zA-Z ]+\"");
 
         Matcher m = name_pat.matcher(s);
 
         //skip "name"
         m.find();
         m.find();
-        
+
         name = s.substring(m.start() + 1, m.end() - 1);
 //        System.out.println("name = " + name);
 //                //skip "stats"
@@ -50,19 +51,19 @@ public StrBuild(String s) {
 //        m.find();     
 //        
 //        water = UnitType.processIntVal(stats, m);
-    
-}
+
+    }
 
     public static StrBuild[] readStrBuildDat() {
 
+        String file_name = C.S_STRBUILD_DAT;
         StrBuild[] str_build = new StrBuild[C.STRBUILD];
-
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_STRBUILD_DAT))) {
+        int line_nr = 0;
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             Util.debugPrint("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
             Util.debugPrint(C.S_STRBUILD_DAT);
             String s = in.readLine();
-
-            
+            line_nr++;
 //            System.exit(0);
             //true if between { and } false if between } and {
             boolean read = false;
@@ -75,7 +76,7 @@ public StrBuild(String s) {
 //            Pattern reserved = Pattern.compile("Reserved");
 
             while (s != null) {
-Util.debugPrint(s);
+                Util.debugPrint(s);
                 Matcher matcher = comment.matcher(s);
 
                 //if not comment
@@ -90,9 +91,7 @@ Util.debugPrint(s);
                             // else read data
                         } else {
 
-                                str_build[index++] = new StrBuild(s);
-                                
-
+                            str_build[index++] = new StrBuild(s);
 
                         }
                         // else between } and {
@@ -101,16 +100,22 @@ Util.debugPrint(s);
                         // if found { at beginning of line
                         if (matcher.find()) {
                             read = true;
+                        } else {
+                            Util.logFFErrorAndExit(file_name, line_nr);
                         }
                     }
                 }
                 s = in.readLine();
+                line_nr++;
             }
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
             System.out.println("Exception: " + e.getMessage());
-            System.out.println("Failed to read " + C.S_STRBUILD_DAT);
+            System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
+
             System.exit(1);
         }
 

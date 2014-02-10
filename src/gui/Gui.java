@@ -678,7 +678,7 @@ public class Gui extends JFrame {
                     List<Unit> stack = game.getSelectedStack();
                     SU.centerMapOnUnit(stack.get(0));
                 }
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 Util.logEx(null, ex, "Load game failed");
                 showInfoWindow("Load failed");
             }
@@ -716,7 +716,7 @@ public class Gui extends JFrame {
                 s.writeObject(game);
                 s.flush();
                 System.out.println("after flush");
-            } catch (Exception ex) {
+            } catch (Throwable ex) {
                 Util.logEx(null, ex, "Save game failed");
                 System.out.println(ex);
                 showInfoWindow("Save failed");

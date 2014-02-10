@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.Util;
 
 /**
  *
@@ -53,12 +54,12 @@ public class Target {
 
     public static int[][] readTargetDat() {
 
+        String file_name = C.S_TARGET_DAT;
         int[][] target_dat = new int[C.TARGET_DAT_Y][];
-
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_TARGET_DAT))) {
+        int line_nr = 0;
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
-
-
+            line_nr++;
 //            System.exit(0);
             //true if between { and } false if between } and {
             boolean read = false;
@@ -92,7 +93,7 @@ public class Target {
                                 return target_dat;
                             }
                             //end error
-                            
+
                             target_dat[index++] = getTarget(s);
                         }
                         // else between } and {
@@ -101,16 +102,21 @@ public class Target {
                         // if found { at beginning of line
                         if (matcher.find()) {
                             read = true;
+                        } else {
+                            Util.logFFErrorAndExit(file_name, line_nr);
                         }
                     }
                 }
                 s = in.readLine();
+                line_nr++;
             }
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
             System.out.println("Exception: " + e.getMessage());
-            System.out.println("Failed to read " + C.S_TARGET_DAT);
+            System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
             System.exit(1);
         }
 

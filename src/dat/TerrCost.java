@@ -37,7 +37,7 @@ public class TerrCost {
 
         m = costs_pattern.matcher(costs);
         m.find();
-        
+
 //        System.out.println("getCosts");
         for (int i = 0; i < C.TERR_COST_MOVE; i++) {
             ret_val[i] = processDoubleVal(costs, m);
@@ -59,10 +59,12 @@ public class TerrCost {
 
     public static double[][][] readTerrCost() {
 
+        String file_name = C.S_TERRCOST_DAT;
         double[][][] terr_cost = new double[C.TERR_COST_HEX][C.TERR_COST_PLANET][];
-
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_TERRCOST_DAT))) {
+        int line_nr = 0;
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
+            line_nr++;
 //            System.out.println("s = " + s);
             //true if between { and } false if between } and {
             boolean read = false;
@@ -72,8 +74,7 @@ public class TerrCost {
 
             Pattern mark_begin = Pattern.compile("^\\{");
             Pattern mark_end = Pattern.compile("^\\}");
-            Pattern comment = Pattern.compile("^\\\\");
-
+            Pattern comment = Pattern.compile("^//");
 
             while (s != null) {
 
@@ -105,16 +106,23 @@ public class TerrCost {
                             read = true;
                             planet_type = 0;
                             terrain_type++; // initialized to -1
+
+                            // incorrect data file
+                        } else {
+                            Util.logFFErrorAndExit(file_name, line_nr);
                         }
                     }
                 }
                 s = in.readLine();
+                line_nr++;
             }
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
             System.out.println("Exception: " + e.getMessage());
-            System.out.println("Failed to read " + C.S_UNIT_DAT);
+            System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
             System.exit(1);
         }
 

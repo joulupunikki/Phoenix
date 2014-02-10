@@ -86,7 +86,7 @@ public class UnitType implements Serializable {
         /*
          * accepts alphanum, -, ' and .
          */
-        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z \\[\\]\\!\\*\\-'\\.]+\"");
+        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z ,\\(\\)\\[\\]\\!\\*\\-'\\.]+\"");
 
         Matcher m = unit_type.matcher(s);
 
@@ -96,7 +96,7 @@ public class UnitType implements Serializable {
 
         name = s.substring(m.start() + 1, m.end() - 1);
         Util.debugPrint("Name: " + name);
-
+        System.out.println("name = " + name);
         m.find();
 
         plural = Integer.parseInt(s.substring(m.start() + 1, m.end() - 1));
@@ -275,11 +275,12 @@ public class UnitType implements Serializable {
 
     public static UnitType[][] readUnitDat() {
 
+        String file_name = C.S_UNIT_DAT;
         UnitType[][] unit_types = new UnitType[C.UNIT_TYPES][C.UNIT_T_LVLS];
-
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_UNIT_DAT))) {
+        int line_nr = 0;
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
-
+            line_nr++;
             //true if between { and } false if between } and {
             boolean read = false;
 
@@ -288,7 +289,7 @@ public class UnitType implements Serializable {
 
             Pattern mark_begin = Pattern.compile("^\\{[0-9]+");
             Pattern mark_end = Pattern.compile("^\\}");
-            Pattern comment = Pattern.compile("^\\\\");
+            Pattern comment = Pattern.compile("^//");
             Pattern reserved = Pattern.compile("Reserved");
 
             while (s != null) {
@@ -333,16 +334,21 @@ public class UnitType implements Serializable {
                             int end = matcher.end();
                             index = Integer.parseInt(s.substring(start + 1, end));
                             Util.debugPrint("index: " + index);
+                        } else {
+                            Util.logFFErrorAndExit(file_name, line_nr);
                         }
                     }
                 }
                 s = in.readLine();
+                line_nr++;
             }
 
         } catch (Exception e) {
-            System.out.println("Exception: " + e.getMessage());
             e.printStackTrace(System.out);
-            System.out.println("Failed to read " + C.S_UNIT_DAT);
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
             System.exit(1);
         }
 
