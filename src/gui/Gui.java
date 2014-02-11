@@ -77,6 +77,7 @@ public class Gui extends JFrame {
     //holds the planet map background and components
     private PlanetWindow planet_window;
     private JButton launch_button;
+    private JButton space_button;
     private ButtonIcon launch_button_enabled;
     private ButtonIcon launch_button_disabled;
     //holds the starmap background and components    
@@ -269,6 +270,7 @@ public class Gui extends JFrame {
             }
         });
 
+        setUpSpaceButton();
         setUpLaunchButton();
 
         /*
@@ -810,6 +812,32 @@ public class Gui extends JFrame {
         });
     }
 
+    public void setUpSpaceButton() {
+
+        ButtonIcon space_button_enabled = new ButtonIcon(ws.space_button_width, ws.space_button_height, "bin/efsbut2.bin", 0, color_index, ws);
+
+//        int file_offset = 3;
+//        launch_button_disabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, "bin/efsbut2.bin", file_offset, color_index, ws);
+        int file_offset = 2;
+        ButtonIcon space_button_pressed = new ButtonIcon(ws.space_button_width, ws.space_button_height, "bin/efsbut2.bin", file_offset, color_index, ws);
+
+        space_button = new JButton();
+        space_button.setBorder(null);
+        space_button.setIcon(space_button_enabled);
+//        space_button.setDisabledIcon(launch_button_disabled);
+        space_button.setPressedIcon(space_button_pressed);
+        planet_window.add(space_button);
+        space_button.setBounds(ws.space_button_x_offset, ws.space_button_y_offset,
+                ws.space_button_width, ws.space_button_height);
+//        launch_button.setEnabled(false);
+        space_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                state.pressSpaceButton();
+            }
+        });
+    }    
+    
     public void setMenus(boolean visible) {
         if (visible) {
             this.setJMenuBar(menubar);

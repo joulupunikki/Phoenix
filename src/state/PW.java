@@ -27,6 +27,10 @@ public class PW extends State {
 
     }
 
+    public void pressSpaceButton() {
+        SU.pressSpaceButtonSU();
+    }
+
     public void clickOnGlobeMap(MouseEvent e) {
 
         Point p = e.getPoint();

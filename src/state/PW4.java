@@ -29,9 +29,7 @@ public class PW4 extends PW {
 
     public void clickOnPlanetMap(MouseEvent e) {
 
-
         gui.stopStackMove();
-
 
     }
 
@@ -58,7 +56,7 @@ public class PW4 extends PW {
                 gui.setStack_moving(false);
                 SU.showCombatWindow();
 
-                return; 
+                return;
             } else if (game.isEnemy()) {
                 gui.setStop_stack(true);
             } else if (!game.moveStack()) {
@@ -92,5 +90,8 @@ public class PW4 extends PW {
     }
 
     public void pressEndTurnButton() {
+    }
+
+    public void pressSpaceButton() {
     }
 }

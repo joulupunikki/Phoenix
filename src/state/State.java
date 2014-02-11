@@ -64,6 +64,9 @@ public abstract class State {
     public void pressExitButton() {
     }
 
+    public void pressSpaceButton() {        
+    }
+    
     public void pressLaunchButton() {
     }
 

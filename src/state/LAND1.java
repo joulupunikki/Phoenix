@@ -100,16 +100,13 @@ public class LAND1 extends State {
         int map_point_x = p.x;
         int map_point_y = p.y;
 
-
 //        List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y).getStack();
 //        if (!stack.isEmpty()) {
 //            game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
 //            stack.get(0).selected = true;
 //            gui.setCurrentState(PW2.get());
 //        }
-
         //if destination selected gui.setCurrentState(PW3.get());
-
         int map_origin_x = map_point_x - C.PLANET_MAP_ORIGIN_X_OFFSET;
         int map_origin_y = map_point_y - C.PLANET_MAP_ORIGIN_Y_OFFSET;
 
@@ -137,9 +134,13 @@ public class LAND1 extends State {
 
     public void wheelRotated(MouseWheelEvent e) {
         if (e.getWheelRotation() > 0) {
-            SU.setWindow(C.S_STAR_MAP);
-            gui.setCurrentState(SW2.get());
+            pressSpaceButton();
         }
 
+    }
+
+    public void pressSpaceButton() {
+        SU.setWindow(C.S_STAR_MAP);
+        gui.setCurrentState(SW2.get());
     }
 }

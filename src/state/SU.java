@@ -187,7 +187,7 @@ public class SU extends State {
 //                gui.setCurrentState(SW2.get());
             }
         } else if (galaxy_grid[x][y].planet != null) {
-            if (!galaxy_grid[x][y].planet.spotted[game.getTurn()] ) {
+            if (!galaxy_grid[x][y].planet.spotted[game.getTurn()]) {
                 JOptionPane.showMessageDialog(gui, "We lost our map of this planet long ago. We must send a ship there or buy the information from another party.", null, JOptionPane.PLAIN_MESSAGE);
                 return;
             }
@@ -412,16 +412,20 @@ public class SU extends State {
     public static void wheelOnPlanetMap(MouseWheelEvent e) {
 
         if (e.getWheelRotation() > 0) {
-//            gui.setMenus(false);
-            game.setSelectedPointFaction(null, -1, null, null);
+            pressSpaceButtonSU();
+        }
+
+    }
+
+    public static void pressSpaceButtonSU() {
+//        gui.setMenus(false);
+        game.setSelectedPointFaction(null, -1, null, null);
 //            JPanel main_windows = gui.getMainWindows();
 //            CardLayout cl = (CardLayout) main_windows.getLayout();
 //            cl.show(main_windows, C.S_STAR_MAP);
-            centerOnCurrentPlanet();
-            setWindow(C.S_STAR_MAP);
-            gui.setCurrentState(SW1.get());
-        }
-
+        centerOnCurrentPlanet();
+        setWindow(C.S_STAR_MAP);
+        gui.setCurrentState(SW1.get());
     }
 
     public static void centerOnCurrentPlanet() {

@@ -1736,7 +1736,7 @@ public class PlanetMap extends JPanel {
 
 //        int x_offset = ws.planet_map_x_offset;
 //        int y_offset = ws.planet_map_y_offset;
-        g.setColor(Color.lightGray);
+        g.setColor(gui.getResources().getColor(32));
 //        g.setColor(new Color(200, 200, 200, 128));
 //        System.out.println("before int x");
         int x = 0; //(int) Math.round((1662 / 44) * (2 / 3));
