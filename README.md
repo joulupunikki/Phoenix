@@ -36,6 +36,23 @@ Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS director
 Changes
 =======
 
+New in version 0.8.3
+--------------------
+
+Added space button to planet window. 
+
+Changed hex grid color to darker.
+
+Bugfix: Nova mod datafiles are supported.
+
+Bugfix: loading of datafiles will log failures to read files.
+
+Bugfix: java: loading and saving games will catch throwables.
+
+Bugfix: java cmd line options: use -Xss32m instead of -Xss99m to prevent out of memory errors especially during saving and loading. Thanks to RSW.
+
+Errors, exceptions and failures to read data files will be logged to `phoenixlog.txt`. Previous log will be saved to `phoenixlog.txt.1`.
+
 New in version 0.8.2
 --------------------
 
