@@ -67,6 +67,7 @@ public class Game implements Serializable {
     private List<Structure> structures;
     private List<Structure> faction_cities;
     private List<Unit> unmoved_units;
+    private Faction[] factions;
 
 //    private List<Unit> combat_stack_a;
 //    private List<Unit> combat_stack_b;
@@ -101,13 +102,15 @@ public class Game implements Serializable {
         human_ctrl = new boolean[14];
         human_ctrl[0] = true;
         unmoved_units = new LinkedList<>();
+        faction_cities = new LinkedList<>();
         this.current_planet = current_planet;
         year = 4956;
         turn = -1;
         hex_proc = new HexProc(this);
         resources = new GameResources();
         Structure.setCanBuild(unit_types);
-        
+        factions = Faction.createFactions();
+
         placeUnits();
         placeStructures();
         resetMovePoints();
@@ -1084,25 +1087,76 @@ public class Game implements Serializable {
             turn++;
         }
 
-//        setFactionCities();
-//        buildUnits();
+        factions[turn].deleteOldMessages(year);
+        setFactionCities();
+        buildUnits();
         resetUnmovedUnits();
         resetMovePoints();
         setMaxSpotRange();
     }
 
+    /**
+     * Will try to build units. In building city or if it has full stack then will
+     * try surrounding hexes, if there are no enemy units or cities or full stack
+     * or impassable terrain will build unit there. If it fails to build it will send
+     * city full message to owning faction.
+     */
     public void buildUnits() {
         for (Structure city : faction_cities) {
             Unit unit = null;
-            if (!city.build_queue.isEmpty()) {
+            if (!city.build_queue.isEmpty() && city.turns_left == 1) {
+                System.out.println("Here");
+
+                boolean found = false;
                 Hex hex = planets.get(city.p_idx).planet_grid.getHex(city.x, city.y);
-                
-                unit = city.buildUnits(unit_types);
-                
+                if (Util.stackSize(hex.getStack()) < C.STACK_SIZE) {
+                    found = true;
+                }
+                int[] u_t = city.build_queue.getFirst();
+                C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
+                int tile_set = planets.get(city.p_idx).tile_set_type;
+                Hex[] neighbors = hex.getNeighbours();
+                for (int i = 0; i < neighbors.length && !found; i++) {
+                    hex = neighbors[i];
+                    Structure city_h = hex.getStructure();
+                    if (city_h != null) {
+                        if (city_h.owner != turn) {
+                            continue;
+                        }
+                    }
+                    List<Unit> stack = hex.getStack();
+                    if (!stack.isEmpty()) {
+                        if (stack.get(0).owner != turn) {
+                            continue;
+                        }
+                    }
+                    if (Util.stackSize(stack) < C.STACK_SIZE) {
+                        if (city_h == null) {
+                            boolean[] terrain = hex.getTerrain();
+                            for (int j = 0; j < terrain.length; j++) {
+                                if (terrain[j] && terr_cost[j][tile_set][move.ordinal()] == 0) {
+                                    continue;
+                                }
+                            }
+                        }
+                        found = true;
+                    }
+
+                }
+                if (found) {
+                    unit = city.buildUnits(unit_types);
+                    hex.addUnit(unit);
+                    units.add(unit);
+                } else {
+                    factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
+                }
+            } else {
+                city.buildUnits(unit_types);
             }
+
         }
     }
-    
+
     public void setFactionCities() {
         faction_cities.clear();
         for (Structure s : structures) {
@@ -1111,7 +1165,7 @@ public class Game implements Serializable {
             }
         }
     }
-    
+
     public List<Unit> getUnmovedUnits() {
         return unmoved_units;
     }
@@ -1120,7 +1174,7 @@ public class Game implements Serializable {
         unmoved_units.clear();
         for (Unit u : units) {
             if (u.owner == turn) {
-                System.out.println("u.owner = " + u.owner);
+//                System.out.println("u.owner = " + u.owner);
                 unmoved_units.add(u);
                 u.routed = false;
             }
@@ -1882,7 +1936,7 @@ public class Game implements Serializable {
     public List<Structure> getStructures() {
         return structures;
     }
-    
+
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }

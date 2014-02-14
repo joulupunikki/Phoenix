@@ -18,6 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -38,6 +39,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import util.C;
+import util.Comp;
 import util.Util;
 import util.WindowSize;
 
@@ -56,6 +58,7 @@ public class BuildPanel extends JPanel {
     private JTable build_table;
     private JTable queue_table;
     private static Object[] build_table_header = {"Unit", "Turns Left"};
+    private static Object[] city_table_header = {"City", "Building"};
 //    private Object[][] city_table_data;
 //    private Object[][] build_table_data;
 
@@ -65,6 +68,30 @@ public class BuildPanel extends JPanel {
         game = gui.getGame();
         addLists();
 //        List<Planet> planets = game.getPlanets();
+    }
+
+    public void zeroBuild() {
+        if (build_table.getRowCount() != 0) {
+            ((BuildTableModel) build_table.getModel()).setRowCount(0);
+        }
+    }
+
+    public void zeroQueue() {
+        if (queue_table.getRowCount() != 0) {
+            ((BuildTableModel) queue_table.getModel()).setRowCount(0);
+        }
+    }
+
+    public void zeroCities() {
+        if (city_table.getRowCount() != 0) {
+            ((CityTableModel) city_table.getModel()).setRowCount(0);
+        }
+    }
+
+    public void zeroLists() {
+        zeroCities();
+        zeroBuild();
+        zeroQueue();
     }
 
     public void addLists() {
@@ -109,6 +136,8 @@ public class BuildPanel extends JPanel {
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     city.removeFromQueue(row, game.getUnitTypes());
                     setQueueData(null, city);
+                    planetSelected(null);
+                    city_table.setRowSelectionInterval(selected_city, selected_city);
                 }
             }
         });
@@ -154,11 +183,14 @@ public class BuildPanel extends JPanel {
                 if (e.getClickCount() == 2) {
                     System.out.println("Double clicked row " + row);
                     int selected_city = city_table.getSelectedRow();
+                    System.out.println("selected_city = " + selected_city);
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     int[] tmp = (int[]) build_table.getValueAt(row, 0);
                     int[] unit = {tmp[0], tmp[1]};
                     city.addToQueue(unit, game.getUnitTypes());
                     setQueueData(null, city);
+                    planetSelected(null);
+                    city_table.setRowSelectionInterval(selected_city, selected_city);
                 }
             }
         });
@@ -249,6 +281,8 @@ public class BuildPanel extends JPanel {
                 }
             }
         }
+        Collections.sort(cl2, Comp.city_name);
+
         Structure[] cities = new Structure[cl2.size()];
         int idx = 0;
         for (Structure structure : cl2) {
@@ -258,20 +292,26 @@ public class BuildPanel extends JPanel {
         int data_len = cities.length;
 //        int padded_len = 18;
 //        data_len = data_len < padded_len ? padded_len : data_len;
+        UnitType[][] unit_types = game.getUnitTypes();
         Object[][] city_table_data = new Object[data_len][];
         for (int i = 0; i < data_len; i++) {
 
             city_table_data[i] = new Object[2];
             if (i < cities.length) {
                 city_table_data[i][0] = cities[i];
-                city_table_data[i][1] = "Militia lgn";
+                if (cities[i].build_queue.isEmpty()) {
+                    city_table_data[i][1] = "";
+                } else {
+                    int[] t = cities[i].build_queue.getFirst();
+                    city_table_data[i][1] = unit_types[t[0]][t[1]].abbrev;
+                }
             } else {
                 city_table_data[i][0] = null;
                 city_table_data[i][1] = null;
             }
         }
 
-        CityTableModel city_model = new CityTableModel(city_table_data);
+        CityTableModel city_model = new CityTableModel(city_table_data, city_table_header);
         city_table.setModel(city_model);
 
         System.out.println("row height" + city_table.getRowHeight());
@@ -338,7 +378,12 @@ public class BuildPanel extends JPanel {
             if (i < nr_units) {
 
                 queue_table_data[i][0] = unit_type;
-                queue_table_data[i][1] = new Integer(unit_types[unit_type[0]][unit_type[1]].turns_2_bld);
+                if (i != 0) {
+                    queue_table_data[i][1] = new Integer(unit_types[unit_type[0]][unit_type[1]].turns_2_bld);
+                } else {
+                    queue_table_data[i][1] = city.turns_left;
+                }
+
                 if (iter.hasNext()) {
                     unit_type = iter.next();
                 }
@@ -586,47 +631,46 @@ public class BuildPanel extends JPanel {
         }
     }
 
-    class CityTableModel extends AbstractTableModel {
-
-        private String[] columnNames = {"City", "Building"};
-        private Object[][] data;
-
-        public CityTableModel(Object[][] data) {
-            this.data = data;
-        }
-
-        public int getColumnCount() {
-            return columnNames.length;
-        }
-
-        public int getRowCount() {
-            return data.length;
-        }
-
-        public String getColumnName(int col) {
-            return columnNames[col];
-        }
-
-        public Object getValueAt(int row, int col) {
-            return data[row][col];
-        }
-
-        public Class getColumnClass(int c) {
-            return getValueAt(0, c).getClass();
-        }
-
-        /*
-         * Don't need to implement this method unless your table's
-         * editable.
-         */
-        public boolean isCellEditable(int row, int col) {
-
-            return false;
-
-        }
-
-    }
-
+//    class CityTableModel extends AbstractTableModel {
+//
+//        private String[] columnNames = {"City", "Building"};
+//        private Object[][] data;
+//
+//        public CityTableModel(Object[][] data) {
+//            this.data = data;
+//        }
+//
+//        public int getColumnCount() {
+//            return columnNames.length;
+//        }
+//
+//        public int getRowCount() {
+//            return data.length;
+//        }
+//
+//        public String getColumnName(int col) {
+//            return columnNames[col];
+//        }
+//
+//        public Object getValueAt(int row, int col) {
+//            return data[row][col];
+//        }
+//
+//        public Class getColumnClass(int c) {
+//            return getValueAt(0, c).getClass();
+//        }
+//
+//        /*
+//         * Don't need to implement this method unless your table's
+//         * editable.
+//         */
+//        public boolean isCellEditable(int row, int col) {
+//
+//            return false;
+//
+//        }
+//
+//    }
     class QueueTableModel extends AbstractTableModel {
 
         private String[] columnNames = {"Unit", "Turns"};
@@ -660,6 +704,23 @@ public class BuildPanel extends JPanel {
          * Don't need to implement this method unless your table's
          * editable.
          */
+        public boolean isCellEditable(int row, int col) {
+
+            return false;
+
+        }
+    }
+
+    class CityTableModel extends DefaultTableModel {
+
+//        public BuildTableModel(Object[][] data) {
+//            Object[] column_names = {"Unit", "Turns Left"};
+//            BuildTableModel(data, column_names);
+//        }
+        public CityTableModel(Object[][] data, Object[] column_names) {
+            super(data, column_names);
+        }
+
         public boolean isCellEditable(int row, int col) {
 
             return false;

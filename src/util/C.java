@@ -122,6 +122,11 @@ public class C {
         PSYCH
     }
 
+    // message types
+    public enum Msg {
+        CITY_FULL
+    }
+    
     // movement types
     public enum MoveType {
 
@@ -230,6 +235,7 @@ public class C {
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
+    public static final int STARTING_FIREBIRDS = 4500;
     /**
      * Prints out the constants which determine unit, structure and planet
      * allegiance. For debugging purposes.

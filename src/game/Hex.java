@@ -98,6 +98,10 @@ public class Hex implements Comparable<Hex>, Serializable {
         this.stack.addAll(stack);
     }
 
+    public void addUnit(Unit u) {
+        this.stack.add(u);
+    }
+    
     public void minusStack(List<Unit> stack) {
         this.stack.removeAll(stack);
     }

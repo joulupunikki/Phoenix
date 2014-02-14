@@ -57,6 +57,7 @@ import state.SU;
 import state.State;
 import state.StateRef;
 import util.C;
+import util.Comp;
 import util.StackIterator;
 import util.Util;
 import util.WindowSize;
@@ -107,6 +108,7 @@ public class Gui extends JFrame {
     private static WindowSize ws;
     //reference to Game object
     private Game game;
+//    private static Game game_s;
     //efs 256-color pallette
     private byte[][] pallette;
     private static IndexColorModel color_index;
@@ -187,7 +189,7 @@ public class Gui extends JFrame {
 
         loadStructureTiles();
         resources = new Resources(this);
-
+        Comp.setGame(game);
         /*
          * build Gui
          */
@@ -261,6 +263,7 @@ public class Gui extends JFrame {
         build_window.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 build_panel.clearSelection();
+                build_panel.zeroLists();
                 build_window.setVisible(false);
             }
         });
@@ -714,7 +717,9 @@ public class Gui extends JFrame {
                 combat_window.setGame(game);
                 galactic_map.setGame(game);
                 globe_map.setGame(game);
+                build_panel.setGame(game);
                 State.setGameRef(game);
+                Comp.setGame(game);
                 game.setPath(null);
                 game.setJumpPath(null);
                 Point p = game.getSelectedPoint();
@@ -973,6 +978,10 @@ public class Gui extends JFrame {
         return game;
     }
 
+//    public static Game getGameS() {
+//        return game_s;
+//    }
+//    
     public byte[][] getPallette() {
         return pallette;
     }

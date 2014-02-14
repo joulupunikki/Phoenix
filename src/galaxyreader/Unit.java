@@ -104,7 +104,7 @@ public class Unit  implements Serializable{
         this.wait_level = 0;
         this.unit_list = null;
         this.group_list = null;
-        this.cargo_list = null;
+        this.cargo_list = new LinkedList<>();
         this.group_end_mark = 0;
         this.in_space = false;
         this.is_sentry = false;

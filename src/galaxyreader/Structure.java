@@ -27,7 +27,7 @@ public class Structure implements Serializable {
     int prev_owner;  //short 
     int prod_ruin_type; //union short/short
     int prod_info;  //union short/short
-    int turns_left;  //short 
+    public int turns_left;  //short 
     int city_info;        //union short/short/short
     int prev_type;           //short 
     int unit_loyalty;        //short 
@@ -116,6 +116,9 @@ public class Structure implements Serializable {
         if (turns_left == 0) {
             unit = new Unit(p_idx, x, y, owner);
             int[] u_type = build_queue.getFirst();
+            unit.type = u_type[0];
+            unit.t_lvl = u_type[1];
+            unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;
             unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
             unit.type_data = unit_types[u_type[0]][u_type[1]];
             removeFromQueue(0, unit_types);
