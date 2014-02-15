@@ -151,6 +151,10 @@ public class WindowSize {
     public int queue_table_height = 150;
     public int queue_table_cell_1_width = queue_table_width / 5;
     public int queue_table_cell_0_width = queue_table_width - queue_table_cell_1_width;
+    public int build_button_x_offset = 60;
+    public int build_button_y_offset = 161;
+    public int build_button_w = 50;
+    public int build_button_h = 15;
 
     public WindowSize(boolean is_double) {
 
@@ -304,6 +308,10 @@ public class WindowSize {
             queue_table_height *= 2;
             queue_table_cell_1_width *= 2;
             queue_table_cell_0_width *= 2;
+            build_button_x_offset *= 2;
+            build_button_y_offset *= 2;
+            build_button_w *= 2;
+            build_button_h *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

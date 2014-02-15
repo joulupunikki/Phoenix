@@ -227,6 +227,7 @@ public class C {
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
+    public static final int INDEX_COLOR_EFS_BLACK = 14;
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";
     public static final String SPACE_COMBAT = "space_combat";

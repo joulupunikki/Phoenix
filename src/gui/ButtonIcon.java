@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import javax.swing.Icon;
+import util.C;
 import util.Util;
 import util.WindowSize;
 
@@ -36,10 +37,17 @@ public class ButtonIcon implements Icon {
         int[] pixel_data = new int[1];
         icon_image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
         WritableRaster wr = icon_image.getRaster();
-        int[] icon_data = Util.loadSquare(icon_file, pos_index * raw_width * raw_height, raw_width * raw_height);
+        int[] icon_data = null;
+        if (icon_file != null) {
+            icon_data = Util.loadSquare(icon_file, pos_index * raw_width * raw_height, raw_width * raw_height);
+        }
         for (int i = 0; i < raw_width; i++) {
             for (int j = 0; j < raw_height; j++) {
-                pixel_data[0] = icon_data[i + j * raw_width];
+                if (icon_file != null) {
+                    pixel_data[0] = icon_data[i + j * raw_width];
+                } else {
+                    pixel_data[0] = C.INDEX_COLOR_EFS_BLACK;
+                }
                 if (ws.is_double) {
                     wr.setPixel(2 * i, 2 * j, pixel_data);
                     wr.setPixel(2 * i + 1, 2 * j, pixel_data);

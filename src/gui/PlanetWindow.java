@@ -6,6 +6,7 @@ package gui;
 
 import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.util.List;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -38,6 +40,7 @@ public class PlanetWindow extends JPanel {
     JTextField money_display;
     JButton end_turn;
     JButton next_stack;
+    JButton build;
 //    JButton 
 
     public PlanetWindow(Gui gui) {
@@ -94,6 +97,25 @@ public class PlanetWindow extends JPanel {
             }
         });
 
+        ButtonIcon build_disabled = new ButtonIcon(ws.build_button_w, ws.build_button_h, null, 0, color_index, ws);
+//        file_offset = 2;
+//        ButtonIcon build_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, "bin/efsbut10.bin", file_offset, color_index, ws);
+        build = new JButton("Build");
+        build.setFont(ws.font_default);
+        build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+//        build.setIcon(next_stack_default);
+        build.setDisabledIcon(build_disabled);
+//        build.setPressedIcon(next_stack_pressed);
+        this.add(build);
+        build.setBounds(ws.build_button_x_offset, ws.build_button_y_offset,
+                ws.build_button_w, ws.build_button_h);
+//        build.setEnabled(true);
+        build.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressBuildButton();
+            }
+        });
     }
 
     public void setUpInfoText() {
@@ -150,29 +172,38 @@ public class PlanetWindow extends JPanel {
         Point selected = game.getSelectedPoint();
         int faction = game.getSelectedFaction();
         boolean enable_launch = false;
+        boolean enable_build = false;
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
 
             if (faction == -1) {
                 List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y).getStack();
+                if (stack.get(0).owner == game.getTurn()) {
+                    Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
+                    
+                    if (hex.getStructure() != null) {
+                        enable_build = true;
+                        
+                    }
 
-                for (Unit unit : stack) {
-                    if (unit.selected) {
-                        if ((unit.move_type == C.MoveType.JUMP
-                                || unit.move_type == C.MoveType.LANDER
-                                || unit.move_type == C.MoveType.SPACE)
-                                && unit.move_points > 0) {
-                            enable_launch = true;
-                        } else {
-                            enable_launch = false;
-                            break;
+                    for (Unit unit : stack) {
+                        if (unit.selected) {
+                            if ((unit.move_type == C.MoveType.JUMP
+                                    || unit.move_type == C.MoveType.LANDER
+                                    || unit.move_type == C.MoveType.SPACE)
+                                    && unit.move_points > 0) {
+                                enable_launch = true;
+                            } else {
+                                enable_launch = false;
+                                break;
+                            }
                         }
                     }
                 }
-
             }
         }
         gui.enableLaunchButton(enable_launch);
+        build.setEnabled(enable_build);
 
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
         year_display.setText("A.D. " + game.getYear());

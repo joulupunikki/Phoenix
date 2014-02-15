@@ -70,6 +70,10 @@ public class BuildPanel extends JPanel {
 //        List<Planet> planets = game.getPlanets();
     }
 
+    public JList getPlanetList() {
+        return planet_list;
+    }
+    
     public void zeroBuild() {
         if (build_table.getRowCount() != 0) {
             ((BuildTableModel) build_table.getModel()).setRowCount(0);
@@ -265,6 +269,7 @@ public class BuildPanel extends JPanel {
     public void planetSelected(ListSelectionEvent e) {
         System.out.println("planet_list selected value = " + planet_list.getSelectedValue());
         Object tmp = planet_list.getSelectedValue();
+
         if (tmp == null) {
             return;
         }
@@ -272,6 +277,7 @@ public class BuildPanel extends JPanel {
         if (planet == -1) {
             return;
         }
+
         List<Structure> cl = game.getStructures();
         List<Structure> cl2 = new LinkedList<>();
         for (Structure structure : cl) {
@@ -405,7 +411,9 @@ public class BuildPanel extends JPanel {
         column.setPreferredWidth(ws.queue_table_cell_1_width);
     }
 
+
     public void citySelected(ListSelectionEvent e) {
+
         int row = city_table.getSelectedRow();
         if (row == -1) {
             return;
@@ -414,7 +422,9 @@ public class BuildPanel extends JPanel {
         if (tmp == null) {
             return;
         }
+
         Structure city = (Structure) tmp;
+
         setBuildData(e, city);
         setQueueData(e, city);
     }

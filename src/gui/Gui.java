@@ -5,9 +5,9 @@
 package gui;
 
 import dat.UnitType;
+import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
-import game.Square;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -242,7 +242,7 @@ public class Gui extends JFrame {
 
         menu_build.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showBuildWindow(e);
+                showBuildWindow(e, false);
             }
         });
 
@@ -477,11 +477,22 @@ public class Gui extends JFrame {
 
     }
 
-    public void showBuildWindow(ActionEvent e) {
+    /**
+     * If source_city == true set planet selected and city selected in Build Panel.
+     *
+     * @param e not used
+     * @param source_city
+     */
+    public void showBuildWindow(ActionEvent e, boolean source_city) {
         build_window.setBounds(this.getX() + ws.planet_map_x_offset,
                 this.getY() + ws.planet_map_y_offset,
                 ws.build_window_width, ws.build_window_height);
         build_panel.setPlanets();
+        if (source_city) {
+//            build_panel.getPlanetList().set
+            build_panel.planetSelected(null);
+            build_panel.citySelected(null);
+        }
         build_window.setVisible(true);
     }
 
@@ -582,6 +593,10 @@ public class Gui extends JFrame {
 
     public Resources getResources() {
         return resources;
+    }
+
+    public BuildPanel getBuildPanel() {
+        return build_panel;
     }
 
     public void setLoadSaveWinUp(boolean state) {

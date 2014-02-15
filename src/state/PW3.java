@@ -102,6 +102,9 @@ public class PW3 extends PW {
         SU.pressLaunchButtonSU();
     }
     
-
+    @Override
+    public void pressBuildButton() {
+        SU.pressBuildButtonSU(); 
+    }
     
 }

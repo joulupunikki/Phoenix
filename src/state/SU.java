@@ -11,6 +11,7 @@ import galaxyreader.Unit;
 import game.Hex;
 import game.PlanetGrid;
 import game.Square;
+import gui.BuildPanel;
 import java.awt.CardLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -686,6 +687,16 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
     }
 
+    public static void pressBuildButtonSU() {
+        BuildPanel bp = gui.getBuildPanel();
+        Point p = game.getSelectedPoint();
+        int planet = game.getCurrentPlanetNr();
+        Structure s = game.getPlanetGrid(planet).getHex(p.x, p.y).getStructure();
+        gui.showBuildWindow(null, true);
+//        bp.planetSelected(null, planet);
+//        bp.citySelected(null, s);
+    }
+    
     public static void pressLaunchButtonSU() {
         if (game.launchStack()) {
             setWindow(C.S_STAR_MAP);
