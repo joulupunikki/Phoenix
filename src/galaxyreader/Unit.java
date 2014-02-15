@@ -5,12 +5,14 @@
 package galaxyreader;
 
 import dat.UnitType;
+import game.Game;    // RSW
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import util.C;
 
 /**
@@ -31,8 +33,8 @@ public class Unit  implements Serializable{
     int orders;    //short 
     int experience; //char 
     public int move_points; //char 
-    int res_relic; //char/Union of char/char 
-    int amount;     //short 
+    public int res_relic; //char/Union of char/char - RSW made public
+    public int amount;     //short - RSW made public
     public int health;     //char 
     public int health_tmp; //original
     int sect;       //char 
@@ -70,6 +72,7 @@ public class Unit  implements Serializable{
     public boolean routed;
     public UnitType type_data;
     public Unit carrier = null; //unit which carries this unit
+
     /**
      * Creates a unit object. Reads in coordinates, loyalty, owner and other fields.
      * @param fc the FileChannel which contains the file from which the data is
@@ -162,7 +165,89 @@ public class Unit  implements Serializable{
         selected = false;
         
     }
-    
+
+    /**
+     * Create fresh unit from scratch, not from Galaxy file.
+     * @param p_idx, x, y: planet and hex co-ordinates of location
+     * @param owner: owning faction
+     * @param type: type number (position in UNIT.DAT, 0-91)
+     * @param t_lvl: subtype (subordinate position in UNIT.DAT)
+     * @param res_relic: resource or relic type (cargo pods and relics only, set to 0 for other units)
+     * @param amount: quantity of resources (cargo pods only, set to 0 for other units)
+     * @param game: needed for access to the unit type table (UNIT.DAT)
+     * @param random: random number seed
+     * Other Unit fields will be set to defaults.
+     * --RSW
+     */
+ 
+    public Unit(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount, Game game, Random random) {
+
+        this.p_idx = p_idx;
+        this.x = x;
+        this.y = y;
+        this.owner = owner;
+        this.type = type;
+        this.t_lvl = t_lvl;
+        this.res_relic = res_relic; 
+        this.amount = amount;  
+
+        type_data = game.getUnitTypes()[type][t_lvl];    // Get type data from UNIT.DAT   
+        move_type = type_data.move_type;
+        camo = Math.max(type_data.camo + random.nextInt(5) - 2, 0);    //    New unit gets randomized camo value
+        
+         System.out.println("Creating new Unit"); //DEBUG
+         System.out.println("p_idx " + p_idx);
+         System.out.println("x "+x);
+         System.out.println("y "+y);
+         System.out.println("owner "+owner);
+         System.out.println("type "+type);
+         System.out.println("t_lvl "+t_lvl);
+         System.out.println("res_relic "+res_relic);
+         System.out.println("amount "+amount);
+         System.out.println("type_data.camo "+type_data.camo);
+         System.out.println("camo "+camo);
+         System.out.println("");
+
+        move_points = type_data.move_pts;
+        loyalty = 100;
+        health = 100;     
+        health_tmp = health;
+        experience = 0;    // Set all the rest to zero for now
+        orders = 0;   
+        sect = 0;       
+        prev_owner = 0;
+        unit_no = 0;     
+        flags = 0;      
+        used_unit_type = 0; 
+        used_unitt_lvl = 0; 
+        dest_x = 0;      
+        dest_y = 0;      
+        move_cost = 0;  
+        t_flags = 0;
+        ai_orders = 0;
+        ai_data = 0;
+        ai_data2 = 0;  
+        wait_level = 0; 
+
+        unit_list = null;    // I don't think this is used. RSW
+        group_list = null;    // I don't think this is used. RSW
+        cargo_list = new LinkedList<>(); // Unit has no cargo
+        group_end_mark = -3;    // I don't know what this is. I just got this value from the first constructor. RSW
+
+        in_space = false;
+        is_sentry = false;
+        is_cargo = false;
+        on_loan = false;
+        
+        spotted = new boolean[14];
+        for (int i = 0; i < spotted.length; i++) {
+            spotted[i] = false;
+        }
+        
+        selected = false;
+        routed = false;
+    }
+
     /**
      * Load unit u as cargo on this unit.
      * @param u unit to be loaded.

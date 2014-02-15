@@ -447,8 +447,17 @@ public class UnitInfoWindow extends JPanel {
 
                 g.setColor(C.COLOR_GOLD);
                 g.setFont(ws.font_abbrev);
-                g.drawString(e.type_data.abbrev, dx + ws.unit_icon_size + ws.carry_symbol_x,
-                        dy + (int) 1.5 * ws.font_default_size);
+
+
+                if (e.type == C.CARGO_UNIT_TYPE) {
+                    g.drawString(C.S_RESOURCE[e.res_relic], dx + ws.unit_icon_size + ws.carry_symbol_x,
+                            dy + (int) 1.5 * ws.font_default_size);    // For resource pod, show resource type instead of abbrev - RSW
+                    g.drawString("  " + String.valueOf(e.amount) + " pts", dx + ws.unit_icon_size + ws.carry_symbol_x,
+                            dy + (int) 2.8 * ws.font_default_size);    // Also show num of resource points - RSW 
+                } else {
+                    g.drawString(e.type_data.abbrev, dx + ws.unit_icon_size + ws.carry_symbol_x,
+                            dy + (int) 1.5 * ws.font_default_size);
+                }
 
                 for (int k = 0; k < e.type_data.cargo; k++) {
                     g.setColor(Color.GRAY);

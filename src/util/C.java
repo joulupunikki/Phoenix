@@ -60,6 +60,8 @@ public class C {
     public static final int UNIT_SPOT_MOVE = 10;
     public static final int TER_COLOR_HEX = 12;
     public static final int TER_COLOR_PLANET = 5;
+    public static final int HARVEST_TERRAINS = 11;    // RSW
+    public static final int HARVEST_PLANETS = 5;    // RSW
     
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
@@ -136,36 +138,62 @@ public class C {
         CRAWLER,
         LANDER
     }
-//        "PALACE"      
-//   "CHURCH"      
-//   "MONASTERY"   
-//   "FACTORY"     
-//   "AGORA"       
-//   "WETWARE"     
-//   "ELECTRONICS" 
-//   "HIVE"        
-//   "CERAMSTEEL"  
-//   BIOPLANT"    
-//   "VAU CITY"    
-//   "CHEMICALS"   
-//   "CYCLOTRON"   
-//   "FORT"        
-//   "STARPORT"    
+    // Structures    // RSW
+    public static final int PALACE = 0;      
+    public static final int CHURCH = 1;      
+    public static final int MONASTERY = 2;   
+    public static final int FACTORY = 3;     
+    public static final int AGORA = 4;       
+    public static final int WETWARE = 5;     
+    public static final int ELECTRONICS = 6; 
+    public static final int HIVE = 7;        
+    public static final int CERAMSTEEL = 8;  
+    public static final int BIOPLANT = 9;    
+    public static final int VAU_CITY = 10;    
+    public static final int CHEMICALS = 11;  
+    public static final int CYCLOTRON = 12;   
+    public static final int FORT = 13;        
+    public static final int STARPORT = 14;    
     public static final int RUINS = 15;
     public static final int ALIEN_RUINS = 16;
-//   "MINE"        
-//   "WELL"        
-//   "FUSORIUM"    
-//   "UNIVERSITY"  
-//   "HOSPITAL"    
-//   "LAB"         
-//   "FARM"       
-//   "TRACE"       
-//   "GEMS"        
-//   "EXOTICA"     
-//   "FERTILE"     
-//   "METAL"       
-//   "ENERGY"
+    public static final int SHIELD = 17; 
+    public static final int MINE = 18;        
+    public static final int WELL = 19;        
+    public static final int FUSORIUM = 20;    
+    public static final int UNIVERSITY = 21;  
+    public static final int HOSPITAL = 22;    
+    public static final int LAB = 23;         
+    public static final int FARM = 24;       
+    public static final int ARBORIUM = 25;
+
+    public static final int TRACE_SPECIAL = 26;    // RSW
+    public static final int GEMS_SPECIAL = 27;
+    public static final int EXOTICA_SPECIAL = 28;
+    public static final int FERTILE_SPECIAL = 29;
+    public static final int METAL_SPECIAL = 30;
+    public static final int ENERGY_SPECIAL = 31;
+
+    // Resource types    // RSW
+    public static final int RES_FOOD = 0;
+    public static final int RES_ENERGY = 1;
+    public static final int RES_METAL = 2;
+    public static final int RES_TRACE = 3;
+    public static final int RES_EXOTICA = 4;
+    public static final int RES_CHEMICALS = 5;
+    public static final int RES_BIOCHEMS = 6;
+    public static final int RES_ELECTRONICS = 7;
+    public static final int RES_CERAMSTEEL = 8;
+    public static final int RES_WETWARE = 9;
+    public static final int RES_MONOPOLS = 10;
+    public static final int RES_GEMS = 11;
+    public static final int RES_SINGULARITIES = 12;
+
+    // Harvesting types  - index into harvesting table  // RSW
+    public static final int FARM_HARVESTING = 0;
+    public static final int WELL_HARVESTING = 1;
+    public static final int MINE_HARVESTING = 2;
+    public static final int ARBORIUM_HARVESTING = 3;
+
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
@@ -180,6 +208,11 @@ public class C {
     public static final int DELTA = 10;
     public static final int ROAD = 11;
     public static final int STRUCTURE = 12;
+
+    // Unit types (only needed for units with special abilities)
+
+    public static final int CARGO_UNIT_TYPE = 91;    // RSW
+
     // faction id's
     public static final int HOUSE1 = 0;
     public static final int HOUSE2 = 1;
@@ -209,6 +242,10 @@ public class C {
     public static final String S_DAMAGE_DAT = "DAT/DAMAGE.DAT";
     public static final String S_TARGET_DAT = "DAT/TARGET.DAT";
     public static final String S_TERCOLOR_DAT = "DAT/TERCOLOR.DAT";
+    public static final String S_FARM_DAT = "DAT/FARM.DAT";    // RSW
+    public static final String S_ARBORIUM_DAT = "DAT/ARBORIUM.DAT";
+    public static final String S_MINE_DAT = "DAT/MINE.DAT";
+    public static final String S_WELL_DAT = "DAT/WELL.DAT";
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
@@ -225,6 +262,8 @@ public class C {
     public static final String ATTACKING_CMBT_STACK = "attacking_combat_stack";
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
+
+    public static final String S_RESOURCE[] = {"Food", "Energy", "Metal", "Trace", "Exotica", "Chemicals", "Biochems", "Electronics", "Ceramsteel", "Wetware", "Monopols", "Gems", "Singularities"};    // Temporary, until we have reader for RES.DAT
 
     /**
      * Prints out the constants which determine unit, structure and planet
@@ -250,3 +289,5 @@ public class C {
 /*
  * forest
  */
+
+

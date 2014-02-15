@@ -468,6 +468,13 @@ public class Util {
         if (e.carrier != null) {
             g.drawString("+", x + 2 * ws.font_unit_icon_offset, y + 8 * ws.font_unit_icon_offset);
         }
+
+        if (e.type == C.CARGO_UNIT_TYPE) {    // For resource pod, add resource type string (first 2 characters) to icon - RSW
+            g.setColor(Color.WHITE);
+            String str = C.S_RESOURCE[e.res_relic];
+//            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
+            g.drawString(str.substring(0,2), x + (int) (side * 0.35), y + (int) (side * 0.6));
+        }
     }
 
     public static void drawStackDisplay(Graphics g, Game game, Point p, int faction) {
