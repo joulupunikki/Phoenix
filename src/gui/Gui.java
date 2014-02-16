@@ -242,7 +242,7 @@ public class Gui extends JFrame {
 
         menu_build.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showBuildWindow(e, false);
+                showBuildWindow(e, -1, null);
             }
         });
 
@@ -478,19 +478,21 @@ public class Gui extends JFrame {
     }
 
     /**
-     * If source_city == true set planet selected and city selected in Build Panel.
+     * If planet != -1 set planet selected and city selected in Build
+     * Panel with planet and city.
      *
      * @param e not used
      * @param source_city
      */
-    public void showBuildWindow(ActionEvent e, boolean source_city) {
+    public void showBuildWindow(ActionEvent e, int planet, Structure city) {
         build_window.setBounds(this.getX() + ws.planet_map_x_offset,
                 this.getY() + ws.planet_map_y_offset,
                 ws.build_window_width, ws.build_window_height);
         build_panel.setPlanets();
-        if (source_city) {
-//            build_panel.getPlanetList().set
-            build_panel.planetSelected(null);
+        if (planet != -1) {
+            build_panel.planetSelected(null, planet);
+            build_panel.setSelectedPlanet(planet);
+            build_panel.setSelectedCity(city);
             build_panel.citySelected(null);
         }
         build_window.setVisible(true);

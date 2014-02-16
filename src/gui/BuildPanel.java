@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import static javax.swing.SwingConstants.CENTER;
 import javax.swing.event.ListSelectionEvent;
@@ -38,6 +39,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import util.C;
 import util.Comp;
 import util.Util;
@@ -140,7 +142,7 @@ public class BuildPanel extends JPanel {
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     city.removeFromQueue(row, game.getUnitTypes());
                     setQueueData(null, city);
-                    planetSelected(null);
+                    planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);
                 }
             }
@@ -193,7 +195,7 @@ public class BuildPanel extends JPanel {
                     int[] unit = {tmp[0], tmp[1]};
                     city.addToQueue(unit, game.getUnitTypes());
                     setQueueData(null, city);
-                    planetSelected(null);
+                    planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);
                 }
             }
@@ -256,7 +258,7 @@ public class BuildPanel extends JPanel {
                 new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {
                         if (!e.getValueIsAdjusting()) {
-                            planetSelected(e);
+                            planetSelected(e, -1);
                         }
                     }
                 });
@@ -266,18 +268,58 @@ public class BuildPanel extends JPanel {
         planet_list.clearSelection();
     }
 
-    public void planetSelected(ListSelectionEvent e) {
+    public void setSelectedPlanet(int planet) {
+        ListModel lm = planet_list.getModel();
+        int len = lm.getSize();
+        int selected = -1;
+        for (int i = 0; i < len; i++) {
+            if ( ((Integer)lm.getElementAt(i)).intValue() == planet) {
+                selected = i;
+                break;
+            }
+            
+        }
+        planet_list.setSelectedIndex(selected);
+    }
+
+    public void setSelectedCity(Structure city) {
+        TableModel tm = city_table.getModel();
+        int len = tm.getRowCount();
+        int selected = -1;
+        for (int i = 0; i < len; i++) {
+            if (((Structure) tm.getValueAt(i, 0)) == city) {
+                selected = i;
+            }
+            
+        }
+        
+        city_table.addRowSelectionInterval(selected, selected);
+        
+    }
+    
+    /**
+     * If nr != -1 use nr as value of selected planet else read value from list.
+     * 
+     * @param e the value of e
+     * @param nr the value of nr
+     */
+    public void planetSelected(ListSelectionEvent e, int nr) {
         System.out.println("planet_list selected value = " + planet_list.getSelectedValue());
+
+        int planet = -1;
+        if (nr == -1) {
         Object tmp = planet_list.getSelectedValue();
 
         if (tmp == null) {
             return;
         }
-        int planet = ((Integer) tmp).intValue();
+        planet = ((Integer) tmp).intValue();
         if (planet == -1) {
             return;
         }
-
+        } else {
+            planet = nr;
+        }
         List<Structure> cl = game.getStructures();
         List<Structure> cl2 = new LinkedList<>();
         for (Structure structure : cl) {

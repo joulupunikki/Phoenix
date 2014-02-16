@@ -46,7 +46,7 @@ public class Structure implements Serializable {
     public static ArrayList<ArrayList<int[]>> can_build;
     public LinkedList<int[]> build_queue;
     boolean on_hold;
-    
+
     /**
      * Creates a structure object. Reads in coordinates, owner, loyalty and
      * other fields.
@@ -95,13 +95,28 @@ public class Structure implements Serializable {
         on_hold = false;
     }
 
+//    /**
+//     * Tries to start unit building. Will check for existence of input unit,
+//     * TODO resources and TODO technologies
+//     *
+//     * @param unit_type
+//     * @param unit_types
+//     */
+//    public void tryToBuild(int[] unit_type, UnitType[][] unit_types) {
+//        int input = unit_types[unit_type[0]][unit_types[1]].unit;
+//        if (input > -1) {
+//            
+//        }
+//    }
+
     public void addToQueue(int[] unit_type, UnitType[][] unit_types) {
         if (build_queue.isEmpty()) {
             turns_left = unit_types[unit_type[0]][unit_type[1]].turns_2_bld;
+//            tryToBuild(unit_type, unit_types);
         }
         build_queue.add(unit_type);
     }
-    
+
     public void removeFromQueue(int index, UnitType[][] unit_types) {
         build_queue.remove(index);
         if (index == 0 && !build_queue.isEmpty()) {
@@ -109,7 +124,7 @@ public class Structure implements Serializable {
             turns_left = unit_types[u[0]][u[1]].turns_2_bld;
         }
     }
-    
+
     public Unit buildUnits(UnitType[][] unit_types) {
         Unit unit = null;
         turns_left--;
@@ -125,7 +140,7 @@ public class Structure implements Serializable {
         }
         return unit;
     }
-    
+
     /**
      * Prints a structure object. Prints coordinates and owner. For debugging
      * purposes.

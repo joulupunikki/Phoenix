@@ -692,7 +692,7 @@ public class SU extends State {
         Point p = game.getSelectedPoint();
         int planet = game.getCurrentPlanetNr();
         Structure s = game.getPlanetGrid(planet).getHex(p.x, p.y).getStructure();
-        gui.showBuildWindow(null, true);
+        gui.showBuildWindow(null, planet, s);
 //        bp.planetSelected(null, planet);
 //        bp.citySelected(null, s);
     }
