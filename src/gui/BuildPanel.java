@@ -140,7 +140,7 @@ public class BuildPanel extends JPanel {
                     System.out.println("Double clicked row " + row);
                     int selected_city = city_table.getSelectedRow();
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
-                    city.removeFromQueue(row, game.getUnitTypes());
+                    city.removeFromQueue(row, game.getUnitTypes(), null);
                     setQueueData(null, city);
                     planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);
@@ -193,7 +193,7 @@ public class BuildPanel extends JPanel {
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     int[] tmp = (int[]) build_table.getValueAt(row, 0);
                     int[] unit = {tmp[0], tmp[1]};
-                    city.addToQueue(unit, game.getUnitTypes());
+                    city.addToQueue(unit, game.getUnitTypes(), game);
                     setQueueData(null, city);
                     planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);

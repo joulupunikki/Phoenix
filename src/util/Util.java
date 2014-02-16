@@ -119,6 +119,17 @@ public class Util {
         return new Point(x, y);
     }
 
+    public static List<Unit> xS(List<Unit> stack) {    // Returns a temporary stack with cargo listed separately
+        List<Unit> ret_val = new LinkedList<>();
+        for (Unit unit : stack) {
+            ret_val.add(unit);
+            for (Unit cargo : unit.cargo_list) {
+                ret_val.add(cargo);
+            }
+        }
+        return ret_val;
+    }
+
     public static Point resolvePlanetMapOrigin(Point p) {
         int map_origin_x = p.x;
         int map_origin_y = p.y;

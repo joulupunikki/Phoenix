@@ -5,12 +5,15 @@
 package galaxyreader;
 
 import dat.UnitType;
+import game.Game;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import util.C;
+import util.Util;
 
 /**
  * A class representing a structure object.
@@ -95,29 +98,48 @@ public class Structure implements Serializable {
         on_hold = false;
     }
 
-//    /**
-//     * Tries to start unit building. Will check for existence of input unit,
-//     * TODO resources and TODO technologies
-//     *
-//     * @param unit_type
-//     * @param unit_types
-//     */
-//    public void tryToBuild(int[] unit_type, UnitType[][] unit_types) {
-//        int input = unit_types[unit_type[0]][unit_types[1]].unit;
-//        if (input > -1) {
-//            
-//        }
-//    }
+    /**
+     * Tries to start unit building. Will check for existence of input unit,
+     * TODO resources and TODO technologies
+     *
+     * @param unit_type
+     * @param unit_types
+     */
+    public void tryToBuild(int[] unit_type, UnitType[][] unit_types, Game game) {
+        int input = unit_types[unit_type[0]][unit_type[1]].unit;
+        if (input > -1) {
+            boolean found = false;
+            List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(this.x, this.y).getStack();
+            for (Unit unit : Util.xS(stack)) {
+                if (unit.type == input && unit.t_lvl == 0) {
+                    found = true;
+                }
+            }
+            
+        }
+    }
 
-    public void addToQueue(int[] unit_type, UnitType[][] unit_types) {
+    /**
+     *
+     * @param unit_type the value of unit_type
+     * @param unit_types the value of unit_types
+     * @param game the value of game
+     */
+    public void addToQueue(int[] unit_type, UnitType[][] unit_types, Game game) {
         if (build_queue.isEmpty()) {
             turns_left = unit_types[unit_type[0]][unit_type[1]].turns_2_bld;
-//            tryToBuild(unit_type, unit_types);
+            tryToBuild(unit_type, unit_types, game);
         }
         build_queue.add(unit_type);
     }
 
-    public void removeFromQueue(int index, UnitType[][] unit_types) {
+    /**
+     *
+     * @param index the value of index
+     * @param unit_types the value of unit_types
+     * @param game the value of game
+     */
+    public void removeFromQueue(int index, UnitType[][] unit_types, Game game) {
         build_queue.remove(index);
         if (index == 0 && !build_queue.isEmpty()) {
             int[] u = build_queue.getFirst();
@@ -136,7 +158,7 @@ public class Structure implements Serializable {
             unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;
             unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
             unit.type_data = unit_types[u_type[0]][u_type[1]];
-            removeFromQueue(0, unit_types);
+            removeFromQueue(0, unit_types, null);
         }
         return unit;
     }
