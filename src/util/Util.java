@@ -44,6 +44,63 @@ public class Util {
         }
     }
 
+    public static void testHexIter(Game game, int planet) {
+        HexIter iter = Util.getHexIter(game, planet);
+        Hex hex = iter.next();
+        while (hex != null) {
+            System.out.println("planet, x, y = " + planet + " ," + hex.getX() + " ," + hex.getY());
+            hex = iter.next();
+        }
+    }
+
+    /**
+     * Returns a hex iterator for planet;
+     *
+     * @param game
+     * @param planet
+     * @return
+     */
+    public static HexIter getHexIter(Game game, int planet) {
+        return new HexIter(game, planet);
+    }
+
+    /**
+     * Iterator for going thru Hexes of a planet. Will first go thru column 0
+     * then column 1 etc. Semantics: next returns next Hex in order, when all
+     * hexes have been traversed returns null. Usage: HexIter iter =
+     * Util.getHexIter(game, planet); Hex hex = iter.next(); while(hex != null)
+     * { // do stuff hex = iter.next(); }
+     */
+    public static class HexIter {
+
+        int i = 0;
+        int j = 0;
+        Hex[][] map_array = null;
+
+        public HexIter(Game game, int planet) {
+
+            map_array = game.getPlanetGrid(planet).getMapArray();
+            i = 0;
+            j = 0;
+
+        }
+
+        public Hex next() {
+            Hex next = null;
+
+            if (i >= map_array.length) {
+                return next;
+            }
+            next = map_array[i][j];
+            j++;
+            if (j >= map_array[i].length) {
+                j = 0;
+                i++;
+            }
+            return next;
+        }
+    }
+
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
 
         int x = p.x;
@@ -473,7 +530,7 @@ public class Util {
             g.setColor(Color.WHITE);
             String str = C.S_RESOURCE[e.res_relic];
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
-            g.drawString(str.substring(0,2), x + (int) (side * 0.35), y + (int) (side * 0.6));
+            g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
         }
     }
 
