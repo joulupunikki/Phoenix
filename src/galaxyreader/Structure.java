@@ -6,6 +6,8 @@ package galaxyreader;
 
 import dat.UnitType;
 import game.Game;
+import game.Hex;
+import game.Message;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
@@ -48,7 +50,8 @@ public class Structure implements Serializable {
     int Damage;     //short 
     public static ArrayList<ArrayList<int[]>> can_build;
     public LinkedList<int[]> build_queue;
-    boolean on_hold;
+    public boolean on_hold_no_res; // queue on hold because of no resources or input units
+    Unit upgraded; // input unit used in building
 
     /**
      * Creates a structure object. Reads in coordinates, owner, loyalty and
@@ -95,27 +98,58 @@ public class Structure implements Serializable {
         temp_count3 = 0;
         Damage = 0;
         build_queue = new LinkedList<>();
-        on_hold = false;
+        on_hold_no_res = false;
+        upgraded = null;
     }
 
+//    /**
+//     * Tries to start unit building. Called from Game when queue was found to be full.
+//     * Calls tryToBuild(int[], UnitType[][], Game)
+//     * @param game
+//     */
+//    public void tryToBuild(Game game) {
+//        
+//    }
+
     /**
-     * Tries to start unit building. Will check for existence of input unit,
-     * TODO resources and TODO technologies
+     * Tries to start unit building. Will check for existence of input unit and
+     * TODO resources, if these are not found will put queue on hold.
      *
      * @param unit_type
      * @param unit_types
+     * @param game
      */
     public void tryToBuild(int[] unit_type, UnitType[][] unit_types, Game game) {
         int input = unit_types[unit_type[0]][unit_type[1]].unit;
+        boolean input_found = true;
+        Unit input_unit = null;
+        List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(this.x, this.y).getStack();
+        boolean resources_found = false;
         if (input > -1) {
-            boolean found = false;
-            List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(this.x, this.y).getStack();
+            input_found = false;
             for (Unit unit : Util.xS(stack)) {
                 if (unit.type == input && unit.t_lvl == 0) {
-                    found = true;
+                    input_found = true;
+                    input_unit = unit;
+                    break;
                 }
             }
-            
+
+        }
+
+        // TODO check for existence of resources
+        if (input_found) { // && resources_found) {
+            // TODO subtract resources
+            if (input_unit.carrier != null) {
+                input_unit.carrier.disembark(input_unit);
+            } else {
+                stack.remove(input_unit);
+            }
+            game.deleteUnit(input_unit);
+            upgraded = input_unit;
+            on_hold_no_res = false;
+        } else {
+            on_hold_no_res = true;
         }
     }
 
@@ -141,9 +175,31 @@ public class Structure implements Serializable {
      */
     public void removeFromQueue(int index, UnitType[][] unit_types, Game game) {
         build_queue.remove(index);
-        if (index == 0 && !build_queue.isEmpty()) {
-            int[] u = build_queue.getFirst();
-            turns_left = unit_types[u[0]][u[1]].turns_2_bld;
+        if (index == 0) {
+            if (!on_hold_no_res) {
+                // TODO return resources
+                if (upgraded != null) {
+                    Hex hex = game.findRoom(this, upgraded.move_type);
+                    if (hex != null) {
+                        List<Unit> stack = hex.getStack();
+                        stack.add(upgraded);
+                        game.getUnits().add(upgraded);
+                        game.getUnmovedUnits().add(upgraded);
+                        game.unSpot(stack);
+                        game.getHexProc().spotProc(hex, stack);
+                    } else {
+                        game.getFaction(game.getTurn()).addMessage(new Message(null, C.Msg.CITY_FULL, game.getYear(), this));
+                    }
+                }
+            } else {
+                on_hold_no_res = false;
+            }
+
+            if (!build_queue.isEmpty()) {
+                int[] u = build_queue.getFirst();
+                turns_left = unit_types[u[0]][u[1]].turns_2_bld;
+                tryToBuild(u, unit_types, game);
+            }
         }
     }
 
@@ -159,6 +215,7 @@ public class Structure implements Serializable {
             unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
             unit.type_data = unit_types[u_type[0]][u_type[1]];
             removeFromQueue(0, unit_types, null);
+            upgraded = null;
         }
         return unit;
     }

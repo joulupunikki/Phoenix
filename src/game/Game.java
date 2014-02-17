@@ -199,6 +199,11 @@ public class Game implements Serializable {
         return jump_gates;
     }
 
+    public void deleteUnit(Unit u) {
+        units.remove(u);
+        unmoved_units.remove(u);
+    }
+
     public List<Unit> getCombatStack(String stack) {
         return battle.getCombatStack(stack);
 //        List<Unit> rv = null;
@@ -1096,65 +1101,92 @@ public class Game implements Serializable {
     }
 
     /**
-     * Will try to build units. In building city or if it has full stack then will
-     * try surrounding hexes, if there are no enemy units or cities or full stack
-     * or impassable terrain will build unit there. If it fails to build it will send
-     * city full message to owning faction.
+     * Will try to build units. In building city or if it has full stack then
+     * will try surrounding hexes, if there are no enemy units or cities or full
+     * stack or impassable terrain will build unit there. If it fails to build
+     * it will send city full message to owning faction.
      */
     public void buildUnits() {
         for (Structure city : faction_cities) {
             Unit unit = null;
-            if (!city.build_queue.isEmpty() && city.turns_left == 1) {
-                System.out.println("Here");
-
-                boolean found = false;
-                Hex hex = planets.get(city.p_idx).planet_grid.getHex(city.x, city.y);
-                if (Util.stackSize(hex.getStack()) < C.STACK_SIZE) {
-                    found = true;
-                }
-                int[] u_t = city.build_queue.getFirst();
-                C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
-                int tile_set = planets.get(city.p_idx).tile_set_type;
-                Hex[] neighbors = hex.getNeighbours();
-                for (int i = 0; i < neighbors.length && !found; i++) {
-                    hex = neighbors[i];
-                    Structure city_h = hex.getStructure();
-                    if (city_h != null) {
-                        if (city_h.owner != turn) {
-                            continue;
-                        }
+            if (!city.on_hold_no_res) {
+                if (!city.build_queue.isEmpty() && city.turns_left == 1) {
+                    System.out.println("Here");
+                    int[] u_t = city.build_queue.getFirst();
+                    C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
+                    Hex hex = findRoom(city, move);
+                    if (hex != null) {
+                        unit = city.buildUnits(unit_types);
+                        hex.addUnit(unit);
+                        units.add(unit);
+                        // called before resetUnmovedUnits();
+                    } else {
+                        factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
                     }
-                    List<Unit> stack = hex.getStack();
-                    if (!stack.isEmpty()) {
-                        if (stack.get(0).owner != turn) {
-                            continue;
-                        }
-                    }
-                    if (Util.stackSize(stack) < C.STACK_SIZE) {
-                        if (city_h == null) {
-                            boolean[] terrain = hex.getTerrain();
-                            for (int j = 0; j < terrain.length; j++) {
-                                if (terrain[j] && terr_cost[j][tile_set][move.ordinal()] == 0) {
-                                    continue;
-                                }
-                            }
-                        }
-                        found = true;
-                    }
-
-                }
-                if (found) {
-                    unit = city.buildUnits(unit_types);
-                    hex.addUnit(unit);
-                    units.add(unit);
                 } else {
-                    factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
+                    city.buildUnits(unit_types);
                 }
             } else {
-                city.buildUnits(unit_types);
+                city.tryToBuild(city.build_queue.getFirst(), unit_types, this);
+            }
+        }
+    }
+
+    /**
+     * Tries to find room for one unit in a city or surrounding hexes.
+     *
+     * @param city
+     * @param move move type of unit
+     * @return Hex where there is room or null if no room found;
+     */
+    public Hex findRoom(Structure city, C.MoveType move) {
+        boolean found = false;
+        Hex hex = planets.get(city.p_idx).planet_grid.getHex(city.x, city.y);
+        if (Util.stackSize(hex.getStack()) < C.STACK_SIZE) {
+            found = true;
+        }
+
+        int tile_set = planets.get(city.p_idx).tile_set_type;
+        Hex[] neighbors = hex.getNeighbours();
+        for (int i = 0; i < neighbors.length && !found; i++) {
+            hex = neighbors[i];
+            Structure city_h = hex.getStructure();
+            if (city_h != null) {
+                if (city_h.owner != turn) {
+                    continue;
+                }
+            }
+            List<Unit> stack = hex.getStack();
+            if (!stack.isEmpty()) {
+                if (stack.get(0).owner != turn) {
+                    continue;
+                }
+            }
+            if (Util.stackSize(stack) < C.STACK_SIZE) {
+                if (city_h == null) {
+                    boolean[] terrain = hex.getTerrain();
+                    for (int j = 0; j < terrain.length; j++) {
+                        if (terrain[j] && terr_cost[j][tile_set][move.ordinal()] == 0) {
+                            continue;
+                        }
+                    }
+                }
+                found = true;
             }
 
         }
+        if (!found) {
+            hex = null;
+        }
+        return hex;
+    }
+
+    public HexProc getHexProc() {
+        return hex_proc;
+    }
+
+    public Faction getFaction(int faction) {
+        return factions[faction];
     }
 
     public void setFactionCities() {

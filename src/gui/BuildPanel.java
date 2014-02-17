@@ -362,6 +362,8 @@ public class BuildPanel extends JPanel {
         CityTableModel city_model = new CityTableModel(city_table_data, city_table_header);
         city_table.setModel(city_model);
 
+        zeroBuild();
+        zeroQueue();
         System.out.println("row height" + city_table.getRowHeight());
     }
 
