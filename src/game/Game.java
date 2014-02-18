@@ -72,7 +72,7 @@ public class Game implements Serializable {
     private List<Unit> units;
     private List<Structure> structures;
     private List<Unit> unmoved_units;
-
+    private List<Unit> cargo_pods;
 //    private List<Unit> combat_stack_a;
 //    private List<Unit> combat_stack_b;
 //    private String combat_type;
@@ -141,7 +141,6 @@ public class Game implements Serializable {
 //        setMoveCosts();
     }
 
-       
     public void init() {
         battle.battleInit(random, damage, target, terr_cost, this, planets);
     }
@@ -1095,6 +1094,11 @@ public class Game implements Serializable {
         resetUnmovedUnits();
         resetMovePoints();
         setMaxSpotRange();
+        cargo_pods = Util.getCargoPods(units, this);
+    }
+
+    public List<Unit> getCargoPods() {
+        return cargo_pods;
     }
 
     public List<Unit> getUnmovedUnits() {
@@ -1567,55 +1571,64 @@ public class Game implements Serializable {
         return jump_path;
     }
 
+    /**
+     * For a space stack, converts Point coordinates from planet coordinates to
+     * faction square coordinates around planet.
+     *
+     * @param p
+     * @param faction
+     * @return
+     */
     public Point resolveSpaceStack(Point p, int faction) {
+        Point q = new Point(p.x, p.y);
         if (faction > -1) {
 
             switch (faction) {
 
                 case C.HOUSE1:
-                    p.x += -1;
-                    p.y += -1;
+                    q.x += -1;
+                    q.y += -1;
                     break;
                 case C.HOUSE2:
-                    p.x += 0;
-                    p.y += -1;
+                    q.x += 0;
+                    q.y += -1;
                     break;
                 case C.HOUSE3:
-                    p.x += 1;
-                    p.y += -1;
+                    q.x += 1;
+                    q.y += -1;
                     break;
                 case C.HOUSE4:
-                    p.x += -1;
-                    p.y += 0;
+                    q.x += -1;
+                    q.y += 0;
                     break;
                 case C.HOUSE5:
-                    p.x += 1;
-                    p.y += 0;
+                    q.x += 1;
+                    q.y += 0;
                     break;
                 case C.LEAGUE:
                 case C.THE_CHURCH:
                 case C.SYMBIOT:
-                    p.x += -1;
-                    p.y += 1;
+                    q.x += -1;
+                    q.y += 1;
                     break;
                 case C.VAU:
                 case C.IMPERIAL:
                 case C.FLEET:
-                    p.x += 0;
-                    p.y += 1;
+                    q.x += 0;
+                    q.y += 1;
                     break;
                 case C.STIGMATA:
                 case C.THE_SPY:
                 case C.NEUTRAL:
-                    p.x += 1;
-                    p.y += 1;
+                    q.x += 1;
+                    q.y += 1;
                     break;
                 default:
                     throw new AssertionError();
             }
 
         }
-        return p;
+        return q;
     }
 
     public Point convertSpaceUnit(Point p, int faction) {
@@ -1867,18 +1880,17 @@ public class Game implements Serializable {
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }
-
     public void updateEconomy() {    //RSW
-        
+
         collectResources();
 
     }
 
     /**
      * Do all production (harvesting and secondary) for one faction.
-     */   
+     */
     public void collectResources() {    //RSW
-                
+
         int[] resource_amounts = new int[C.S_RESOURCE.length];    // Will accumulate resource amounts. Initialised to 0 by default.
 
         for (Structure city : structures) {    // For each structure in structure list
@@ -1892,32 +1904,32 @@ public class Game implements Serializable {
             }
         }
     }
-    
-    
+
     /**
-     * Calculate how many resources a city produces per turn (reducing for loyalty etc).
-     * 
+     * Calculate how many resources a city produces per turn (reducing for
+     * loyalty etc).
+     *
      * @param city Structure
-     * @return Array of resource amounts, one per resource type 
-     * 
+     * @return Array of resource amounts, one per resource type
+     *
      */
     public int[] CalculateActualProduction(Structure city) {    //RSW
 
         int[] ret_val = new int[C.S_RESOURCE.length];    // Will accumulate resource amounts. Initialised to 0 by default.
-        
-            ret_val = CalculateMaxProduction(city);
- 
-            //    NOT YET IMPLEMENTED. Will adjust for loyalty and health
-        
+
+        ret_val = CalculateMaxProduction(city);
+
+        //    NOT YET IMPLEMENTED. Will adjust for loyalty and health
         return ret_val;
     }
-    
+
     /**
-     * Calculate how many resources a city potentially produces per turn (ignoring loyalty etc).
-     * 
+     * Calculate how many resources a city potentially produces per turn
+     * (ignoring loyalty etc).
+     *
      * @param city Structure
-     * @return Array of resource amounts, one per resource type 
-     * 
+     * @return Array of resource amounts, one per resource type
+     *
      */
     public int[] CalculateMaxProduction(Structure city) {    //RSW
 
@@ -1932,10 +1944,10 @@ public class Game implements Serializable {
                 break;
             case C.MINE:
                 ret_val = calculateHarvest(city, C.MINE_HARVESTING);
-                break; 
+                break;
             case C.ARBORIUM:
                 ret_val = calculateHarvest(city, C.ARBORIUM_HARVESTING);
-                break; 
+                break;
 //            case C.CHEMICALS:
 //                ret_val = calculateSecondaryProduction(city, C.CHEMICALS_PRODUCTION);
 //                break; 
@@ -1961,29 +1973,27 @@ public class Game implements Serializable {
         return ret_val;
     }
 
-
     /**
      * Calculate how many resources a city harvests per turn.
-     * 
+     *
      * @param city Structure
      * @param harvest_type Harvesting city type, 0-3
-     * @return Array of resource amounts, one per resource type 
-     * 
+     * @return Array of resource amounts, one per resource type
+     *
      */
     public int[] calculateHarvest(Structure city, int harvest_type) {    //RSW
-        
+
         int[] ret_val = new int[C.S_RESOURCE.length];    // Will accumulate resource amounts. Initialised to 0 by default.
-        
+
         Planet planet = planets.get(city.p_idx);    // Get planet that city's on
         Hex city_hex = planet.planet_grid.getHex(city.x, city.y);    // Get hex that city's in
-        
+
         int radius = 2;    // TEMPORARY - should get from STRBUILD.DAT
 
         Set<Hex> hex_set = getHexesWithinRadiusOf(city_hex, radius);    // Get the set of all hexes within 2 hexes of the city
         for (Hex hex : hex_set) {    // For each hex in the set
 
             // Get resources from terrain
-
             boolean[] terrain_array = hex.getTerrain();    // Get boolean array of terrain types for the hex
 
             // Find top-most terrain in hex, excluding road
@@ -1994,32 +2004,32 @@ public class Game implements Serializable {
                 }
             }
 
-            for (int j = 0; j < 3 ; j++) {    // For up to 3 possible resource types per hex
-                                              // When < 3 types, remaining items in array will be null, so check for that
-                if (harvest_table[harvest_type][terrain][planet.tile_set_type][j] == null) break;
+            for (int j = 0; j < 3; j++) {    // For up to 3 possible resource types per hex
+                // When < 3 types, remaining items in array will be null, so check for that
+                if (harvest_table[harvest_type][terrain][planet.tile_set_type][j] == null) {
+                    break;
+                }
                 int resource_type = harvest_table[harvest_type][terrain][planet.tile_set_type][j].resource_type;
                 int resource_amount = harvest_table[harvest_type][terrain][planet.tile_set_type][j].resource_amount;
                 ret_val[resource_type] += resource_amount;    // Accumulate the resource
             }
-        }  
-            
+        }
+
         // For cities close to map edge, up-rate pro-rata for imaginary hexes off the edge of the map
-        
         for (int i = 0; i < ret_val.length; i++) {    // For each resource type
             int resource_amount = ret_val[i];
             if (resource_amount > 0) {
                 int hexes = hex_set.size();
-                int max_hexes = 3*radius*(radius+1) + 1;
+                int max_hexes = 3 * radius * (radius + 1) + 1;
                 if (hexes < max_hexes) {
-                    ret_val[i] = (int)Math.ceil((float)resource_amount * max_hexes / hexes);    // Round up
+                    ret_val[i] = (int) Math.ceil((float) resource_amount * max_hexes / hexes);    // Round up
                 }
             }
         }
-            
+
         // Add resources from any special resource symbols
-            
         for (Hex hex : hex_set) {    // For each hex within the city radius
-            
+
             Structure special = hex.getResource();
 
             if (special != null) {
@@ -2054,24 +2064,25 @@ public class Game implements Serializable {
                             ret_val[C.RES_ENERGY] += 20;
                         }
                         break;
-                } 
+                }
             }
         }
         return ret_val;
     }
 
-
     /**
      * Add resources to a hex, creating new cargo pod if needed
-     * 
+     *
      * @param p_idx, x, y Planet index and hex coordinates of location
      * @param owner Owning faction
      * @param resource_type Type of resource to add
      * @param resource_amount Quantity of resources to add
      */
     public void addResourcesToHex(int p_idx, int x, int y, int owner, int resource_type, int resource_amount) {    //RSW
-        
-        if (resource_amount <= 0) return;
+
+        if (resource_amount <= 0) {
+            return;
+        }
 
         Planet planet = planets.get(p_idx);    // Get the planet the hex is on
         List<Unit> stack = planet.planet_grid.getHex(x, y).getStack();    // Get the stack in that hex
@@ -2079,7 +2090,7 @@ public class Game implements Serializable {
         // Look for same cargo already in stack (every hex has a stack, possibly empty)      
         boolean found = false;
         Unit old_unit = null;
-        
+
         StackIterator iterator = new StackIterator(stack);    // For each unit in stack (including cargo)
         Unit unit = iterator.next();
         while (unit != null) {
@@ -2088,29 +2099,31 @@ public class Game implements Serializable {
                 old_unit = unit;
             }
             unit = iterator.next();
-         }
-         if (found) {
-             old_unit.amount = Math.min(old_unit.amount + resource_amount, 999);    // Add resources to existing cargo pod, up to 999.
-         } else { 
-             if (Util.stackSize(stack) < 20) {     // Create new cargo pod (if there's room in stack)
-                 unit = createUnitInHex(p_idx, x, y, owner, C.CARGO_UNIT_TYPE, 0, resource_type, resource_amount);
-             }
-         }
+        }
+        if (found) {
+            old_unit.amount = Math.min(old_unit.amount + resource_amount, 999);    // Add resources to existing cargo pod, up to 999.
+        } else {
+            if (Util.stackSize(stack) < 20) {     // Create new cargo pod (if there's room in stack)
+                unit = createUnitInHex(p_idx, x, y, owner, C.CARGO_UNIT_TYPE, 0, resource_type, resource_amount);
+            }
+        }
     }
 
     /**
-     * Make and place fresh unit from scratch, not from Galaxy file.
-     * Places unit on a planet at specified co-ordinates. Units cannot be created in space during game.
-     * If hex is already full, does nothing and returns null.
-     * 
+     * Make and place fresh unit from scratch, not from Galaxy file. Places unit
+     * on a planet at specified co-ordinates. Units cannot be created in space
+     * during game. If hex is already full, does nothing and returns null.
+     *
      * @param p_idx, x, y Planet index and hex co-ordinates of location
      * @param owner Owning faction
      * @param type Type number (position in UNIT.DAT, 0-91)
      * @param t_lvl Subtype (subordinate position in UNIT.DAT)
-     * @param res_relic Resource or relic type (cargo pods and relics only, set to 0 for other units)
-     * @param amount Quantity of resources (cargo pods only, set to 0 for other units)
+     * @param res_relic Resource or relic type (cargo pods and relics only, set
+     * to 0 for other units)
+     * @param amount Quantity of resources (cargo pods only, set to 0 for other
+     * units)
      * @return New unit.
-
+     *
      */
     public Unit createUnitInHex(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount) {    //RSW
 
@@ -2119,53 +2132,51 @@ public class Game implements Serializable {
         List<Unit> stack = hex.getStack();    // Get stack in the hex
 
         if (Util.stackSize(stack) < 20) {    // If stack not full, create new unit
-            Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this, random); 
-            
+            Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this, random);
+
             units.add(unit);    // Add new unit to the general unit list
             planet.planet_grid.getHex(x, y).placeUnit(unit);    // Add new unit to the stack
             unmoved_units.add(unit);    // Add new unit to the unmoved units list
-            
+
 //            System.out.println("spotted[] before: " + Arrays.toString(unit.spotted));    //DEBUG
-            
             hex_proc.spotProc(hex, stack);    // Set spotted[] flags for new unit
-            
+
 //            System.out.println("spotted[] after: " + Arrays.toString(unit.spotted));    //DEBUG
-  
             return unit;
         } else {
             return null;
         }
     }
 
-    
-        public Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {   //RSW 
+    public Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {   //RSW 
 
         // Find the neighbours of the given hex, and then the neighbours of those neighbours. 
         // To avoid adding the same hex more than once, use Set instead of List, as that leaves it to the RTE to avoid duplicates 
-            
         Set<Hex> ret_val = new HashSet<>();    // Set of hexes to be returned 
-        LinkedList<Hex> queue = new LinkedList<>(); 
-        LinkedList<Integer> queueR = new LinkedList<>(); 
-        
-        ret_val.add(hex); 
-        if (radius < 1) return ret_val;
-        
-        queue.add(hex); 
+        LinkedList<Hex> queue = new LinkedList<>();
+        LinkedList<Integer> queueR = new LinkedList<>();
+
+        ret_val.add(hex);
+        if (radius < 1) {
+            return ret_val;
+        }
+
+        queue.add(hex);
         queueR.add(new Integer(0));
-        while (!queue.isEmpty()) { 
-            Hex father = queue.pop();  
+        while (!queue.isEmpty()) {
+            Hex father = queue.pop();
             int r = queueR.pop().intValue();
-            Hex[] neighbours = father.getNeighbours(); 
-            for (Hex child : neighbours) { 
-                if (child != null && ret_val.add(child)) { 
-                    int child_r = r + 1; 
-                    if (child_r < radius) { 
-                        queue.add(child); 
+            Hex[] neighbours = father.getNeighbours();
+            for (Hex child : neighbours) {
+                if (child != null && ret_val.add(child)) {
+                    int child_r = r + 1;
+                    if (child_r < radius) {
+                        queue.add(child);
                         queueR.add(new Integer(child_r));
-                    } 
-                } 
-            } 
-        } 
-        return ret_val; 
+                    }
+                }
+            }
+        }
+        return ret_val;
     }
 }

@@ -243,7 +243,7 @@ public class Unit  implements Serializable{
         for (int i = 0; i < spotted.length; i++) {
             spotted[i] = false;
         }
-        
+        spotted[owner] = true;
         selected = false;
         routed = false;
     }

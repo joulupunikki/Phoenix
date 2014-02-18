@@ -709,6 +709,45 @@ public class SU extends State {
     public static void pressEndTurnButtonSU() {
     }
 
+    public static void pressSkipStackButtonSU() {
+        LinkedList<Unit> pods = (LinkedList) game.getCargoPods();
+        if (pods.isEmpty()) {
+            JOptionPane.showMessageDialog(gui, "You have moved all of your units.", null, JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        Unit pod = pods.pop();
+        Point p = new Point(pod.x, pod.y);
+        System.out.println("p = " + p);
+        System.out.println("pod x y " + pod.x + " " + pod.y);
+        List<Unit> stack = null;
+        int faction = -1;
+        Point q = null;
+        if (!pod.in_space) {
+            stack = game.getPlanetGrid(pod.p_idx).getHex(p.x, p.y).getStack();
+        } else {
+            Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
+            faction = pod.owner;
+            q = game.resolveSpaceStack(p, faction);
+            stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
+            System.out.println("q = " + q);
+            System.out.println("stack = " + stack);
+        }
+        for (Unit unit : stack) {
+            unit.selected = false;
+        }
+        pod.selected = true;
+        if (pod.in_space) {
+            pod.carrier.selected = true;
+//            p = q;
+        }
+        System.out.println("p = " + p);
+        game.setSelectedPoint(p, faction);
+        System.out.println(game.getSelectedPoint());
+        game.setSelectedFaction(faction);
+        game.setCurrentPlanetNr(pod.p_idx);
+        centerMapOnUnit(pod);
+    }
+
     public static void pressNextStackButtonSU() {
         Point p = game.getSelectedPoint();
         int faction = game.getSelectedFaction();

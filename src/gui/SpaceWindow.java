@@ -36,7 +36,8 @@ public class SpaceWindow extends JPanel {
 
     JButton end_turn;
     JButton next_stack;
-
+    JButton skip_stack;
+    
     public SpaceWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
@@ -90,8 +91,33 @@ public class SpaceWindow extends JPanel {
                 gui.getCurrentState().pressNextStackButton();
             }
         });
+        
+        setUpSkipStack();
     }
 
+        public void setUpSkipStack() {
+        IndexColorModel color_index = gui.getICM();
+        String file_name = "bin/efsbut9.bin";
+                ButtonIcon skip_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, 0, color_index, ws);
+        int file_offset = 2;
+        ButtonIcon skip_stack_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, file_offset, color_index, ws);
+        skip_stack = new JButton();
+        skip_stack.setBorder(null);
+        skip_stack.setIcon(skip_stack_default);
+
+        skip_stack.setPressedIcon(skip_stack_pressed);
+        this.add(skip_stack);
+        skip_stack.setBounds(ws.unit_order_buttons_x, ws.unit_order_buttons_y + ws.unit_order_buttons_h,
+                ws.unit_order_buttons_w, ws.unit_order_buttons_h);
+        skip_stack.setEnabled(true);
+        skip_stack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressSkipStackButton();
+            }
+        });
+    }
+    
     public void setUpInfoText() {
         planet_name_display = new JTextField();
         year_display = new JTextField();

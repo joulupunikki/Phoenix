@@ -18,7 +18,9 @@ public class SW extends State {
     public void pressNextStackButton() {
         SU.pressNextStackButtonSU();
     }
-
+    public void pressSkipStackButton() {
+        SU.pressSkipStackButtonSU();
+    }
     public void pressEndTurnButton() {
         game.endTurn();
         game.setJumpPath(null);

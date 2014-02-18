@@ -57,6 +57,7 @@ import state.SU;
 import state.State;
 import state.StateRef;
 import util.C;
+import util.Comp;
 import util.StackIterator;
 import util.Util;
 import util.WindowSize;
@@ -185,7 +186,7 @@ public class Gui extends JFrame {
 
         loadStructureTiles();
         resources = new Resources(this);
-
+        Comp.setGame(game);
         /*
          * build Gui
          */
@@ -671,6 +672,7 @@ public class Gui extends JFrame {
                 galactic_map.setGame(game);
                 globe_map.setGame(game);
                 State.setGameRef(game);
+                Comp.setGame(game);
                 game.setPath(null);
                 game.setJumpPath(null);
                 Point p = game.getSelectedPoint();

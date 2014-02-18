@@ -89,6 +89,9 @@ public class PW4 extends PW {
     public void pressNextStackButton() {
     }
 
+    public void pressSkipStackButton() {
+    }
+    
     public void pressEndTurnButton() {
     }
 

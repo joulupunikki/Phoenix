@@ -67,9 +67,15 @@ public class Util {
     /**
      * Iterator for going thru Hexes of a planet. Will first go thru column 0
      * then column 1 etc. Semantics: next returns next Hex in order, when all
-     * hexes have been traversed returns null. Usage: HexIter iter =
-     * Util.getHexIter(game, planet); Hex hex = iter.next(); while(hex != null)
-     * { // do stuff hex = iter.next(); }
+     * hexes have been traversed returns null.      <code>
+     * Usage: HexIter iter = Util.getHexIter(game, planet);
+     * Hex hex = iter.next();
+     * while(hex != null)
+     * {
+     *     // do stuff
+     *     hex = iter.next();
+     * }
+     * </code>
      */
     public static class HexIter {
 
@@ -99,6 +105,32 @@ public class Util {
             }
             return next;
         }
+    }
+
+    /**
+     * Returns a List of all current factions cargo pods. Sorted so that pods
+     * are in planet order and for each planet sorted so that pods appear in
+     * resource type order, and for each resource type sorted so that pods
+     * appear with planet side pods first and space pods last.
+     *
+     * @param units
+     * @param game
+     * @return
+     */
+    public static List<Unit> getCargoPods(List<Unit> units, Game game) {
+        List<Unit> pods = new LinkedList<>();
+        int faction = game.getTurn();
+        for (Unit unit : units) {
+            if (unit.owner == faction && unit.type == C.CARGO_UNIT_TYPE) {
+                pods.add(unit);
+            }
+        }
+        Collections.sort(pods, Comp.unit_in_space);
+        Collections.sort(pods, Comp.unit_res_relic);
+        // you probably want this only if universal warehouse off
+        Collections.sort(pods, Comp.unit_pidx);
+
+        return pods;
     }
 
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
