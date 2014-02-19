@@ -110,23 +110,25 @@ public class Structure implements Serializable {
 //    public void tryToBuild(Game game) {
 //        
 //    }
-
     /**
      * Tries to start unit building. Will check for existence of input unit and
-     * TODO resources, if these are not found will put queue on hold.
+     * TODO resources, if these are not found will put queue on hold else will
+     * stash away input unit and subtract resources and start building (not put
+     * queue on hold).
      *
      * @param unit_type
      * @param unit_types
      * @param game
      */
-    public void tryToBuild(int[] unit_type, UnitType[][] unit_types, Game game) {
+    public void tryToStartBuild(int[] unit_type, UnitType[][] unit_types, Game game) {
         int input = unit_types[unit_type[0]][unit_type[1]].unit;
-        boolean input_found = true;
+        System.out.println("input = " + input);
+        boolean input_found = false;
         Unit input_unit = null;
-        List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(this.x, this.y).getStack();
+        // need to use this.p_idx building city may not be on current planet
+        List<Unit> stack = game.getPlanetGrid(this.p_idx).getHex(this.x, this.y).getStack();
         boolean resources_found = false;
         if (input > -1) {
-            input_found = false;
             for (Unit unit : Util.xS(stack)) {
                 if (unit.type == input && unit.t_lvl == 0) {
                     input_found = true;
@@ -138,8 +140,16 @@ public class Structure implements Serializable {
         }
 
         // TODO check for existence of resources
-        if (input_found) { // && resources_found) {
-            // TODO subtract resources
+        resources_found = true;
+
+        on_hold_no_res = false;
+        if ((input > -1 && !input_found) || !resources_found) {
+            on_hold_no_res = true;
+            return;
+        }
+        // TODO subtract resources
+        if (input > -1) {
+
             if (input_unit.carrier != null) {
                 input_unit.carrier.disembark(input_unit);
             } else {
@@ -147,9 +157,6 @@ public class Structure implements Serializable {
             }
             game.deleteUnit(input_unit);
             upgraded = input_unit;
-            on_hold_no_res = false;
-        } else {
-            on_hold_no_res = true;
         }
     }
 
@@ -162,12 +169,13 @@ public class Structure implements Serializable {
     public void addToQueue(int[] unit_type, UnitType[][] unit_types, Game game) {
         if (build_queue.isEmpty()) {
             turns_left = unit_types[unit_type[0]][unit_type[1]].turns_2_bld;
-            tryToBuild(unit_type, unit_types, game);
+            tryToStartBuild(unit_type, unit_types, game);
         }
         build_queue.add(unit_type);
     }
 
     /**
+     * Removes unit form build queue. If index in queue was 0 check if turns
      *
      * @param index the value of index
      * @param unit_types the value of unit_types
@@ -176,34 +184,39 @@ public class Structure implements Serializable {
     public void removeFromQueue(int index, UnitType[][] unit_types, Game game) {
         build_queue.remove(index);
         if (index == 0) {
-            if (!on_hold_no_res) {
-                // TODO return resources
-                if (upgraded != null) {
-                    Hex hex = game.findRoom(this, upgraded.move_type);
-                    if (hex != null) {
-                        List<Unit> stack = hex.getStack();
-                        stack.add(upgraded);
-                        game.getUnits().add(upgraded);
-                        game.getUnmovedUnits().add(upgraded);
-                        game.unSpot(stack);
-                        game.getHexProc().spotProc(hex, stack);
-                    } else {
-                        game.getFaction(game.getTurn()).addMessage(new Message(null, C.Msg.CITY_FULL, game.getYear(), this));
+            if (turns_left != 0) {
+                if (!on_hold_no_res) {
+                    // TODO return resources
+                    if (upgraded != null) {
+                        System.out.println("game = " + game);
+                        Hex hex = game.findRoom(this, upgraded.move_type);
+                        System.out.println("hex = " + hex);
+                        if (hex != null) {
+                            List<Unit> stack = hex.getStack();
+                            stack.add(upgraded);
+                            game.getUnits().add(upgraded);
+                            game.getUnmovedUnits().add(upgraded);
+                            game.unSpot(stack);
+                            game.getHexProc().spotProc(hex, stack);
+                        } else {
+                            game.getFaction(game.getTurn()).addMessage(new Message(null, C.Msg.CITY_FULL, game.getYear(), this));
+                        }
+                        upgraded = null;
                     }
+                } else {
+                    on_hold_no_res = false;
                 }
-            } else {
-                on_hold_no_res = false;
             }
 
             if (!build_queue.isEmpty()) {
                 int[] u = build_queue.getFirst();
                 turns_left = unit_types[u[0]][u[1]].turns_2_bld;
-                tryToBuild(u, unit_types, game);
+                tryToStartBuild(u, unit_types, game);
             }
         }
     }
 
-    public Unit buildUnits(UnitType[][] unit_types) {
+    public Unit buildUnits(UnitType[][] unit_types, Game game, Hex hex) {
         Unit unit = null;
         turns_left--;
         if (turns_left == 0) {
@@ -214,8 +227,12 @@ public class Structure implements Serializable {
             unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;
             unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
             unit.type_data = unit_types[u_type[0]][u_type[1]];
-            removeFromQueue(0, unit_types, null);
             upgraded = null;
+            hex.addUnit(unit);
+            // called before resetUnmovedUnits();
+            game.getUnits().add(unit);
+            removeFromQueue(0, unit_types, game);
+
         }
         return unit;
     }

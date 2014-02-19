@@ -7,6 +7,7 @@ package gui;
 
 import dat.UnitType;
 import galaxyreader.Structure;
+import galaxyreader.Unit;
 import game.Game;
 import java.awt.Color;
 import java.awt.Component;
@@ -40,6 +41,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import state.PW1;
 import util.C;
 import util.Comp;
 import util.Util;
@@ -75,7 +77,7 @@ public class BuildPanel extends JPanel {
     public JList getPlanetList() {
         return planet_list;
     }
-    
+
     public void zeroBuild() {
         if (build_table.getRowCount() != 0) {
             ((BuildTableModel) build_table.getModel()).setRowCount(0);
@@ -140,7 +142,7 @@ public class BuildPanel extends JPanel {
                     System.out.println("Double clicked row " + row);
                     int selected_city = city_table.getSelectedRow();
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
-                    city.removeFromQueue(row, game.getUnitTypes(), null);
+                    city.removeFromQueue(row, game.getUnitTypes(), game);
                     setQueueData(null, city);
                     planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);
@@ -194,6 +196,16 @@ public class BuildPanel extends JPanel {
                     int[] tmp = (int[]) build_table.getValueAt(row, 0);
                     int[] unit = {tmp[0], tmp[1]};
                     city.addToQueue(unit, game.getUnitTypes(), game);
+                    // if input unit was alone in selected stack
+                    Point q = game.getSelectedPoint();
+                    if (q != null) {
+                        List<Unit> stack = game.getSelectedStack();
+                        if (stack.isEmpty()) {
+                            game.setSelectedPoint(null, -1);
+                            game.setSelectedFaction(-1);
+                            gui.setCurrentState(PW1.get());
+                        }
+                    }
                     setQueueData(null, city);
                     planetSelected(null, -1);
                     city_table.setRowSelectionInterval(selected_city, selected_city);
@@ -273,11 +285,11 @@ public class BuildPanel extends JPanel {
         int len = lm.getSize();
         int selected = -1;
         for (int i = 0; i < len; i++) {
-            if ( ((Integer)lm.getElementAt(i)).intValue() == planet) {
+            if (((Integer) lm.getElementAt(i)).intValue() == planet) {
                 selected = i;
                 break;
             }
-            
+
         }
         planet_list.setSelectedIndex(selected);
     }
@@ -290,16 +302,16 @@ public class BuildPanel extends JPanel {
             if (((Structure) tm.getValueAt(i, 0)) == city) {
                 selected = i;
             }
-            
+
         }
-        
+
         city_table.addRowSelectionInterval(selected, selected);
-        
+
     }
-    
+
     /**
      * If nr != -1 use nr as value of selected planet else read value from list.
-     * 
+     *
      * @param e the value of e
      * @param nr the value of nr
      */
@@ -308,15 +320,15 @@ public class BuildPanel extends JPanel {
 
         int planet = -1;
         if (nr == -1) {
-        Object tmp = planet_list.getSelectedValue();
+            Object tmp = planet_list.getSelectedValue();
 
-        if (tmp == null) {
-            return;
-        }
-        planet = ((Integer) tmp).intValue();
-        if (planet == -1) {
-            return;
-        }
+            if (tmp == null) {
+                return;
+            }
+            planet = ((Integer) tmp).intValue();
+            if (planet == -1) {
+                return;
+            }
         } else {
             planet = nr;
         }
@@ -454,7 +466,6 @@ public class BuildPanel extends JPanel {
         column = queue_table.getColumnModel().getColumn(1);
         column.setPreferredWidth(ws.queue_table_cell_1_width);
     }
-
 
     public void citySelected(ListSelectionEvent e) {
 

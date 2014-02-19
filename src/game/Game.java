@@ -1116,18 +1116,17 @@ public class Game implements Serializable {
                     C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
                     Hex hex = findRoom(city, move);
                     if (hex != null) {
-                        unit = city.buildUnits(unit_types);
-                        hex.addUnit(unit);
-                        units.add(unit);
-                        // called before resetUnmovedUnits();
+                        unit = city.buildUnits(unit_types, this, hex);
+
+                        
                     } else {
                         factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
                     }
                 } else {
-                    city.buildUnits(unit_types);
+                    city.buildUnits(unit_types, this, null);
                 }
             } else {
-                city.tryToBuild(city.build_queue.getFirst(), unit_types, this);
+                city.tryToStartBuild(city.build_queue.getFirst(), unit_types, this);
             }
         }
     }
@@ -1148,6 +1147,7 @@ public class Game implements Serializable {
 
         int tile_set = planets.get(city.p_idx).tile_set_type;
         Hex[] neighbors = hex.getNeighbours();
+        test:
         for (int i = 0; i < neighbors.length && !found; i++) {
             hex = neighbors[i];
             Structure city_h = hex.getStructure();
@@ -1167,7 +1167,7 @@ public class Game implements Serializable {
                     boolean[] terrain = hex.getTerrain();
                     for (int j = 0; j < terrain.length; j++) {
                         if (terrain[j] && terr_cost[j][tile_set][move.ordinal()] == 0) {
-                            continue;
+                            continue test;
                         }
                     }
                 }

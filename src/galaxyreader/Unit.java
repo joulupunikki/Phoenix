@@ -112,9 +112,9 @@ public class Unit  implements Serializable{
         this.on_loan = false;
         spotted = new boolean[14];
         for (int i = 0; i < spotted.length; i++) {
-            spotted[i] = false;
-            
+            spotted[i] = false;            
         }
+        spotted[owner] = true;
         this.selected = false;
         this.routed = false;
         this.type_data = null;
