@@ -110,7 +110,8 @@ public class SU extends State {
         int map_point_x = p.x;
         int map_point_y = p.y;
 
-        List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y).getStack();
+        Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y);
+        List<Unit> stack = hex.getStack();
 
         if (!stack.isEmpty()) {
 
@@ -145,6 +146,12 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
 
         System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
+        
+        Structure city = hex.getStructure();
+        if (stack.isEmpty() && city != null && city.owner == game.getTurn()) {
+            gui.showCityDialog(game.getCurrentPlanetNr(), city);
+        }
+        
     }
 
     public static Point getSpaceMapClickPoint(MouseEvent e) {

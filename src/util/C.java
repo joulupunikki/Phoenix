@@ -5,6 +5,8 @@
 package util;
 
 import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 /**
  * A class containing constants used in project Phoenix classes.
@@ -237,6 +239,9 @@ public class C {
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
     public static final int STARTING_FIREBIRDS = 4500;
+    
+    public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
+    
     /**
      * Prints out the constants which determine unit, structure and planet
      * allegiance. For debugging purposes.

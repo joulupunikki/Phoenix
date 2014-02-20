@@ -203,6 +203,11 @@ public class PlanetWindow extends JPanel {
             }
         }
         gui.enableLaunchButton(enable_launch);
+        if (enable_build) {
+            build.setBorder(C.GOLD_BORDER);
+        } else {
+            build.setBorder(null);
+        }
         build.setEnabled(enable_build);
 
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);

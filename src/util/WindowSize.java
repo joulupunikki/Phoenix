@@ -155,6 +155,23 @@ public class WindowSize {
     public int build_button_y_offset = 161;
     public int build_button_w = 50;
     public int build_button_h = 15;
+    public int city_build_button_w = 50;
+    public int city_build_button_h = 15;
+    public int city_build_button_x_offset = 10;
+    public int city_build_button_y_offset = planet_map_height / 3 - city_build_button_h - 10;
+
+    public int city_exit_button_w = 50;
+    public int city_exit_button_h = 15;
+    public int city_exit_button_x_offset = planet_map_width - city_exit_button_w - 10;
+    public int city_exit_button_y_offset = planet_map_height / 3 - city_exit_button_h - 10;
+
+    public int city_window_w = build_window_width;
+    public int city_window_h = planet_map_height / 3 + 40;
+
+    public int city_name_display_x_offset = 10;
+    public int city_name_display_y_offset = 10;
+    public int city_name_display_w = 50;
+    public int city_name_display_h = 15;
 
     public WindowSize(boolean is_double) {
 
@@ -312,7 +329,18 @@ public class WindowSize {
             build_button_y_offset *= 2;
             build_button_w *= 2;
             build_button_h *= 2;
+            city_build_button_x_offset *= 2;
+            city_build_button_y_offset *= 2;
+            city_build_button_w *= 2;
+            city_build_button_h *= 2;
 
+            city_window_w *= 2;
+            city_window_h *= 2;
+
+            city_name_display_x_offset *= 2;
+            city_name_display_y_offset *= 2;
+            city_name_display_w *= 2;
+            city_name_display_h *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 
