@@ -5,9 +5,11 @@
  */
 package gui;
 
+import dat.EfsIni;
 import dat.TerColor;
 import dat.UnitSpot;
 import java.awt.Color;
+import java.util.Properties;
 import util.C;
 import util.UtilG;
 
@@ -21,6 +23,8 @@ public class Resources {
     private double[][][] unit_spot;
     private Color[] colors;
     private int[][] ter_color;
+    private Properties efs_ini;
+    
     
     public Resources(Gui gui) {
 
@@ -28,6 +32,7 @@ public class Resources {
         unit_spot = UnitSpot.readUnitSpot();
         setColors(gui.getPallette());
         ter_color = TerColor.readTerColor();
+        efs_ini = EfsIni.readEFSINI();
     }
 
     public void setColors(byte[][] pallette) {
