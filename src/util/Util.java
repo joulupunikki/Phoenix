@@ -564,6 +564,11 @@ public class Util {
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
             g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
         }
+        
+        if(e.turns_starving > 0) {    // Show if unit starving - RSW
+            g.setColor(Color.RED);
+            g.drawString("!", x + (int) (side * 0.45), y + (int) (side * 0.6));         
+        }
     }
 
     public static void drawStackDisplay(Graphics g, Game game, Point p, int faction) {

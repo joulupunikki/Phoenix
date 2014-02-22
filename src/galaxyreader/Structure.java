@@ -31,7 +31,7 @@ public class Structure  implements Serializable{
     int stack_info;      //union short/short
     int used_unitt_lvl;    //short
     int tech_type; //short
-    int health; //short
+    public int health; //short - RSW
     int sect; //short
     int Flags; //UINT
     int unit_health; //short 
@@ -39,6 +39,7 @@ public class Structure  implements Serializable{
     int temp_count2; //short 
     int temp_count3; //short 
     int Damage;     //short 
+    public int turns_starving;    // RSW
 
     /**
      * Creates a structure object. Reads in coordinates, owner, loyalty and other fields.
@@ -81,7 +82,8 @@ public class Structure  implements Serializable{
         temp_count = 0;  
         temp_count2 = 0; 
         temp_count3 = 0; 
-        Damage = 0;     
+        Damage = 0;  
+        turns_starving = 0;    // RSW
     }
     /**
      * Prints a structure object. Prints coordinates and owner. For debugging purposes.

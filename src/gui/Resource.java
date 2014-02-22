@@ -17,7 +17,7 @@ import util.UtilG;
  *
  * @author joulupunikki
  */
-public class Resources {
+public class Resource {
 
     private int[] color_scaler;
     private double[][][] unit_spot;
@@ -25,8 +25,7 @@ public class Resources {
     private int[][] ter_color;
     private Properties efs_ini;
     
-    
-    public Resources(Gui gui) {
+    public Resource(Gui gui) {
 
         color_scaler = UtilG.scaleColorsToDark(C.GRAY_SCALING_FACTOR, gui.getPallette());
         unit_spot = UnitSpot.readUnitSpot();
@@ -63,4 +62,7 @@ public class Resources {
         return ter_color;
     }
     
+    public Properties getEFSIni() {
+        return efs_ini;
+    }
 }

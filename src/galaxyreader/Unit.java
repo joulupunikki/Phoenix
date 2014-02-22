@@ -65,13 +65,14 @@ public class Unit  implements Serializable{
     // original code
     public boolean in_space;
     boolean is_sentry;
-    boolean is_cargo;
+    boolean is_cargo;     // I don't think this is used. RSW
     boolean on_loan;
     public boolean[] spotted;
     public boolean selected;
     public boolean routed;
     public UnitType type_data;
     public Unit carrier = null; //unit which carries this unit
+    public int turns_starving;    // RSW added
 
     /**
      * Creates a unit object. Reads in coordinates, loyalty, owner and other fields.
@@ -163,11 +164,13 @@ public class Unit  implements Serializable{
         }
         
         selected = false;
+        turns_starving = 0;    // RSW
         
     }
 
     /**
      * Create fresh unit from scratch, not from Galaxy file.
+     * 
      * @param p_idx, x, y: planet and hex co-ordinates of location
      * @param owner: owning faction
      * @param type: type number (position in UNIT.DAT, 0-91)
@@ -175,12 +178,12 @@ public class Unit  implements Serializable{
      * @param res_relic: resource or relic type (cargo pods and relics only, set to 0 for other units)
      * @param amount: quantity of resources (cargo pods only, set to 0 for other units)
      * @param game: needed for access to the unit type table (UNIT.DAT)
-     * @param random: random number seed
+     * 
      * Other Unit fields will be set to defaults.
      * --RSW
      */
  
-    public Unit(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount, Game game, Random random) {
+    public Unit(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount, Game game) {
 
         this.p_idx = p_idx;
         this.x = x;
@@ -193,20 +196,21 @@ public class Unit  implements Serializable{
 
         type_data = game.getUnitTypes()[type][t_lvl];    // Get type data from UNIT.DAT   
         move_type = type_data.move_type;
-        camo = Math.max(type_data.camo + random.nextInt(5) - 2, 0);    //    New unit gets randomized camo value
+        camo = Math.max(type_data.camo + game.getRandom().nextInt(5) - 2, 0);    // New unit gets randomized camo value
+
         
-         System.out.println("Creating new Unit"); //DEBUG
-         System.out.println("p_idx " + p_idx);
-         System.out.println("x "+x);
-         System.out.println("y "+y);
-         System.out.println("owner "+owner);
-         System.out.println("type "+type);
-         System.out.println("t_lvl "+t_lvl);
-         System.out.println("res_relic "+res_relic);
-         System.out.println("amount "+amount);
-         System.out.println("type_data.camo "+type_data.camo);
-         System.out.println("camo "+camo);
-         System.out.println("");
+//         System.out.println("Creating new Unit"); //DEBUG
+//         System.out.println("p_idx " + p_idx);
+//         System.out.println("x "+x);
+//         System.out.println("y "+y);
+//         System.out.println("owner "+owner);
+//         System.out.println("type "+type);
+//         System.out.println("t_lvl "+t_lvl);
+//         System.out.println("res_relic "+res_relic);
+//         System.out.println("amount "+amount);
+//         System.out.println("type_data.camo "+type_data.camo);
+//         System.out.println("camo "+camo);
+//         System.out.println("");
 
         move_points = type_data.move_pts;
         loyalty = 100;
@@ -246,6 +250,7 @@ public class Unit  implements Serializable{
         spotted[owner] = true;
         selected = false;
         routed = false;
+        turns_starving = 0;    // RSW
     }
 
     /**

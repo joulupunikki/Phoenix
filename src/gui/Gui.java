@@ -100,7 +100,7 @@ public class Gui extends JFrame {
 
     private JPopupMenu stack_menu;
 
-    private Resources resources;
+    private Resource resources;
     //stack display window
     private JDialog stack_window;
     private static WindowSize ws;
@@ -156,7 +156,7 @@ public class Gui extends JFrame {
         color_index = loadICM();
 
         unit_icons = Util.loadSquares(C.S_EFSUNIT_BIN, 92, 32 * 32);
-
+        resources = new Resource(this);
         if (args.length == 2) {
             if (Integer.parseInt(args[0]) == 1) {
                 ws = new WindowSize(false);
@@ -170,10 +170,10 @@ public class Gui extends JFrame {
             }
 
             game = new Game(args[1], 14);
-            game.init();
+            game.init(resources);
         } else if (args.length == 0) {
             game = new Game("GALAXY.GAL", 14);
-            game.init();
+            game.init(resources);
             ws = new WindowSize(false);
         } else {
             ws = new WindowSize(false);
@@ -185,7 +185,7 @@ public class Gui extends JFrame {
         loadHexTiles();
 
         loadStructureTiles();
-        resources = new Resources(this);
+
         Comp.setGame(game);
         /*
          * build Gui
@@ -534,7 +534,7 @@ public class Gui extends JFrame {
         }
     }
 
-    public Resources getResources() {
+    public Resource getResources() {
         return resources;
     }
 
@@ -838,8 +838,8 @@ public class Gui extends JFrame {
                 state.pressSpaceButton();
             }
         });
-    }    
-    
+    }
+
     public void setMenus(boolean visible) {
         if (visible) {
             this.setJMenuBar(menubar);
