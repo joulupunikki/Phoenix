@@ -155,6 +155,12 @@ public class Structure implements Serializable {
             } else {
                 stack.remove(input_unit);
             }
+            if (!input_unit.cargo_list.isEmpty()) {
+                for (Unit unit : input_unit.cargo_list) {
+                    input_unit.disembark(unit);
+                    stack.add(unit);
+                }
+            }
             game.deleteUnit(input_unit);
             upgraded = input_unit;
         }

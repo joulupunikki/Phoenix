@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -23,7 +25,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -61,6 +65,7 @@ public class BuildPanel extends JPanel {
     private JTable city_table;
     private JTable build_table;
     private JTable queue_table;
+    private JButton exit;
     private static Object[] build_table_header = {"Unit", "Turns Left"};
     private static Object[] city_table_header = {"City", "Building"};
 //    private Object[][] city_table_data;
@@ -71,7 +76,25 @@ public class BuildPanel extends JPanel {
         ws = Gui.getWindowSize();
         game = gui.getGame();
         addLists();
+        setUpButtons();
 //        List<Planet> planets = game.getPlanets();
+    }
+
+    public void setUpButtons() {
+        exit = new JButton("Exit");
+        exit.setFont(ws.font_default);
+        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(exit);
+        exit.setBounds(ws.build_exit_button_x_offset, ws.build_exit_button_y_offset,
+                ws.build_exit_button_w, ws.build_exit_button_h);
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                clearSelection();
+                zeroLists();
+                gui.getBuildWindow().setVisible(false);
+            }
+        });
     }
 
     public JList getPlanetList() {

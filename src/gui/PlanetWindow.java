@@ -38,6 +38,7 @@ public class PlanetWindow extends JPanel {
     JTextField planet_name_display;
     JTextField year_display;
     JTextField money_display;
+    JTextField city_name;
     JButton end_turn;
     JButton next_stack;
     JButton build;
@@ -152,6 +153,18 @@ public class PlanetWindow extends JPanel {
         money_display.setBorder(null);
         money_display.setFont(ws.font_default);
 
+        city_name = new JTextField();
+
+        this.add(city_name);
+        city_name.setBounds(ws.info_text_field_x, ws.info_text_field_y + (int) (3.5 * ws.info_text_field_h),
+                ws.info_text_field_w, ws.info_text_field_h);
+        city_name.setBackground(Color.BLACK);
+        city_name.setForeground(C.COLOR_GOLD);
+        city_name.setEditable(false);
+        city_name.setHorizontalAlignment(JTextField.CENTER);
+        city_name.setBorder(null);
+        city_name.setFont(ws.font_default);
+
     }
 
     public void paintComponent(Graphics g) {
@@ -176,14 +189,20 @@ public class PlanetWindow extends JPanel {
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
 
+            Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
+            if (hex.getStructure() != null) {
+                city_name.setText(game.getStrBuild(hex.getStructure().type).name);
+            } else {
+                city_name.setText("");
+            }
+
             if (faction == -1) {
                 List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y).getStack();
                 if (stack.get(0).owner == game.getTurn()) {
-                    Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
-                    
+//                    Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
+
                     if (hex.getStructure() != null) {
                         enable_build = true;
-                        
                     }
 
                     for (Unit unit : stack) {
@@ -202,16 +221,20 @@ public class PlanetWindow extends JPanel {
                 }
             }
         }
+
         gui.enableLaunchButton(enable_launch);
         if (enable_build) {
             build.setBorder(C.GOLD_BORDER);
         } else {
             build.setBorder(null);
         }
+
         build.setEnabled(enable_build);
 
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
-        year_display.setText("A.D. " + game.getYear());
-        money_display.setText("4500 FB");
+        year_display.setText(
+                "A.D. " + game.getYear());
+        money_display.setText(
+                "4500 FB");
     }
 }
