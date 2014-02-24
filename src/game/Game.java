@@ -49,9 +49,10 @@ public class Game implements Serializable {
 //    private PlanetGrid[] planet_grids;
     private int current_planet;
     //faction whose turn it is
-    private int current_faction;    // Not used? RSW
+//    private int current_faction;    // Not used? RSW
     //game year
     private int year;
+    //turn ie the current faction id
     private int turn;
     private boolean[] human_ctrl;
     private Galaxy galaxy;
@@ -59,7 +60,7 @@ public class Game implements Serializable {
     private UnitType[][] unit_types;
     private StrBuild[] str_build;
     private double[][][] terr_cost;
-    private int max_spot_range;
+//    private int max_spot_range;
     private GameResources game_resources;
 
 //    private List<Unit> current_stack;
@@ -1123,15 +1124,13 @@ public class Game implements Serializable {
         } else {
             turn++;
         }
-          
-        
+
         economy.updateEconomy();    //RSW
 
-          
-                 factions[turn].deleteOldMessages(year);
+        factions[turn].deleteOldMessages(year);
         setFactionCities();
         buildUnits();
-          
+
         resetUnmovedUnits();
         resetMovePoints();
         setMaxSpotRange();
@@ -2014,7 +2013,6 @@ public class Game implements Serializable {
 //    public List<Structure> getStructures() {
 //        return structures;
 //    }
-
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }
