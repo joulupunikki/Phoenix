@@ -36,6 +36,15 @@ Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS director
 Changes
 =======
 
+Upcoming in version 0.9.0
+-------------------------
+
+Primary resource harvesting implemented.
+
+Food consumption implemented.
+
+Basic unit building implemented. To build select "orders"->"build units" form menubar or use standard EFS methods. Differs from standard EFS in that on the lower left of the build window you have a list of planets where you have cities. Select planet by  clicking and then on the lower right a list of cities on the planet will be displayed. Select a city by clicking and you will have EFS style selection of buildable units on the upper left and on the upper right you have a build queue. If you click on the build button in planet window or city window the planet and city will be pre-selected so that the current city will be used. Double click on units to add to the build queue. Double click on units in the build queue to remove units from the build queue. The building currently takes into account only input units (queue will be placed on hold if input unit is missing) not available resources or technologies.
+
 New in version 0.8.3
 --------------------
 
