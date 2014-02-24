@@ -129,10 +129,61 @@ public class WindowSize {
     public int globe_map_y_pos = 28;
     public int globe_map_width = 88;
     public int globe_map_height = 63;
+ 
     public int space_button_x_offset = 95;
     public int space_button_y_offset = 25;
     public int space_button_width = 23;
     public int space_button_height = 23;
+ 
+    public int planet_list_cell_w = 100;
+    public int planet_list_cell_h = 10;
+    public int planet_list_x_offset = 0;
+    public int planet_list_y_offset = 209;
+    public int planet_list_width = planet_map_width / 2;
+    public int planet_list_height = planet_map_height - 209;
+    public int city_table_x_offset = planet_map_width / 2;
+    public int city_table_row_height = 10;
+    public int build_window_width = planet_map_width + 18;
+    public int build_window_height = planet_map_height + 40;
+    public int build_table_x_offset = 60;
+    public int build_table_y_offset = 5;
+    public int build_table_width = planet_map_width / 2;
+    public int build_table_height = 105;
+    public int build_table_cell_1_width = build_table_width / 5;
+    public int build_table_cell_0_width = build_table_width - build_table_cell_1_width;
+    public int queue_table_x_offset = 317;
+    public int queue_table_y_offset = 10;
+    public int queue_table_width = 175;
+    public int queue_table_height = 150;
+    public int queue_table_cell_1_width = queue_table_width / 5;
+    public int queue_table_cell_0_width = queue_table_width - queue_table_cell_1_width;
+    public int build_button_x_offset = 60;
+    public int build_button_y_offset = 161;
+    public int build_button_w = 50;
+    public int build_button_h = 15;
+    public int city_build_button_w = 50;
+    public int city_build_button_h = 15;
+    public int city_build_button_x_offset = 10;
+    public int city_build_button_y_offset = planet_map_height / 3 - city_build_button_h - 10;
+
+    public int city_exit_button_w = 50;
+    public int city_exit_button_h = 15;
+    public int city_exit_button_x_offset = planet_map_width - city_exit_button_w - 10;
+    public int city_exit_button_y_offset = planet_map_height / 3 - city_exit_button_h - 10;
+
+    public int city_window_w = build_window_width;
+    public int city_window_h = planet_map_height / 3 + 40;
+
+    public int city_name_display_x_offset = 10;
+    public int city_name_display_y_offset = 10;
+    public int city_name_display_w = 50;
+    public int city_name_display_h = 15;
+
+    public int build_exit_button_w = 50;
+    public int build_exit_button_h = 15;
+    public int build_exit_button_x_offset = planet_map_width - build_exit_button_w - 10;
+    public int build_exit_button_y_offset = planet_map_height / 2 - build_exit_button_h - 10;
+ 
 
     public WindowSize(boolean is_double) {
 
@@ -263,6 +314,55 @@ public class WindowSize {
             globe_map_y_pos *= 2;
             globe_map_width *= 2;
             globe_map_height *= 2;
+            planet_list_cell_w *= 2;
+            planet_list_cell_h *= 2;
+            planet_list_x_offset *= 2;
+            planet_list_y_offset *= 2;
+            planet_list_width *= 2;
+            planet_list_height *= 2;
+            city_table_x_offset *= 2;
+
+            build_window_width = planet_map_width + 18;
+            build_window_height = planet_map_height + 40;
+            build_table_x_offset *= 2;
+            build_table_y_offset *= 2;
+            build_table_width *= 2;
+            build_table_height *= 2;
+            city_table_row_height *= 2;
+            build_table_cell_0_width *= 2;
+            build_table_cell_1_width *= 2;
+            queue_table_x_offset *= 2;
+            queue_table_y_offset *= 2;
+            queue_table_width *= 2;
+            queue_table_height *= 2;
+            queue_table_cell_1_width *= 2;
+            queue_table_cell_0_width *= 2;
+            build_button_x_offset *= 2;
+            build_button_y_offset *= 2;
+            build_button_w *= 2;
+            build_button_h *= 2;
+            city_build_button_x_offset *= 2;
+            city_build_button_y_offset *= 2;
+            city_build_button_w *= 2;
+            city_build_button_h *= 2;
+
+            city_exit_button_w *= 2;
+            city_exit_button_h *= 2;
+            city_exit_button_x_offset *= 2;
+            city_exit_button_y_offset *= 2;
+
+            city_window_w *= 2;
+            city_window_h *= 2;
+
+            city_name_display_x_offset *= 2;
+            city_name_display_y_offset *= 2;
+            city_name_display_w *= 2;
+            city_name_display_h *= 2;
+
+            build_exit_button_w *= 2;
+            build_exit_button_h *= 2;
+            build_exit_button_x_offset *= 2;
+            build_exit_button_y_offset *= 2;
 
             space_button_x_offset *= 2;
             space_button_y_offset *= 2;

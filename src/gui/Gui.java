@@ -5,14 +5,16 @@
 package gui;
 
 import dat.UnitType;
+import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
-import game.Square;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Point;
@@ -47,6 +49,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -89,6 +92,8 @@ public class Gui extends JFrame {
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
     private CombatWindow combat_window;
+    private BuildPanel build_panel;
+    private JDialog build_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -97,7 +102,8 @@ public class Gui extends JFrame {
     private JMenuItem menu_exit;
     private JMenuItem menu_load;
     private JMenuItem menu_save;
-
+    private JMenu orders_menu;
+    private JMenuItem menu_build;
     private JPopupMenu stack_menu;
 
     private Resource resources;
@@ -106,6 +112,7 @@ public class Gui extends JFrame {
     private static WindowSize ws;
     //reference to Game object
     private Game game;
+//    private static Game game_s;
     //efs 256-color pallette
     private byte[][] pallette;
     private static IndexColorModel color_index;
@@ -128,6 +135,7 @@ public class Gui extends JFrame {
 
     private boolean loadsave_win_up;
     private JDialog loadsave_dialog;
+    private CityDialog city_dialog;
 
     public Gui() throws HeadlessException {
         // set swing component default colors
@@ -185,7 +193,7 @@ public class Gui extends JFrame {
         loadHexTiles();
 
         loadStructureTiles();
-
+ 
         Comp.setGame(game);
         /*
          * build Gui
@@ -234,7 +242,43 @@ public class Gui extends JFrame {
 
         menubar.add(file_menu);
 
+        orders_menu = new JMenu("Orders");
+        menu_build = new JMenuItem("Build units");
+
+        menu_build.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showBuildWindow(e, -1, null);
+            }
+        });
+
+        orders_menu.add(menu_build);
+        menubar.add(orders_menu);
         this.setJMenuBar(menubar);
+
+        build_window = new JDialog(this, true);
+        build_window.setLayout(null);
+        build_window.setPreferredSize(new Dimension(ws.planet_map_width + 50,
+                ws.planet_map_height));
+        System.out.println("this.getX() = " + this.getX());
+        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.planet_map_width + 50, ws.planet_map_height);
+        build_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        build_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                build_panel.clearSelection();
+                build_panel.zeroLists();
+                build_window.setVisible(false);
+            }
+        });
+        build_panel = new BuildPanel(this);
+        build_panel.setLayout(null);
+        build_window.add(build_panel);
+        build_panel.setBounds(0, 0,
+                ws.planet_map_width, ws.planet_map_height);
+        build_window.add(build_panel);
+        build_window.pack();
 
         /*
          * create planet map display
@@ -362,6 +406,7 @@ public class Gui extends JFrame {
         setMouseCursor();
 
         setUpStackMenu();
+        setUpCityDialog3(game, ws);
 
 //        State.setReferences(this, game, ws);
         state = MM1.get();
@@ -437,6 +482,28 @@ public class Gui extends JFrame {
         Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
         cycle_timer.start();
 
+    }
+
+    /**
+     * If planet != -1 set planet selected and city selected in Build Panel with
+     * planet and city.
+     *
+     * @param e not used
+     * @param planet
+     * @param city
+     */
+    public void showBuildWindow(ActionEvent e, int planet, Structure city) {
+        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.build_window_width, ws.build_window_height);
+        build_panel.setPlanets();
+        if (planet != -1) {
+            build_panel.planetSelected(null, planet);
+            build_panel.setSelectedPlanet(planet);
+            build_panel.setSelectedCity(city);
+            build_panel.citySelected(null);
+        }
+        build_window.setVisible(true);
     }
 
     public void showStackMenu(MouseEvent e) {
@@ -538,6 +605,14 @@ public class Gui extends JFrame {
         return resources;
     }
 
+    public BuildPanel getBuildPanel() {
+        return build_panel;
+    }
+
+    public JDialog getBuildWindow() {
+        return build_window;
+    }
+    
     public void setLoadSaveWinUp(boolean state) {
         loadsave_win_up = state;
     }
@@ -550,6 +625,238 @@ public class Gui extends JFrame {
         loadsave_dialog.dispose();
     }
 
+    public void showCityDialog(int planet, Structure city) {
+        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.city_window_w, ws.city_window_h);
+        city_dialog.setPlanet(planet);
+        city_dialog.setCity(city);
+        city_dialog.setVisible(true);
+    }
+
+    private class CityDialog extends JDialog {
+
+        private int planet;
+        private Structure city;
+        private CityPanel city_panel;
+        private Game game;
+        private WindowSize ws;
+
+        public CityDialog(Frame owner, String title, boolean modal, Game game, WindowSize ws) {
+            super(owner, title, modal);
+            this.game = game;
+            this.ws = ws;
+            setUp();
+        }
+
+        public void setUp() {
+            city_panel = new CityPanel();
+            city_panel.setLayout(null);
+            city_panel.setBounds(0, 0, ws.build_window_width, ws.build_window_height);
+            city_panel.setBackground(Color.DARK_GRAY);
+            city_panel.setForeground(Color.DARK_GRAY);
+            this.add(city_panel);
+//        dialog.setVisible(true);
+        }
+
+        /**
+         * @return the planet
+         */
+        public int getPlanet() {
+            return planet;
+        }
+
+        /**
+         * @param planet the planet to set
+         */
+        public void setPlanet(int planet) {
+            this.planet = planet;
+        }
+
+        /**
+         * @return the city
+         */
+        public Structure getCity() {
+            return city;
+        }
+
+        /**
+         * @param city the city to set
+         */
+        public void setCity(Structure city) {
+            this.city = city;
+            city_panel.setCityName(game.getStrBuild(city.type).name);
+        }
+    }
+
+//    public void setUpCityDialog() {
+//        city_dialog = new CityDialog(this, null, true);
+//        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
+//                this.getY() + ws.planet_map_y_offset,
+//                ws.planet_map_width + 50, ws.planet_map_height / 3);
+//        city_dialog.setDefaultCloseOperation(
+//                JDialog.DO_NOTHING_ON_CLOSE);
+//        city_dialog.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent we) {
+//                ;
+//            }
+//        });
+//        JPanel city_panel = new JPanel();
+//        city_panel.setLayout(null);
+//        city_panel.setBounds(0, 0, ws.build_window_width, ws.build_window_height);
+//        city_panel.setBackground(Color.DARK_GRAY);
+//        city_panel.setForeground(Color.DARK_GRAY);
+//
+//        JTextField city_name_display = new JTextField();
+//
+//        city_panel.add(city_name_display);
+//        city_name_display.setBounds(ws.city_name_display_x_offset, ws.city_name_display_y_offset,
+//                ws.city_name_display_w, ws.city_name_display_h);
+//        city_name_display.setBackground(Color.BLACK);
+//        city_name_display.setForeground(C.COLOR_GOLD);
+//        city_name_display.setEditable(false);
+//        city_name_display.setHorizontalAlignment(JTextField.CENTER);
+//        city_name_display.setBorder(null);
+//        city_name_display.setFont(ws.font_default);
+//        JButton build = new JButton("Build");
+//        build.setFont(ws.font_default);
+//        build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+//        city_panel.add(build);
+//        build.setBounds(ws.city_build_button_x_offset, ws.city_build_button_y_offset,
+//                ws.city_build_button_w, ws.city_build_button_h);
+//        build.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                city_dialog.setVisible(false);
+//                showBuildWindow(null, city_dialog.getPlanet(), city_dialog.getCity());
+//            }
+//        });
+//
+//        JButton exit = new JButton("Exit");
+//        exit.setFont(ws.font_default);
+//        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+//        city_panel.add(exit);
+//        exit.setBounds(ws.city_exit_button_x_offset, ws.city_exit_button_y_offset,
+//                ws.city_exit_button_w, ws.city_exit_button_h);
+//        exit.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                city_dialog.setVisible(false);
+//            }
+//        });
+//        city_dialog.add(city_panel);
+//        city_dialog.pack();
+////        dialog.setVisible(true);
+//    }
+    public void setUpCityDialog3(Game game, WindowSize ws) {
+        city_dialog = new CityDialog(this, null, true, game, ws);
+        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.city_window_w, ws.city_window_h);
+//                ws.planet_map_width + 50, ws.planet_map_height / 3);
+        city_dialog.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        city_dialog.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                ;
+            }
+        });
+
+//        city_dialog.add(city_panel);
+        city_dialog.pack();
+//        dialog.setVisible(true);
+    }
+
+    private class CityPanel extends JPanel {
+
+        JTextField city_name_display;
+        JButton build;
+        JButton exit;
+
+        public CityPanel() {
+            setUpPanel();
+        }
+
+        public void setCityName(String name) {
+            city_name_display.setText(name);
+        }
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(Color.DARK_GRAY);
+            g.fillRect(0, 0, ws.build_window_width, ws.build_window_height);
+        }
+
+        public void setUpPanel() {
+
+            city_name_display = new JTextField();
+
+            this.add(city_name_display);
+            city_name_display.setBounds(ws.city_name_display_x_offset, ws.city_name_display_y_offset,
+                    ws.city_name_display_w, ws.city_name_display_h);
+            city_name_display.setBackground(Color.DARK_GRAY);
+            city_name_display.setForeground(C.COLOR_GOLD);
+            city_name_display.setEditable(false);
+            city_name_display.setHorizontalAlignment(JTextField.CENTER);
+            city_name_display.setBorder(null);
+            city_name_display.setFont(ws.font_default);
+            build = new JButton("Build");
+            build.setFont(ws.font_default);
+            build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(build);
+            build.setBounds(ws.city_build_button_x_offset, ws.city_build_button_y_offset,
+                    ws.city_build_button_w, ws.city_build_button_h);
+            build.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    city_dialog.setVisible(false);
+                    showBuildWindow(null, city_dialog.getPlanet(), city_dialog.getCity());
+                }
+            });
+
+            exit = new JButton("Exit");
+            exit.setFont(ws.font_default);
+            exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(exit);
+            exit.setBounds(ws.city_exit_button_x_offset, ws.city_exit_button_y_offset,
+                    ws.city_exit_button_w, ws.city_exit_button_h);
+            exit.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    city_dialog.setVisible(false);
+                }
+            });
+        }
+    }
+
+//    public void setUpCityDialog2() {
+//        JDialog city_dialog;
+//        CityPanel city_panel;
+//                city_dialog = new JDialog(this, true);
+//        city_dialog.setLayout(null);
+//        city_dialog.setPreferredSize(new Dimension(ws.planet_map_width + 50,
+//                ws.planet_map_height));
+//        System.out.println("this.getX() = " + this.getX());
+//        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
+//                this.getY() + ws.planet_map_y_offset,
+//                ws.planet_map_width + 50, ws.planet_map_height);
+//        city_dialog.setDefaultCloseOperation(
+//                JDialog.DO_NOTHING_ON_CLOSE);
+//        city_dialog.addWindowListener(new WindowAdapter() {
+//            public void windowClosing(WindowEvent we) {
+//                city_panel.clearSelection();
+//                city_panel.zeroLists();
+//                city_dialog.setVisible(false);
+//            }
+//        });
+//        city_panel = new BuildPanel(this);
+//        city_panel.setLayout(null);
+//        city_dialog.add(city_panel);
+//        city_panel.setBounds(0, 0,
+//                ws.planet_map_width, ws.planet_map_height);
+//        city_dialog.add(city_panel);
+//        city_dialog.pack();
+//    }
     public JDialog showProgressBar(String text) {
         JDialog dialog = new JDialog(this, text, true);
         int p_width = this.getWidth();
@@ -671,6 +978,7 @@ public class Gui extends JFrame {
                 combat_window.setGame(game);
                 galactic_map.setGame(game);
                 globe_map.setGame(game);
+                build_panel.setGame(game);
                 State.setGameRef(game);
                 Comp.setGame(game);
                 game.setPath(null);
@@ -957,6 +1265,10 @@ public class Gui extends JFrame {
         return game;
     }
 
+//    public static Game getGameS() {
+//        return game_s;
+//    }
+//    
     public byte[][] getPallette() {
         return pallette;
     }

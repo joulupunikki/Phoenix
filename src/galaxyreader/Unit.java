@@ -72,8 +72,63 @@ public class Unit  implements Serializable{
     public boolean routed;
     public UnitType type_data;
     public Unit carrier = null; //unit which carries this unit
+ 
     public int turns_starving;    // RSW added
 
+ 
+
+    public Unit(int p_idx, int x, int y, int owner) {
+        this.p_idx = p_idx;
+        this.x = x;
+        this.y = y;
+        this.loyalty = 100;
+        this.owner = owner;
+        this.prev_owner = 0;
+        this.type = 0;
+        this.t_lvl = 0;
+//        this.move_type = move_type;
+        this.orders = 0;
+        this.experience = 0;
+        this.move_points = 0;
+        this.res_relic = 0;
+        this.amount = 0;
+        this.health = 100;
+        this.health_tmp = 100;
+        this.sect = 0;
+        this.unit_no = 0;
+        this.flags = 0;
+        this.used_unit_type = 0;
+        this.used_unitt_lvl = 0;
+        this.camo = 0;
+        this.dest_x = 0;
+        this.dest_y = 0;
+        this.move_cost = 0;
+        this.t_flags = 0;
+        this.ai_orders = 0;
+        this.ai_data = 0;
+        this.ai_data2 = 0;
+        this.wait_level = 0;
+        this.unit_list = null;
+        this.group_list = null;
+        this.cargo_list = new LinkedList<>();
+        this.group_end_mark = 0;
+        this.in_space = false;
+        this.is_sentry = false;
+        this.is_cargo = false;
+        this.on_loan = false;
+        spotted = new boolean[14];
+        for (int i = 0; i < spotted.length; i++) {
+            spotted[i] = false;            
+        }
+        spotted[owner] = true;
+        this.selected = false;
+        this.routed = false;
+        this.type_data = null;
+    }
+    
+    
+    
+ 
     /**
      * Creates a unit object. Reads in coordinates, loyalty, owner and other fields.
      * @param fc the FileChannel which contains the file from which the data is

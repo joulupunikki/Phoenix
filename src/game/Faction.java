@@ -1,6 +1,7 @@
 
 package game;
 
+ 
 import dat.EfsIni;
 import dat.StrBuild;
 import dat.UnitType;
@@ -31,7 +32,8 @@ public class Faction implements Serializable {
     private int firebirds;
     private int tax_rate;
     private int tithe_rate;
-    private int pay_rate;    
+    private int pay_rate;
+    List<Message> messages = new LinkedList<>();
 
     public Faction(Game game) {
         
@@ -44,5 +46,35 @@ public class Faction implements Serializable {
         pay_rate = 100;
         
     }
+    
+        public void addMessage(Message m) {
+        messages.add(m);
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void deleteOldMessages(int year) {
+        ListIterator<Message> iter = messages.listIterator();
+        Message m = null;
+        while (iter.hasNext()) {
+            m = iter.next();
+            if (year > m.year) {
+                iter.remove();
+            }
+        }
+
+    }
+
+    public static Faction[] createFactions(Game game) {
+        Faction[] factions = new Faction[C.NR_FACTIONS];
+        for (int i = 0; i < factions.length; i++) {
+            factions[i] = new Faction(game);
+
+        }
+        return factions;
+    }
 
 }
+ 

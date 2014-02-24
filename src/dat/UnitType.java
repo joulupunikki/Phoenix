@@ -126,7 +126,7 @@ public class UnitType implements Serializable {
         move_type = processMoveType(stats.substring(m.start(), m.end()));
         Util.debugPrint("MoveType: " + move_type);
 
-        stats_pattern = Pattern.compile("[0-9]+");
+        stats_pattern = Pattern.compile("-?[0-9]+");
 
         m = stats_pattern.matcher(stats);
 

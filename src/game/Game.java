@@ -67,9 +67,12 @@ public class Game implements Serializable {
     private List<JumpGate> jump_gates;
     private List<Unit> units;
     private List<Structure> structures;
+
     private Faction[] factions = new Faction[C.NR_FACTIONS];    // RSW
     private List<Unit> unmoved_units;
     private List<Unit> cargo_pods;
+    private List<Structure> faction_cities;
+
 //    private List<Unit> combat_stack_a;
 //    private List<Unit> combat_stack_b;
 //    private String combat_type;
@@ -106,11 +109,15 @@ public class Game implements Serializable {
         human_ctrl = new boolean[14];
         human_ctrl[0] = true;
         unmoved_units = new LinkedList<>();
+        faction_cities = new LinkedList<>();
         this.current_planet = current_planet;
         year = 4956;
         turn = -1;
         hex_proc = new HexProc(this);
+
         game_resources = new GameResources();
+        Structure.setCanBuild(unit_types);
+//        factions = Faction.createFactions();
 
         placeUnits();
         placeStructures();
@@ -124,7 +131,7 @@ public class Game implements Serializable {
         setMaxSpotRange();
 
         battle = new Battle();
-        
+
         for (int i = 0; i < str_build.length; i++) {
             System.out.println("str_build = " + str_build[i].name);
         }
@@ -140,13 +147,13 @@ public class Game implements Serializable {
     }
 
     public void init(Resource gui_resource) {
-        
+
         battle.battleInit(random, damage, target, terr_cost, this, planets);
-        
+
         efs_ini = EfsIni.readEfsIni(gui_resource.getEFSIni());
         resources = new Resources(this);
         economy = new Economy(this, resources);
-        
+
         for (int i = 0; i < C.NR_FACTIONS; i++) {
             factions[i] = new Faction(this);
         }
@@ -206,6 +213,11 @@ public class Game implements Serializable {
 //    }
     public List<JumpGate> getJumpGates() {
         return jump_gates;
+    }
+
+    public void deleteUnit2(Unit u) {
+        units.remove(u);
+        unmoved_units.remove(u);
     }
 
     public List<Unit> getCombatStack(String stack) {
@@ -1030,19 +1042,19 @@ public class Game implements Serializable {
     public int getTurn() {
         return turn;
     }
-    
+
     public Random getRandom() {
         return random;
     }
-    
+
     public EfsIni getEfs_ini() {
         return efs_ini;
     }
-   
+
     public List<Planet> getPlanets() {
         return planets;
     }
-        
+
     public List<Unit> getUnits() {
         return units;
     }
@@ -1111,9 +1123,15 @@ public class Game implements Serializable {
         } else {
             turn++;
         }
-
+          
+        
         economy.updateEconomy();    //RSW
 
+          
+                 factions[turn].deleteOldMessages(year);
+        setFactionCities();
+        buildUnits();
+          
         resetUnmovedUnits();
         resetMovePoints();
         setMaxSpotRange();
@@ -1122,6 +1140,103 @@ public class Game implements Serializable {
 
     public List<Unit> getCargoPods() {
         return cargo_pods;
+    }
+
+    /**
+     * Will try to build units. In building city or if it has full stack then
+     * will try surrounding hexes, if there are no enemy units or cities or full
+     * stack or impassable terrain will build unit there. If it fails to build
+     * it will send city full message to owning faction.
+     */
+    public void buildUnits() {
+        for (Structure city : faction_cities) {
+            Unit unit = null;
+            if (!city.on_hold_no_res) {
+                if (!city.build_queue.isEmpty() && city.turns_left == 1) {
+                    System.out.println("Here");
+                    int[] u_t = city.build_queue.getFirst();
+                    C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
+                    Hex hex = findRoom(city, move);
+                    if (hex != null) {
+                        unit = city.buildUnits(unit_types, this, hex);
+
+                    } else {
+                        factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
+                    }
+                } else {
+                    city.buildUnits(unit_types, this, null);
+                }
+            } else {
+                city.tryToStartBuild(city.build_queue.getFirst(), unit_types, this);
+            }
+        }
+    }
+
+    /**
+     * Tries to find room for one unit in a city or surrounding hexes.
+     *
+     * @param city
+     * @param move move type of unit
+     * @return Hex where there is room or null if no room found;
+     */
+    public Hex findRoom(Structure city, C.MoveType move) {
+        boolean found = false;
+        Hex hex = planets.get(city.p_idx).planet_grid.getHex(city.x, city.y);
+        if (Util.stackSize(hex.getStack()) < C.STACK_SIZE) {
+            found = true;
+        }
+
+        int tile_set = planets.get(city.p_idx).tile_set_type;
+        Hex[] neighbors = hex.getNeighbours();
+        test:
+        for (int i = 0; i < neighbors.length && !found; i++) {
+            hex = neighbors[i];
+            Structure city_h = hex.getStructure();
+            if (city_h != null) {
+                if (city_h.owner != turn) {
+                    continue;
+                }
+            }
+            List<Unit> stack = hex.getStack();
+            if (!stack.isEmpty()) {
+                if (stack.get(0).owner != turn) {
+                    continue;
+                }
+            }
+            if (Util.stackSize(stack) < C.STACK_SIZE) {
+                if (city_h == null) {
+                    boolean[] terrain = hex.getTerrain();
+                    for (int j = 0; j < terrain.length; j++) {
+                        if (terrain[j] && terr_cost[j][tile_set][move.ordinal()] == 0) {
+                            continue test;
+                        }
+                    }
+                }
+                found = true;
+            }
+
+        }
+        if (!found) {
+            hex = null;
+        }
+        return hex;
+    }
+
+    public HexProc getHexProc() {
+        return hex_proc;
+    }
+
+    public Faction getFaction(int faction) {
+        return factions[faction];
+    }
+
+    public void setFactionCities() {
+        faction_cities.clear();
+        for (Structure s : structures) {
+            if (s.owner == turn) {
+                faction_cities.add(s);
+            }
+        }
     }
 
     public List<Unit> getUnmovedUnits() {
@@ -1896,24 +2011,28 @@ public class Game implements Serializable {
         return game_resources;
     }
 
+//    public List<Structure> getStructures() {
+//        return structures;
+//    }
+
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }
-
- 
     /**
-     * Make and place fresh unit from scratch, not from Galaxy file.
-     * Places unit on a planet at specified coordinates. Units cannot be created in space during game.
-     * If hex is already full, does nothing and returns null.
-     * 
+     * Make and place fresh unit from scratch, not from Galaxy file. Places unit
+     * on a planet at specified coordinates. Units cannot be created in space
+     * during game. If hex is already full, does nothing and returns null.
+     *
      * @param p_idx, x, y Planet index and hex coordinates of location
      * @param owner Owning faction
      * @param type Type number (position in UNIT.DAT, 0-91)
      * @param t_lvl Subtype (subordinate position in UNIT.DAT)
-     * @param res_relic Resource or relic type (cargo pods and relics only, set to 0 for other units)
-     * @param amount Quantity of resources (cargo pods only, set to 0 for other units)
+     * @param res_relic Resource or relic type (cargo pods and relics only, set
+     * to 0 for other units)
+     * @param amount Quantity of resources (cargo pods only, set to 0 for other
+     * units)
      * @return New unit.
-
+     *
      */
     public Unit createUnitInHex(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount) {    //RSW
 
@@ -1921,40 +2040,37 @@ public class Game implements Serializable {
         List<Unit> stack = hex.getStack();
 
         if (Util.stackSize(hex.getStack()) < 20) {    // If stack not full, create new unit
-            Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this); 
-            
+            Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this);
+
             units.add(unit);    // Add new unit to the general unit list
             hex.placeUnit(unit);    // Add new unit to the stack
             unmoved_units.add(unit);    // Add new unit to the unmoved units list
-            
+
 //            System.out.println("spotted[] before: " + Arrays.toString(unit.spotted));    //DEBUG
-            
             hex_proc.spotProc(hex, stack);    // Set spotted[] flags for new unit
-            
+
 //            System.out.println("spotted[] after: " + Arrays.toString(unit.spotted));    //DEBUG
-  
             return unit;
         } else {
             return null;
         }
     }
 
-    
     /**
-     * Removes unit (in space or hex) from all lists, with all necessary clean-up.
-     * IMPORTANT: Do not call this method while iterating over the general unit list, 
-     * or any stack or cargo list the unit is on!
-     * 
+     * Removes unit (in space or hex) from all lists, with all necessary
+     * clean-up. IMPORTANT: Do not call this method while iterating over the
+     * general unit list, or any stack or cargo list the unit is on!
+     *
      * @param unit Unit to be deleted.
      */
     public void deleteUnit(Unit unit) {
-        
+
         List<Unit> stack = getUnitStack(unit);    // Get unit's stack
- 
+
         stack.remove(unit);    // Remove unit from stack
         unmoved_units.remove(unit); // Remove unit from unmoved unit list
         units.remove(unit);    // Remove unit from general unit list
-        
+
         if (unit.carrier != null) {
             unit.carrier.cargo_list.remove(unit);    // Remove this unit from its carrier's cargo list
         }
@@ -1962,33 +2078,31 @@ public class Game implements Serializable {
             cargo.carrier = null;    // Clear the carrier field of this unit's passengers
             deleteUnit(cargo);   // Delete cargo
         }
-        
+
         // If there are any units spotted only by this one, we should clear their spotted flags. ???
     }
 
-    
     /**
-     * Returns the hex that a unit's in.
-     * IMPORTANT. Be sure unit is in a hex before calling. If necessary, check unit.in_space
-     * 
-     */ 
+     * Returns the hex that a unit's in. IMPORTANT. Be sure unit is in a hex
+     * before calling. If necessary, check unit.in_space
+     *
+     */
     public Hex getUnitHex(Unit unit) {
-    
+
         Planet planet = planets.get(unit.p_idx);
         Hex hex = planet.planet_grid.getHex(unit.x, unit.y);
 
         return hex;
     }
-    
-    
+
     /**
      * Returns the stack that a unit's in (whether in space or in a hex)
-     * 
-     */ 
+     *
+     */
     public List<Unit> getUnitStack(Unit unit) {
-        
+
         List<Unit> stack;
-    
+
         if (unit.in_space) {
             Planet planet = planets.get(unit.p_idx);
             stack = planet.space_stacks[unit.owner];
@@ -1998,27 +2112,25 @@ public class Game implements Serializable {
         }
         return stack;
     }
-    
-    
-      /**
+
+    /**
      * Returns the hex from a planet index and coordinates
-     * 
-     */ 
+     *
+     */
     public Hex getHexFromPXY(int p_idx, int x, int y) {
-        
+
         Planet planet = planets.get(p_idx);
         Hex hex = planet.planet_grid.getHex(x, y);
-        
+
         return hex;
     }
-    
-      
+
     /**
      * Returns whether unit is in a city
-     * 
-     */ 
+     *
+     */
     public boolean unitInCity(Unit unit) {
-        
+
         if (unit.in_space) {
             return false;
         } else {

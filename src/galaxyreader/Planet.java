@@ -164,9 +164,9 @@ public class Planet implements Serializable {
         spotted = new boolean[C.NR_FACTIONS];
         for (int i = 0; i < spotted.length; i++) {
             spotted[i] = false;
-            
+
         }
-        
+
     }
 
     public void addStack(List<Unit> stack, int faction) {

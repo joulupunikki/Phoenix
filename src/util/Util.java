@@ -44,6 +44,7 @@ public class Util {
         }
     }
 
+ 
     public static void testHexIter(Game game, int planet) {
         HexIter iter = Util.getHexIter(game, planet);
         Hex hex = iter.next();
@@ -132,6 +133,17 @@ public class Util {
 
         return pods;
     }
+    public static List<Unit> xStack(List<Unit> stack) { // Returns a temporary stack with cargo listed separately
+        List<Unit> ret_val = new LinkedList<>();
+        for (Unit unit : stack) {
+            ret_val.add(unit);
+            for (Unit cargo : unit.cargo_list) {
+                ret_val.add(cargo);
+            }
+        }
+        return ret_val;
+ 
+    }
 
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
 
@@ -195,6 +207,17 @@ public class Util {
         }
 
         return new Point(x, y);
+    }
+
+    public static List<Unit> xS(List<Unit> stack) {    // Returns a temporary stack with cargo listed separately
+        List<Unit> ret_val = new LinkedList<>();
+        for (Unit unit : stack) {
+            ret_val.add(unit);
+            for (Unit cargo : unit.cargo_list) {
+                ret_val.add(cargo);
+            }
+        }
+        return ret_val;
     }
 
     public static Point resolvePlanetMapOrigin(Point p) {

@@ -11,6 +11,7 @@ import galaxyreader.Unit;
 import game.Hex;
 import game.PlanetGrid;
 import game.Square;
+import gui.BuildPanel;
 import java.awt.CardLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -109,7 +110,8 @@ public class SU extends State {
         int map_point_x = p.x;
         int map_point_y = p.y;
 
-        List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y).getStack();
+        Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y);
+        List<Unit> stack = hex.getStack();
 
         if (!stack.isEmpty()) {
 
@@ -144,6 +146,12 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
 
         System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
+        
+        Structure city = hex.getStructure();
+        if (stack.isEmpty() && city != null && city.owner == game.getTurn()) {
+            gui.showCityDialog(game.getCurrentPlanetNr(), city);
+        }
+        
     }
 
     public static Point getSpaceMapClickPoint(MouseEvent e) {
@@ -690,6 +698,16 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
     }
 
+    public static void pressBuildButtonSU() {
+        BuildPanel bp = gui.getBuildPanel();
+        Point p = game.getSelectedPoint();
+        int planet = game.getCurrentPlanetNr();
+        Structure s = game.getPlanetGrid(planet).getHex(p.x, p.y).getStructure();
+        gui.showBuildWindow(null, planet, s);
+//        bp.planetSelected(null, planet);
+//        bp.citySelected(null, s);
+    }
+    
     public static void pressLaunchButtonSU() {
         if (game.launchStack()) {
             setWindow(C.S_STAR_MAP);

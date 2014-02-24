@@ -5,6 +5,8 @@
 package util;
 
 import java.awt.Color;
+import javax.swing.BorderFactory;
+import javax.swing.border.Border;
 
 /**
  * A class containing constants used in project Phoenix classes.
@@ -60,9 +62,11 @@ public class C {
     public static final int UNIT_SPOT_MOVE = 10;
     public static final int TER_COLOR_HEX = 12;
     public static final int TER_COLOR_PLANET = 5;
+ 
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW
     
+ 
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
     public static final int STACK_WINDOW_UNITS_X = 5;
@@ -124,6 +128,11 @@ public class C {
         PSYCH
     }
 
+    // message types
+    public enum Msg {
+        CITY_FULL
+    }
+    
     // movement types
     public enum MoveType {
 
@@ -138,6 +147,7 @@ public class C {
         CRAWLER,
         LANDER
     }
+ 
     // Structures    // RSW
     public static final int PALACE = 0;      
     public static final int CHURCH = 1;      
@@ -165,6 +175,14 @@ public class C {
     public static final int LAB = 23;         
     public static final int FARM = 24;       
     public static final int ARBORIUM = 25;
+        public static final int TRACE = 26;
+    public static final int GEMS = 27;
+    public static final int EXOTICA = 28;
+    public static final int FERTILE = 29;
+    public static final int METAL = 30;
+    public static final int ENERGY = 31;
+    public static final int CITY_TYPES = 26;
+    public static final int STRUCTURE_TYPES = 32;
 
     public static final int TRACE_SPECIAL = 26;    // RSW
     public static final int GEMS_SPECIAL = 27;
@@ -194,6 +212,8 @@ public class C {
     public static final int MINE_HARVESTING = 2;
     public static final int ARBORIUM_HARVESTING = 3;
 
+ 
+ 
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
@@ -251,10 +271,11 @@ public class C {
     public static final String S_NONCOMBAT = "noncombat";
     public static final String S_TRANSPORT = "transport";
     public static final String S_LOG_FILE = "phoenixlog.txt";
-    
+
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
+    public static final int INDEX_COLOR_EFS_BLACK = 14;
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";
     public static final String SPACE_COMBAT = "space_combat";
@@ -263,8 +284,15 @@ public class C {
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
+ 
     public static final String S_RESOURCE[] = {"Food", "Energy", "Metal", "Trace", "Exotica", "Chemicals", "Biochems", "Electronics", "Ceramsteel", "Wetware", "Monopols", "Gems", "Singularities"};    // Temporary, until we have reader for RES.DAT
 
+ 
+    public static final int STARTING_FIREBIRDS = 4500;
+    
+    public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
+    
+ 
     /**
      * Prints out the constants which determine unit, structure and planet
      * allegiance. For debugging purposes.

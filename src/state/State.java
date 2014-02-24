@@ -76,7 +76,11 @@ public abstract class State {
     public void pressNextStackButton() {
     }
 
+ 
     public void pressSkipStackButton() {        
+    }
+    public void pressBuildButton() {        
+ 
     }
     
     public void clickOnWindow(MouseEvent e) {
