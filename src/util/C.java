@@ -266,6 +266,7 @@ public class C {
     public static final String S_ARBORIUM_DAT = "DAT/ARBORIUM.DAT";
     public static final String S_MINE_DAT = "DAT/MINE.DAT";
     public static final String S_WELL_DAT = "DAT/WELL.DAT";
+    public static final String S_TECH_DAT = "DAT/TECH.DAT";
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";

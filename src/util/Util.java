@@ -44,7 +44,62 @@ public class Util {
         }
     }
 
- 
+    public static void processIntVals(String s, int[] vals, String file_name, int line_nr, int nr_values) {
+        int start = 0;
+
+        final int SPACE = 1;
+        final int NUM = 2;
+        final int FAIL = 999;
+        int index = 0;
+        int counter = 0;
+        boolean loop = true;
+        int state = SPACE;
+        while (loop) {
+
+            switch (state) {
+                case SPACE:
+                    System.out.println("SPACE");
+                    if (s.charAt(index) == ' ') {
+
+                    } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+
+                        start = index;
+                        state = NUM;
+                    } else {
+                        state = FAIL;
+                    }
+                    break;
+                case NUM:
+                    System.out.println("NUM");
+                    if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+
+                    } else if (counter == nr_values - 1) {
+                        if (s.charAt(index) == '"') {
+                            vals[counter++] = Integer.parseInt(s.substring(start, index));
+                            loop = false;
+                        } else {
+                            state = FAIL;
+                        }
+                    } else {
+                        if (s.charAt(index) == ' ') {
+                            vals[counter++] = Integer.parseInt(s.substring(start, index));
+                            state = SPACE;
+                        } else {
+                            state = FAIL;
+                        }
+                    }
+                    break;
+                case FAIL:
+                    Util.logFFErrorAndExit(file_name, line_nr);
+                    break;
+                default:
+                    throw new AssertionError();
+
+            }
+            index++;
+        }
+    }
+
     public static void testHexIter(Game game, int planet) {
         HexIter iter = Util.getHexIter(game, planet);
         Hex hex = iter.next();
@@ -133,6 +188,7 @@ public class Util {
 
         return pods;
     }
+
     public static List<Unit> xStack(List<Unit> stack) { // Returns a temporary stack with cargo listed separately
         List<Unit> ret_val = new LinkedList<>();
         for (Unit unit : stack) {
@@ -142,7 +198,7 @@ public class Util {
             }
         }
         return ret_val;
- 
+
     }
 
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
@@ -587,10 +643,10 @@ public class Util {
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
             g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
         }
-        
-        if(e.turns_starving > 0) {    // Show if unit starving - RSW
+
+        if (e.turns_starving > 0) {    // Show if unit starving - RSW
             g.setColor(Color.RED);
-            g.drawString("!", x + (int) (side * 0.45), y + (int) (side * 0.6));         
+            g.drawString("!", x + (int) (side * 0.45), y + (int) (side * 0.6));
         }
     }
 
