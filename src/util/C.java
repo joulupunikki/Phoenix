@@ -248,6 +248,14 @@ public class C {
     public static final int STIGMATA = 11;
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
+    
+    //research & technologies
+    public static final int TECH0 = 0;
+    public static final int TECH1 = 1;
+    public static final int TECH2 = 2;
+    public static final int TECH_COST = 3;
+    public static final int TECH_VOL = 5;
+    
 
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";

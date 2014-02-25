@@ -94,6 +94,8 @@ public class Gui extends JFrame {
     private CombatWindow combat_window;
     private BuildPanel build_panel;
     private JDialog build_window;
+    private TechPanel tech_panel;
+    private JDialog tech_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -104,6 +106,7 @@ public class Gui extends JFrame {
     private JMenuItem menu_save;
     private JMenu orders_menu;
     private JMenuItem menu_build;
+    private JMenuItem menu_research;
     private JPopupMenu stack_menu;
 
     private Resource resources;
@@ -250,8 +253,17 @@ public class Gui extends JFrame {
                 showBuildWindow(e, -1, null);
             }
         });
+        
+                menu_research = new JMenuItem("Research");
+
+        menu_research.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showTechWindow();
+            }
+        });
 
         orders_menu.add(menu_build);
+        orders_menu.add(menu_research);
         menubar.add(orders_menu);
         this.setJMenuBar(menubar);
 
@@ -280,6 +292,8 @@ public class Gui extends JFrame {
         build_window.add(build_panel);
         build_window.pack();
 
+        setUpTechWindow();
+        
         /*
          * create planet map display
          */
@@ -484,6 +498,38 @@ public class Gui extends JFrame {
 
     }
 
+    public void showTechWindow() {
+        tech_window.setVisible(true);
+    }
+    
+    public void setUpTechWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+                tech_window = new JDialog(this, true);
+        tech_window.setLayout(null);
+        tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
+                ws.tech_window_h));
+        System.out.println("this.getX() = " + this.getX());
+        tech_window.setBounds(this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        tech_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                tech_window.setVisible(false);
+            }
+        });
+        tech_panel = new TechPanel(this);
+        tech_panel.setLayout(null);
+        tech_window.add(tech_panel);
+        tech_panel.setBounds(0, 0,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_window.add(tech_panel);
+        tech_window.pack();
+    }
+    
     /**
      * If planet != -1 set planet selected and city selected in Build Panel with
      * planet and city.

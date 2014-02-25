@@ -1,7 +1,5 @@
-
 package game;
 
- 
 import dat.EfsIni;
 import dat.StrBuild;
 import dat.UnitType;
@@ -21,36 +19,60 @@ import util.Util;
 
 /**
  * Will handle faction data, particularly money
+ *
  * @author RSW
  */
 public class Faction implements Serializable {
-    
+
     private Game game;
     private EfsIni efs_ini;
     private int turn;
-    
+
     private int firebirds;
     private int tax_rate;
     private int tithe_rate;
     private int pay_rate;
     List<Message> messages = new LinkedList<>();
-
+    private boolean[] techs;
+    private int[] tech_costs;
+    
     public Faction(Game game) {
-        
+
         this.game = game;
         this.efs_ini = game.getEfs_ini();
-        
+
         firebirds = efs_ini.starting_credits;
         tax_rate = efs_ini.default_tax_rate;
         tithe_rate = efs_ini.default_tithe_rate;
         pay_rate = 100;
-        
+        initTechs();
     }
-    
-        public void addMessage(Message m) {
+
+    public void addMessage(Message m) {
         messages.add(m);
     }
 
+    public void initTechs() {
+        int len = game.getResources().getTech().length;
+        techs = new boolean[len];
+        tech_costs = new int[len];
+        for (int i = 0; i < techs.length; i++) {
+            techs[i] = false;
+            tech_costs[i] = 0;
+
+        }
+        techs[0] = true;
+    }
+
+    public boolean[] getTechs() {
+        return techs;
+    }
+
+    public int[] getTechCosts() {
+        return tech_costs;
+    }
+    
+    
     public List<Message> getMessages() {
         return messages;
     }
@@ -77,4 +99,3 @@ public class Faction implements Serializable {
     }
 
 }
- 

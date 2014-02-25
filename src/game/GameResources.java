@@ -23,8 +23,8 @@ public class GameResources implements Serializable {
 
         unit_spot = UnitSpot.readUnitSpot();
         techs = Tech.readTech();
-        Tech.print(techs);
-        System.exit(0);
+//        Tech.print(techs);
+//        System.exit(0);
     }
 
     public double[][][] getUnitSpot() {

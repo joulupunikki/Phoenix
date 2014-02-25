@@ -129,12 +129,12 @@ public class WindowSize {
     public int globe_map_y_pos = 28;
     public int globe_map_width = 88;
     public int globe_map_height = 63;
- 
+
     public int space_button_x_offset = 95;
     public int space_button_y_offset = 25;
     public int space_button_width = 23;
     public int space_button_height = 23;
- 
+
     public int planet_list_cell_w = 100;
     public int planet_list_cell_h = 10;
     public int planet_list_x_offset = 0;
@@ -183,7 +183,16 @@ public class WindowSize {
     public int build_exit_button_h = 15;
     public int build_exit_button_x_offset = planet_map_width - build_exit_button_w - 10;
     public int build_exit_button_y_offset = planet_map_height / 2 - build_exit_button_h - 10;
- 
+
+    public int tech_window_w = 640;
+    public int tech_window_h = 300;
+    public int tech_window_x_offset = 0;
+    public int tech_window_y_offset = 90;
+
+    public int tech_table_w = 450;
+    public int tech_table_h = 120;
+    public int tech_table_x_offset = 150;
+    public int tech_table_y_offset = 25;
 
     public WindowSize(boolean is_double) {
 
@@ -368,6 +377,16 @@ public class WindowSize {
             space_button_y_offset *= 2;
             space_button_width *= 2;
             space_button_height *= 2;
+
+            tech_window_w *= 2;
+            tech_window_h *= 2;
+            tech_window_x_offset *= 2;
+            tech_window_y_offset *= 2;
+
+            tech_table_w *= 2;
+            tech_table_h *= 2;
+            tech_table_x_offset *= 2;
+            tech_table_y_offset *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
