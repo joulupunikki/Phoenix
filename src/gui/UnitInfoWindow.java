@@ -450,7 +450,7 @@ public class UnitInfoWindow extends JPanel {
 
 
                 if (e.type == C.CARGO_UNIT_TYPE) {
-                    g.drawString(C.S_RESOURCE[e.res_relic], dx + ws.unit_icon_size + ws.carry_symbol_x,
+                    g.drawString(game.getResTypes()[e.res_relic].name, dx + ws.unit_icon_size + ws.carry_symbol_x,
                             dy + (int) 1.5 * ws.font_default_size);    // For resource pod, show resource type instead of abbrev - RSW
                     g.drawString("  " + String.valueOf(e.amount) + " pts", dx + ws.unit_icon_size + ws.carry_symbol_x,
                             dy + (int) 2.8 * ws.font_default_size);    // Also show num of resource points - RSW 
@@ -474,7 +474,7 @@ public class UnitInfoWindow extends JPanel {
                     }
                 }
 
-                Util.drawUnitDetails(g, e, dx, dy);
+                Util.drawUnitDetails(g, game, e, dx, dy);
 
                 if (e != null) {
                     e = iterator.next();
@@ -551,7 +551,7 @@ public class UnitInfoWindow extends JPanel {
 
         g2d.drawImage(bi, null, dx, dy);
 
-        Util.drawUnitDetails(g, u, dx, dy);
+        Util.drawUnitDetails(g, game, u, dx, dy);
 
     }
 }

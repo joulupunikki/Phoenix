@@ -10,6 +10,7 @@ import dat.StrBuild;
 import dat.Target;
 import dat.TerrCost;
 import dat.UnitType;
+import dat.ResType;
 import galaxyreader.Galaxy;
 import galaxyreader.JumpGate;
 import galaxyreader.Planet;
@@ -58,6 +59,7 @@ public class Game implements Serializable {
     private Galaxy galaxy;
     private GalaxyGrid galaxy_grid;
     private UnitType[][] unit_types;
+    private ResType[] res_types;
     private StrBuild[] str_build;
     private double[][][] terr_cost;
 //    private int max_spot_range;
@@ -92,6 +94,14 @@ public class Game implements Serializable {
     public Game(String galaxy_file, int current_planet) {
 
         random = new Random(1234567890L);
+       
+        // Read fixed data files
+        unit_types = UnitType.readUnitDat();
+        res_types = ResType.readResDat();
+        str_build = StrBuild.readStrBuildDat();
+        terr_cost = TerrCost.readTerrCost();
+        damage = Damage.readDamageDat();
+        target = Target.readTargetDat();
 
         galaxy = Galaxy.loadGalaxy(galaxy_file);
         planet_map_origin = new Point(0, 0);
@@ -102,11 +112,6 @@ public class Game implements Serializable {
         units = galaxy.getUnits();
         structures = galaxy.getStructures();
         galaxy_grid = new GalaxyGrid(galaxy);
-        unit_types = UnitType.readUnitDat();
-        str_build = StrBuild.readStrBuildDat();
-        terr_cost = TerrCost.readTerrCost();
-        damage = Damage.readDamageDat();
-        target = Target.readTargetDat();
         human_ctrl = new boolean[14];
         human_ctrl[0] = true;
         unmoved_units = new LinkedList<>();
@@ -1125,7 +1130,7 @@ public class Game implements Serializable {
             turn++;
         }
 
-        economy.updateEconomy();    //RSW
+        economy.updateEconomy(turn);    //RSW
 
         factions[turn].deleteOldMessages(year);
         setFactionCities();
@@ -1979,6 +1984,13 @@ public class Game implements Serializable {
      */
     public void setTerrCost(double[][][] terr_cost) {
         this.terr_cost = terr_cost;
+    }
+
+    /**
+     * @return the resource types
+     */
+    public ResType[] getResTypes() {
+        return res_types;
     }
 
     /**

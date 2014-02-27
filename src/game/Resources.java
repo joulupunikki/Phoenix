@@ -47,39 +47,41 @@ public class Resources implements Serializable {
      * @param owner Faction number of new owner
      * @param resource_amounts Array of resource amounts to add, one per resource type
      */
-    public void addResourcesToHex(int p_idx, int x, int y, int owner, int[] resource_amounts) {    //RSW
+    public void addResourcesToHex(int p_idx, int x, int y, int owner, int[] resource_amounts) {
         
-        List<Unit> stack = game.getHexFromPXY(p_idx, x, y).getStack();    // Get the stack in the city hex
+        List<Unit> stack = game.getHexFromPXY(p_idx, x, y).getStack();    // Get the stack in the hex
         
-        for (int resource_type = 0; resource_type < resource_amounts.length; resource_type++) {
-            
-            int amount = resource_amounts[resource_type];
-            if (amount <= 0) continue;
+        for (int resource_type = 0; resource_type < resource_amounts.length; resource_type++) {    // For each resource type
 
-            // Look for same cargo already in stack (every hex has a stack, possibly empty)      
-            boolean found = false;
-            Unit old_unit = null;
-
-            StackIterator iterator = new StackIterator(stack);    // For each unit in stack (including cargo)
-            Unit unit = iterator.next();
-            while (unit != null) {
-                if (unit.type == C.CARGO_UNIT_TYPE && unit.res_relic == resource_type) {
-                    found = true;
-                    old_unit = unit;
-                }
-                unit = iterator.next();
-             }
-
-             if (found) {
-                 old_unit.amount = Math.min(old_unit.amount + amount, 999);    // Add resources to existing cargo pod, up to 999.
-             } else { 
-                 if (Util.stackSize(stack) < 20) {     // Create new cargo pod (if there's room in stack)
-                     game.createUnitInHex(p_idx, x, y, owner, C.CARGO_UNIT_TYPE, 0, resource_type, amount);
+            int amount_still_to_add = resource_amounts[resource_type];
+            while (amount_still_to_add > 0) {
+                 
+                // Look for a suitable pod in the stack already that we can add to
+                StackIterator iterator = new StackIterator(stack);    // Go through stack (including passengers)
+                Unit unit = iterator.next();
+                while (unit != null) {
+                    if (unit.type == C.CARGO_UNIT_TYPE && unit.res_relic == resource_type && unit.amount < 999) {
+                        break;
+                    }
+                    unit = iterator.next();
                  }
-             }
+                 // Now unit = null or suitable pod
+                 
+                 if (unit == null) {    // Need a new pod, so create an empty one
+                     unit = game.createUnitInHex(p_idx, x, y, owner, C.CARGO_UNIT_TYPE, 0, resource_type, 0);
+                     if (unit == null) {
+                         break;    // But couldn't create unit in this hex, so give up on this resource type
+                     }
+                 }    
+                 // Now add resources to the pod
+                 int amount_can_be_added = 999 - unit.amount;
+                 int amount_to_add_here = Math.min(amount_still_to_add, amount_can_be_added);
+                 unit.amount += amount_to_add_here;
+                 amount_still_to_add -= amount_to_add_here;
+            }
         }
     }
-    
+        
     
     /**
      * Count how many resources of each type are available on a given planet.
@@ -92,7 +94,7 @@ public class Resources implements Serializable {
      */
     public int[] countResourcesAvailable(int p_idx, int owner) {
 
-        int[] ret_val = new int[C.S_RESOURCE.length];    // Will accumulate resource amounts. Initialised to 0 by default.
+        int[] ret_val = new int[C.RES_TYPES];    // Will accumulate resource amounts. Initialised to 0 by default.
 
         for (Unit unit : units) {    // Go through whole unit list, looking for this faction's cargo pods
             if (unit.type == C.CARGO_UNIT_TYPE && unit.owner == owner) {
@@ -192,7 +194,7 @@ public class Resources implements Serializable {
        
     public boolean consumeOneResourceType(int p_idx, int owner, int type, int amount) {
         
-       int[] resource_amounts = new int[C.S_RESOURCE.length];    // Initialised to 0 by default.
+       int[] resource_amounts = new int[C.RES_TYPES];    // Initialised to 0 by default.
        
        resource_amounts[type] = amount;
 
