@@ -112,7 +112,7 @@ public class UIW1 extends State {
 
 //                g2d.drawImage(bi, null, dx, dy);
 //
-//                Util.drawUnitDetails(g, u, dx, dy);
+//                Util.drawUnitDetails(g, game, u, dx, dy);
 //                if (iterator.hasNext()) {
 //                    u = iterator.next();
 //                } else {
@@ -198,7 +198,7 @@ public class UIW1 extends State {
 
 //                g2d.drawImage(bi, null, dx, dy);
 //
-//                Util.drawUnitDetails(g, u, dx, dy);
+//                Util.drawUnitDetails(g, game, u, dx, dy);
 //                if (iterator.hasNext()) {
 //                    u = iterator.next();
 //                } else {

@@ -1,7 +1,6 @@
 
 package game;
 
- 
 import dat.EfsIni;
 import dat.StrBuild;
 import dat.UnitType;
@@ -77,4 +76,3 @@ public class Faction implements Serializable {
     }
 
 }
- 

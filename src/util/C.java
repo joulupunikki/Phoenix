@@ -65,6 +65,8 @@ public class C {
  
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW
+    public static final int PROD_CITIES = 7;    // RSW
+    public static final int RES_TYPES = 13;    // RSW
     
  
     public static final int TILE_SETS = 5;
@@ -206,11 +208,20 @@ public class C {
     public static final int RES_GEMS = 11;
     public static final int RES_SINGULARITIES = 12;
 
-    // Harvesting types  - index into harvesting table  // RSW
+    // Harvesting city types - index into Harvest table    // RSW
     public static final int FARM_HARVESTING = 0;
     public static final int WELL_HARVESTING = 1;
     public static final int MINE_HARVESTING = 2;
     public static final int ARBORIUM_HARVESTING = 3;
+    
+    // Secondary production city types - index into Prod table    // RSW
+    public static final int CHEMICALS_PRODUCTION = 0;
+    public static final int ELECTRONICS_PRODUCTION = 1;
+    public static final int BIOPLANT_PRODUCTION = 2;
+    public static final int CERAMSTEEL_PRODUCTION = 3;
+    public static final int WETWARE_PRODUCTION = 4;
+    public static final int CYCLOTRON_PRODUCTION = 5;
+    public static final int FUSORIUM_PRODUCTION = 6;
 
  
  
@@ -248,6 +259,8 @@ public class C {
     public static final int STIGMATA = 11;
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
+    
+    public static final int NUMBER_OF_HOUSES = 5;    // RSW
 
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
@@ -266,6 +279,8 @@ public class C {
     public static final String S_ARBORIUM_DAT = "DAT/ARBORIUM.DAT";
     public static final String S_MINE_DAT = "DAT/MINE.DAT";
     public static final String S_WELL_DAT = "DAT/WELL.DAT";
+    public static final String S_PROD_DAT = "DAT/PROD.DAT";    // RSW
+    public static final String S_RES_DAT = "DAT/RES.DAT";    // RSW
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
@@ -284,10 +299,6 @@ public class C {
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
- 
-    public static final String S_RESOURCE[] = {"Food", "Energy", "Metal", "Trace", "Exotica", "Chemicals", "Biochems", "Electronics", "Ceramsteel", "Wetware", "Monopols", "Gems", "Singularities"};    // Temporary, until we have reader for RES.DAT
-
- 
     public static final int STARTING_FIREBIRDS = 4500;
     
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);

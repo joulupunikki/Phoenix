@@ -132,7 +132,7 @@ public class CombatWindow extends JPanel {
                 int dy = (int) ((0.15 + i * 1.15) * ws.unit_icon_size);
                 wr_att.setRect(dx, dy, wr_att_u);
 
-//                Util.drawUnitDetails(g, e, dx, dy);
+//                Util.drawUnitDetails(g, game, e, dx, dy);
 
                 dx -= ws.skull_offset;
                 dy -= ws.skull_offset;
@@ -167,7 +167,7 @@ public class CombatWindow extends JPanel {
                 int dy = (int) (((0.15 + i * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_y);
 
                 if (e.health > 0 && !e.routed) {
-                    Util.drawUnitDetails(g, e, dx, dy);
+                    Util.drawUnitDetails(g, game, e, dx, dy);
                 }
 
             }
@@ -204,7 +204,7 @@ public class CombatWindow extends JPanel {
                 int dy = (int) ((0.15 + i * 1.15) * ws.unit_icon_size);
                 wr_att.setRect(dx, dy, wr_att_u);
 
-//                Util.drawUnitDetails(g, e, dx, dy);
+//                Util.drawUnitDetails(g, game, e, dx, dy);
                 dx -= ws.skull_offset;
                 dy -= ws.skull_offset;
                 if (ws.is_double) {
@@ -238,7 +238,7 @@ public class CombatWindow extends JPanel {
                 int dy = (int) (((0.15 + i * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_y);
 
                 if (e.health > 0 && !e.routed) {
-                    Util.drawUnitDetails(g, e, dx, dy);
+                    Util.drawUnitDetails(g, game, e, dx, dy);
                 }
 
             }

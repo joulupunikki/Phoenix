@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
+import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -537,7 +538,7 @@ public class Util {
      * @param x
      * @param y
      */
-    public static void drawUnitDetails(Graphics g, Unit e, int x, int y) {
+    public static void drawUnitDetails(Graphics g, Game game, Unit e, int x, int y) {
         /*
          * draw move points
          */
@@ -583,7 +584,7 @@ public class Util {
 
         if (e.type == C.CARGO_UNIT_TYPE) {    // For resource pod, add resource type string (first 2 characters) to icon - RSW
             g.setColor(Color.WHITE);
-            String str = C.S_RESOURCE[e.res_relic];
+            String str = game.getResTypes()[e.res_relic].name;
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
             g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
         }
@@ -648,7 +649,7 @@ public class Util {
 
                 g2d.drawImage(bi, null, dx, dy);
 
-                Util.drawUnitDetails(g, e, dx, dy);
+                Util.drawUnitDetails(g, game, e, dx, dy);
 
 //                if (iterator.hasNext()) {
 //                    e = iterator.next();
@@ -1574,5 +1575,16 @@ public class Util {
     public static void logEx(Thread t, Throwable e) {
         logEx(t, e, null);
     }
+    
+ /**
+ * Gets one line of input, skipping comments and white space
+ */
+    public static String cleanLine(BufferedReader in) throws Exception {
 
+        String s = in.readLine().trim();
+        while (s.startsWith("//") || s.equals("")) {
+            s = in.readLine().trim();
+        }
+        return s;
+    }
 }
