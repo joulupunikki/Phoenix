@@ -194,6 +194,12 @@ public class WindowSize {
     public int tech_table_x_offset = 150;
     public int tech_table_y_offset = 25;
 
+    public int tech_column_0_w = tech_table_w / 2;
+    public int tech_column_1_w = tech_table_w / 6;
+    public int tech_column_2_w = tech_table_w / 6;
+    public int tech_column_3_w = tech_table_w / 6;
+//    public int tech_column_4_w = tech_table_w / 6;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -387,6 +393,12 @@ public class WindowSize {
             tech_table_h *= 2;
             tech_table_x_offset *= 2;
             tech_table_y_offset *= 2;
+
+            tech_column_0_w *= 2;
+            tech_column_1_w *= 2;
+            tech_column_2_w *= 2;
+            tech_column_3_w *= 2;
+//            tech_column_4_w *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

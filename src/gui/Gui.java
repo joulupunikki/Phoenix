@@ -196,7 +196,7 @@ public class Gui extends JFrame {
         loadHexTiles();
 
         loadStructureTiles();
- 
+
         Comp.setGame(game);
         /*
          * build Gui
@@ -253,11 +253,12 @@ public class Gui extends JFrame {
                 showBuildWindow(e, -1, null);
             }
         });
-        
-                menu_research = new JMenuItem("Research");
+
+        menu_research = new JMenuItem("Research");
 
         menu_research.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                
                 showTechWindow();
             }
         });
@@ -293,7 +294,7 @@ public class Gui extends JFrame {
         build_window.pack();
 
         setUpTechWindow();
-        
+
         /*
          * create planet map display
          */
@@ -499,13 +500,14 @@ public class Gui extends JFrame {
     }
 
     public void showTechWindow() {
+        tech_panel.setTechData();
         tech_window.setVisible(true);
     }
-    
+
     public void setUpTechWindow() {
 //        JDialog tech_window;
 //        JPanel tech_panel;
-                tech_window = new JDialog(this, true);
+        tech_window = new JDialog(this, true);
         tech_window.setLayout(null);
         tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
                 ws.tech_window_h));
@@ -529,7 +531,7 @@ public class Gui extends JFrame {
         tech_window.add(tech_panel);
         tech_window.pack();
     }
-    
+
     /**
      * If planet != -1 set planet selected and city selected in Build Panel with
      * planet and city.
@@ -658,7 +660,7 @@ public class Gui extends JFrame {
     public JDialog getBuildWindow() {
         return build_window;
     }
-    
+
     public void setLoadSaveWinUp(boolean state) {
         loadsave_win_up = state;
     }

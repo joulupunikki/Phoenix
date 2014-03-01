@@ -10,7 +10,9 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.GameResources;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -22,11 +24,15 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import static javax.swing.SwingConstants.RIGHT;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import state.PW1;
 import util.C;
@@ -90,7 +96,7 @@ public class TechPanel extends JPanel {
         header.setBackground(Color.black);
         header.setForeground(C.COLOR_GOLD);
         tech_table.setRowHeight(ws.city_table_row_height);
-//        tech_table.setDefaultRenderer(Object.class, new BuildPanel.BuildTableRenderer());
+        tech_table.setDefaultRenderer(Object.class, new TechTableRenderer());
 //        tech_table.setDefaultRenderer(Integer.class, new BuildPanel.BuildTableRenderer());
 
         tech_table.addMouseListener(new MouseAdapter() {
@@ -127,7 +133,7 @@ public class TechPanel extends JPanel {
 
     public void setTechData() {
 
-        boolean[] owned_tech = game.getFaction(game.getTurn()).getTechs();
+        boolean[] owned_tech = game.getFaction(game.getTurn()).getResearch().techs;
         Tech[] techs = game.getResources().getTech();
 
         // find out research categories
@@ -156,7 +162,7 @@ public class TechPanel extends JPanel {
             }
         }
 
-        int nr_techs = categories.size() + getResearchableTechs(category_lists);
+        int nr_techs = categories.size() + getResearchableTechsNr(category_lists);
 
         Object[][] tech_table_data = new Object[nr_techs][];
         for (int i = 0; i < nr_techs; i++) {
@@ -164,24 +170,50 @@ public class TechPanel extends JPanel {
         }
 
         int index = 0;
-        for (Integer cat_no: categories ) {
-            
-            
+        for (int i = 0; i < categories.size(); i++) {
+            Integer cat_value = categories.get(i);
+            tech_table_data[index][0] = cat_value;
+            List<Integer> category_list = category_lists.get(i);
+            if (category_list.isEmpty()) {
+                tech_table_data[index][1] = techs[cat_value.intValue()].stats[C.TECH_COST];
+            } else {
+                tech_table_data[index][1] = new Integer(-1);
+            }
+            tech_table_data[index][2] = new Integer(0);
+            tech_table_data[index][3] = new Integer(0);
+            index++;
+            for (Integer integer : category_list) {
+                tech_table_data[index][0] = integer;
+                tech_table_data[index][1] = techs[integer.intValue()].stats[C.TECH_COST];
+
+                tech_table_data[index][2] = new Integer(0);
+                tech_table_data[index][3] = new Integer(0);
+                index++;
+            }
+
         }
-        
-        
+
+        TechTableModel tech_model = new TechTableModel(tech_table_data,
+                tech_table_header);
+        tech_table.setModel(tech_model);
 //        BuildPanel.BuildTableModel build_model = new BuildPanel.BuildTableModel(tech_table_data,
 //                build_table_header);
 //        build_table.setModel(build_model);
 ////        System.out.println("CellRend 0 " + build_table.getCellRenderer(0, 0));
 ////        System.out.println("CellRend 1 " + build_table.getCellRenderer(0, 1));
-//        TableColumn column = build_table.getColumnModel().getColumn(0);
-//        column.setPreferredWidth(ws.build_table_cell_0_width);
-//        column = build_table.getColumnModel().getColumn(1);
-//        column.setPreferredWidth(ws.build_table_cell_1_width);
+        TableColumn column = tech_table.getColumnModel().getColumn(0);
+        column.setPreferredWidth(ws.tech_column_0_w);
+        column = tech_table.getColumnModel().getColumn(1);
+        column.setPreferredWidth(ws.tech_column_1_w);
+        column = tech_table.getColumnModel().getColumn(2);
+        column.setPreferredWidth(ws.tech_column_2_w);
+        column = tech_table.getColumnModel().getColumn(3);
+        column.setPreferredWidth(ws.tech_column_3_w);
+//                column = tech_table.getColumnModel().getColumn(4);
+//        column.setPreferredWidth(ws.tech_column_4_w);
     }
 
-    public int getResearchableTechs(ArrayList<List<Integer>> category_lists) {
+    public int getResearchableTechsNr(ArrayList<List<Integer>> category_lists) {
         int ret_val = 0;
         for (List<Integer> list : category_lists) {
             ret_val += list.size();
@@ -189,4 +221,80 @@ public class TechPanel extends JPanel {
         return ret_val;
     }
 
+    class TechTableModel extends DefaultTableModel {
+
+//        public BuildTableModel(Object[][] data) {
+//            Object[] column_names = {"Unit", "Turns Left"};
+//            BuildTableModel(data, column_names);
+//        }
+        public TechTableModel(Object[][] data, Object[] column_names) {
+            super(data, column_names);
+        }
+
+        public boolean isCellEditable(int row, int col) {
+
+            return false;
+
+        }
+    }
+
+    public class TechTableRenderer extends JLabel
+            implements TableCellRenderer {
+
+        public TechTableRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(
+                JTable table, Object value,
+                boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            Color c_b = Color.BLACK;
+            Color c_f = C.COLOR_GOLD;
+            if (isSelected) {
+                setBackground(c_f);
+                setForeground(c_b);
+            } else {
+                setBackground(c_b);
+                setForeground(c_f);
+            }
+            System.out.println("column = " + column);
+            String val = null;
+            switch (column) {
+                case 0:
+
+                    val = game.getResources().getTech()[((Integer) value).intValue()].name;
+                    setFont(ws.font_default);
+                    setText(val);
+                    break;
+                case 1:
+
+//                    val = "" + game.getResources().getTech()[((Integer) value).intValue()].stats[C.TECH_COST];
+//                    GameResources gr = game.getResources();
+//                    Tech[] techs = gr.getTech();
+//                    Tech tech = techs[((Integer) value).intValue()];
+                    val = "" + ((Integer) value).intValue();
+                    setFont(ws.font_default);
+                    setText(val);
+                    break;
+                case 2:
+
+                    val = "" + 0; //game.getResources().getTech()[((Integer) value).intValue()].name;
+                    setFont(ws.font_default);
+                    setText(val);
+                    break;
+                case 3:
+//                    int pts_left = game.getResources().getTech()[((Integer) value).intValue()].stats[C.TECH_COST];
+//                    pts_left -= game.getFaction(game.getTurn()).getResearch().points[((Integer) value).intValue()];
+                    val = "" + 0;
+                    setFont(ws.font_default);
+                    setText(val);
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+
+            return this;
+        }
+    }
 }

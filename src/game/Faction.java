@@ -33,9 +33,10 @@ public class Faction implements Serializable {
     private int tithe_rate;
     private int pay_rate;
     List<Message> messages = new LinkedList<>();
-    private boolean[] techs;
-    private int[] tech_costs;
+//    private boolean[] techs;
+//    private int[] tech_costs;
     
+    private Research research;
     public Faction(Game game) {
 
         this.game = game;
@@ -45,32 +46,41 @@ public class Faction implements Serializable {
         tax_rate = efs_ini.default_tax_rate;
         tithe_rate = efs_ini.default_tithe_rate;
         pay_rate = 100;
-        initTechs();
+//        initTechs();
+         initResearch();
     }
 
     public void addMessage(Message m) {
         messages.add(m);
     }
 
-    public void initTechs() {
-        int len = game.getResources().getTech().length;
-        techs = new boolean[len];
-        tech_costs = new int[len];
-        for (int i = 0; i < techs.length; i++) {
-            techs[i] = false;
-            tech_costs[i] = 0;
-
-        }
-        techs[0] = true;
+    public void initResearch() {
+        research = new Research(game);
     }
-
-    public boolean[] getTechs() {
-        return techs;
+    
+    public Research getResearch() {
+        return research;
     }
+    
+//    public void initTechs() {
+//        int len = game.getResources().getTech().length;
+//        techs = new boolean[len];
+//        tech_costs = new int[len];
+//        for (int i = 0; i < techs.length; i++) {
+//            techs[i] = false;
+//            tech_costs[i] = 0;
+//
+//        }
+//        techs[0] = true;
+//    }
 
-    public int[] getTechCosts() {
-        return tech_costs;
-    }
+//    public boolean[] getTechs() {
+//        return techs;
+//    }
+//
+//    public int[] getTechCosts() {
+//        return tech_costs;
+//    }
     
     
     public List<Message> getMessages() {
