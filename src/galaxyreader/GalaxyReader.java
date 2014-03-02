@@ -13,17 +13,19 @@ import java.nio.file.Path;
 
 /**
  * A class containing methods for reading bytes from a FileChannel.
+ *
  * @author joulupunikki
  */
 public class GalaxyReader {
 
     /**
      * Creates a galaxy and prints it. For debugging purposes.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         Path path = FileSystems.getDefault().getPath(args[0]);
-        try(FileChannel fc = (FileChannel.open(path))) {
+        try (FileChannel fc = (FileChannel.open(path))) {
 
             System.out.println("before galaxy");
             Galaxy galaxy = new Galaxy(fc);
@@ -39,6 +41,7 @@ public class GalaxyReader {
 
     /**
      * Reads a byte. Byte order is little endian.
+     *
      * @param fc the FileChannel to be read.
      * @param index the position from which the byte is read.
      * @return the byte which was read.
@@ -60,6 +63,7 @@ public class GalaxyReader {
 
     /**
      * Reads a short, that is two bytes. Byte order is little endian.
+     *
      * @param fc the FileChannel to be read.
      * @param index the position from which the short is read.
      * @return the short which was read.
@@ -81,6 +85,7 @@ public class GalaxyReader {
 
     /**
      * Reads an int, that is four bytes. Byte order is little endian.
+     *
      * @param fc the FileChannel to be read.
      * @param index the position from which the int is read.
      * @return the int which was read.

@@ -89,7 +89,7 @@ public class Hex implements Comparable<Hex>, Serializable {
     public boolean getTerrain(int type) {
         return terrain[type];
     }
-    
+
     public List<Unit> getStack() {
         return stack;
     }
@@ -101,7 +101,7 @@ public class Hex implements Comparable<Hex>, Serializable {
     public void addUnit(Unit u) {
         this.stack.add(u);
     }
-    
+
     public void minusStack(List<Unit> stack) {
         this.stack.removeAll(stack);
     }

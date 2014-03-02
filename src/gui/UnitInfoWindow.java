@@ -448,7 +448,6 @@ public class UnitInfoWindow extends JPanel {
                 g.setColor(C.COLOR_GOLD);
                 g.setFont(ws.font_abbrev);
 
-
                 if (e.type == C.CARGO_UNIT_TYPE) {
                     g.drawString(game.getResTypes()[e.res_relic].name, dx + ws.unit_icon_size + ws.carry_symbol_x,
                             dy + (int) 1.5 * ws.font_default_size);    // For resource pod, show resource type instead of abbrev - RSW

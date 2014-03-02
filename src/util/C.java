@@ -62,13 +62,12 @@ public class C {
     public static final int UNIT_SPOT_MOVE = 10;
     public static final int TER_COLOR_HEX = 12;
     public static final int TER_COLOR_PLANET = 5;
- 
+
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW
     public static final int PROD_CITIES = 7;    // RSW
     public static final int RES_TYPES = 13;    // RSW
-    
- 
+
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
     public static final int STACK_WINDOW_UNITS_X = 5;
@@ -132,9 +131,10 @@ public class C {
 
     // message types
     public enum Msg {
+
         CITY_FULL
     }
-    
+
     // movement types
     public enum MoveType {
 
@@ -149,35 +149,35 @@ public class C {
         CRAWLER,
         LANDER
     }
- 
+
     // Structures    // RSW
-    public static final int PALACE = 0;      
-    public static final int CHURCH = 1;      
-    public static final int MONASTERY = 2;   
-    public static final int FACTORY = 3;     
-    public static final int AGORA = 4;       
-    public static final int WETWARE = 5;     
-    public static final int ELECTRONICS = 6; 
-    public static final int HIVE = 7;        
-    public static final int CERAMSTEEL = 8;  
-    public static final int BIOPLANT = 9;    
-    public static final int VAU_CITY = 10;    
-    public static final int CHEMICALS = 11;  
-    public static final int CYCLOTRON = 12;   
-    public static final int FORT = 13;        
-    public static final int STARPORT = 14;    
+    public static final int PALACE = 0;
+    public static final int CHURCH = 1;
+    public static final int MONASTERY = 2;
+    public static final int FACTORY = 3;
+    public static final int AGORA = 4;
+    public static final int WETWARE = 5;
+    public static final int ELECTRONICS = 6;
+    public static final int HIVE = 7;
+    public static final int CERAMSTEEL = 8;
+    public static final int BIOPLANT = 9;
+    public static final int VAU_CITY = 10;
+    public static final int CHEMICALS = 11;
+    public static final int CYCLOTRON = 12;
+    public static final int FORT = 13;
+    public static final int STARPORT = 14;
     public static final int RUINS = 15;
     public static final int ALIEN_RUINS = 16;
-    public static final int SHIELD = 17; 
-    public static final int MINE = 18;        
-    public static final int WELL = 19;        
-    public static final int FUSORIUM = 20;    
-    public static final int UNIVERSITY = 21;  
-    public static final int HOSPITAL = 22;    
-    public static final int LAB = 23;         
-    public static final int FARM = 24;       
+    public static final int SHIELD = 17;
+    public static final int MINE = 18;
+    public static final int WELL = 19;
+    public static final int FUSORIUM = 20;
+    public static final int UNIVERSITY = 21;
+    public static final int HOSPITAL = 22;
+    public static final int LAB = 23;
+    public static final int FARM = 24;
     public static final int ARBORIUM = 25;
-        public static final int TRACE = 26;
+    public static final int TRACE = 26;
     public static final int GEMS = 27;
     public static final int EXOTICA = 28;
     public static final int FERTILE = 29;
@@ -213,7 +213,7 @@ public class C {
     public static final int WELL_HARVESTING = 1;
     public static final int MINE_HARVESTING = 2;
     public static final int ARBORIUM_HARVESTING = 3;
-    
+
     // Secondary production city types - index into Prod table    // RSW
     public static final int CHEMICALS_PRODUCTION = 0;
     public static final int ELECTRONICS_PRODUCTION = 1;
@@ -223,8 +223,6 @@ public class C {
     public static final int CYCLOTRON_PRODUCTION = 5;
     public static final int FUSORIUM_PRODUCTION = 6;
 
- 
- 
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
@@ -241,7 +239,6 @@ public class C {
     public static final int STRUCTURE = 12;
 
     // Unit types (only needed for units with special abilities)
-
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 
     // faction id's
@@ -259,7 +256,7 @@ public class C {
     public static final int STIGMATA = 11;
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
-    
+
     public static final int NUMBER_OF_HOUSES = 5;    // RSW
 
     public static final String S_PLANET_MAP = "planet map";
@@ -300,10 +297,9 @@ public class C {
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
     public static final int STARTING_FIREBIRDS = 4500;
-    
+
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
-    
- 
+
     /**
      * Prints out the constants which determine unit, structure and planet
      * allegiance. For debugging purposes.
@@ -328,5 +324,3 @@ public class C {
 /*
  * forest
  */
-
-

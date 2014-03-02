@@ -193,7 +193,7 @@ public class Gui extends JFrame {
         loadHexTiles();
 
         loadStructureTiles();
- 
+
         Comp.setGame(game);
         /*
          * build Gui
@@ -612,7 +612,7 @@ public class Gui extends JFrame {
     public JDialog getBuildWindow() {
         return build_window;
     }
-    
+
     public void setLoadSaveWinUp(boolean state) {
         loadsave_win_up = state;
     }

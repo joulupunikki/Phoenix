@@ -55,7 +55,7 @@ public class CombatWindow extends JPanel {
     public void setGame(Game game) {
         this.game = game;
     }
-    
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -95,8 +95,6 @@ public class CombatWindow extends JPanel {
 //                ws.combat_window_stack_display_w, ws.combat_window_stack_display_h);
 //        g.fillRect(ws.combat_window_stack_display_x2, ws.combat_window_stack_display_y, 
 //                ws.combat_window_stack_display_w, ws.combat_window_stack_display_h);        
-
-
         BufferedImage bi_att = new BufferedImage(ws.combat_window_stack_display_w, ws.combat_window_stack_display_h, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         WritableRaster wr_att = bi_att.getRaster();
         Util.fillRaster(wr_att, C.INDEX_COLOR_BLACK);
@@ -127,13 +125,11 @@ public class CombatWindow extends JPanel {
                 Util.drawUnitIconEdges(wr_att_u, ws);
                 Util.writeUnit(pixel_data, e.type, unit_icons, wr_att_u, ws);
 
-
                 int dx = (int) ((0.15 + j * 1.15) * ws.unit_icon_size);
                 int dy = (int) ((0.15 + i * 1.15) * ws.unit_icon_size);
                 wr_att.setRect(dx, dy, wr_att_u);
 
 //                Util.drawUnitDetails(g, game, e, dx, dy);
-
                 dx -= ws.skull_offset;
                 dy -= ws.skull_offset;
                 if (ws.is_double) {
@@ -145,7 +141,6 @@ public class CombatWindow extends JPanel {
                 } else if (e.routed) {
                     Util.writeRect(pixel_data, flag, wr_att, ws, dx, dy, C.SKULL_SIDE, C.SKULL_SIDE);
                 }
-
 
             }
 
@@ -177,7 +172,6 @@ public class CombatWindow extends JPanel {
         List<Unit> defender = game.getCombatStack("b");
         it = defender.listIterator();
 
-
         bi_att = new BufferedImage(ws.combat_window_stack_display_w, ws.combat_window_stack_display_h, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         wr_att = bi_att.getRaster();
         Util.fillRaster(wr_att, C.INDEX_COLOR_BLACK);
@@ -199,7 +193,6 @@ public class CombatWindow extends JPanel {
                 Util.drawUnitIconEdges(wr_att_u, ws);
                 Util.writeUnit(pixel_data, e.type, unit_icons, wr_att_u, ws);
 
-
                 int dx = (int) ((0.15 + j * 1.15) * ws.unit_icon_size);
                 int dy = (int) ((0.15 + i * 1.15) * ws.unit_icon_size);
                 wr_att.setRect(dx, dy, wr_att_u);
@@ -216,7 +209,6 @@ public class CombatWindow extends JPanel {
                 } else if (e.routed) {
                     Util.writeRect(pixel_data, flag, wr_att, ws, dx, dy, C.SKULL_SIDE, C.SKULL_SIDE);
                 }
-
 
             }
 

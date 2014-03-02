@@ -15,7 +15,7 @@ import util.C;
  *
  * @author joulupunikki
  */
-public class GalaxyGrid  implements Serializable{
+public class GalaxyGrid implements Serializable {
 
     private Square[][] galaxy_grid;
 
@@ -96,13 +96,10 @@ public class GalaxyGrid  implements Serializable{
             }
         }
     }
-        
+
 //    public void placeUnit(Unit e) {
 //        galaxy_grid[e.x][e.y].stacks.add(e);
 //    }
-    
-    
-
     public Square[][] getGalaxyGrid() {
         return galaxy_grid;
     }

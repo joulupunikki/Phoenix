@@ -1,4 +1,3 @@
-
 package dat;
 
 import game.Game;
@@ -15,28 +14,28 @@ import util.Util;
  * @author RSW (based on TerrCost.java) Reads in harvesting data from FARM.DAT,
  * ARBORIUM.DAT, MINE.DAT and WELL.DAT. The harvest table is 4-D: city-types (4)
  * X terrain-types X planet-types X resource-types (up to 3) and each item in
- * the table is a ResTypeAmount object, i.e. a resource type and amount. 
- * If there are less than 3 resource types, the unused slots are left null.
+ * the table is a ResTypeAmount object, i.e. a resource type and amount. If
+ * there are less than 3 resource types, the unused slots are left null.
  */
 public class Harvest implements Serializable {
-    
 
- /**
- * Gets harvest data from one one row of harvest file, from line passed to it
- */
+    /**
+     * Gets harvest data from one one row of harvest file, from line passed to
+     * it
+     */
     private static ResPair[] getOneRow(String s, Game game) throws Exception {
 
         ResPair[] ret_val = new ResPair[3];
-        
+
         Pattern pattern = Pattern.compile("\"[^\"]*\"");    // Find anything in quotes, including empty string
-        
+
         // Skip planet type
         Matcher m = pattern.matcher(s);
         m.find();
-        
+
         // Get up to 3 resource type-amount pairs
         for (int i = 0; i < 3; i++) {
-            
+
             ResPair temp = ResPair.get(s, m, game);
             if (temp == null) {    // Null used to signal end of row (at an "@")
                 break;
@@ -47,9 +46,9 @@ public class Harvest implements Serializable {
         return ret_val;
     }
 
- /**
- * Gets harvest data for one city type, i.e. one file
- */
+    /**
+     * Gets harvest data for one city type, i.e. one file
+     */
     private static ResPair[][][] getOneCity(String file_name, Game game) {
 
         ResPair[][][] ret_val = new ResPair[C.HARVEST_TERRAINS][C.HARVEST_PLANETS][];
@@ -87,12 +86,12 @@ public class Harvest implements Serializable {
 
         return ret_val;
     }
-    
- /**
- * Creates and returns harvest table, reading all 4 harvest data files
- * 
- * @param game Needed to access the resource names
- */
+
+    /**
+     * Creates and returns harvest table, reading all 4 harvest data files
+     *
+     * @param game Needed to access the resource names
+     */
     public static ResPair[][][][] readHarvestDats(Game game) {
 
         ResPair[][][][] harvest_table = new ResPair[4][][][];

@@ -169,8 +169,9 @@ public class GlobeMap extends JPanel {
                 }
 
                 int dip = 0;
-                if (i % 2 == 0)
+                if (i % 2 == 0) {
                     dip = (int) (yard / 2);
+                }
                 g.fillRect(i * yard, j * yard + dip, yard, yard);
             }
 

@@ -56,7 +56,6 @@ public class UIW2 extends State {
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
         }
 
-
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;
@@ -120,7 +119,6 @@ public class UIW2 extends State {
                     return;
                 }
 
-
 //                if (iterator.hasNext()) {
 //                    u = iterator.next();
 //                } else {
@@ -166,7 +164,6 @@ public class UIW2 extends State {
             }
 
         }
-
 
         gui.setDragUnit(null, null);
         gui.setCurrentState(UIW1.get());

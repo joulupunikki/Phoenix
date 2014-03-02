@@ -48,14 +48,13 @@ public class Structure implements Serializable {
     int temp_count2; //short 
     int temp_count3; //short 
     int Damage;     //short 
- 
+
     public int turns_starving;    // RSW
- 
+
     public static ArrayList<ArrayList<int[]>> can_build;
     public LinkedList<int[]> build_queue;
     public boolean on_hold_no_res; // queue on hold because of no resources or input units
     Unit upgraded; // input unit used in building
- 
 
     /**
      * Creates a structure object. Reads in coordinates, owner, loyalty and
@@ -70,7 +69,7 @@ public class Structure implements Serializable {
     public Structure(FileChannel fc, Counter count) throws IOException {
 
         count.getSet(-2);
- 
+
         p_idx = GalaxyReader.readShort(fc, count.getSet(2));
         x = GalaxyReader.readShort(fc, count.getSet(2));
         y = GalaxyReader.readShort(fc, count.getSet(2));
@@ -184,7 +183,7 @@ public class Structure implements Serializable {
             tryToStartBuild(unit_type, unit_types, game);
         }
         build_queue.add(unit_type);
- 
+
     }
 
     /**

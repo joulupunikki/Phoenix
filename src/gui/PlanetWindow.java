@@ -41,13 +41,12 @@ public class PlanetWindow extends JPanel {
     JTextField city_name;
     JButton end_turn;
     JButton next_stack;
- 
-    JButton skip_stack;
- 
-    JButton build;
- 
-//    JButton 
 
+    JButton skip_stack;
+
+    JButton build;
+
+//    JButton 
     public PlanetWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
@@ -102,10 +101,8 @@ public class PlanetWindow extends JPanel {
             }
         });
 
- 
         setUpSkipStack();
-        
- 
+
         ButtonIcon build_disabled = new ButtonIcon(ws.build_button_w, ws.build_button_h, null, 0, color_index, ws);
 //        file_offset = 2;
 //        ButtonIcon build_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, "bin/efsbut10.bin", file_offset, color_index, ws);
@@ -125,13 +122,13 @@ public class PlanetWindow extends JPanel {
                 gui.getCurrentState().pressBuildButton();
             }
         });
- 
+
     }
 
     public void setUpSkipStack() {
         IndexColorModel color_index = gui.getICM();
         String file_name = "bin/efsbut9.bin";
-                ButtonIcon skip_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, 0, color_index, ws);
+        ButtonIcon skip_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, 0, color_index, ws);
         int file_offset = 2;
         ButtonIcon skip_stack_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, file_offset, color_index, ws);
         skip_stack = new JButton();
@@ -150,7 +147,7 @@ public class PlanetWindow extends JPanel {
             }
         });
     }
-    
+
     public void setUpInfoText() {
         planet_name_display = new JTextField();
         year_display = new JTextField();

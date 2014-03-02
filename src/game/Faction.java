@@ -1,4 +1,3 @@
-
 package game;
 
 import dat.EfsIni;
@@ -20,14 +19,15 @@ import util.Util;
 
 /**
  * Will handle faction data, particularly money
+ *
  * @author RSW
  */
 public class Faction implements Serializable {
-    
+
     private Game game;
     private EfsIni efs_ini;
     private int turn;
-    
+
     private int firebirds;
     private int tax_rate;
     private int tithe_rate;
@@ -35,18 +35,18 @@ public class Faction implements Serializable {
     List<Message> messages = new LinkedList<>();
 
     public Faction(Game game) {
-        
+
         this.game = game;
         this.efs_ini = game.getEfs_ini();
-        
+
         firebirds = efs_ini.starting_credits;
         tax_rate = efs_ini.default_tax_rate;
         tithe_rate = efs_ini.default_tithe_rate;
         pay_rate = 100;
-        
+
     }
-    
-        public void addMessage(Message m) {
+
+    public void addMessage(Message m) {
         messages.add(m);
     }
 

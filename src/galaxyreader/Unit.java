@@ -16,10 +16,12 @@ import java.util.Random;
 import util.C;
 
 /**
- * A class representing a unit object. Contains the units location, loyalty, owner and other fields.
+ * A class representing a unit object. Contains the units location, loyalty,
+ * owner and other fields.
+ *
  * @author joulupunikki
  */
-public class Unit  implements Serializable{
+public class Unit implements Serializable {
 
     public int p_idx; // short  
     public int x; // short     
@@ -57,11 +59,11 @@ public class Unit  implements Serializable{
      * probably better handled 
      * at a higher level
      */
-    List<Unit> unit_list; 
-    List<Unit> group_list; 
+    List<Unit> unit_list;
+    List<Unit> group_list;
     public List<Unit> cargo_list; //  
-    int group_end_mark; 
-    
+    int group_end_mark;
+
     // original code
     public boolean in_space;
     boolean is_sentry;
@@ -72,10 +74,8 @@ public class Unit  implements Serializable{
     public boolean routed;
     public UnitType type_data;
     public Unit carrier = null; //unit which carries this unit
- 
-    public int turns_starving;    // RSW added
 
- 
+    public int turns_starving;    // RSW added
 
     public Unit(int p_idx, int x, int y, int owner) {
         this.p_idx = p_idx;
@@ -118,19 +118,18 @@ public class Unit  implements Serializable{
         this.on_loan = false;
         spotted = new boolean[14];
         for (int i = 0; i < spotted.length; i++) {
-            spotted[i] = false;            
+            spotted[i] = false;
         }
         spotted[owner] = true;
         this.selected = false;
         this.routed = false;
         this.type_data = null;
     }
-    
-    
-    
- 
+
     /**
-     * Creates a unit object. Reads in coordinates, loyalty, owner and other fields.
+     * Creates a unit object. Reads in coordinates, loyalty, owner and other
+     * fields.
+     *
      * @param fc the FileChannel which contains the file from which the data is
      * read.
      * @param count the Counter containing the position from which the data is
@@ -142,36 +141,36 @@ public class Unit  implements Serializable{
         p_idx = GalaxyReader.readShort(fc, count.getSet(2));
         x = GalaxyReader.readShort(fc, count.getSet(2));
         y = GalaxyReader.readShort(fc, count.getSet(2));
-        
+
         owner = GalaxyReader.readByte(fc, count.getSet(1));
-        
+
         type = GalaxyReader.readByte(fc, count.getSet(1));
         t_lvl = GalaxyReader.readByte(fc, count.getSet(1));
         loyalty = GalaxyReader.readByte(fc, count.getSet(1));
         move_type = C.MoveType.FOOT; // GalaxyReader.readShort(fc, count.getSet(2));  
-        orders = GalaxyReader.readShort(fc, count.getSet(2));    
-        experience = GalaxyReader.readByte(fc, count.getSet(1)); 
-        move_points = GalaxyReader.readByte(fc, count.getSet(1)); 
-        res_relic = GalaxyReader.readByte(fc, count.getSet(1)); 
-        amount = GalaxyReader.readShort(fc, count.getSet(2));     
-        health = GalaxyReader.readByte(fc, count.getSet(1));     
+        orders = GalaxyReader.readShort(fc, count.getSet(2));
+        experience = GalaxyReader.readByte(fc, count.getSet(1));
+        move_points = GalaxyReader.readByte(fc, count.getSet(1));
+        res_relic = GalaxyReader.readByte(fc, count.getSet(1));
+        amount = GalaxyReader.readShort(fc, count.getSet(2));
+        health = GalaxyReader.readByte(fc, count.getSet(1));
         health_tmp = health;
-        sect = GalaxyReader.readByte(fc, count.getSet(1));       
+        sect = GalaxyReader.readByte(fc, count.getSet(1));
         prev_owner = GalaxyReader.readByte(fc, count.getSet(1));
-        unit_no = GalaxyReader.readInt(fc, count.getSet(4));     
-        flags = GalaxyReader.readInt(fc, count.getSet(4));      
-        used_unit_type = GalaxyReader.readByte(fc, count.getSet(1)); 
-        used_unitt_lvl = GalaxyReader.readByte(fc, count.getSet(1)); 
-        camo = GalaxyReader.readByte(fc, count.getSet(1));       
-        dest_x = GalaxyReader.readByte(fc, count.getSet(1));      
-        dest_y = GalaxyReader.readByte(fc, count.getSet(1));      
+        unit_no = GalaxyReader.readInt(fc, count.getSet(4));
+        flags = GalaxyReader.readInt(fc, count.getSet(4));
+        used_unit_type = GalaxyReader.readByte(fc, count.getSet(1));
+        used_unitt_lvl = GalaxyReader.readByte(fc, count.getSet(1));
+        camo = GalaxyReader.readByte(fc, count.getSet(1));
+        dest_x = GalaxyReader.readByte(fc, count.getSet(1));
+        dest_y = GalaxyReader.readByte(fc, count.getSet(1));
         move_cost = 0; //GalaxyReader.readInt(fc, count.getSet(4));   
         t_flags = 0; //GalaxyReader.readByte(fc, count.getSet(1));     
-        ai_orders = GalaxyReader.readByte(fc, count.getSet(1));   
-        ai_data = GalaxyReader.readByte(fc, count.getSet(1));     
+        ai_orders = GalaxyReader.readByte(fc, count.getSet(1));
+        ai_data = GalaxyReader.readByte(fc, count.getSet(1));
 // if ((orig_version >= 961025) || (save_version >= 961027)) {
-        ai_data2 = GalaxyReader.readShort(fc, count.getSet(2));    
-        wait_level = GalaxyReader.readByte(fc, count.getSet(1));  
+        ai_data2 = GalaxyReader.readShort(fc, count.getSet(2));
+        wait_level = GalaxyReader.readByte(fc, count.getSet(1));
 // }
         /*
          * the following Lists are 
@@ -181,63 +180,63 @@ public class Unit  implements Serializable{
         unit_list = null; //  
         group_list = null; //  
         cargo_list = new LinkedList<>(); //  
-        short section = GalaxyReader.readShort(fc, count.getSet(2)); 
-        if (section == -3) { 
+        short section = GalaxyReader.readShort(fc, count.getSet(2));
+        if (section == -3) {
             group_end_mark = section;
         } else {
             count.getSet(-2);
         } //GalaxyReader.readShort(fc, count.getSet(2)); //short 
-        
+
         if ((flags & 0x01) == 0x01) {
             in_space = false;
         } else {
             in_space = true;
         }
-        
+
         if ((flags & 0x04) == 0x04) {
             is_sentry = true;
         } else {
             is_sentry = false;
         }
-        
+
         if ((flags & 0x0040) == 0x0040) {
             is_cargo = true;
         } else {
             is_cargo = false;
         }
-        
+
         if ((flags & 0x0080) == 0x0080) {
             on_loan = true;
         } else {
             on_loan = false;
         }
-        
+
         spotted = new boolean[14];
         for (int i = 0; i < spotted.length; i++) {
             spotted[i] = false;
-            
+
         }
-        
+
         selected = false;
         turns_starving = 0;    // RSW
-        
+
     }
 
     /**
      * Create fresh unit from scratch, not from Galaxy file.
-     * 
+     *
      * @param p_idx, x, y: planet and hex co-ordinates of location
      * @param owner: owning faction
      * @param type: type number (position in UNIT.DAT, 0-91)
      * @param t_lvl: subtype (subordinate position in UNIT.DAT)
-     * @param res_relic: resource or relic type (cargo pods and relics only, set to 0 for other units)
-     * @param amount: quantity of resources (cargo pods only, set to 0 for other units)
+     * @param res_relic: resource or relic type (cargo pods and relics only, set
+     * to 0 for other units)
+     * @param amount: quantity of resources (cargo pods only, set to 0 for other
+     * units)
      * @param game: needed for access to the unit type table (UNIT.DAT)
-     * 
-     * Other Unit fields will be set to defaults.
-     * --RSW
+     *
+     * Other Unit fields will be set to defaults. --RSW
      */
- 
     public Unit(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount, Game game) {
 
         this.p_idx = p_idx;
@@ -246,14 +245,13 @@ public class Unit  implements Serializable{
         this.owner = owner;
         this.type = type;
         this.t_lvl = t_lvl;
-        this.res_relic = res_relic; 
-        this.amount = amount;  
+        this.res_relic = res_relic;
+        this.amount = amount;
 
         type_data = game.getUnitTypes()[type][t_lvl];    // Get type data from UNIT.DAT   
         move_type = type_data.move_type;
         camo = Math.max(type_data.camo + game.getRandom().nextInt(5) - 2, 0);    // New unit gets randomized camo value
 
-        
 //         System.out.println("Creating new Unit"); //DEBUG
 //         System.out.println("p_idx " + p_idx);
 //         System.out.println("x "+x);
@@ -266,27 +264,26 @@ public class Unit  implements Serializable{
 //         System.out.println("type_data.camo "+type_data.camo);
 //         System.out.println("camo "+camo);
 //         System.out.println("");
-
         move_points = type_data.move_pts;
         loyalty = 100;
-        health = 100;     
+        health = 100;
         health_tmp = health;
         experience = 0;    // Set all the rest to zero for now
-        orders = 0;   
-        sect = 0;       
+        orders = 0;
+        sect = 0;
         prev_owner = 0;
-        unit_no = 0;     
-        flags = 0;      
-        used_unit_type = 0; 
-        used_unitt_lvl = 0; 
-        dest_x = 0;      
-        dest_y = 0;      
-        move_cost = 0;  
+        unit_no = 0;
+        flags = 0;
+        used_unit_type = 0;
+        used_unitt_lvl = 0;
+        dest_x = 0;
+        dest_y = 0;
+        move_cost = 0;
         t_flags = 0;
         ai_orders = 0;
         ai_data = 0;
-        ai_data2 = 0;  
-        wait_level = 0; 
+        ai_data2 = 0;
+        wait_level = 0;
 
         unit_list = null;    // I don't think this is used. RSW
         group_list = null;    // I don't think this is used. RSW
@@ -297,7 +294,7 @@ public class Unit  implements Serializable{
         is_sentry = false;
         is_cargo = false;
         on_loan = false;
-        
+
         spotted = new boolean[14];
         for (int i = 0; i < spotted.length; i++) {
             spotted[i] = false;
@@ -310,6 +307,7 @@ public class Unit  implements Serializable{
 
     /**
      * Load unit u as cargo on this unit.
+     *
      * @param u unit to be loaded.
      * @return true if loading succeeds.
      */
@@ -323,9 +321,10 @@ public class Unit  implements Serializable{
         }
         return rv;
     }
-    
+
     /**
      * Unload unit u as cargo from this unit.
+     *
      * @param u unit to be unloaded.
      * @return true if unloading succeeds.
      */
@@ -337,11 +336,11 @@ public class Unit  implements Serializable{
         }
         return rv;
     }
-    
+
     public boolean isCargo(Unit u) {
         return cargo_list.contains(u);
     }
-    
+
     public static int spotRange(int spot) {
         int r_v = 0;
         r_v = spot / 2 - 1;
@@ -350,7 +349,7 @@ public class Unit  implements Serializable{
         }
         return r_v;
     }
-    
+
     /**
      * Prints the unit object. For debugging purposes.
      */
@@ -364,11 +363,11 @@ public class Unit  implements Serializable{
         System.out.println("unit t_lvl:   " + t_lvl);
     }
 
- 
     public static class CompMoveType implements Comparator<Unit> {
+
         public int compare(Unit u1, Unit u2) {
             return Integer.compare(u1.move_type.ordinal(), u2.move_type.ordinal());
         }
     }
-    
+
 }

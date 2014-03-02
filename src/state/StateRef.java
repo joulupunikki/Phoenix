@@ -16,15 +16,15 @@ public class StateRef {
     private StateRef(State state) {
         this.state = state;
     }
-    
+
     public static StateRef getStateRef() {
         return state_ref;
     }
-    
+
     public void setState(State state) {
         this.state = state;
     }
-    
+
     public State getState() {
         return state;
     }

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package game;
 
 import dat.UnitSpot;
@@ -11,10 +10,12 @@ import java.io.Serializable;
 
 /**
  * Loaded data used by the game object.
+ *
  * @author joulupunikki
  */
-public class GameResources implements Serializable{
-        private double[][][] unit_spot;
+public class GameResources implements Serializable {
+
+    private double[][][] unit_spot;
 
     public GameResources() {
 
@@ -26,4 +27,3 @@ public class GameResources implements Serializable{
         return unit_spot;
     }
 }
-

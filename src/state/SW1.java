@@ -32,19 +32,17 @@ public class SW1 extends SW {
         //button 1
         //on stack
         //on planet
-        
+
         Point p = SU.getSpaceMapClickPoint(e);
 
         if (e.getButton() == MouseEvent.BUTTON3) {
             SU.clickOnSpaceMapButton3(p);
         }
-        
+
     }
 
     public void wheelRotated(MouseWheelEvent e) {
         SU.wheelOnSpaceMap(e);
     }
-    
 
-    
 }

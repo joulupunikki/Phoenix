@@ -24,7 +24,7 @@ public class Resource {
     private Color[] colors;
     private int[][] ter_color;
     private Properties efs_ini;
-    
+
     public Resource(Gui gui) {
 
         color_scaler = UtilG.scaleColorsToDark(C.GRAY_SCALING_FACTOR, gui.getPallette());
@@ -49,7 +49,7 @@ public class Resource {
     public Color getColor(int color) {
         return colors[color];
     }
-    
+
     public int[] getColorScaler() {
         return color_scaler;
     }
@@ -57,11 +57,11 @@ public class Resource {
     public double[][][] getUnitSpot() {
         return unit_spot;
     }
-    
+
     public int[][] getTerColor() {
         return ter_color;
     }
-    
+
     public Properties getEFSIni() {
         return efs_ini;
     }

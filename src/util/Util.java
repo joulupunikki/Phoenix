@@ -45,7 +45,6 @@ public class Util {
         }
     }
 
- 
     public static void testHexIter(Game game, int planet) {
         HexIter iter = Util.getHexIter(game, planet);
         Hex hex = iter.next();
@@ -134,6 +133,7 @@ public class Util {
 
         return pods;
     }
+
     public static List<Unit> xStack(List<Unit> stack) { // Returns a temporary stack with cargo listed separately
         List<Unit> ret_val = new LinkedList<>();
         for (Unit unit : stack) {
@@ -143,7 +143,7 @@ public class Util {
             }
         }
         return ret_val;
- 
+
     }
 
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
@@ -588,10 +588,10 @@ public class Util {
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
             g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
         }
-        
-        if(e.turns_starving > 0) {    // Show if unit starving - RSW
+
+        if (e.turns_starving > 0) {    // Show if unit starving - RSW
             g.setColor(Color.RED);
-            g.drawString("!", x + (int) (side * 0.45), y + (int) (side * 0.6));         
+            g.drawString("!", x + (int) (side * 0.45), y + (int) (side * 0.6));
         }
     }
 
@@ -1575,10 +1575,10 @@ public class Util {
     public static void logEx(Thread t, Throwable e) {
         logEx(t, e, null);
     }
-    
- /**
- * Gets one line of input, skipping comments and white space
- */
+
+    /**
+     * Gets one line of input, skipping comments and white space
+     */
     public static String cleanLine(BufferedReader in) throws Exception {
 
         String s = in.readLine().trim();

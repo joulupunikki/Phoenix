@@ -153,7 +153,6 @@ public class PathFind {
     public static void setMoveCosts(PlanetGrid planet_grid, double[][][] terr_cost, int tile_set, int stack_size, int faction, Hex destination) {
 
 //        printMoveCost(terr_cost);
-
         Hex[][] hex_array = planet_grid.getMapArray();
         double move_cost = 1;
         for (int i = 0; i < hex_array.length; i++) {
@@ -161,8 +160,6 @@ public class PathFind {
                 boolean[] terr_types = hex_array[i][j].getTerrain();
 
                 for (int l = 0; l < C.MoveType.values().length; l++) {
-
-
 
                     move_cost = 1;
 
@@ -221,7 +218,6 @@ public class PathFind {
     public static void setLandingCosts(PlanetGrid planet_grid, double[][][] terr_cost, int tile_set, int stack_size, int faction, Hex destination) {
 
 //        printMoveCost(terr_cost);
-
         Hex[][] hex_array = planet_grid.getMapArray();
         double move_cost = 1;
         for (int i = 0; i < hex_array.length; i++) {
@@ -229,8 +225,6 @@ public class PathFind {
                 boolean[] terr_types = hex_array[i][j].getTerrain();
 
                 for (int l = 0; l < C.MoveType.values().length; l++) {
-
-
 
                     move_cost = 1;
 

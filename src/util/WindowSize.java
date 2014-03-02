@@ -129,12 +129,12 @@ public class WindowSize {
     public int globe_map_y_pos = 28;
     public int globe_map_width = 88;
     public int globe_map_height = 63;
- 
+
     public int space_button_x_offset = 95;
     public int space_button_y_offset = 25;
     public int space_button_width = 23;
     public int space_button_height = 23;
- 
+
     public int planet_list_cell_w = 100;
     public int planet_list_cell_h = 10;
     public int planet_list_x_offset = 0;
@@ -183,7 +183,6 @@ public class WindowSize {
     public int build_exit_button_h = 15;
     public int build_exit_button_x_offset = planet_map_width - build_exit_button_w - 10;
     public int build_exit_button_y_offset = planet_map_height / 2 - build_exit_button_h - 10;
- 
 
     public WindowSize(boolean is_double) {
 

@@ -23,7 +23,7 @@ public class PW extends State {
     public void pressSkipStackButton() {
         SU.pressSkipStackButtonSU();
     }
-    
+
     public void pressEndTurnButton() {
         game.endTurn();
         game.setPath(null);

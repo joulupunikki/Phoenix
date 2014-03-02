@@ -21,7 +21,7 @@ import util.Util;
  *
  * @author RSW
  */
-public class EfsIni implements Serializable{
+public class EfsIni implements Serializable {
 
 ////     [Options]
 //    public int video_on = 0;

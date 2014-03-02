@@ -12,7 +12,7 @@ import util.C;
  *
  * @author joulupunikki
  */
-public class PlanetGrid  implements Serializable{
+public class PlanetGrid implements Serializable {
 
     //map origin
     private Hex origin;
@@ -66,8 +66,7 @@ public class PlanetGrid  implements Serializable{
             }
 
         }
-        
-      
+
         for (int j = 0; j < map_array[map_array.length - 1].length; j++) {
             int i = map_array.length - 1;
             if (j != map_array[map_array.length - 1].length - 1) {
@@ -97,22 +96,20 @@ public class PlanetGrid  implements Serializable{
     public Hex[][] getMapArray() {
         return map_array;
     }
-    
+
     public void setTerrainTypes(Planet planet) {
         for (int i = 0; i < map_array.length; i++) {
             for (int j = 0; j < map_array[i].length; j++) {
-                 map_array[i][j].setTerrain(planet.resolveTerrainType(i, j));   
-                
+                map_array[i][j].setTerrain(planet.resolveTerrainType(i, j));
+
             }
-            
-            
+
         }
     }
-    
+
 //    public Hex getNextStack(Point p) {
 //
 //    }
-    
     public boolean test() {
         boolean ret_val = true;
 
@@ -123,7 +120,6 @@ public class PlanetGrid  implements Serializable{
                 for (int k = 0; k < 6; k++) {
                     Hex neighbour = map_array[i][j].getN(k);
                     if (neighbour != null) {
-
 
                         System.out.print("           " + k + ": ");
                         neighbour.print();
@@ -157,8 +153,6 @@ public class PlanetGrid  implements Serializable{
                         ret_val = false;
                     }
 
-
-
                 }
                 if (j != map_array[i].length || i % 2 != 1) {
                     Hex first = map_array[i][j];
@@ -177,8 +171,6 @@ public class PlanetGrid  implements Serializable{
                     if (!(first.equals(current))) {
                         ret_val = false;
                     }
-
-
 
                 }
             }

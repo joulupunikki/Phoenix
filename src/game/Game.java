@@ -94,7 +94,7 @@ public class Game implements Serializable {
     public Game(String galaxy_file, int current_planet) {
 
         random = new Random(1234567890L);
-       
+
         // Read fixed data files
         unit_types = UnitType.readUnitDat();
         res_types = ResType.readResDat();

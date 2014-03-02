@@ -1,4 +1,3 @@
-
 package dat;
 
 import java.io.BufferedReader;
@@ -11,29 +10,28 @@ import util.Util;
 
 /**
  *
- * @author RSW
- * Reads in resource type data from files RES.DAT.
+ * @author RSW Reads in resource type data from files RES.DAT.
  */
 public class ResType implements Serializable {
-    
+
     public String name;
     public String singular;
     public int price;
     public String description;
-    
-    private ResType () {
+
+    private ResType() {
     }
-    
+
     /**
      * Gets data about one resource type, from line passed to it
      */
     private static ResType getOneType(String s) throws Exception {
 
         ResType ret_val = new ResType();
-        
+
         Pattern pattern = Pattern.compile("\"[^\"]*\"");    // Find anything in quotes, including empty string
         Matcher m = pattern.matcher(s);
-                
+
         // Get plural name (the one usually used)
         m.find();    // Skip word "name"
         m.find();
@@ -43,7 +41,7 @@ public class ResType implements Serializable {
         } else {
             ret_val.name = name;
         }
-        
+
         // Get singular name
         m.find();    // Skip word "singular"
         m.find();
@@ -53,7 +51,7 @@ public class ResType implements Serializable {
         } else {
             ret_val.singular = singular;
         }
-        
+
         // Get price
         m.find();    // Skip word "price"
         m.find();
@@ -72,7 +70,7 @@ public class ResType implements Serializable {
 
         return ret_val;
     }
-    
+
     /**
      * Creates and returns resource types table, reading RES.DAT
      */
@@ -88,7 +86,7 @@ public class ResType implements Serializable {
             if (!s.startsWith("{")) {
                 throw new Exception("Character { expected. Found: " + s);
             }
-            
+
             for (int i = 0; i < C.RES_TYPES; i++) {
                 s = Util.cleanLine(in);
                 res_types[i] = getOneType(s);

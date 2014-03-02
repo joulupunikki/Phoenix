@@ -9,7 +9,7 @@ package state;
  * @author joulupunikki
  */
 public class CW1 extends State {
-    
+
     private static CW1 instance = new CW1();
 
     public CW1() {
@@ -18,10 +18,10 @@ public class CW1 extends State {
     public static State get() {
         return instance;
     }
-    
+
     public void pressFightButton() {
         game.resolveGroundBattleFight();
         gui.setCurrentState(CW2.get());
     }
-    
+
 }

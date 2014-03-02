@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Iterator to go through a stack. Will iterate through cargo. Next returns null
  * if there are no more elements.
+ *
  * @author joulupunikki
  */
 public class StackIterator {
@@ -32,14 +33,12 @@ public class StackIterator {
 
         if (start) {
             if (iterator.hasNext()) {
-                next = iterator.next();               
+                next = iterator.next();
             } else {
-                next = null;                
+                next = null;
             }
             start = false;
         } else if (next != null) {
-
-
 
             if (is_cargo_listing) {
                 next = cargo_it.next();
