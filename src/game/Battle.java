@@ -341,31 +341,22 @@ public class Battle implements Serializable {
     }
 
     public void removeDead(List<Unit> stack) {
-        for (ListIterator<Unit> it = stack.listIterator(); it.hasNext();) {
-            Unit unit = it.next();
+        List<Unit> dead_list = new LinkedList<>();
+        for (Unit unit : stack) {
             // check for dead fighters aboard carriers
-            if (!unit.cargo_list.isEmpty()) {
-                for (ListIterator<Unit> it1 = unit.cargo_list.listIterator(); it1.hasNext();) {
-                    Unit unit1 = it1.next();
-                    if (unit1.health <= 0) {
-                        it1.remove();
-                    }
-
+            for (Unit unit1 : unit.cargo_list) {
+                if (unit1.health <= 0) {
+                    dead_list.add(unit1);
                 }
-
             }
             if (unit.health <= 0) {
-                if (!unit.cargo_list.isEmpty()) {
-                    for (ListIterator<Unit> it1 = unit.cargo_list.listIterator(); it1.hasNext();) {
-                        Unit unit1 = it1.next();
-                        unit1.health = 0;
-                        it1.remove();
-                    }
-                }
-                it.remove();
+                dead_list.add(unit);
             } else if (unit.health > unit.health_tmp) {
                 unit.health = unit.health_tmp;
             }
+        }
+        for (Unit unit : dead_list) {         // Put dead units on a temporary list and then delete them,
+            game.deleteUnitInCombat(unit);    // so we don't remove units from the stack or cargo list we're iterating over
         }
     }
 
@@ -704,8 +695,8 @@ public class Battle implements Serializable {
         removeDead(stack_a);
         removeDead(stack_b);
 
-        removeDead(game.getUnits());
-        removeDead(game.getUnmovedUnits());
+//        removeDead(game.getUnits());
+//        removeDead(game.getUnmovedUnits());
         combat_stack_a = null;
         combat_stack_b = null;
         combat_type = null;

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.ArrayList;
-import java.util.Arrays;    // DEBUG
+import java.util.Arrays;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -38,7 +38,7 @@ public class Economy implements Serializable {
     private Prod[] prod_table;
     private ResType[] res_types;
 
-    private int turn;    // = faction number. Copied from game.turn each turn
+    private int turn;    // = faction number. Obtained from game.turn each turn
 
     public Economy(Game game, Resources resources) {
         // Store references to game data, for later use
@@ -66,18 +66,25 @@ public class Economy implements Serializable {
 
         this.turn = turn;
 
-        System.out.println(" ");
+        System.out.println(" ");    // TESTING
         System.out.println("Starting turn for FACTION " + turn);
         System.out.println(" ");
 
-        collectResources();
+        if (turn < C.NR_HOUSES) {    // Houses only for now
+            collectResources();
+        }
 
         regainHealth();
 
-        if (turn < C.NUMBER_OF_HOUSES) {    // Some updates are for Houses only
+        if (turn < C.NR_HOUSES) {    // Houses only for now
             if (efs_ini.consume_food) {
                 feedUnitsAndCities();
             }
+        }
+
+        if (turn == 0) {
+            resources.printPodLists();    // TESTING
+            resources.verifyPodLists();    // TESTING
         }
 
     }
@@ -108,90 +115,86 @@ public class Economy implements Serializable {
     /**
      * Current faction's units and cities consume food.
      *
-     * NOTE: Units eat a maximum of 1 food (if type_data.eat > 0). Cities all
-     * eat 10 food.
+     * NOTE: Units eat a maximum of 1 food (if type_data.eat > 0). Cities eat 1
+     * food per 10% health (i.e. per unit of population).
      *
      */
-    private void feedUnitsAndCities() {    // RSW
+    private void feedUnitsAndCities() {
 
-        // Feed cities one planet at a time.
-        for (Planet planet : planets) {
-            int food_available = resources.countResourcesAvailable(planet.index, turn)[C.RES_FOOD];
+        for (Planet planet : planets) {    // For each planet
+
+            List<Unit> dead_units = new LinkedList<>();
+            int food_available = resources.getResourcesAvailable(planet.index, turn)[C.RES_FOOD];
             int food_needed = 0;
 
-            for (Structure city : structures) {    // Search the structure list for relevant cities and count them
-                if (city.p_idx == planet.index) {
-                    if (city.owner == turn) {      // Relevant city
-                        int this_city_needs = city.health / 10;    // City consumes 1 food for each complete 10% health
-                        food_needed += this_city_needs;
-                        int deficit = food_needed - food_available;
-                        if (deficit > 0) {
-                            city.turns_starving += 1;
-                            double health_loss = (city.health / 2.0);
-//                            System.out.println("A Deficit = "+deficit+", Health = "+city.health+", Loss = "+ health_loss);
-                            if (deficit < this_city_needs) {    // Had enough to feed city partly, so reduce health loss proportionally
-                                health_loss = health_loss * ((double) deficit / this_city_needs);
-                            }
-                            city.health = Math.max(city.health - (int) health_loss, 0);
-//                            System.out.println("B Deficit = "+deficit+", Health = "+city.health+", Loss = "+ health_loss);
-                        } else {
-                            city.turns_starving = 0;
+            // First work out how much food is needed on this planet
+            Util.HexIter iter1 = Util.getHexIter(game, planet.index);    // For each hex of the planet
+            for (Hex hex = iter1.next(); hex != null; hex = iter1.next()) {
+
+                // Feed any city in the hex (if it has the right owner)
+                Structure city = hex.getStructure();
+                if (city != null && city.owner == turn) {      // There's a city of the current faction
+
+                    int this_city_needs = city.health / 10;    // City consumes 1 food for each complete 10% health
+                    food_needed += this_city_needs;
+                    int deficit = food_needed - food_available;
+                    if (deficit > 0) {
+                        city.turns_starving += 1;
+                        double health_loss = (city.health / 2.0);
+                        if (deficit < this_city_needs) {    // Had enough to feed city partly, so reduce health loss proportionally
+                            health_loss = health_loss * ((double) deficit / this_city_needs);
                         }
+                        city.health = Math.max(city.health - (int) health_loss, 0);
+//                        if (city.health == 0) {
+//                            game.deleteStructure(city);    // Not needed at present; cities can't fall to 0 health without plague.
+//                        }
+                    } else {
+                        city.turns_starving = 0;
                     }
                 }
-            }
-            if (food_needed > 0) {
-                System.out.println("Faction " + turn + " on planet " + planet.index + " needs "
-                        + food_needed + " food for cities. " + food_available + " available.");
-                testPrintResources(planet.index);
 
-                if (food_available > 0) {
-                    resources.consumeOneResourceType(planet.index, turn, C.RES_FOOD,
-                            Math.min(food_needed, food_available));
-                }
-
-                testPrintResources(planet.index);
-
-                if (food_needed > food_available) {
-                    System.out.println("FAMINE!!! Faction " + turn + " has "
-                            + (food_needed - food_available) + " food deficit on planet " + planet.index);
-                }
-            }
-        }
-
-        // Feed units one planet at a time
-        for (Planet planet : planets) {
-            int food_available = resources.countResourcesAvailable(planet.index, turn)[C.RES_FOOD];
-            int food_needed = 0;
-
-            for (Unit unit : units) {    // Search the unit list for relevant units and count them
-                if (unit.p_idx == planet.index) {
-                    if (unit.owner == turn && unit.type_data.eat != 0 && !unit.in_space) {    // Relevant unit
+                // Feed any units in the hex's stack (if they have the right owner)
+                List<Unit> stack = hex.getStack();
+                StackIterator iter2 = new StackIterator(stack);
+                for (Unit unit = iter2.next(); unit != null; unit = iter2.next()) {    // For each unit in stack (including cargo)
+                    if (unit.owner == turn && unit.type_data.eat != 0 && !unit.in_space) {    // Unit needs feeding
                         food_needed += 1;
                         if (food_needed > food_available) {
                             unit.turns_starving += 1;
                             unit.health = Math.max(unit.health - efs_ini.health_loss_for_famine, 0);
+                            if (unit.health == 0) {
+                                dead_units.add(unit);    // Wait to delete unit until we leave loop over its stack
+                            }
                         } else {
                             unit.turns_starving = 0;
                         }
                     }
                 }
             }
+
+            // Now consume the resources
             if (food_needed > 0) {
-                System.out.println("Faction " + turn + " on planet " + planet.index + " needs "
-                        + food_needed + " food for cities. " + food_available + " available.");
+
+                System.out.println("Faction " + turn + " on planet " + planet.name + " needs "
+                        + food_needed + " food for cities and units. " + food_available + " available.");
                 testPrintResources(planet.index);
 
                 if (food_available > 0) {
-                    resources.consumeOneResourceType(planet.index, turn, C.RES_FOOD,
-                            Math.min(food_needed, food_available));
+                    int food_consumed = Math.min(food_needed, food_available);
+                    resources.consumeOneResourceType(planet.index, turn, C.RES_FOOD, food_consumed);
                 }
 
                 testPrintResources(planet.index);
 
                 if (food_needed > food_available) {
-                    System.out.println("FAMINE!!! Faction " + turn + " has "
-                            + (food_needed - food_available) + " food deficit on planet " + planet.index);
+                    String msg = "Famine on planet " + planet.name + "!";
+                    game.getFaction(turn).addMessage(new Message(msg, C.Msg.FAMINE, game.getYear(), planet));
+                    System.out.println(msg);
+                }
+
+                // Now delete dead units
+                for (Unit unit : dead_units) {
+                    game.deleteUnitNotInCombat(unit);
                 }
             }
         }
@@ -222,7 +225,7 @@ public class Economy implements Serializable {
      * @return Array of resource amounts, one per resource type
      *
      */
-    public int[] calculateActualProduction(Structure city) {    //RSW
+    public int[] calculateActualProduction(Structure city) {
 
         int[] resource_amounts;    // Resources of each type
 
@@ -234,13 +237,14 @@ public class Economy implements Serializable {
 
     /**
      * Calculate how many resources a city potentially produces per turn
-     * (ignoring loyalty etc).
+     * (ignoring loyalty etc). This method can be called on cities that don't
+     * produce resources, and will return values set to zero.
      *
      * @param city Structure
      * @return Array of resource amounts, one per resource type
      *
      */
-    public int[] calculateBaseProduction(Structure city) {    //RSW
+    public int[] calculateBaseProduction(Structure city) {
 
         int[] resource_amounts;    // Resources of each type. Initialised to 0 by default.
 
@@ -257,45 +261,46 @@ public class Economy implements Serializable {
             case C.ARBORIUM:
                 resource_amounts = calculateHarvest(city, C.ARBORIUM_HARVESTING);
                 break;
-//            case C.CHEMICALS:
-//                resource_amounts = calculateSecondaryProduction(city, C.CHEMICALS_PRODUCTION);
-//                break; 
-//            case C.ELECTRONICS:
-//                resource_amounts = calculateSecondaryProduction(city, C.ELECTRONICS_PRODUCTION);
-//                break; 
-//            case C.BIOPLANT:
-//                resource_amounts = calculateSecondaryProduction(city, C.BIOPLANT_PRODUCTION);
-//                break; 
-//            case C.CERAMSTEEL:
-//                resource_amounts = calculateSecondaryProduction(city, C.CERAMSTEEL_PRODUCTION);
-//                break; 
-//            case C.WETWARE:
-//                resource_amounts = calculateSecondaryProduction(city, C.WETWARE_PRODUCTION);
-//                break; 
-//            case C.CYCLOTRON:
-//                resource_amounts = calculateSecondaryProduction(city, C.CYCLOTRON_PRODUCTION);
-//                break; 
-//            case C.FUSORIUM:
-//                resource_amounts = calculateSecondaryProduction(city, C.FUSORIUM_PRODUCTION);
-//                break;
+            case C.CHEMICALS:
+                resource_amounts = calculateSecondaryProduction(city, C.CHEMICALS_PRODUCTION);
+                break;
+            case C.ELECTRONICS:
+                resource_amounts = calculateSecondaryProduction(city, C.ELECTRONICS_PRODUCTION);
+                break;
+            case C.BIOPLANT:
+                resource_amounts = calculateSecondaryProduction(city, C.BIOPLANT_PRODUCTION);
+                break;
+            case C.CERAMSTEEL:
+                resource_amounts = calculateSecondaryProduction(city, C.CERAMSTEEL_PRODUCTION);
+                break;
+            case C.WETWARE:
+                resource_amounts = calculateSecondaryProduction(city, C.WETWARE_PRODUCTION);
+                break;
+            case C.CYCLOTRON:
+                resource_amounts = calculateSecondaryProduction(city, C.CYCLOTRON_PRODUCTION);
+                break;
+            case C.FUSORIUM:
+                resource_amounts = calculateSecondaryProduction(city, C.FUSORIUM_PRODUCTION);
+                break;
             default:
-                resource_amounts = new int[C.RES_TYPES];    // Must create new, so values will be initialised to zero
+                resource_amounts = new int[C.RES_TYPES];    // Must create new array, so values will be initialised to zero
                 break;
         }
         return resource_amounts;
     }
 
     /**
-     * Calculate how many resources a city harvests per turn.
+     * Calculate how many resources a harvesting city potentially produces per
+     * turn (ignoring loyalty etc).
      *
      * @param city Structure
-     * @param harvest_type Harvesting city type, 0-3
+     * @param harvest_type Harvesting city type, 0-3 (index into harvest table)
      * @return Array of resource amounts, one per resource type
      *
      */
-    public int[] calculateHarvest(Structure city, int harvest_type) {    //RSW
+    public int[] calculateHarvest(Structure city, int harvest_type) {
 
-        int[] resource_amounts = new int[C.RES_TYPES];    // Will accumulate resource amounts. Initialised to 0 by default.
+        int[] resource_amounts = new int[C.RES_TYPES];    // Will return resource amounts. Initialised to 0 by default.
 
         Planet planet = planets.get(city.p_idx);    // Get planet that city's on
         Hex city_hex = game.getHexFromPXY(city.p_idx, city.x, city.y);    // Get hex that city's in
@@ -317,13 +322,11 @@ public class Economy implements Serializable {
             }
 
             for (int j = 0; j < 3; j++) {    // For up to 3 possible resource types per hex
-                // When < 3 types, remaining items in array will be null, so check for that
-                if (harvest_table[harvest_type][terrain][planet.tile_set_type][j] == null) {
+                ResPair pair = harvest_table[harvest_type][terrain][planet.tile_set_type][j];
+                if (pair == null) {    // When < 3 types, remaining items in array will be null, so check for that
                     break;
                 }
-                int resource_type = harvest_table[harvest_type][terrain][planet.tile_set_type][j].resource_type;
-                int resource_amount = harvest_table[harvest_type][terrain][planet.tile_set_type][j].resource_amount;
-                resource_amounts[resource_type] += resource_amount;    // Accumulate the resource
+                resource_amounts[pair.resource_type] += pair.resource_amount;    // Accumulate the resource
             }
         }
 
@@ -382,10 +385,84 @@ public class Economy implements Serializable {
         return resource_amounts;
     }
 
-    public Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {   //RSW
+    /**
+     * Calculate how many resources a secondary production city potentially
+     * produces per turn (ignoring loyalty etc).
+     *
+     * @param city Structure
+     * @param production_type Secondary production type, 0-6 (index into prod
+     * table)
+     * @return Array of resource amounts, one per resource type
+     *
+     */
+    public int[] calculateSecondaryProduction(Structure city, int production_type) {
 
-        // Find the neighbours of the given hex, and then the neighbours of those neighbours. 
-        // To avoid adding the same hex more than once, use Set instead of List, as that leaves it to the RTE to avoid duplicates 
+        int[] resource_amounts = new int[C.RES_TYPES];    // Will return resource amounts. Initialised to 0 by default.
+
+        // Check whether the city has enough of all the resource types it needs
+        boolean enough_of_all = true;
+        for (int i = 0; i < 3; i++) {    // For up to 3 possible resource needs
+            ResPair need = prod_table[production_type].need[i];
+            if (need == null) {    // When < 3 needs, remaining items in array will be null, so check for that
+                break;
+            }
+            boolean enough = resources.checkOneResourceType(city.p_idx, city.owner, need.resource_type, need.resource_amount);
+            if (!enough) {
+                enough_of_all = false;
+                break;
+            }
+        }
+
+        testPrintResources(city.p_idx);    // TESTING
+
+        ResPair make = prod_table[production_type].make;
+
+        if (enough_of_all) {
+
+            // Consume the resources needed
+            for (int i = 0; i < 3; i++) {    // For up to 3 possible resource needs
+                ResPair need = prod_table[production_type].need[i];
+                if (need == null) {    // When < 3 needs, remaining items in array will be null, so check for that
+                    break;
+                }
+                resources.consumeOneResourceType(city.p_idx, city.owner, need.resource_type, need.resource_amount);
+                System.out.println("City type " + game.getStrBuild(city.type).name + " consuming "
+                        + need.resource_amount + " " + game.getResTypes()[need.resource_type].name);
+            }
+
+            // Return the resources made
+            resource_amounts[make.resource_type] = make.resource_amount;
+
+            System.out.println("City type " + game.getStrBuild(city.type).name + " producing "
+                    + make.resource_amount + " " + game.getResTypes()[make.resource_type].name);
+        } else {
+            String res_name = game.getResTypes()[make.resource_type].name;
+            Planet planet = planets.get(city.p_idx);
+            String msg = "You do not have all the required resources to produce " + res_name + " on planet " + planet.name;
+            game.getFaction(turn).addMessage(new Message(msg, C.Msg.CANNOT_PRODUCE, game.getYear(), planet));
+            System.out.println(msg);
+        }
+        return resource_amounts;
+    }
+
+    /**
+     * Find and return the set of all hexes within a certain radius of a given
+     * hex.
+     *
+     * Typically this is called with radius 2, for harvesting cities, in which
+     * case it returns a set of 17 hexes (unless the radius extends off the top
+     * or bottom of the map.
+     *
+     * @param hex The central hex
+     * @param radius The distance in hexes to extend the search
+     * @return Set of hexes within the radius
+     *
+     */
+    public Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {
+
+        // Find the neighbours of the given hex, and then the neighbours of those neighbours, etc. 
+        // To avoid adding the same hex more than once, use Set instead of List, as that leaves it
+        // to the JRE to avoid duplicates 
         Set<Hex> ret_val = new HashSet<>();    // Set of hexes to be returned 
         LinkedList<Hex> queue = new LinkedList<>();
         LinkedList<Integer> queueR = new LinkedList<>();
@@ -414,7 +491,10 @@ public class Economy implements Serializable {
         return ret_val;
     }
 
-    // FOR TESTING
+    // ================================================================================
+    //
+    //          METHODS BELOW THIS LINE ARE ONLY FOR TESTING
+    //
     public void testPrintProdTable() {
 
         System.out.println("PROD TABLE");
@@ -464,7 +544,7 @@ public class Economy implements Serializable {
 
         if (turn == 0) {
             System.out.println("Faction " + turn + " resources: "
-                    + Arrays.toString(resources.countResourcesAvailable(p_idx, turn)));
+                    + Arrays.toString(resources.getResourcesAvailable(p_idx, turn)));
         }
     }
 }

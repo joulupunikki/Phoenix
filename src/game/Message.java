@@ -5,13 +5,14 @@
  */
 package game;
 
+import java.io.Serializable;
 import util.C;
 
 /**
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class Message {
+public class Message implements Serializable {
 
     String msg_txt;
     C.Msg type;

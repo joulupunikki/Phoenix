@@ -1040,7 +1040,7 @@ public class Game implements Serializable {
 
         Unit u = iter.next();
         while (u != null) {
-            u.owner = turn;
+            changeOwnerOfUnit(turn, u);
             u = iter.next();
         }
     }
@@ -1633,17 +1633,10 @@ public class Game implements Serializable {
 
     public void setUnitCoords(boolean in_space, int p_idx, int x, int y, Unit e) {
 
-        e.p_idx = p_idx;
-        e.x = x;
-        e.y = y;
-        e.in_space = in_space;
+        relocateUnit(in_space, p_idx, x, y, e);
 
         for (Unit u : e.cargo_list) {
-            u.p_idx = p_idx;
-            u.x = x;
-            u.y = y;
-            u.in_space = in_space;
-
+            relocateUnit(in_space, p_idx, x, y, u);
         }
 
     }
@@ -1656,10 +1649,7 @@ public class Game implements Serializable {
         Unit e = iterator.next();
         for (int i = 0; i < C.STACK_SIZE; i++) {
 
-            e.p_idx = p_idx;
-            e.x = x;
-            e.y = y;
-            e.in_space = in_space;
+            relocateUnit(in_space, p_idx, x, y, e);
 
             if (is_cargo_listing) {
                 e = cargo_it.next();
@@ -2049,7 +2039,7 @@ public class Game implements Serializable {
         Hex hex = getHexFromPXY(p_idx, x, y);
         List<Unit> stack = hex.getStack();
 
-        if (Util.stackSize(hex.getStack()) < 20) {    // If stack not full, create new unit
+        if (Util.stackSize(stack) < 20) {    // If stack not full, create new unit
             Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this);
 
             units.add(unit);    // Add new unit to the general unit list
@@ -2060,36 +2050,192 @@ public class Game implements Serializable {
             hex_proc.spotProc(hex, stack);    // Set spotted[] flags for new unit
 
 //            System.out.println("spotted[] after: " + Arrays.toString(unit.spotted));    //DEBUG
+            if (unit.type == C.CARGO_UNIT_TYPE) {
+                resources.addToPodLists(unit);    // Locations of cargo pods are tracked by class Resources
+            }
+
+//            System.out.println("*** createUnitInHex: created " + unit.type_data.name + " at " + p_idx + ", "
+//                    + x + ", " + y + ", " + unit.in_space);    // TESTING
             return unit;
+
         } else {
             return null;
         }
     }
 
     /**
-     * Removes unit (in space or hex) from all lists, with all necessary
-     * clean-up. IMPORTANT: Do not call this method while iterating over the
-     * general unit list, or any stack or cargo list the unit is on!
+     * Removes from the game a unit killed in combat (in space or hex). Performs
+     * all necessary clean-up.
+     *
+     * IMPORTANT: Do not call this method while iterating over the general unit
+     * list, or any stack or cargo list the unit is on!
      *
      * @param unit Unit to be deleted.
      */
-    public void deleteUnit(Unit unit) {
+    public void deleteUnitInCombat(Unit unit) {
+
+        // Note: When disembarking units from a list, put them on a temporary list first,
+        // to avoid the problem of removing an object from a list while iterating through that list
+        List<Unit> temp_list = new LinkedList<>();
+
+        // Disembark any space units on carriers in space
+        if (unit.in_space && unit.type == C.SPACE_CARRIER_UNIT_TYPE) {
+            for (Unit cargo : unit.cargo_list) {
+                if (cargo.type == C.FIGHTER_UNIT_TYPE || cargo.type == C.TORP_BMBR_UNIT_TYPE) {
+                    temp_list.add(cargo);
+                }
+            }
+        }
+        for (Unit cargo : temp_list) {
+            unit.disembark(cargo);
+            getUnitStack(unit).add(cargo);
+        }
+
+        // Now delete the unit along with any remaining cargo
+        deleteUnitAndCargo(unit);
+    }
+
+    /**
+     * Removes from the game a unit NOT killed in combat. Performs all necessary
+     * clean-up.
+     *
+     * IMPORTANT: Do not call this method while iterating over the general unit
+     * list, or any stack or cargo list the unit is on!
+     *
+     * @param unit Unit to be deleted.
+     */
+    public void deleteUnitNotInCombat(Unit unit) {
+
+        // Note: When disembarking units from a list, put them on a temporary list first,
+        // to avoid the problem of removing an object from a list while iterating through that list
+        List<Unit> temp_list = new LinkedList<>();
+
+        // Disembark any cargo which can be disembarked
+        for (Unit cargo : unit.cargo_list) {
+            if (unit.in_space) {
+                if (cargo.move_type == C.MoveType.SPACE
+                        || cargo.move_type == C.MoveType.JUMP
+                        || cargo.move_type == C.MoveType.LANDER) {
+                    temp_list.add(cargo);
+                }
+            } else {
+                boolean[] terrain = getUnitHex(unit).getTerrain();
+                int tile_set = getPlanet(unit.p_idx).tile_set_type;
+                if (terrain[C.OCEAN] == false || tile_set == C.BARREN_TILE_SET) {
+                    temp_list.add(cargo);
+                }
+            }
+        }
+        for (Unit cargo : temp_list) {
+            unit.disembark(cargo);
+            getUnitStack(unit).add(cargo);
+        }
+
+        // Now delete the unit along with any remaining cargo
+        deleteUnitAndCargo(unit);
+    }
+
+    /**
+     * Removes a unit from the game along with all its cargo. Not to be called
+     * by any method other than deleteUnitInCombat and deleteUnitNotInCombat.
+     *
+     * @param unit Unit to be deleted.
+     */
+    private void deleteUnitAndCargo(Unit unit) {
+
+        // Note: When deleting units from a list, put them on a temporary list first,
+        // to avoid the problem of removing an object from a list while iterating through that list
+        List<Unit> temp_list = new LinkedList<>();
+
+        // First delete all cargo
+        for (Unit cargo : unit.cargo_list) {
+            temp_list.add(cargo);
+        }
+        for (Unit cargo : temp_list) {
+            deleteEmptyUnit(cargo);
+        }
+
+        // Now delete the unit itself
+        deleteEmptyUnit(unit);
+    }
+
+    /**
+     * Removes a unit from the game, when it definitely has no cargo. Not to be
+     * called by any method other than deleteUnitAndCargo.
+     *
+     * @param unit Unit to be deleted.
+     */
+    private void deleteEmptyUnit(Unit unit) {
 
         List<Unit> stack = getUnitStack(unit);    // Get unit's stack
 
-        stack.remove(unit);    // Remove unit from stack
-        unmoved_units.remove(unit); // Remove unit from unmoved unit list
-        units.remove(unit);    // Remove unit from general unit list
+        stack.remove(unit);         // Remove unit from its stack
+        unmoved_units.remove(unit); // Remove unit from the unmoved unit list
+        units.remove(unit);         // Remove unit from the general unit list
 
         if (unit.carrier != null) {
-            unit.carrier.cargo_list.remove(unit);    // Remove this unit from its carrier's cargo list
-        }
-        for (Unit cargo : unit.cargo_list) {
-            cargo.carrier = null;    // Clear the carrier field of this unit's passengers
-            deleteUnit(cargo);   // Delete cargo
+            unit.carrier.disembark(unit);    // Remove this unit from its carrier's cargo list
         }
 
+        if (unit.type == C.CARGO_UNIT_TYPE) {
+            resources.removeFromPodLists(unit);    // Locations of cargo pods are tracked by class Resources
+        }
+
+//        System.out.println("*** deleteEmptyUnit: deleted " + unit.type_data.name + " at " + unit.p_idx + ", "
+//                + unit.x + ", " + unit.y + ", " + unit.in_space);    // TESTING
         // If there are any units spotted only by this one, we should clear their spotted flags. ???
+    }
+
+    /**
+     * Relocates a unit to the specified location. All relocation of units must
+     * be done through this method, to ensure the updating of secondary data
+     * structures that are dependent on the location of units.
+     *
+     * @param in_space True if the unit is to be in space
+     * @param p_idx, x, y Planet index and hex coordinates of new location
+     * @param unit Unit to be relocated
+     */
+    public void relocateUnit(boolean in_space, int p_idx, int x, int y, Unit unit) {    //RSW
+
+        if (unit.type == C.CARGO_UNIT_TYPE) {
+            resources.removeFromPodLists(unit);    // Locations of cargo pods are tracked by class Resources
+        }
+
+        unit.in_space = in_space;
+        unit.p_idx = p_idx;
+        unit.x = x;
+        unit.y = y;
+
+        if (unit.type == C.CARGO_UNIT_TYPE) {
+            resources.addToPodLists(unit);    // Locations of cargo pods are tracked by class Resources
+        }
+
+//        System.out.println("*** relocateUnit: " + unit.type_data.name + " relocated to " + p_idx + ", "
+//                + x + ", " + y + ", " + in_space);    // TESTING
+    }
+
+    /**
+     * Changes the ownership of a unit from one faction to another. All changes
+     * of ownership must be done through this method, to ensure the updating of
+     * secondary data structures that are dependent on the location of units.
+     *
+     * @param new_owner
+     * @param unit
+     */
+    public void changeOwnerOfUnit(int new_owner, Unit unit) {    //RSW
+
+        if (unit.type == C.CARGO_UNIT_TYPE) {
+            resources.removeFromPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
+        }
+
+        unit.owner = new_owner;
+
+        if (unit.type == C.CARGO_UNIT_TYPE) {
+            resources.addToPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
+        }
+
+//        System.out.println("*** changeOwnerOfUnit: " + unit.type_data.name
+//                + " now owned by faction " + new_owner); // TESTING
     }
 
     /**

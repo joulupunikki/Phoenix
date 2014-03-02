@@ -73,6 +73,7 @@ public class C {
     public static final int STACK_WINDOW_UNITS_X = 5;
     public static final int STACK_WINDOW_UNITS_Y = 4;
     public static final int NR_FACTIONS = 14;
+    public static final int NR_HOUSES = 5;    // RSW
     public static final int DAMAGE_DAT_X = 12;
     public static final int DAMAGE_DAT_Y = 10;
     public static final int TARGET_DAT_X = 9;
@@ -132,7 +133,9 @@ public class C {
     // message types
     public enum Msg {
 
-        CITY_FULL
+        CITY_FULL,
+        FAMINE,
+        CANNOT_PRODUCE
     }
 
     // movement types
@@ -238,7 +241,12 @@ public class C {
     public static final int ROAD = 11;
     public static final int STRUCTURE = 12;
 
+    public static final int BARREN_TILE_SET = 4;    // RSW
+
     // Unit types (only needed for units with special abilities)
+    public static final int SPACE_CARRIER_UNIT_TYPE = 16;    // RSW
+    public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
+    public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 
     // faction id's
@@ -256,8 +264,6 @@ public class C {
     public static final int STIGMATA = 11;
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
-
-    public static final int NUMBER_OF_HOUSES = 5;    // RSW
 
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";

@@ -218,14 +218,13 @@ public class PlanetWindow extends JPanel {
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
 
-            Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
-            if (hex.getStructure() != null) {
-                city_name.setText(game.getStrBuild(hex.getStructure().type).name);
-            } else {
-                city_name.setText("");
-            }
-
             if (faction == -1) {
+                Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
+                if (hex.getStructure() != null) {
+                    city_name.setText(game.getStrBuild(hex.getStructure().type).name);
+                } else {
+                    city_name.setText("");
+                }
                 List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y).getStack();
                 if (stack.get(0).owner == game.getTurn()) {
 //                    Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
