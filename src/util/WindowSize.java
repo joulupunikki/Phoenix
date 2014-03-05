@@ -185,7 +185,7 @@ public class WindowSize {
     public int build_exit_button_y_offset = planet_map_height / 2 - build_exit_button_h - 10;
 
     public int tech_window_w = 640;
-    public int tech_window_h = 300;
+    public int tech_window_h = 350;
     public int tech_window_x_offset = 0;
     public int tech_window_y_offset = 90;
 
@@ -199,6 +199,38 @@ public class WindowSize {
     public int tech_column_2_w = tech_table_w / 6;
     public int tech_column_3_w = tech_table_w / 6;
 //    public int tech_column_4_w = tech_table_w / 6;
+
+    public int tech_db_button_w = 50;
+    public int tech_db_button_h = 15;
+    public int tech_db_button_x_offset = tech_window_w / 2 - tech_db_button_w - 10;
+    public int tech_db_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_exit_button_w = 50;
+    public int tech_exit_button_h = 15;
+    public int tech_exit_button_x_offset = tech_window_w * 3 / 4 - tech_db_button_w - 10;
+    public int tech_exit_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_archive_button_w = 50;
+    public int tech_archive_button_h = 15;
+    public int tech_archive_button_x_offset = tech_window_w / 4 - tech_db_button_w - 10;
+    public int tech_archive_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_info_w = 450;
+    public int tech_info_h = 120;
+    public int tech_info_x_offset = 150;
+    public int tech_info_y_offset = tech_window_h - tech_info_h - 10 - tech_db_button_h - 10;
+
+    public int manowitz_window_w = 640;
+    public int manowitz_window_h = 480;
+    public int manowitz_window_x_offset = 0;
+    public int manowitz_window_y_offset = 0;
+
+    public int left_page_w = 195;
+    public int left_page_h = 315;
+    public int left_page_x_offset = 75;
+    public int left_page_y_offset = 57;
+
+    public int right_page_x_offset = manowitz_window_w - left_page_w - left_page_x_offset;
 
     public WindowSize(boolean is_double) {
 
@@ -399,6 +431,37 @@ public class WindowSize {
             tech_column_2_w *= 2;
             tech_column_3_w *= 2;
 //            tech_column_4_w *= 2;
+            tech_db_button_w *= 2;
+            tech_db_button_h *= 2;
+            tech_db_button_x_offset *= 2;
+            tech_db_button_y_offset *= 2;
+
+            tech_exit_button_w *= 2;
+            tech_exit_button_h *= 2;
+            tech_exit_button_x_offset *= 2;
+            tech_exit_button_y_offset *= 2;
+
+            tech_info_w *= 2;
+            tech_info_h *= 2;
+            tech_info_x_offset *= 2;
+            tech_info_y_offset *= 2;
+
+            manowitz_window_w *= 2;
+            manowitz_window_h *= 2;
+            manowitz_window_x_offset *= 2;
+            manowitz_window_y_offset *= 2;
+
+            tech_archive_button_w *= 2;
+            tech_archive_button_h *= 2;
+            tech_archive_button_x_offset *= 2;
+            tech_archive_button_y_offset *= 2;
+
+            left_page_w *= 2;
+            left_page_h *= 2;
+            left_page_x_offset *= 2;
+            left_page_y_offset *= 2;
+
+            right_page_x_offset *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

@@ -8,12 +8,13 @@ package game;
 
 /**
  *
- * @author doa
+ * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class Research {
     public boolean[] techs;
     public int[] points;
     public int researched;
+    public int points_left;
 
     public Research(Game game) {
         int len = game.getResources().getTech().length;

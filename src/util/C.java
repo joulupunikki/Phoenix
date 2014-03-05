@@ -255,7 +255,8 @@ public class C {
     public static final int TECH2 = 2;
     public static final int TECH_COST = 3;
     public static final int TECH_VOL = 5;
-    
+    public static final int TECH_CH = 6;
+    public static final int TECH_MAINT = 100;
 
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
@@ -282,6 +283,7 @@ public class C {
     public static final String S_LOG_FILE = "phoenixlog.txt";
 
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
+    public static final Color COLOR_MANOWITZ_TEXT = new Color(92, 44, 16);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
     public static final int INDEX_COLOR_EFS_BLACK = 14;

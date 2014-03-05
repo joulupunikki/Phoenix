@@ -90,6 +90,9 @@ public class EfsIni implements Serializable{
     public boolean plague = true;
     public boolean rebellion = true;
 
+    // Phoenix game options
+    public int lab_points = 100;
+
     public EfsIni(Properties efs_ini) {
         starting_credits = Integer.parseInt((efs_ini.getProperty("starting_credits")).trim());
         default_tax_rate = Integer.parseInt((efs_ini.getProperty("default_tax_rate")).trim());

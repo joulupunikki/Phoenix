@@ -216,6 +216,15 @@ public class Game implements Serializable {
         return jump_gates;
     }
 
+    public void setResearch(int tech) {
+        factions[turn].setResearch(tech);
+    }
+
+    public void doResearch() {
+        factions[turn].initResearchPts();
+        factions[turn].doResearch();
+    }
+
     public void deleteUnit2(Unit u) {
         units.remove(u);
         unmoved_units.remove(u);
@@ -1129,6 +1138,7 @@ public class Game implements Serializable {
 
         factions[turn].deleteOldMessages(year);
         setFactionCities();
+        doResearch();
         buildUnits();
 
         resetUnmovedUnits();

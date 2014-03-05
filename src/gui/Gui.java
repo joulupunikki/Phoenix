@@ -94,8 +94,14 @@ public class Gui extends JFrame {
     private CombatWindow combat_window;
     private BuildPanel build_panel;
     private JDialog build_window;
+    // panel showing research options
     private TechPanel tech_panel;
+    // window holding TechPanel
     private JDialog tech_window;
+    private TechDBPanel tech_db_panel; // panel showing tech database
+    private JDialog tech_db_window;   // window holding tech database
+    private Manowitz manowitz_panel;
+    private JDialog manowitz_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -158,6 +164,8 @@ public class Gui extends JFrame {
         UIManager.put("MenuItem.foreground", C.COLOR_GOLD);
         UIManager.put("Menu.background", Color.DARK_GRAY);
         UIManager.put("Menu.foreground", C.COLOR_GOLD);
+        UIManager.put("TextArea.background", Color.BLACK);
+        UIManager.put("TextArea.foreground", C.COLOR_GOLD);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -258,7 +266,7 @@ public class Gui extends JFrame {
 
         menu_research.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                
+
                 showTechWindow();
             }
         });
@@ -294,7 +302,8 @@ public class Gui extends JFrame {
         build_window.pack();
 
         setUpTechWindow();
-
+        setUpTechDBWindow();
+        setUpManowitzWindow();
         /*
          * create planet map display
          */
@@ -499,6 +508,10 @@ public class Gui extends JFrame {
 
     }
 
+    public void hideTechWindow() {
+        tech_window.setVisible(false);
+    }
+
     public void showTechWindow() {
         tech_panel.setTechData();
         tech_window.setVisible(true);
@@ -508,6 +521,7 @@ public class Gui extends JFrame {
 //        JDialog tech_window;
 //        JPanel tech_panel;
         tech_window = new JDialog(this, true);
+        tech_window.setUndecorated(true);
         tech_window.setLayout(null);
         tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
                 ws.tech_window_h));
@@ -515,6 +529,7 @@ public class Gui extends JFrame {
         tech_window.setBounds(this.getX() + ws.tech_window_x_offset,
                 this.getY() + ws.tech_window_y_offset,
                 ws.tech_window_w, ws.tech_window_h);
+//        tech_window.setSize(ws.tech_window_w, ws.build_window_height);
         tech_window.setDefaultCloseOperation(
                 JDialog.DO_NOTHING_ON_CLOSE);
         tech_window.addWindowListener(new WindowAdapter() {
@@ -532,6 +547,94 @@ public class Gui extends JFrame {
         tech_window.pack();
     }
 
+    public void showTechDBWindow() {
+        tech_db_panel.setTechData();
+        tech_db_window.setVisible(true);
+    }
+
+    public void setUpTechDBWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+        tech_db_window = new JDialog(this, true);
+        tech_db_window.setLayout(null);
+        tech_db_window.setPreferredSize(new Dimension(ws.tech_window_w,
+                ws.tech_window_h));
+        System.out.println("this.getX() = " + this.getX());
+        tech_db_window.setBounds(this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_db_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        tech_db_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                tech_db_window.setVisible(false);
+            }
+        });
+        tech_db_panel = new TechDBPanel(this);
+        tech_db_panel.setLayout(null);
+        tech_db_window.add(tech_db_panel);
+        tech_db_panel.setBounds(0, 0,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_db_window.add(tech_db_panel);
+        tech_db_window.pack();
+    }
+
+    public void showManowitz(int vol, int chapter) {
+
+        manowitz_panel.setChapter(vol, chapter);
+        manowitz_window.setVisible(true);
+        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+                this.getY() + ws.manowitz_window_y_offset,
+                ws.manowitz_window_w, ws.manowitz_window_h);
+    }
+
+    public void setUpManowitzWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+        manowitz_window = new JDialog(this, true);
+//        manowitz_window.setUndecorated(true);
+//        manowitz_window.setLayout(null);
+
+        manowitz_window.setPreferredSize(new Dimension(ws.manowitz_window_w,
+                ws.manowitz_window_h));
+//        System.out.println("this.getX() = " + this.getX());
+//        manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
+//                this.getY() + ws.manowitz_window_y_offset,
+//                ws.manowitz_window_w, ws.manowitz_window_h);
+//        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+//                this.getY() + ws.manowitz_window_y_offset,
+//                ws.manowitz_window_w, ws.manowitz_window_h);
+//        manowitz_window.setSize(ws.manowitz_window_w, ws.build_window_height);
+        manowitz_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        manowitz_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                manowitz_window.setVisible(false);
+            }
+        });
+        manowitz_panel = new Manowitz(this);
+        manowitz_panel.setLayout(null);
+        manowitz_window.add(manowitz_panel);
+        manowitz_panel.setBounds(0, 0,
+                ws.manowitz_window_w, ws.manowitz_window_h);
+        manowitz_window.add(manowitz_panel);
+        manowitz_window.pack();
+    }
+
+    public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
+        Dimension d_pane = dialog.getContentPane().getSize();
+        Dimension d_window = dialog.getSize();
+        int w_dec_thickness = d_window.width - d_pane.width;
+        int h_dec_thickness = d_window.height - d_pane.height;
+        dialog.setBounds(x, y, w + w_dec_thickness, h + h_dec_thickness);
+    }
+
+//    public int getXOffset() {
+//        Dimension d = this.getContentPane().getSize();
+//        d.width
+//    }
     /**
      * If planet != -1 set planet selected and city selected in Build Panel with
      * planet and city.
