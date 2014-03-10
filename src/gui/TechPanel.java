@@ -6,7 +6,7 @@
 package gui;
 
 import dat.Tech;
-import galaxyreader.Unit;
+import galaxyreader.Structure;
 import game.Game;
 import game.Research;
 import java.awt.Color;
@@ -30,12 +30,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import state.PW1;
 import util.C;
 import util.Util;
 import util.WindowSize;
@@ -52,6 +52,8 @@ public class TechPanel extends JPanel {
 
     private JTable tech_table;
     private JTextArea tech_info;
+    private JTextField labs_cost;
+    private JTextField labs_research;
 
     private JButton tech_db;
     private JButton exit;
@@ -65,9 +67,22 @@ public class TechPanel extends JPanel {
 
         addTechTable();
         addTechInfo();
+        addLabsCost();
         setUpArchiveButton();
         setUpTechDBButton();
         setUpExitButton();
+        setUpButtonListener();
+    }
+
+    public void setUpButtonListener() {
+        this.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+//                clickOnPlanetMap(e);
+                Point p = e.getPoint();
+                System.out.println("TechPanel (x,y): " + p.x + ", " + p.y);
+
+            }
+        });
     }
 
     public void paintComponent(Graphics g) {
@@ -117,7 +132,7 @@ public class TechPanel extends JPanel {
     }
 
     public void setUpArchiveButton() {
-        archive = new JButton("Manowitz");
+        archive = new JButton("Archive");
         archive.setFont(ws.font_default);
         archive.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
         this.add(archive);
@@ -139,6 +154,7 @@ public class TechPanel extends JPanel {
 
     public void addTechInfo() {
         tech_info = new JTextArea();
+        tech_info.setFont(ws.font_default);
         tech_info.setEditable(false);
         JScrollPane tech_info_scroller = new JScrollPane(tech_info);
         this.add(tech_info_scroller);
@@ -148,6 +164,87 @@ public class TechPanel extends JPanel {
                 ws.tech_info_w, ws.tech_info_h);
         tech_info.setLineWrap(true);
         tech_info.setWrapStyleWord(true);
+    }
+
+    public void setLabsCost() {
+        List<Structure> cities = game.getStructures();
+        int cost = 0;
+        int nr_labs = 0;
+        for (Structure city : cities) {
+            if (city.owner == game.getTurn() && city.type == C.LAB) {
+                cost += game.getEfs_ini().lab_cost;
+                nr_labs++;
+            }
+        }
+        String lab_text = "";
+        if (nr_labs == 1) {
+            lab_text = " lab requires ";
+        } else {
+            lab_text = " labs require ";
+        }
+        labs_cost.setText("" + nr_labs + lab_text + cost + " Firebirds per turn.");
+    }
+
+    public void addLabsCost() {
+        labs_cost = new JTextField();
+        labs_cost.setFont(ws.font_default);
+        labs_cost.setForeground(C.COLOR_GOLD);
+        labs_cost.setOpaque(false);
+        labs_cost.setEditable(false);
+        labs_cost.setBounds(ws.tech_labs_cost_x_offset, ws.tech_labs_cost_y_offset,
+                ws.tech_labs_cost_w, ws.tech_labs_cost_h);
+        this.add(labs_cost);
+
+    }
+
+    public static void setInfoText(JTable table, int row, JTextArea info, Game game) {
+        int tech_nr = ((Integer) table.getValueAt(row, 0)).intValue();
+        if (tech_nr == 0) {
+            info.setText("");
+            return;
+        }
+        Tech[] techs = game.getResources().getTech();
+        String info_text = techs[tech_nr].extra;
+
+        for (Tech tech : techs) {
+            if (tech.stats[C.TECH0] == 800) {
+                continue;
+            }
+            if (tech.stats[C.TECH0] == tech_nr
+                    || tech.stats[C.TECH1] == tech_nr
+                    || tech.stats[C.TECH2] == tech_nr) {
+                info_text += " Allows " + tech.name;
+                boolean with = false;
+                if (tech.stats[C.TECH0] != tech_nr
+                        && tech.stats[C.TECH0] != 0) {
+                    with = true;
+                    info_text += " with " + techs[tech.stats[C.TECH0]].name;
+                }
+                if (tech.stats[C.TECH1] != tech_nr
+                        && tech.stats[C.TECH1] != 0) {
+                    if (with != true) {
+                        with = true;
+                        info_text += " with ";
+                    } else {
+                        info_text += " and ";
+                    }
+                    info_text += techs[tech.stats[C.TECH1]].name;
+                }
+                if (tech.stats[C.TECH2] != tech_nr
+                        && tech.stats[C.TECH2] != 0) {
+                    if (with != true) {
+                        with = true;
+                        info_text += " with ";
+                    } else {
+                        info_text += " and ";
+                    }
+                    info_text += techs[tech.stats[C.TECH2]].name;
+                }
+                info_text += "\n";
+            }
+        }
+
+        info.setText(info_text);
     }
 
     public void addTechTable() {
@@ -187,52 +284,8 @@ public class TechPanel extends JPanel {
                 if (e.getClickCount() == 1) {
                     // update info text
                     System.out.println("Single clicked row " + row);
-                    int tech_nr = ((Integer) table.getValueAt(row, 0)).intValue();
-                    if (tech_nr == 0) {
-                        return;
-                    }
-                    Tech[] techs = game.getResources().getTech();
-                    String info_text = techs[tech_nr].extra;
+                    TechPanel.setInfoText(table, row, tech_info, game);
 
-                    for (Tech tech : techs) {
-                        if (tech.stats[C.TECH0] == 800) {
-                            continue;
-                        }
-                        if (tech.stats[C.TECH0] == tech_nr
-                                || tech.stats[C.TECH1] == tech_nr
-                                || tech.stats[C.TECH2] == tech_nr) {
-                            info_text += " Allows " + tech.name;
-                            boolean with = false;
-                            if (tech.stats[C.TECH0] != tech_nr
-                                    && tech.stats[C.TECH0] != 0) {
-                                with = true;
-                                info_text += " with " + techs[tech.stats[C.TECH0]].name;
-                            }
-                            if (tech.stats[C.TECH1] != tech_nr
-                                    && tech.stats[C.TECH1] != 0) {
-                                if (with != true) {
-                                    with = true;
-                                    info_text += " with ";
-                                } else {
-                                    info_text += " and ";
-                                }
-                                info_text += techs[tech.stats[C.TECH1]].name;
-                            }
-                            if (tech.stats[C.TECH2] != tech_nr
-                                    && tech.stats[C.TECH2] != 0) {
-                                if (with != true) {
-                                    with = true;
-                                    info_text += " with ";
-                                } else {
-                                    info_text += " and ";
-                                }
-                                info_text += techs[tech.stats[C.TECH2]].name;
-                            }
-                            info_text += "\n";
-                        }
-                    }
-
-                    tech_info.setText(info_text);
                 }
                 if (e.getClickCount() == 2) {
 
@@ -247,31 +300,22 @@ public class TechPanel extends JPanel {
                     game.setResearch(tech_no);
                     game.getFaction(game.getTurn()).doResearch();
                     setTechData();
-                    if (game.getFaction(game.getTurn()).getResearch().techs[tech_no]) {
-
+                    if (row != 0 && game.getFaction(game.getTurn()).getResearch().techs[tech_no]) {
+                        tech_table.setRowSelectionInterval(0, 0);
                         gui.showInfoWindow("Research on "
                                 + game.getResources().getTech()[tech_no].name
                                 + "\n has been completed!");
+                    } else {
+                        tech_table.setRowSelectionInterval(row, row);
+                        TechPanel.setInfoText(table, row, tech_info, game);
                     }
-
-                    // if input unit was alone in selected stack
-                    Point q = game.getSelectedPoint();
-                    if (q != null) {
-                        List<Unit> stack = game.getSelectedStack();
-                        if (stack.isEmpty()) {
-                            game.setSelectedPoint(null, -1);
-                            game.setSelectedFaction(-1);
-                            gui.setCurrentState(PW1.get());
-                        }
-                    }
-
                 }
             }
         });
     }
 
     public void setTechData() {
-
+        tech_info.setText("");
         Research research = game.getFaction(game.getTurn()).getResearch();
         boolean[] owned_tech = research.techs;
         Tech[] techs = game.getResources().getTech();

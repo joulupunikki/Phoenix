@@ -17,6 +17,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -114,6 +115,12 @@ public class Gui extends JFrame {
     private JMenuItem menu_build;
     private JMenuItem menu_research;
     private JPopupMenu stack_menu;
+    private JMenu archives_menu;
+    private JMenuItem menu_vol1;
+    private JMenuItem menu_vol2;
+    private JMenuItem menu_vol3;
+    private JMenuItem menu_vol4;
+    private JMenuItem menu_vol5;
 
     private Resource resources;
     //stack display window
@@ -162,10 +169,13 @@ public class Gui extends JFrame {
         UIManager.put("ProgressBar.background", Color.DARK_GRAY);
         UIManager.put("MenuItem.background", Color.DARK_GRAY);
         UIManager.put("MenuItem.foreground", C.COLOR_GOLD);
+        UIManager.put("MenuItem.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
         UIManager.put("Menu.background", Color.DARK_GRAY);
         UIManager.put("Menu.foreground", C.COLOR_GOLD);
+        UIManager.put("Menu.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
         UIManager.put("TextArea.background", Color.BLACK);
         UIManager.put("TextArea.foreground", C.COLOR_GOLD);
+        UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -274,6 +284,7 @@ public class Gui extends JFrame {
         orders_menu.add(menu_build);
         orders_menu.add(menu_research);
         menubar.add(orders_menu);
+        setUpArchivesMenu();
         this.setJMenuBar(menubar);
 
         build_window = new JDialog(this, true);
@@ -508,12 +519,83 @@ public class Gui extends JFrame {
 
     }
 
+    /**
+     * Open Manowitz volume vol
+     *
+     * @param vol
+     */
+    public void openManowitzVol(int vol) {
+        manowitz_panel.pressContents(vol);
+        manowitz_window.setVisible(true);
+    }
+
+    /**
+     * Close (hide) Manowitz window.
+     */
+    public void closeManowitz() {
+        manowitz_window.setVisible(false);
+    }
+
+    public void setUpArchivesMenu() {
+        archives_menu = new JMenu("Archives");
+        archives_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol1 = new JMenuItem("Volume 1: The Known Worlds");
+        menu_vol1.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(1);
+            }
+        });
+        menu_vol2 = new JMenuItem("Volume 2: Microbiology");
+        menu_vol2.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(2);
+            }
+        });
+        menu_vol3 = new JMenuItem("Volume 3: Physics");
+        menu_vol3.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(3);
+            }
+        });
+        menu_vol4 = new JMenuItem("Volume 4: Psycho-Social");
+        menu_vol4.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(4);
+            }
+        });
+        menu_vol5 = new JMenuItem("Volume 5: Military Units");
+        menu_vol5.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol5.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(5);
+            }
+        });
+
+        archives_menu.add(menu_vol1);
+//        archives_menu.addSeparator();
+        archives_menu.add(menu_vol2);
+        archives_menu.add(menu_vol3);
+        archives_menu.add(menu_vol4);
+//        archives_menu.addSeparator();
+        archives_menu.add(menu_vol5);
+        menubar.add(archives_menu);
+    }
+
+    public void hideTechDBWindow() {
+        tech_db_window.setVisible(false);
+    }
+
     public void hideTechWindow() {
         tech_window.setVisible(false);
     }
 
     public void showTechWindow() {
         tech_panel.setTechData();
+        tech_panel.setLabsCost();
         tech_window.setVisible(true);
     }
 
@@ -548,7 +630,7 @@ public class Gui extends JFrame {
     }
 
     public void showTechDBWindow() {
-        tech_db_panel.setTechData();
+        tech_db_panel.setTechDBData();
         tech_db_window.setVisible(true);
     }
 
@@ -578,15 +660,18 @@ public class Gui extends JFrame {
                 ws.tech_window_w, ws.tech_window_h);
         tech_db_window.add(tech_db_panel);
         tech_db_window.pack();
+        setDialogSize(tech_db_window, this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
     }
 
     public void showManowitz(int vol, int chapter) {
 
         manowitz_panel.setChapter(vol, chapter);
         manowitz_window.setVisible(true);
-        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
-                this.getY() + ws.manowitz_window_y_offset,
-                ws.manowitz_window_w, ws.manowitz_window_h);
+//        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+//                this.getY() + ws.manowitz_window_y_offset,
+//                ws.manowitz_window_w, ws.manowitz_window_h);
     }
 
     public void setUpManowitzWindow() {
@@ -596,16 +681,12 @@ public class Gui extends JFrame {
 //        manowitz_window.setUndecorated(true);
 //        manowitz_window.setLayout(null);
 
-        manowitz_window.setPreferredSize(new Dimension(ws.manowitz_window_w,
-                ws.manowitz_window_h));
+//        manowitz_window.setPreferredSize(new Dimension(ws.manowitz_window_w,
+//                ws.manowitz_window_h));
 //        System.out.println("this.getX() = " + this.getX());
 //        manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
 //                this.getY() + ws.manowitz_window_y_offset,
 //                ws.manowitz_window_w, ws.manowitz_window_h);
-//        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
-//                this.getY() + ws.manowitz_window_y_offset,
-//                ws.manowitz_window_w, ws.manowitz_window_h);
-//        manowitz_window.setSize(ws.manowitz_window_w, ws.build_window_height);
         manowitz_window.setDefaultCloseOperation(
                 JDialog.DO_NOTHING_ON_CLOSE);
         manowitz_window.addWindowListener(new WindowAdapter() {
@@ -621,13 +702,20 @@ public class Gui extends JFrame {
                 ws.manowitz_window_w, ws.manowitz_window_h);
         manowitz_window.add(manowitz_panel);
         manowitz_window.pack();
+//        manowitz_window.setSize(ws.manowitz_window_w, ws.manowitz_window_h);
+        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+                this.getY() + ws.manowitz_window_y_offset,
+                ws.manowitz_window_w, ws.manowitz_window_h);
     }
 
     public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
+        Insets insets = this.getInsets();
         Dimension d_pane = dialog.getContentPane().getSize();
         Dimension d_window = dialog.getSize();
-        int w_dec_thickness = d_window.width - d_pane.width;
-        int h_dec_thickness = d_window.height - d_pane.height;
+        int w_dec_thickness = insets.left + insets.right;
+        int h_dec_thickness = insets.top + insets.bottom;
+        System.out.println("w_dec_thickness = " + w_dec_thickness);
+        System.out.println("h_dec_thickness = " + h_dec_thickness);
         dialog.setBounds(x, y, w + w_dec_thickness, h + h_dec_thickness);
     }
 

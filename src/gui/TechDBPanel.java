@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -50,8 +51,9 @@ public class TechDBPanel extends JPanel {
     private WindowSize ws;
 
     private JTable tech_db_table;
-
+    private JTextArea tech_db_info;
     private JButton exit;
+    private JButton archive;
     private static Object[] tech_db_table_header = {"Tech Name", "Maint"};
 
     public TechDBPanel(Gui gui) {
@@ -59,7 +61,11 @@ public class TechDBPanel extends JPanel {
         ws = Gui.getWindowSize();
         game = gui.getGame();
 
-        addTechTable();
+        addTechDBTable();
+        addTechDBInfo();
+        setUpExitButton();
+        setUpArchiveButton();
+
     }
 
     public void paintComponent(Graphics g) {
@@ -73,23 +79,58 @@ public class TechDBPanel extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
     }
 
-    public void setUpButtons() {
-        exit = new JButton("Exit");
-        exit.setFont(ws.font_default);
-        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        this.add(exit);
-        exit.setBounds(ws.build_exit_button_x_offset, ws.build_exit_button_y_offset,
-                ws.build_exit_button_w, ws.build_exit_button_h);
-        exit.addActionListener(new ActionListener() {
+    public void addTechDBInfo() {
+        tech_db_info = new JTextArea();
+        tech_db_info.setFont(ws.font_default);
+        tech_db_info.setEditable(false);
+        JScrollPane tech_info_scroller = new JScrollPane(tech_db_info);
+        this.add(tech_info_scroller);
+        tech_info_scroller.setBounds(ws.tech_info_x_offset, ws.tech_info_y_offset,
+                ws.tech_info_w, ws.tech_info_h);
+        tech_db_info.setBounds(ws.tech_info_x_offset, ws.tech_info_y_offset,
+                ws.tech_info_w, ws.tech_info_h);
+        tech_db_info.setLineWrap(true);
+        tech_db_info.setWrapStyleWord(true);
+    }
+
+    public void setUpArchiveButton() {
+        archive = new JButton("Archive");
+        archive.setFont(ws.font_default);
+        archive.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(archive);
+        archive.setBounds(ws.tech_archive_button_x_offset, ws.tech_archive_button_y_offset,
+                ws.tech_archive_button_w, ws.tech_archive_button_h);
+        archive.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                gui.getBuildWindow().setVisible(false);
+                int row = tech_db_table.getSelectedRow();
+                if (row <= 0) {
+                    return;
+                }
+                int tech_nr = ((Integer) tech_db_table.getValueAt(row, 0)).intValue();
+                Tech tech = game.getResources().getTech()[tech_nr];
+                gui.showManowitz(tech.stats[C.TECH_VOL], tech.stats[C.TECH_CH]);
             }
         });
     }
 
-    public void addTechTable() {
+    public void setUpExitButton() {
+        exit = new JButton("Exit");
+        exit.setFont(ws.font_default);
+        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(exit);
+        exit.setBounds(ws.tech_exit_button_x_offset, ws.tech_exit_button_y_offset,
+                ws.tech_exit_button_w, ws.tech_exit_button_h);
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                gui.hideTechDBWindow();
+            }
+        });
+    }
+
+    public void addTechDBTable() {
         tech_db_table = new JTable();
         tech_db_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane tech_db_table_view = new JScrollPane(tech_db_table);
@@ -112,7 +153,7 @@ public class TechDBPanel extends JPanel {
         header.setBackground(Color.black);
         header.setForeground(C.COLOR_GOLD);
         tech_db_table.setRowHeight(ws.city_table_row_height);
-        tech_db_table.setDefaultRenderer(Object.class, new TechTableRenderer());
+        tech_db_table.setDefaultRenderer(Object.class, new TechDBTableRenderer());
 //        tech_table.setDefaultRenderer(Integer.class, new BuildPanel.BuildTableRenderer());
 
         tech_db_table.addMouseListener(new MouseAdapter() {
@@ -125,45 +166,19 @@ public class TechDBPanel extends JPanel {
                 }
                 if (e.getClickCount() == 1) {
                     System.out.println("Single clicked row " + row);
+                    TechPanel.setInfoText(table, row, tech_db_info, game);
                 }
                 if (e.getClickCount() == 2) {
 
-                    // if category allready reseached && != "nothing"
-                    int cost = ((Integer) tech_db_table.getValueAt(row, 1)).intValue();
-                    if (cost == -1 && row != 0) {
-                        return;
-                    }
-
-                    // set researched technology && do research
-                    int tech_no = ((Integer) tech_db_table.getValueAt(row, 0)).intValue();
-                    game.setResearch(tech_no);
-                    game.getFaction(game.getTurn()).doResearch();
-                    setTechData();
-                    if (game.getFaction(game.getTurn()).getResearch().techs[tech_no]) {
-
-                        gui.showInfoWindow("Research on "
-                                + game.getResources().getTech()[tech_no].name
-                                + "\n has been completed!");
-                    }
-
-                    // if input unit was alone in selected stack
-                    Point q = game.getSelectedPoint();
-                    if (q != null) {
-                        List<Unit> stack = game.getSelectedStack();
-                        if (stack.isEmpty()) {
-                            game.setSelectedPoint(null, -1);
-                            game.setSelectedFaction(-1);
-                            gui.setCurrentState(PW1.get());
-                        }
-                    }
+                    System.out.println("Double clicked row " + row);
 
                 }
             }
         });
     }
 
-    public void setTechData() {
-
+    public void setTechDBData() {
+        tech_db_info.setText("");
         Research research = game.getFaction(game.getTurn()).getResearch();
         boolean[] owned_tech = research.techs;
         Tech[] techs = game.getResources().getTech();
@@ -199,14 +214,14 @@ public class TechDBPanel extends JPanel {
             }
         }
 
-        // create tech table
+        // create techdb table
         int nr_techs = categories.size() + getResearchableTechsNr(category_lists) - 1;
         Object[][] tech_db_table_data = new Object[nr_techs][];
         for (int i = 0; i < nr_techs; i++) {
             tech_db_table_data[i] = new Object[2];
         }
 
-        // populate tech table
+        // populate techdb table
         int index = 0;
         for (int i = 0; i < categories.size(); i++) {
             if (i == 0) {
@@ -230,9 +245,9 @@ public class TechDBPanel extends JPanel {
 
         }
 
-        TechTableModel tech_model = new TechTableModel(tech_db_table_data,
+        TechDBTableModel tech_db_model = new TechDBTableModel(tech_db_table_data,
                 tech_db_table_header);
-        tech_db_table.setModel(tech_model);
+        tech_db_table.setModel(tech_db_model);
 //        BuildPanel.BuildTableModel build_model = new BuildPanel.BuildTableModel(tech_table_data,
 //                build_table_header);
 //        build_table.setModel(build_model);
@@ -258,13 +273,13 @@ public class TechDBPanel extends JPanel {
         return ret_val;
     }
 
-    class TechTableModel extends DefaultTableModel {
+    class TechDBTableModel extends DefaultTableModel {
 
 //        public BuildTableModel(Object[][] data) {
 //            Object[] column_names = {"Unit", "Turns Left"};
 //            BuildTableModel(data, column_names);
 //        }
-        public TechTableModel(Object[][] data, Object[] column_names) {
+        public TechDBTableModel(Object[][] data, Object[] column_names) {
             super(data, column_names);
         }
 
@@ -275,10 +290,10 @@ public class TechDBPanel extends JPanel {
         }
     }
 
-    public class TechTableRenderer extends JLabel
+    public class TechDBTableRenderer extends JLabel
             implements TableCellRenderer {
 
-        public TechTableRenderer() {
+        public TechDBTableRenderer() {
             setOpaque(true);
         }
 

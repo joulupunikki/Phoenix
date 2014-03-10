@@ -24,14 +24,18 @@ public class Tech {
 
     // tech name
     public String name;
+    // tech index
+    public int idx;
     // tech stats
     public int[] stats = new int[7];
     // tech short description
     public String extra;
 
-    public static Tech getTech(String s, String file_name, int line_nr) {
+    public static Tech getTech(String s, String file_name, int line_nr, int tech_idx) {
 
         Tech ret_val = new Tech();
+
+        ret_val.idx = tech_idx;
 
         Pattern value = Pattern.compile("\"[^\"]*\"");
         Matcher m = value.matcher(s);
@@ -72,7 +76,7 @@ System.out.println("Here");
             System.out.println("s = " + s);
             //true if between { and } false if between } and {
             boolean read = false;
-
+            int tech_idx = 0;
 //            int terrain_type = 0;
             Pattern mark_begin = Pattern.compile("^\\{");
             Pattern mark_end = Pattern.compile("^\\}");
@@ -94,7 +98,7 @@ System.out.println("Here");
                             // else read data
                         } else {
 
-                            tech_list.add(getTech(s, file_name, line_nr));
+                            tech_list.add(getTech(s, file_name, line_nr, tech_idx++));
 
                         }
                         // else between } and {
