@@ -18,6 +18,7 @@ import util.Util;
 
 /**
  * Space window stack selected destination selected
+ *
  * @author joulupunikki
  */
 public class SW3 extends SW {
@@ -91,8 +92,8 @@ public class SW3 extends SW {
                     boolean jump_capable = false;
                     List<Unit> stack = planet.space_stacks[game.getSelectedFaction()];
                     for (Unit unit : stack) {
-                        if (unit.selected && unit.move_points > 0 &&
-                                (unit.move_type == C.MoveType.JUMP || unit.move_type == C.MoveType.LANDER)) {
+                        if (unit.selected && unit.move_points > 0
+                                && (unit.move_type == C.MoveType.JUMP || unit.move_type == C.MoveType.LANDER)) {
                             jump_capable = true;
                         } else if (unit.selected) {
                             jump_capable = false;
@@ -107,8 +108,8 @@ public class SW3 extends SW {
                         game.setJumpPath(null);
                         game.setSelectedPoint(p, game.getSelectedFaction());
                         Planet p2 = galaxy_grid[x1][y1].planet;
-            Point smo = Util.resolveSpaceMapOrigin(new Point(p2.x, p2.y), ws);
-            game.setSpaceMapOrigin(smo);
+                        Point smo = Util.resolveSpaceMapOrigin(new Point(p2.x, p2.y), ws);
+                        game.setSpaceMapOrigin(smo);
                         gui.setCurrentState(SW2.get());
                         gui.getSpaceWindow().repaint();
                     } else {
@@ -117,7 +118,6 @@ public class SW3 extends SW {
                     }
 
                 } else {
-
 
                     List<JumpGate> jump_routes = galaxy_grid[x1][y1].planet.jump_routes;
                     for (JumpGate jg : jump_routes) {
@@ -134,7 +134,5 @@ public class SW3 extends SW {
             }
         }
     }
-    
 
-    
 }

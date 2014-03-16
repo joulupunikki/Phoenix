@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package game;
 
 import galaxyreader.Structure;
@@ -15,6 +14,7 @@ import util.C;
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class Research {
+
     public boolean[] techs;
     public int[] points;
     public int researched;
@@ -76,5 +76,5 @@ public class Research {
             points_left = 0;
         }
     }
-    
+
 }

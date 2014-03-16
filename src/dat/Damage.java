@@ -16,11 +16,10 @@ import util.Util;
  * @author joulupunikki
  */
 public class Damage {
-    
-        public static int[] getDamage(String s) {
+
+    public static int[] getDamage(String s) {
 
         int[] ret_val = new int[C.DAMAGE_DAT_X];
-
 
         Pattern damages = Pattern.compile("\"[0-9 ]+\"");
         Matcher m = damages.matcher(s);
@@ -33,7 +32,7 @@ public class Damage {
 
         m = damages.matcher(line);
         m.find();
-        
+
         System.out.println("getCosts");
         for (int i = 0; i < C.DAMAGE_DAT_X; i++) {
             ret_val[i] = UnitType.processIntVal(line, m);
@@ -42,15 +41,14 @@ public class Damage {
         return ret_val;
 
     }
-    
-        public static int[][] readDamageDat() {
+
+    public static int[][] readDamageDat() {
 
         int[][] damage_dat = new int[C.DAMAGE_DAT_Y][];
 
         try (BufferedReader in = new BufferedReader(new FileReader(C.S_DAMAGE_DAT))) {
             String s = in.readLine();
 
-            
 //            System.exit(0);
             //true if between { and } false if between } and {
             boolean read = false;
@@ -78,9 +76,7 @@ public class Damage {
                             // else read data
                         } else {
 
-                                damage_dat[index++] = getDamage(s);
-                                
-
+                            damage_dat[index++] = getDamage(s);
 
                         }
                         // else between } and {
@@ -101,17 +97,17 @@ public class Damage {
             System.out.println("Failed to read " + C.S_DAMAGE_DAT);
             System.exit(1);
         }
-        
+
         return damage_dat;
-        }
-        
-        public static void printDamage(int[][] damages) {
-            for (int i = 0; i < damages.length; i++) {
-                for (int j = 0; j < damages[i].length; j++) {
-                    System.out.print(damages[i][j] + " ");
-                    
-                }
-                System.out.println("");
+    }
+
+    public static void printDamage(int[][] damages) {
+        for (int i = 0; i < damages.length; i++) {
+            for (int j = 0; j < damages[i].length; j++) {
+                System.out.print(damages[i][j] + " ");
+
             }
+            System.out.println("");
         }
+    }
 }

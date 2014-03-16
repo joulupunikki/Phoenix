@@ -35,7 +35,7 @@ public class RingCounter {
         }
         return ret_val;
     }
-    
+
     public int get() {
         return counter;
     }

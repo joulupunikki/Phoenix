@@ -24,7 +24,7 @@ import util.Util;
  *
  * @author joulupunikki
  */
-public class Battle implements Serializable{
+public class Battle implements Serializable {
 
     private List<Unit> combat_stack_a;
     private List<Unit> combat_stack_b;
@@ -59,7 +59,7 @@ public class Battle implements Serializable{
         this.path = path;
         this.current_planet = current_planet;
     }
-    
+
     public List<Unit> getCombatStack(String stack) {
         List<Unit> rv = null;
         switch (stack) {

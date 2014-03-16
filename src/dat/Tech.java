@@ -50,9 +50,9 @@ public class Tech {
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);
         //
         String s_stats = s.substring(m.start() + 1, m.end());
-System.out.println("Here");
+        System.out.println("Here");
         Util.processIntVals(s_stats, ret_val.stats, file_name, line_nr, 7);
-        
+
         //skip "extra"
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);
         //get extras
@@ -136,17 +136,17 @@ System.out.println("Here");
         return techs;
 
     }
-    
+
     public static void print(Tech[] techs) {
         for (Tech tech : techs) {
             System.out.print("name " + tech.name + ", stats");
             for (int val : tech.stats) {
                 System.out.print(" " + val);
-                
+
             }
             System.out.println("");
             System.out.println("extra " + tech.extra);
         }
     }
-    
+
 }

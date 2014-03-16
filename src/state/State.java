@@ -64,9 +64,9 @@ public abstract class State {
     public void pressExitButton() {
     }
 
-    public void pressSpaceButton() {        
+    public void pressSpaceButton() {
     }
-    
+
     public void pressLaunchButton() {
     }
 
@@ -76,13 +76,13 @@ public abstract class State {
     public void pressNextStackButton() {
     }
 
- 
-    public void pressSkipStackButton() {        
+    public void pressSkipStackButton() {
     }
-    public void pressBuildButton() {        
- 
+
+    public void pressBuildButton() {
+
     }
-    
+
     public void clickOnWindow(MouseEvent e) {
     }
 

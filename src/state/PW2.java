@@ -33,15 +33,10 @@ public class PW2 extends PW {
 
         // if button 3
         //on stack
-
         //on city
-
         //on empty hex
-
-
         // if button 1        
         //on hex
-
         Point p = SU.getPlanetMapClickPoint(e);
 
         if (e.getButton() == MouseEvent.BUTTON1) {
@@ -92,9 +87,7 @@ public class PW2 extends PW {
 
     @Override
     public void pressBuildButton() {
-        SU.pressBuildButtonSU(); 
+        SU.pressBuildButtonSU();
     }
 
-    
-    
 }

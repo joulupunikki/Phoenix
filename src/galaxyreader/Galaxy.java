@@ -19,7 +19,7 @@ import util.C;
  *
  * @author joulupunikki
  */
-public class Galaxy implements Serializable{
+public class Galaxy implements Serializable {
 
     int version;
     int[][] map_tiles;
@@ -76,7 +76,6 @@ public class Galaxy implements Serializable{
 
         for (int i = 0; i < planets.size(); i++) {
 
-
             if (i == 14) {
 //                planets.get(i).print();
                 hex_buffer = planets.get(i).getBuffer();
@@ -102,7 +101,6 @@ public class Galaxy implements Serializable{
 
         }
 
-
         section = GalaxyReader.readShort(fc, count.getSet(2));
         units = new LinkedList<>();
         index = 0;
@@ -118,13 +116,11 @@ public class Galaxy implements Serializable{
             index++;
         }
 
-        
 //        for (Unit e: units) {
 //
 //            e.print();
 //          
 //        }
-
         section = GalaxyReader.readShort(fc, count.getSet(2));
         structures = new LinkedList<>();
         index = 0;
@@ -149,16 +145,15 @@ public class Galaxy implements Serializable{
     public List<JumpGate> getJumpGates() {
         return jump_gates;
     }
-    
+
     public List<Unit> getUnits() {
         return units;
     }
-    
+
     public List<Structure> getStructures() {
         return structures;
     }
-    
-    
+
     public int[][] getBuffer() {
         return hex_buffer;
     }

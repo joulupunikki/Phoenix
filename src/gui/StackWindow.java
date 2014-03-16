@@ -22,6 +22,7 @@ import util.WindowSize;
 
 /**
  * Notice: unused class ?
+ *
  * @author joulupunikki
  */
 public class StackWindow extends JDialog {

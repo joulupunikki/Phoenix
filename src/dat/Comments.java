@@ -36,11 +36,11 @@ public class Comments {
 
      Current spotting function only works at ranges <= 15 so for spotting ability greater
      than 32 spotting doesn't work properly.
-    
-    On Hyperion 1.4g in DAT/UNITSPOT.DAT the 67th line reads
-           "desert"  "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"
-    when it should probably read
-           "desert"  "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"
-    Phoenix fails on this.
+
+     On Hyperion 1.4g in DAT/UNITSPOT.DAT the 67th line reads
+     "desert"  "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"
+     when it should probably read
+     "desert"  "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"
+     Phoenix fails on this.
      */
 }

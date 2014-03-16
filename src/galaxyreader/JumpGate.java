@@ -14,7 +14,7 @@ import java.nio.channels.FileChannel;
  *
  * @author joulupunikki
  */
-public class JumpGate  implements Serializable{
+public class JumpGate implements Serializable {
 
     private int x1;
     private int y1;

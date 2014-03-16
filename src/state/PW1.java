@@ -11,6 +11,7 @@ import java.awt.event.MouseWheelEvent;
 
 /**
  * Planet window no stack selected.
+ *
  * @author joulupunikki
  */
 public class PW1 extends PW {
@@ -23,32 +24,26 @@ public class PW1 extends PW {
     public static State get() {
         return instance;
     }
-    
-    public void clickOnPlanetMap(MouseEvent e) {
-    
-     // if button 3
-        //on stack
-        
-        //on city
-        
-        //on empty hex
-        
-        
-      // if button 1        
-        //on hex
-        
-         Point p = SU.getPlanetMapClickPoint(e);
-        
-         if (e.getButton() == MouseEvent.BUTTON3) {
-             SU.clickOnPlanetMapButton3(p);
-         }
-        
-    }
-        
-     public void wheelRotated(MouseWheelEvent e) {
-         SU.wheelOnPlanetMap(e);
 
-     }    
-    
-    
+    public void clickOnPlanetMap(MouseEvent e) {
+
+        // if button 3
+        //on stack
+        //on city
+        //on empty hex
+        // if button 1
+        //on hex
+        Point p = SU.getPlanetMapClickPoint(e);
+
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            SU.clickOnPlanetMapButton3(p);
+        }
+
+    }
+
+    public void wheelRotated(MouseWheelEvent e) {
+        SU.wheelOnPlanetMap(e);
+
+    }
+
 }

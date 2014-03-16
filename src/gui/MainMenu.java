@@ -48,7 +48,7 @@ public class MainMenu extends JPanel {
     public void setGame(Game game) {
         this.game = game;
     }
-    
+
     public void setDefaultHumanControl() {
         hc[0].setSelected(true);
     }
@@ -67,7 +67,7 @@ public class MainMenu extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
-        
+
         g.setColor(C.COLOR_GOLD);
         g.drawString("Select human player(s)", ws.human_control_selection_x, ws.human_control_selection_y - 15);
     }
@@ -89,7 +89,7 @@ public class MainMenu extends JPanel {
 //
 //                }
 //                gui.getCurrentState().selectFactionControl(e, source_nr);
-                
+
                 gui.getCurrentState().selectFactionControl(e, hc);
             }
         };
@@ -104,10 +104,8 @@ public class MainMenu extends JPanel {
                     i * ws.human_control_selection_h + ws.human_control_selection_y,
                     ws.human_control_selection_w, ws.human_control_selection_h);
 
-
-
         }
-        
+
 //        JTextField select_human_players = new JTextField("Select human player(s)");
 //        this.add(select_human_players);
 //        select_human_players.setBackground(Color.BLACK);
@@ -117,7 +115,6 @@ public class MainMenu extends JPanel {
 //            select_human_players.setBounds(ws.human_control_selection_x,
 //                    - ws.human_control_selection_h + ws.human_control_selection_y,
 //                    ws.human_control_selection_w, ws.human_control_selection_h);
-
         JButton play = new JButton("Play");
         play.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
 

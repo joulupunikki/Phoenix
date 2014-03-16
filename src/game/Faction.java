@@ -102,7 +102,6 @@ public class Faction implements Serializable {
 //            research.points_left = 0;
 //        }
 //    }
-
 //    public void initTechs() {
 //        int len = game.getResources().getTech().length;
 //        techs = new boolean[len];

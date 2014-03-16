@@ -31,15 +31,10 @@ public class PW3 extends PW {
 
         // if button 3
         //on stack
-
         //on city
-
         //on empty hex
-
-
         // if button 1        
         //on hex
-
         Point p = SU.getPlanetMapClickPoint(e);
 
         if (e.getButton() == MouseEvent.BUTTON1) {
@@ -75,12 +70,8 @@ public class PW3 extends PW {
         if (p.x == path.getLast().getX() && p.y == path.getLast().getY()) {
 
             if (Util.moveCapable(game)) {
-                
-                
-                
+
                 // start stack movement loop
-                    
-                
                 gui.setCurrentState(PW4.get());
                 gui.setMenus(false);
                 gui.startStackMove();
@@ -95,16 +86,14 @@ public class PW3 extends PW {
         }
     }
 
-
-    
     @Override
     public void pressLaunchButton() {
         SU.pressLaunchButtonSU();
     }
-    
+
     @Override
     public void pressBuildButton() {
-        SU.pressBuildButtonSU(); 
+        SU.pressBuildButtonSU();
     }
-    
+
 }

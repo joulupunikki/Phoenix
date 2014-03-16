@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package game;
 
 import util.C;
@@ -13,6 +12,7 @@ import util.C;
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class Message {
+
     String msg_txt;
     C.Msg type;
     int year;
@@ -24,6 +24,5 @@ public class Message {
         this.year = year;
         this.source = source;
     }
-    
-    
+
 }

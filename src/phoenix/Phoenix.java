@@ -15,8 +15,6 @@ import util.Util;
  */
 public class Phoenix {
 
-
-
     /**
      * @param args the command line arguments
      */
@@ -30,7 +28,7 @@ public class Phoenix {
         if (log_file.exists()) {
             log_file.renameTo(old_log);
         }
-        
+
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
             @Override

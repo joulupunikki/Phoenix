@@ -146,12 +146,12 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
 
         System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
-        
+
         Structure city = hex.getStructure();
         if (stack.isEmpty() && city != null && city.owner == game.getTurn()) {
             gui.showCityDialog(game.getCurrentPlanetNr(), city);
         }
-        
+
     }
 
     public static Point getSpaceMapClickPoint(MouseEvent e) {
@@ -707,7 +707,7 @@ public class SU extends State {
 //        bp.planetSelected(null, planet);
 //        bp.citySelected(null, s);
     }
-    
+
     public static void pressLaunchButtonSU() {
         if (game.launchStack()) {
             setWindow(C.S_STAR_MAP);

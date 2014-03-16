@@ -25,9 +25,9 @@ public class CW2 extends State {
         // need to get combat_type here since resolveBattleFinalize nulls it 
         String combat_type = game.getCombatType();
         game.resolveGroundBattleFinalize();
-        
+
         if (combat_type.equals(C.GROUND_COMBAT)) {
-        game.setPath(null);
+            game.setPath(null);
         }
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
@@ -39,7 +39,7 @@ public class CW2 extends State {
             } else if (gui.getCurrentState() instanceof SW) {
                 gui.setCurrentState(SW1.get());
             }
-            
+
         }
     }
 }
