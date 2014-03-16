@@ -142,6 +142,10 @@ public class Manowitz extends JPanel {
 //        x_slider.setBounds(100, 100, 100, 200);
 //        x_slider.setPaintLabels(true);
 //    }
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void setUpCloseButton() {
 
 //        JButton close;

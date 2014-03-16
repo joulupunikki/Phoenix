@@ -1228,6 +1228,9 @@ public class Gui extends JFrame {
                 galactic_map.setGame(game);
                 globe_map.setGame(game);
                 build_panel.setGame(game);
+                tech_panel.setGame(game);
+                tech_db_panel.setGame(game);
+                manowitz_panel.setGame(game);
                 State.setGameRef(game);
                 Comp.setGame(game);
                 game.setPath(null);

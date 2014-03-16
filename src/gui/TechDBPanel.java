@@ -80,6 +80,10 @@ public class TechDBPanel extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
     }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void setMaintCost() {
         TableModel model = tech_db_table.getModel();
         int rows = model.getRowCount();

@@ -6,6 +6,7 @@
 package game;
 
 import galaxyreader.Structure;
+import java.io.Serializable;
 import java.util.List;
 import util.C;
 
@@ -13,7 +14,7 @@ import util.C;
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class Research {
+public class Research implements Serializable {
 
     public boolean[] techs;
     public int[] points;

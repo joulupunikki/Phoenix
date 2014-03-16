@@ -5,11 +5,10 @@
  */
 package dat;
 
-import static dat.TerColor.processIntVals;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
@@ -20,7 +19,7 @@ import util.Util;
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class Tech {
+public class Tech implements Serializable {
 
     // tech name
     public String name;

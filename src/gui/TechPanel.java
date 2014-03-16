@@ -80,6 +80,10 @@ public class TechPanel extends JPanel {
         setUpButtonListener();
     }
 
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void setUpButtonListener() {
         this.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
