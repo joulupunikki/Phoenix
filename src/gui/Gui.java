@@ -596,6 +596,8 @@ public class Gui extends JFrame {
     public void showTechWindow() {
         tech_panel.setTechData();
         tech_panel.setLabsCost();
+        tech_panel.setRPAvailable();
+        tech_panel.setLabResearches();
         tech_window.setVisible(true);
     }
 
@@ -603,7 +605,7 @@ public class Gui extends JFrame {
 //        JDialog tech_window;
 //        JPanel tech_panel;
         tech_window = new JDialog(this, true);
-        tech_window.setUndecorated(true);
+//        tech_window.setUndecorated(true);
         tech_window.setLayout(null);
         tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
                 ws.tech_window_h));
@@ -627,10 +629,13 @@ public class Gui extends JFrame {
                 ws.tech_window_w, ws.tech_window_h);
         tech_window.add(tech_panel);
         tech_window.pack();
+        setDialogSize(tech_window, this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
     }
 
     public void showTechDBWindow() {
-        tech_db_panel.setTechDBData();
+        tech_db_panel.setTechDBPanel();
         tech_db_window.setVisible(true);
     }
 
@@ -666,12 +671,17 @@ public class Gui extends JFrame {
     }
 
     public void showManowitz(int vol, int chapter) {
-
-        manowitz_panel.setChapter(vol, chapter);
-        manowitz_window.setVisible(true);
+        if (!manowitz_panel.findChapter(vol, chapter)) {
+            showInfoWindow("No Manowitz file for this tech.");
+        } else {
+            manowitz_panel.setNrChapters(vol);
+            manowitz_panel.setChapter(vol, chapter);
+            manowitz_panel.setState();
+            manowitz_window.setVisible(true);
 //        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
 //                this.getY() + ws.manowitz_window_y_offset,
 //                ws.manowitz_window_w, ws.manowitz_window_h);
+        }
     }
 
     public void setUpManowitzWindow() {

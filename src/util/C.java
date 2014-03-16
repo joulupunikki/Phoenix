@@ -258,6 +258,7 @@ public class C {
     public static final int TECH_CH = 6;
     public static final int TECH_MAINT = 100;
 
+    public static final String S_SEPAR = System.getProperty("file.separator");
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
     public static final String S_UNIT_INFO = "unit info";

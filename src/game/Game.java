@@ -217,12 +217,16 @@ public class Game implements Serializable {
     }
 
     public void setResearch(int tech) {
-        factions[turn].setResearch(tech);
+        factions[turn].getResearch().setResearch(tech);
     }
 
+    /**
+     * Called at the beginning of a turn only. Initializes research points and
+     * researches selected tech.
+     */
     public void doResearch() {
-        factions[turn].initResearchPts();
-        factions[turn].doResearch();
+        factions[turn].getResearch().initResearchPts();
+        factions[turn].getResearch().doResearch();
     }
 
     public void deleteUnit2(Unit u) {

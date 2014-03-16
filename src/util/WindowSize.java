@@ -237,25 +237,25 @@ public class WindowSize {
 
     public int right_page_x_offset = manowitz_window_w - left_page_w - left_page_x_offset;
 
-    public int manowitz_contents_x_offset = 28;
+    public int manowitz_contents_x_offset = 16;
     public int manowitz_contents_y_offset = 455;
-    public int manowitz_contents_w = 58;
-    public int manowitz_contents_h = 19;
+    public int manowitz_contents_w = 73;
+    public int manowitz_contents_h = 25;
 
-    public int manowitz_prev_x_offset = 156;
+    public int manowitz_prev_x_offset = 136;
     public int manowitz_prev_y_offset = 439;
-    public int manowitz_prev_w = 58;
-    public int manowitz_prev_h = 24;
+    public int manowitz_prev_w = 81;
+    public int manowitz_prev_h = 41;
 
-    public int manowitz_next_x_offset = 425;
+    public int manowitz_next_x_offset = 400;
     public int manowitz_next_y_offset = 439;
-    public int manowitz_next_w = 58;
-    public int manowitz_next_h = 24;
+    public int manowitz_next_w = 89;
+    public int manowitz_next_h = 41;
 
-    public int manowitz_close_x_offset = 552;
+    public int manowitz_close_x_offset = 536;
     public int manowitz_close_y_offset = 455;
-    public int manowitz_close_w = 58;
-    public int manowitz_close_h = 19;
+    public int manowitz_close_w = 81;
+    public int manowitz_close_h = 25;
 
     public WindowSize(boolean is_double) {
 

@@ -63,45 +63,45 @@ public class Faction implements Serializable {
         return research;
     }
 
-    public void setResearch(int tech) {
-        research.researched = tech;
-    }
-
-    /**
-     * Calculate research points at beginning of turn.
-     */
-    public void initResearchPts() {
-        research.points_left = 0;
-        List<Structure> cities = game.getStructures();
-        for (Structure structure : cities) {
-            if (structure.owner == game.getTurn() && structure.type == C.LAB) {
-                research.points_left += game.getEfs_ini().lab_points;
-            }
-        }
-
-        for (int i = 0; i < research.techs.length; i++) {
-            if (research.techs[i]) {
-                research.points_left -= game.getResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
-            }
-
-        }
-
-    }
-
-    public void doResearch() {
-        if (research.researched == 0) {
-            return;
-        }
-        research.points[research.researched] += research.points_left;
-        int cost = game.getResources().getTech()[research.researched].stats[C.TECH_COST];
-        research.points_left = research.points[research.researched] - cost;
-        if (research.points_left >= 0) {
-            research.techs[research.researched] = true;
-            research.researched = 0;
-        } else {
-            research.points_left = 0;
-        }
-    }
+//    public void setResearch(int tech) {
+//        research.researched = tech;
+//    }
+//
+//    /**
+//     * Calculate research points at beginning of turn.
+//     */
+//    public void initResearchPts() {
+//        research.points_left = 0;
+//        List<Structure> cities = game.getStructures();
+//        for (Structure structure : cities) {
+//            if (structure.owner == game.getTurn() && structure.type == C.LAB) {
+//                research.points_left += game.getEfs_ini().lab_points;
+//            }
+//        }
+//
+//        for (int i = 0; i < research.techs.length; i++) {
+//            if (research.techs[i]) {
+//                research.points_left -= game.getResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
+//            }
+//
+//        }
+//
+//    }
+//
+//    public void doResearch() {
+//        if (research.researched == 0) {
+//            return;
+//        }
+//        research.points[research.researched] += research.points_left;
+//        int cost = game.getResources().getTech()[research.researched].stats[C.TECH_COST];
+//        research.points_left = research.points[research.researched] - cost;
+//        if (research.points_left >= 0) {
+//            research.techs[research.researched] = true;
+//            research.researched = 0;
+//        } else {
+//            research.points_left = 0;
+//        }
+//    }
 
 //    public void initTechs() {
 //        int len = game.getResources().getTech().length;

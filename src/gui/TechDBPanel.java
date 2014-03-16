@@ -6,7 +6,6 @@
 package gui;
 
 import dat.Tech;
-import galaxyreader.Unit;
 import game.Game;
 import game.Research;
 import java.awt.Color;
@@ -30,12 +29,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import state.PW1;
+import javax.swing.table.TableModel;
 import util.C;
 import util.Util;
 import util.WindowSize;
@@ -52,6 +51,7 @@ public class TechDBPanel extends JPanel {
 
     private JTable tech_db_table;
     private JTextArea tech_db_info;
+    private JTextField maint_cost;
     private JButton exit;
     private JButton archive;
     private static Object[] tech_db_table_header = {"Tech Name", "Maint"};
@@ -63,6 +63,7 @@ public class TechDBPanel extends JPanel {
 
         addTechDBTable();
         addTechDBInfo();
+        addMaintCost();
         setUpExitButton();
         setUpArchiveButton();
 
@@ -77,6 +78,31 @@ public class TechDBPanel extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
+    }
+
+    public void setMaintCost() {
+        TableModel model = tech_db_table.getModel();
+        int rows = model.getRowCount();
+        int cost = 0;
+        for (int i = 0; i < rows; i++) {
+            int val = ((Integer) model.getValueAt(i, 1)).intValue();
+            if (val > 0) {
+                cost += val;
+            }
+        }
+        maint_cost.setText("Total maintenance cost " + cost + " research points per turn.");
+    }
+
+    public void addMaintCost() {
+        maint_cost = new JTextField();
+        maint_cost.setFont(ws.font_default);
+        maint_cost.setForeground(C.COLOR_GOLD);
+        maint_cost.setOpaque(false);
+        maint_cost.setEditable(false);
+        maint_cost.setBounds(ws.tech_labs_cost_x_offset, ws.tech_labs_cost_y_offset,
+                ws.tech_labs_cost_w, ws.tech_labs_cost_h);
+        this.add(maint_cost);
+
     }
 
     public void addTechDBInfo() {
@@ -104,7 +130,7 @@ public class TechDBPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int row = tech_db_table.getSelectedRow();
-                if (row <= 0) {
+                if (row < 0) {
                     return;
                 }
                 int tech_nr = ((Integer) tech_db_table.getValueAt(row, 0)).intValue();
@@ -177,6 +203,11 @@ public class TechDBPanel extends JPanel {
         });
     }
 
+    public void setTechDBPanel() {
+        setTechDBData();
+        setMaintCost();
+    }
+
     public void setTechDBData() {
         tech_db_info.setText("");
         Research research = game.getFaction(game.getTurn()).getResearch();
@@ -204,18 +235,26 @@ public class TechDBPanel extends JPanel {
 
         }
 
-        // populate category lists
+        /* populate category lists take into account eg. Nova mod where new
+         * technologies have VOL == 0 and CH == 0
+         */
+        int cat_nr = 0;
         for (int i = 0; i < techs.length; i++) {
+            if (techs[i].stats[C.TECH0] >= 990) {
+                cat_nr = techs[i].stats[C.TECH0] - 989;
+            }
             if (techs[i].stats[C.TECH0] >= 800) {
                 continue;
             }
             if (owned_tech[i]) {
-                category_lists.get(techs[i].stats[C.TECH_VOL] - 1).add(new Integer(i));
+//                category_lists.get(techs[i].stats[C.TECH_VOL] - 1).add(new Integer(i));
+                category_lists.get(cat_nr).add(new Integer(i));
             }
         }
 
         // create techdb table
-        int nr_techs = categories.size() + getResearchableTechsNr(category_lists) - 1;
+        // does not include "nothing" so subtract 1 from nr_techs
+        int nr_techs = categories.size() + getResearchedTechsNr(category_lists) - 1;
         Object[][] tech_db_table_data = new Object[nr_techs][];
         for (int i = 0; i < nr_techs; i++) {
             tech_db_table_data[i] = new Object[2];
@@ -265,7 +304,7 @@ public class TechDBPanel extends JPanel {
 //        column.setPreferredWidth(ws.tech_column_4_w);
     }
 
-    public int getResearchableTechsNr(ArrayList<List<Integer>> category_lists) {
+    public int getResearchedTechsNr(ArrayList<List<Integer>> category_lists) {
         int ret_val = 0;
         for (List<Integer> list : category_lists) {
             ret_val += list.size();
@@ -314,7 +353,7 @@ public class TechDBPanel extends JPanel {
                 setBackground(c_b);
                 setForeground(c_f);
             }
-            System.out.println("column = " + column);
+//            System.out.println("column = " + column);
             String val = "";
             int i_val = ((Integer) value).intValue();
             switch (column) {

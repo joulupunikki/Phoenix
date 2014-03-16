@@ -13,9 +13,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,8 +27,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import util.C;
 import util.Util;
 import util.WindowSize;
@@ -40,43 +47,69 @@ public class Manowitz extends JPanel {
     private Game game;
     private WindowSize ws;
 
+    private byte[][] pallette;
+    private IndexColorModel color_index;
+
     private JTextArea right_page;
     private JTextArea left_page;
+
+    // Show contents button
+    private JButton contents;
+    // Previous page/spread button
+    private JButton prev;
+    // Next page/spread button
+    private JButton next;
+    // Exit/Close Book button
+    private JButton close;
 
     // Manowitz fitting lines of the current chapter
     private List<String> lines;
 
     private int volume;
+    // current chapter, if 0 then we are at index/contents
     private int chapter;
     // how many chapters there are listed in the current volume
     private int chapters;
     // spread/double page number of current chapter
     private int spread;
-    // contents is displayed
-    private final int CONTENTS = 1;
-    // a chapter is displayed
-    private final int CHAPTER = 2;
-    // the state we are in eg. CONTENTS, CHAPTER
-    private int state;
+//    // contents is displayed
+//    private final int CONTENTS = 1;
+//    // a chapter is displayed
+//    private final int CHAPTER = 2;
+//    // the state we are in eg. CONTENTS, CHAPTER
+//    private int state;
 
+    // for tuning button locations
+//    private int x_offset;
+//    private Manowitz self_ref;
     public Manowitz(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
         game = gui.getGame();
 
+        // Manowitz has unique pallette
+        String file = "MANOWITZ" + System.getProperty("file.separator") + "BOOK5H.PCX";
+        File file_obj = new File(file);
+        pallette = Util.getPalletteFromPCX(file, (int) file_obj.length());
+        color_index = new IndexColorModel(8, 256, pallette[2], pallette[1], pallette[0], 256);
+
         addLeftPage();
         addRightPage();
-        setUpButtonListener();
+//        setUpButtonListener();
         setUpPageListeners();
+        setUpContentsButton();
+        setUpPrevButton();
+        setUpNextButton();
+        setUpCloseButton();
+//        setUpPosSliders();
+
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         String file = "MANOWITZ" + System.getProperty("file.separator") + "BOOK5H.PCX";
-        File file_obj = new File(file);
 
-        byte[][] pallette = Util.getPalletteFromPCX(file, (int) file_obj.length());
         BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
@@ -84,10 +117,146 @@ public class Manowitz extends JPanel {
 
     }
 
+//    public void setUpPosSliders() {
+//        //Create the slider
+//        JSlider x_slider = new JSlider(JSlider.VERTICAL,
+//                -30, 30, 0);
+//        x_slider.addChangeListener(new ChangeListener() {
+//            public void stateChanged(ChangeEvent e) {
+//                JSlider source = (JSlider) e.getSource();
+//                if (!source.getValueIsAdjusting()) {
+//                    int value = (int) source.getValue();
+//
+////                    x_offset = ws.manowitz_prev_x_offset + value;
+//                    x_offset = ws.manowitz_close_x_offset + value;
+//                    close.setBounds(x_offset, ws.manowitz_close_y_offset,
+//                            ws.manowitz_close_w, ws.manowitz_close_h);
+//                    System.out.println("x_offset = " + x_offset);
+//                }
+//            }
+//        });
+//        x_slider.setMajorTickSpacing(10);
+//        x_slider.setMinorTickSpacing(1);
+//        x_slider.setPaintTicks(true);
+//        this.add(x_slider);
+//        x_slider.setBounds(100, 100, 100, 200);
+//        x_slider.setPaintLabels(true);
+//    }
+    public void setUpCloseButton() {
+
+//        JButton close;
+        String file = "MANOWITZ" + C.S_SEPAR + "CLOSE.BIN";
+        ButtonIcon close_enabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, 0, color_index, ws);
+
+        int file_offset = 3;
+        ButtonIcon close_disabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, file_offset, color_index, ws);
+        file_offset = 2;
+        ButtonIcon close_pressed = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, file_offset, color_index, ws);
+
+        close = new JButton();
+        close.setBorder(null);
+        close.setIcon(close_enabled);
+        close.setDisabledIcon(close_disabled);
+        close.setPressedIcon(close_pressed);
+        this.add(close);
+        close.setBounds(ws.manowitz_close_x_offset, ws.manowitz_close_y_offset,
+                ws.manowitz_close_w, ws.manowitz_close_h);
+        close.setEnabled(true);
+        close.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.closeManowitz();
+            }
+        });
+    }
+
+    public void setUpNextButton() {
+
+//        JButton next;
+        String file = "MANOWITZ" + C.S_SEPAR + "NEXT.BIN";
+        ButtonIcon next_enabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, 0, color_index, ws);
+
+        int file_offset = 3;
+        ButtonIcon next_disabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, file_offset, color_index, ws);
+        file_offset = 2;
+        ButtonIcon next_pressed = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, file_offset, color_index, ws);
+
+        next = new JButton();
+        next.setBorder(null);
+        next.setIcon(next_enabled);
+        next.setDisabledIcon(next_disabled);
+        next.setPressedIcon(next_pressed);
+        this.add(next);
+        next.setBounds(ws.manowitz_next_x_offset, ws.manowitz_next_y_offset,
+                ws.manowitz_next_w, ws.manowitz_next_h);
+        next.setEnabled(true);
+        next.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pressNext();
+            }
+        });
+    }
+
+    public void setUpPrevButton() {
+
+//        JButton prev;
+        String file = "MANOWITZ" + C.S_SEPAR + "PREV.BIN";
+        ButtonIcon previous_enabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, 0, color_index, ws);
+
+        int file_offset = 3;
+        ButtonIcon previous_disabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, file_offset, color_index, ws);
+        file_offset = 2;
+        ButtonIcon previous_pressed = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, file_offset, color_index, ws);
+
+        prev = new JButton();
+        prev.setBorder(null);
+        prev.setIcon(previous_enabled);
+        prev.setDisabledIcon(previous_disabled);
+        prev.setPressedIcon(previous_pressed);
+        this.add(prev);
+        prev.setBounds(ws.manowitz_prev_x_offset, ws.manowitz_prev_y_offset,
+                ws.manowitz_prev_w, ws.manowitz_prev_h);
+        prev.setEnabled(true);
+        prev.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pressPrev();
+            }
+        });
+    }
+
+    public void setUpContentsButton() {
+
+        String file = "MANOWITZ" + C.S_SEPAR + "CONTENTS.BIN";
+        ButtonIcon contents_enabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, 0, color_index, ws);
+
+        int file_offset = 3;
+        ButtonIcon contents_disabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, file_offset, color_index, ws);
+        file_offset = 2;
+        ButtonIcon contents_pressed = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, file_offset, color_index, ws);
+
+        contents = new JButton();
+        contents.setBorder(null);
+        contents.setIcon(contents_enabled);
+        contents.setDisabledIcon(contents_disabled);
+        contents.setPressedIcon(contents_pressed);
+        this.add(contents);
+        contents.setBounds(ws.manowitz_contents_x_offset, ws.manowitz_contents_y_offset,
+                ws.manowitz_contents_w, ws.manowitz_contents_h);
+        contents.setEnabled(true);
+        contents.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pressContents(-1);
+            }
+        });
+    }
+
     public void setUpPageListeners() {
         left_page.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                if (state != CONTENTS) {
+                if (chapter != 0) {
                     return;
                 }
                 int row = selectRow(e);
@@ -95,6 +264,7 @@ public class Manowitz extends JPanel {
                     return;
                 }
                 setChapter(volume, row);
+                setState();
             }
         });
         right_page.addMouseListener(new MouseAdapter() {
@@ -103,7 +273,7 @@ public class Manowitz extends JPanel {
 
                 Rectangle r = right_page.getBounds();
                 int rows = r.height / fm.getHeight();
-                if (state != CONTENTS) {
+                if (chapter != 0) {
                     return;
                 }
                 int row = selectRow(e) + rows;
@@ -111,6 +281,7 @@ public class Manowitz extends JPanel {
                     return;
                 }
                 setChapter(volume, row);
+                setState();
             }
         });
     }
@@ -168,18 +339,21 @@ public class Manowitz extends JPanel {
 
     /**
      * Go back one spread, or if on spread 1 of current chapter, skip to
-     * previous chapter.
+     * beginning of previous chapter.
      */
     public void pressPrev() {
         if (spread > 1) {
             spread--;
             setSpread(spread);
         } else {
-            File prev_file = new File(getChapterName(chapter - 1));
+            File prev_file = new File(getChapterName(this.volume, chapter - 1));
             if (prev_file.exists()) {
                 setChapter(volume, chapter - 1);
+            } else if (chapter == 1) {
+                pressContents(-1);
             }
         }
+        setState();
     }
 
     /**
@@ -195,12 +369,43 @@ public class Manowitz extends JPanel {
             spread++;
             setSpread(spread);
         } else {
-            File next_file = new File(getChapterName(chapter + 1));
+            File next_file = new File(getChapterName(this.volume, chapter + 1));
             if (next_file.exists()) {
                 setChapter(volume, chapter + 1);
             }
         }
+        setState();
+    }
 
+    /**
+     * Set the state ie which buttons are enabled. Called after a button press
+     * is processed except for close button.
+     */
+    public void setState() {
+        FontMetrics fm = right_page.getFontMetrics(right_page.getFont());
+
+        Rectangle r = right_page.getBounds();
+        int rows = r.height / fm.getHeight();
+        // set next button
+        File next_file = new File(getChapterName(this.volume, chapter + 1));
+        if ((spread < (lines.size() - 1) / (2 * rows) + 1)
+                || (next_file.exists() && (chapter + 1 <= chapters))) {
+            next.setEnabled(true);
+        } else {
+            next.setEnabled(false);
+        }
+        // set previous button
+        if (spread > 1 || chapter > 0) {
+            prev.setEnabled(true);
+        } else {
+            prev.setEnabled(false);
+        }
+        // set contents button
+        if (chapter != 0) {
+            contents.setEnabled(true);
+        } else {
+            contents.setEnabled(false);
+        }
     }
 
     /**
@@ -209,6 +414,16 @@ public class Manowitz extends JPanel {
      * @param vol
      */
     public void pressContents(int vol) {
+//        /*
+//         Test code
+//         */
+//        System.out.println("Returning from Manowitz.pressContents");
+//        if (vol >= -1) {
+//            return;
+//        }
+//        /*
+//         /Test code
+//         */
         if (vol != -1) {
             this.volume = vol;
         }
@@ -239,11 +454,57 @@ public class Manowitz extends JPanel {
         }
         setSpread(1);
         chapters = lines.size();
-        state = CONTENTS;
         chapter = 0;
+        setState();
     }
 
-    public String getChapterName(int chapter) {
+    /**
+     * Set number of chapters to be number of lines in MANOWITZ/VOLUMEvol.TXT.
+     *
+     * @param vol
+     */
+    public void setNrChapters(int vol) {
+
+        this.volume = vol;
+
+        String file_name = "MANOWITZ" + System.getProperty("file.separator")
+                + "VOLUME" + volume + ".TXT";
+        String text = Util.readText(file_name);
+
+        // parse contents into lines of chapter names
+        lines = new ArrayList<>();
+        String word = "";
+        boolean is_valid = false;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c != '\n') {
+                // only count lines with non-space characters
+                if (c >= '0' && c <= 'z') {
+                    is_valid = true;
+                }
+                word += c;
+            } else {
+                word += '\n';
+                if (is_valid) {
+                    lines.add(word);
+                }
+                is_valid = false;
+                word = "";
+            }
+        }
+        chapters = lines.size();
+    }
+
+    public boolean findChapter(int vol, int chapter) {
+        boolean ret_val = false;
+        File file = new File(getChapterName(vol, chapter));
+        if (file.exists()) {
+            ret_val = true;
+        }
+        return ret_val;
+    }
+
+    public String getChapterName(int vol, int chapter) {
         String sample = "V1CHP001.TXT";
         String manowitz = "MANOWITZ";
         String separ = System.getProperty("file.separator");
@@ -252,7 +513,7 @@ public class Manowitz extends JPanel {
         String zero = "0";
         String zerozero = "00";
         String txt = ".TXT";
-        String file_name = manowitz + separ + v + this.volume + chp;
+        String file_name = manowitz + separ + v + vol + chp;
         if (chapter < 10) {
             file_name += zerozero;
         } else {
@@ -267,11 +528,23 @@ public class Manowitz extends JPanel {
         this.chapter = chapter;
         // read chapter text
         String text = "";
-        String file_name = getChapterName(chapter);
+        String file_name = getChapterName(this.volume, chapter);
         text = Util.readText(file_name);
 
+        //skip possible image reference on first line
+        Pattern ref_pat = Pattern.compile("<<[^(>>)]*>>");
+        Matcher m = ref_pat.matcher(text);
+        if (m.find()) {
+            Pattern lf = Pattern.compile("\n");
+            m = lf.matcher(text);
+            m.find();
+            String tmp = text.substring(m.end());
+            text = tmp;
+        }
+
         // for techs, insert names of prerequisite techs
-        if (vol > 1) {
+        // do not skip wolfen and conclusion of vol 5 in vanilla EFS
+        if (vol > 1) { // && (vol != 5 || (chapter != 25 && chapter != 47))) {
             String preqs = getPrerequisiteTechString(vol, chapter);
             System.out.println("preqs = " + preqs);
             text += preqs;
@@ -279,28 +552,28 @@ public class Manowitz extends JPanel {
         //break text into words, spaces and newlines
         List<String> words = new ArrayList<>();
         String word = "";
-        Pattern ref_pat = Pattern.compile("<<(bkil)|(BKIL)[0-9]+\\.(pcx)|(PCX)>>");
+//        Pattern ref_pat = Pattern.compile("<<(bkil)|(BKIL)[0-9]+\\.(pcx)|(PCX)>>");
 
         boolean after_ref = false;
         boolean image_ref = false;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            //skip possible image reference on first line
-            if (!after_ref) {
-                Matcher m = ref_pat.matcher(word);
-                if (m.find()) {
-                    image_ref = true;
-                    word = "";
-                }
-                if (image_ref == true && c != '\n') {
-                    continue;
-                } else if (image_ref == true && c == '\n') {
-                    after_ref = true;
-                    continue;
-                } else if (c == '\n') {
-                    after_ref = true;
-                }
-            }
+//            //skip possible image reference on first line
+//            if (!after_ref) {
+//                Matcher m = ref_pat.matcher(word);
+//                if (m.find()) {
+//                    image_ref = true;
+//                    word = "";
+//                }
+//                if (image_ref == true && c != '\n') {
+//                    continue;
+//                } else if (image_ref == true && c == '\n') {
+//                    after_ref = true;
+//                    continue;
+//                } else if (c == '\n') {
+//                    after_ref = true;
+//                }
+//            }
 
             if (c != ' ' && c != '\n' && c != '\r') {
                 word += c;
@@ -373,7 +646,7 @@ public class Manowitz extends JPanel {
         }
 
         setSpread(1);
-        state = CHAPTER;
+
     }
 
     /**
@@ -405,12 +678,14 @@ public class Manowitz extends JPanel {
         right_page.setText(right_text);
     }
 
-    /*
-     * Finds those currently researchable technologies which are prerequisites
-     * to current chapter (technology) or technologies leading towards current
-     * chapter.
-     */
+//    /*
+//     * Finds those currently researchable technologies which are prerequisites
+//     * to current chapter (technology) or technologies leading towards current
+//     * chapter.
+//     */
     /**
+     * Find prerequisite technologies for current chapter (technology). If preqs
+     * == null return "".
      *
      * @param vol
      * @param chapter
@@ -419,6 +694,9 @@ public class Manowitz extends JPanel {
     public String getPrerequisiteTechString(int vol, int chapter) {
         String ret_val = null;
         LinkedList<Tech> preqs = findPrerequisiteTechs(vol, chapter);
+        if (preqs == null) {
+            return "";
+        }
         if (preqs.size() == 0) {
             ret_val = "\nThis technology is known.";
         } else if (preqs.size() == 1) {
@@ -448,8 +726,8 @@ public class Manowitz extends JPanel {
     }
 
     /**
-     * Finds all the prerequisite techs for the tech listed in vol, chapter of
-     * Manowitz.
+     * Finds all the prerequisite techs for the tech listed in (vol, chapter) of
+     * Manowitz. Returns null if vol,chapter pair is not found among techs.
      *
      * @param vol
      * @param chapter
@@ -459,11 +737,21 @@ public class Manowitz extends JPanel {
         Tech[] techs = game.getResources().getTech();
         boolean[] owned = game.getFaction(game.getTurn()).getResearch().techs;
         Tech tech = null;
-        for (Tech t : techs) {
+        /*
+         In hyperion applied tech and viper militia have the same (vol,chapter)
+         values. To properly show preqs for viper militia techs need to be
+         traversed in reverse order.
+         */
+//        for (Tech t : techs) {
+        for (int i = techs.length - 1; i > -1; i--) {
+            Tech t = techs[i];
             if (t.stats[C.TECH_VOL] == vol && t.stats[C.TECH_CH] == chapter) {
                 tech = t;
                 break;
             }
+        }
+        if (tech == null) {
+            return null;
         }
         Set<Tech> included = new HashSet<>();
         LinkedList<Tech> preqs = new LinkedList<>();
@@ -482,6 +770,7 @@ public class Manowitz extends JPanel {
                 }
             }
         }
+        // make it so that researchable techs are first in list
         for (Tech t : included) {
             if (t.stats[C.TECH0] >= 800
                     || (owned[t.stats[C.TECH0]]

@@ -53,7 +53,11 @@ public class TechPanel extends JPanel {
     private JTable tech_table;
     private JTextArea tech_info;
     private JTextField labs_cost;
-    private JTextField labs_research;
+    private JTextField lab_researches;
+    private JTextField rp_available;
+
+    // number of labs, set in setLabsCost()
+    private int nr_labs;
 
     private JButton tech_db;
     private JButton exit;
@@ -68,6 +72,8 @@ public class TechPanel extends JPanel {
         addTechTable();
         addTechInfo();
         addLabsCost();
+        addRPAvailable();
+        addLabResearches();
         setUpArchiveButton();
         setUpTechDBButton();
         setUpExitButton();
@@ -95,8 +101,8 @@ public class TechPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
 
-        g.setColor(C.COLOR_GOLD);
-        g.drawRect(0, 0, ws.tech_window_w - 1, ws.tech_window_h - 1);
+//        g.setColor(C.COLOR_GOLD);
+//        g.drawRect(0, 0, ws.tech_window_w - 1, ws.tech_window_h - 1);
     }
 
     public void setUpTechDBButton() {
@@ -176,6 +182,7 @@ public class TechPanel extends JPanel {
                 nr_labs++;
             }
         }
+        this.nr_labs = nr_labs;
         String lab_text = "";
         if (nr_labs == 1) {
             lab_text = " lab requires ";
@@ -197,6 +204,43 @@ public class TechPanel extends JPanel {
 
     }
 
+    public void setLabResearches() {
+        lab_researches.setText("A lab researches "
+                + game.getEfs_ini().lab_points
+                + " points/turn.");
+    }
+
+    public void addLabResearches() {
+//        JTextField lab_researches;
+        lab_researches = new JTextField();
+        lab_researches.setFont(ws.font_default);
+        lab_researches.setForeground(C.COLOR_GOLD);
+        lab_researches.setOpaque(false);
+        lab_researches.setEditable(false);
+        lab_researches.setBounds(ws.tech_labs_cost_x_offset, ws.tech_labs_cost_y_offset + ws.tech_labs_cost_h,
+                ws.tech_labs_cost_w, ws.tech_labs_cost_h);
+        this.add(lab_researches);
+    }
+
+    public void setRPAvailable() {
+        rp_available.setText("You have "
+                + game.getFaction(game.getTurn()).getResearch().points_left
+                + " research points available.");
+    }
+
+    public void addRPAvailable() {
+//        JTextField rp_available;
+        rp_available = new JTextField();
+        rp_available.setFont(ws.font_default);
+        rp_available.setForeground(C.COLOR_GOLD);
+        rp_available.setOpaque(false);
+        rp_available.setEditable(false);
+        rp_available.setBounds(ws.tech_labs_cost_x_offset, ws.tech_labs_cost_y_offset + 2 * ws.tech_labs_cost_h,
+                ws.tech_labs_cost_w, ws.tech_labs_cost_h);
+        this.add(rp_available);
+
+    }
+
     public static void setInfoText(JTable table, int row, JTextArea info, Game game) {
         int tech_nr = ((Integer) table.getValueAt(row, 0)).intValue();
         if (tech_nr == 0) {
@@ -213,6 +257,9 @@ public class TechPanel extends JPanel {
             if (tech.stats[C.TECH0] == tech_nr
                     || tech.stats[C.TECH1] == tech_nr
                     || tech.stats[C.TECH2] == tech_nr) {
+                if (!info_text.equals("")) {
+                    info_text += "\n";
+                }
                 info_text += " Allows " + tech.name;
                 boolean with = false;
                 if (tech.stats[C.TECH0] != tech_nr
@@ -240,7 +287,7 @@ public class TechPanel extends JPanel {
                     }
                     info_text += techs[tech.stats[C.TECH2]].name;
                 }
-                info_text += "\n";
+
             }
         }
 
@@ -298,13 +345,14 @@ public class TechPanel extends JPanel {
                     // set researched technology && do research
                     int tech_no = ((Integer) tech_table.getValueAt(row, 0)).intValue();
                     game.setResearch(tech_no);
-                    game.getFaction(game.getTurn()).doResearch();
+                    game.getFaction(game.getTurn()).getResearch().doResearch();
                     setTechData();
+                    setRPAvailable();
                     if (row != 0 && game.getFaction(game.getTurn()).getResearch().techs[tech_no]) {
                         tech_table.setRowSelectionInterval(0, 0);
-                        gui.showInfoWindow("Research on "
-                                + game.getResources().getTech()[tech_no].name
-                                + "\n has been completed!");
+//                        gui.showInfoWindow("Research on "
+//                                + game.getResources().getTech()[tech_no].name
+//                                + "\n has been completed!");
                     } else {
                         tech_table.setRowSelectionInterval(row, row);
                         TechPanel.setInfoText(table, row, tech_info, game);
@@ -318,6 +366,7 @@ public class TechPanel extends JPanel {
         tech_info.setText("");
         Research research = game.getFaction(game.getTurn()).getResearch();
         boolean[] owned_tech = research.techs;
+        int researched = research.researched;
         Tech[] techs = game.getResources().getTech();
 
         // find out research categories
@@ -341,15 +390,22 @@ public class TechPanel extends JPanel {
 
         }
 
-        // populate category lists
+        /* populate category lists take into account eg. Nova mod where new
+         * technologies have VOL == 0 and CH == 0
+         */
+        int cat_nr = 0;
         for (int i = 0; i < techs.length; i++) {
+            if (techs[i].stats[C.TECH0] >= 990) {
+                cat_nr = techs[i].stats[C.TECH0] - 989;
+            }
             if (techs[i].stats[C.TECH0] >= 800) {
                 continue;
             }
             if (!owned_tech[i] && owned_tech[techs[i].stats[C.TECH0]]
                     && owned_tech[techs[i].stats[C.TECH1]]
                     && owned_tech[techs[i].stats[C.TECH2]]) {
-                category_lists.get(techs[i].stats[C.TECH_VOL] - 1).add(new Integer(i));
+//                category_lists.get(techs[i].stats[C.TECH_VOL] - 1).add(new Integer(i));
+                category_lists.get(cat_nr).add(new Integer(i));
             }
         }
 
@@ -372,7 +428,11 @@ public class TechPanel extends JPanel {
                 tech_table_data[index][3] = new Integer(-1);
             } else {
                 tech_table_data[index][1] = new Integer(techs[cat_value.intValue()].stats[C.TECH_COST]);
-                tech_table_data[index][2] = new Integer(0);
+                if (cat_value.intValue() == researched) {
+                    tech_table_data[index][2] = new Integer(nr_labs);
+                } else {
+                    tech_table_data[index][2] = new Integer(0);
+                }
                 tech_table_data[index][3] = new Integer(techs[cat_value.intValue()].stats[C.TECH_COST] - research.points[cat_value.intValue()]);
             }
 
@@ -381,7 +441,11 @@ public class TechPanel extends JPanel {
                 tech_table_data[index][0] = integer;
                 tech_table_data[index][1] = new Integer(techs[integer.intValue()].stats[C.TECH_COST]);
 
-                tech_table_data[index][2] = new Integer(0);
+                if (integer.intValue() == researched) {
+                    tech_table_data[index][2] = new Integer(nr_labs);
+                } else {
+                    tech_table_data[index][2] = new Integer(0);
+                }
                 tech_table_data[index][3] = new Integer(techs[integer.intValue()].stats[C.TECH_COST] - research.points[integer.intValue()]);
                 index++;
             }
@@ -460,7 +524,7 @@ public class TechPanel extends JPanel {
                 setBackground(c_b);
                 setForeground(c_f);
             }
-            System.out.println("column = " + column);
+//            System.out.println("column = " + column);
             String val = "";
             int i_val = ((Integer) value).intValue();
             switch (column) {
@@ -490,7 +554,7 @@ public class TechPanel extends JPanel {
                     if (i_val == -1) {
                         val = "";
                     } else {
-                        val = "" + 0; //game.getResources().getTech()[((Integer) value).intValue()].name;
+                        val = "" + i_val; //game.getResources().getTech()[((Integer) value).intValue()].name;
                     }
                     setFont(ws.font_default);
                     setText(val);
