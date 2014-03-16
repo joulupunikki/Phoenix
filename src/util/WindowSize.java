@@ -184,6 +184,79 @@ public class WindowSize {
     public int build_exit_button_x_offset = planet_map_width - build_exit_button_w - 10;
     public int build_exit_button_y_offset = planet_map_height / 2 - build_exit_button_h - 10;
 
+    public int tech_window_w = 640;
+    public int tech_window_h = 350;
+    public int tech_window_x_offset = 0;
+    public int tech_window_y_offset = 90;
+
+    public int tech_table_w = 450;
+    public int tech_table_h = 120;
+    public int tech_table_x_offset = 150;
+    public int tech_table_y_offset = 25;
+
+    public int tech_column_0_w = tech_table_w / 2;
+    public int tech_column_1_w = tech_table_w / 6;
+    public int tech_column_2_w = tech_table_w / 6;
+    public int tech_column_3_w = tech_table_w / 6;
+//    public int tech_column_4_w = tech_table_w / 6;
+
+    public int tech_db_button_w = 50;
+    public int tech_db_button_h = 15;
+    public int tech_db_button_x_offset = tech_window_w / 2 - tech_db_button_w - 10;
+    public int tech_db_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_exit_button_w = 50;
+    public int tech_exit_button_h = 15;
+    public int tech_exit_button_x_offset = tech_window_w * 3 / 4 - tech_db_button_w - 10;
+    public int tech_exit_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_archive_button_w = 50;
+    public int tech_archive_button_h = 15;
+    public int tech_archive_button_x_offset = tech_window_w / 4 - tech_db_button_w - 10;
+    public int tech_archive_button_y_offset = tech_window_h - tech_db_button_h - 10;
+
+    public int tech_info_w = 450;
+    public int tech_info_h = 120;
+    public int tech_info_x_offset = 150;
+    public int tech_info_y_offset = tech_window_h - tech_info_h - 10 - tech_db_button_h - 10;
+
+    public int tech_labs_cost_x_offset = 151;
+    public int tech_labs_cost_y_offset = 147;
+    public int tech_labs_cost_w = 446;
+    public int tech_labs_cost_h = 15;
+
+    public int manowitz_window_w = 640;
+    public int manowitz_window_h = 480;
+    public int manowitz_window_x_offset = 0;
+    public int manowitz_window_y_offset = 0;
+
+    public int left_page_w = 195;
+    public int left_page_h = 315;
+    public int left_page_x_offset = 75;
+    public int left_page_y_offset = 57;
+
+    public int right_page_x_offset = manowitz_window_w - left_page_w - left_page_x_offset;
+
+    public int manowitz_contents_x_offset = 16;
+    public int manowitz_contents_y_offset = 455;
+    public int manowitz_contents_w = 73;
+    public int manowitz_contents_h = 25;
+
+    public int manowitz_prev_x_offset = 136;
+    public int manowitz_prev_y_offset = 439;
+    public int manowitz_prev_w = 81;
+    public int manowitz_prev_h = 41;
+
+    public int manowitz_next_x_offset = 400;
+    public int manowitz_next_y_offset = 439;
+    public int manowitz_next_w = 89;
+    public int manowitz_next_h = 41;
+
+    public int manowitz_close_x_offset = 536;
+    public int manowitz_close_y_offset = 455;
+    public int manowitz_close_w = 81;
+    public int manowitz_close_h = 25;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -368,6 +441,77 @@ public class WindowSize {
             space_button_width *= 2;
             space_button_height *= 2;
 
+            tech_window_w *= 2;
+            tech_window_h *= 2;
+            tech_window_x_offset *= 2;
+            tech_window_y_offset *= 2;
+
+            tech_table_w *= 2;
+            tech_table_h *= 2;
+            tech_table_x_offset *= 2;
+            tech_table_y_offset *= 2;
+
+            tech_column_0_w *= 2;
+            tech_column_1_w *= 2;
+            tech_column_2_w *= 2;
+            tech_column_3_w *= 2;
+//            tech_column_4_w *= 2;
+            tech_db_button_w *= 2;
+            tech_db_button_h *= 2;
+            tech_db_button_x_offset *= 2;
+            tech_db_button_y_offset *= 2;
+
+            tech_exit_button_w *= 2;
+            tech_exit_button_h *= 2;
+            tech_exit_button_x_offset *= 2;
+            tech_exit_button_y_offset *= 2;
+
+            tech_info_w *= 2;
+            tech_info_h *= 2;
+            tech_info_x_offset *= 2;
+            tech_info_y_offset *= 2;
+
+            manowitz_window_w *= 2;
+            manowitz_window_h *= 2;
+            manowitz_window_x_offset *= 2;
+            manowitz_window_y_offset *= 2;
+
+            tech_archive_button_w *= 2;
+            tech_archive_button_h *= 2;
+            tech_archive_button_x_offset *= 2;
+            tech_archive_button_y_offset *= 2;
+
+            left_page_w *= 2;
+            left_page_h *= 2;
+            left_page_x_offset *= 2;
+            left_page_y_offset *= 2;
+
+            right_page_x_offset *= 2;
+
+            manowitz_contents_x_offset *= 2;
+            manowitz_contents_y_offset *= 2;
+            manowitz_contents_w *= 2;
+            manowitz_contents_h *= 2;
+
+            manowitz_prev_x_offset *= 2;
+            manowitz_prev_y_offset *= 2;
+            manowitz_prev_w *= 2;
+            manowitz_prev_h *= 2;
+
+            manowitz_next_x_offset *= 2;
+            manowitz_next_y_offset *= 2;
+            manowitz_next_w *= 2;
+            manowitz_next_h *= 2;
+
+            manowitz_close_x_offset *= 2;
+            manowitz_close_y_offset *= 2;
+            manowitz_close_w *= 2;
+            manowitz_close_h *= 2;
+
+            tech_labs_cost_x_offset *= 2;
+            tech_labs_cost_y_offset *= 2;
+            tech_labs_cost_w *= 2;
+            tech_labs_cost_h *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

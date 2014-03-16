@@ -65,6 +65,7 @@ public class C {
 
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW
+
     public static final int PROD_CITIES = 7;    // RSW
     public static final int RES_TYPES = 13;    // RSW
 
@@ -241,12 +242,14 @@ public class C {
     public static final int ROAD = 11;
     public static final int STRUCTURE = 12;
 
+
     public static final int BARREN_TILE_SET = 4;    // RSW
 
     // Unit types (only needed for units with special abilities)
     public static final int SPACE_CARRIER_UNIT_TYPE = 16;    // RSW
     public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
+
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 
     // faction id's
@@ -265,6 +268,16 @@ public class C {
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
 
+    //research & technologies
+    public static final int TECH0 = 0;
+    public static final int TECH1 = 1;
+    public static final int TECH2 = 2;
+    public static final int TECH_COST = 3;
+    public static final int TECH_VOL = 5;
+    public static final int TECH_CH = 6;
+    public static final int TECH_MAINT = 100;
+
+    public static final String S_SEPAR = System.getProperty("file.separator");
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
     public static final String S_UNIT_INFO = "unit info";
@@ -282,8 +295,12 @@ public class C {
     public static final String S_ARBORIUM_DAT = "DAT/ARBORIUM.DAT";
     public static final String S_MINE_DAT = "DAT/MINE.DAT";
     public static final String S_WELL_DAT = "DAT/WELL.DAT";
+
     public static final String S_PROD_DAT = "DAT/PROD.DAT";    // RSW
     public static final String S_RES_DAT = "DAT/RES.DAT";    // RSW
+
+    public static final String S_TECH_DAT = "DAT/TECH.DAT";
+
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
@@ -291,6 +308,7 @@ public class C {
     public static final String S_LOG_FILE = "phoenixlog.txt";
 
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
+    public static final Color COLOR_MANOWITZ_TEXT = new Color(92, 44, 16);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
     public static final int INDEX_COLOR_EFS_BLACK = 14;
@@ -301,6 +319,10 @@ public class C {
     public static final String ATTACKING_CMBT_STACK = "attacking_combat_stack";
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
+
+
+//    public static final String S_RESOURCE[] = {"Food", "Energy", "Metal", "Trace", "Exotica", "Chemicals", "Biochems", "Electronics", "Ceramsteel", "Wetware", "Monopols", "Gems", "Singularities"};    // Temporary, until we have reader for RES.DAT
+
 
     public static final int STARTING_FIREBIRDS = 4500;
 

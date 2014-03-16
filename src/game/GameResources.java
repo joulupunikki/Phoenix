@@ -5,6 +5,7 @@
  */
 package game;
 
+import dat.Tech;
 import dat.UnitSpot;
 import java.io.Serializable;
 
@@ -16,14 +17,21 @@ import java.io.Serializable;
 public class GameResources implements Serializable {
 
     private double[][][] unit_spot;
+    private Tech[] techs;
 
     public GameResources() {
 
         unit_spot = UnitSpot.readUnitSpot();
-
+        techs = Tech.readTech();
+//        Tech.print(techs);
+//        System.exit(0);
     }
 
     public double[][][] getUnitSpot() {
         return unit_spot;
+    }
+
+    public Tech[] getTech() {
+        return techs;
     }
 }

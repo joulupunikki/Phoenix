@@ -221,6 +221,19 @@ public class Game implements Serializable {
         return jump_gates;
     }
 
+    public void setResearch(int tech) {
+        factions[turn].getResearch().setResearch(tech);
+    }
+
+    /**
+     * Called at the beginning of a turn only. Initializes research points and
+     * researches selected tech.
+     */
+    public void doResearch() {
+        factions[turn].getResearch().initResearchPts();
+        factions[turn].getResearch().doResearch();
+    }
+
     public void deleteUnit2(Unit u) {
         units.remove(u);
         unmoved_units.remove(u);
@@ -1134,6 +1147,7 @@ public class Game implements Serializable {
 
         factions[turn].deleteOldMessages(year);
         setFactionCities();
+        doResearch();
         buildUnits();
 
         resetUnmovedUnits();

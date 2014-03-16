@@ -130,6 +130,7 @@ public class CombatWindow extends JPanel {
                 wr_att.setRect(dx, dy, wr_att_u);
 
 //                Util.drawUnitDetails(g, game, e, dx, dy);
+
                 dx -= ws.skull_offset;
                 dy -= ws.skull_offset;
                 if (ws.is_double) {

@@ -4,6 +4,7 @@
  */
 package util;
 
+import static dat.EfsIni.processLine;
 import galaxyreader.Unit;
 import game.Game;
 import game.Hex;
@@ -18,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -42,6 +44,62 @@ public class Util {
     public static void debugPrint(String s) {
         if (C.DEBUG_PRINT == 1) {
             System.out.println(s);
+        }
+    }
+
+    public static void processIntVals(String s, int[] vals, String file_name, int line_nr, int nr_values) {
+        int start = 0;
+
+        final int SPACE = 1;
+        final int NUM = 2;
+        final int FAIL = 999;
+        int index = 0;
+        int counter = 0;
+        boolean loop = true;
+        int state = SPACE;
+        while (loop) {
+
+            switch (state) {
+                case SPACE:
+                    System.out.println("SPACE");
+                    if (s.charAt(index) == ' ') {
+
+                    } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+
+                        start = index;
+                        state = NUM;
+                    } else {
+                        state = FAIL;
+                    }
+                    break;
+                case NUM:
+                    System.out.println("NUM");
+                    if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+
+                    } else if (counter == nr_values - 1) {
+                        if (s.charAt(index) == '"') {
+                            vals[counter++] = Integer.parseInt(s.substring(start, index));
+                            loop = false;
+                        } else {
+                            state = FAIL;
+                        }
+                    } else {
+                        if (s.charAt(index) == ' ') {
+                            vals[counter++] = Integer.parseInt(s.substring(start, index));
+                            state = SPACE;
+                        } else {
+                            state = FAIL;
+                        }
+                    }
+                    break;
+                case FAIL:
+                    Util.logFFErrorAndExit(file_name, line_nr);
+                    break;
+                default:
+                    throw new AssertionError();
+
+            }
+            index++;
         }
     }
 
@@ -515,6 +573,24 @@ public class Util {
                 return o1.type_data.rank - o2.type_data.rank;
             }
         });
+    }
+
+    public static String readText(String file_name) {
+        int line_nr = 1;
+        String ret_val = "";
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
+            String input = in.readLine();
+
+            while (input != null) {
+                ret_val += input + "\n";
+                input = in.readLine();
+                line_nr++;
+            }
+        } catch (Exception e) {
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
+        }
+        return ret_val;
     }
 
     public static int stackSize(List<Unit> stack) {
@@ -1198,6 +1274,41 @@ public class Util {
         return file_data;
     }
 
+    public static byte[] readFile(String file_name, long pos, int size, ByteOrder byte_order) {
+
+        byte[] file_data = null;
+
+        Path path = FileSystems.getDefault().getPath(file_name);
+
+        try (FileChannel fc = (FileChannel.open(path))) {
+
+            if (size < 1) {
+                size = (int) fc.size();
+            }
+            file_data = readBytes(fc, pos, size, byte_order);
+
+        } catch (IOException e) {
+            System.out.println("Exception: " + e.getMessage());
+            System.out.println("Failed to read " + file_name);
+            System.exit(1);
+        }
+        return file_data;
+    }
+
+    public static byte[][] getPalletteFromPCX(String file_name, int size) {
+        byte[][] pallette = new byte[3][];
+        for (int i = 0; i < pallette.length; i++) {
+            pallette[i] = new byte[256];
+
+        }
+
+        byte[] raw_data = readFile(file_name, size - 768, size, ByteOrder.LITTLE_ENDIAN);
+
+        extractPallette3(pallette[2], pallette[1], pallette[0], raw_data);
+
+        return pallette;
+    }
+
     public static void extractPallette(byte[] red, byte[] green, byte[] blue, byte[] pallette) {
         for (int i = 0; i <= 255; i++) {
             red[i] = (byte) (4 * pallette[3 * i]);
@@ -1211,6 +1322,14 @@ public class Util {
             red[i] = pallette[4 * i];
             green[i] = pallette[4 * i + 1];
             blue[i] = pallette[4 * i + 2];
+        }
+    }
+
+    public static void extractPallette3(byte[] red, byte[] green, byte[] blue, byte[] pallette) {
+        for (int i = 0; i <= 255; i++) {
+            red[i] = pallette[3 * i];
+            green[i] = pallette[3 * i + 1];
+            blue[i] = pallette[3 * i + 2];
         }
     }
 

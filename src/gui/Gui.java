@@ -17,6 +17,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -94,6 +95,14 @@ public class Gui extends JFrame {
     private CombatWindow combat_window;
     private BuildPanel build_panel;
     private JDialog build_window;
+    // panel showing research options
+    private TechPanel tech_panel;
+    // window holding TechPanel
+    private JDialog tech_window;
+    private TechDBPanel tech_db_panel; // panel showing tech database
+    private JDialog tech_db_window;   // window holding tech database
+    private Manowitz manowitz_panel;
+    private JDialog manowitz_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -104,7 +113,14 @@ public class Gui extends JFrame {
     private JMenuItem menu_save;
     private JMenu orders_menu;
     private JMenuItem menu_build;
+    private JMenuItem menu_research;
     private JPopupMenu stack_menu;
+    private JMenu archives_menu;
+    private JMenuItem menu_vol1;
+    private JMenuItem menu_vol2;
+    private JMenuItem menu_vol3;
+    private JMenuItem menu_vol4;
+    private JMenuItem menu_vol5;
 
     private Resource resources;
     //stack display window
@@ -153,8 +169,13 @@ public class Gui extends JFrame {
         UIManager.put("ProgressBar.background", Color.DARK_GRAY);
         UIManager.put("MenuItem.background", Color.DARK_GRAY);
         UIManager.put("MenuItem.foreground", C.COLOR_GOLD);
+        UIManager.put("MenuItem.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
         UIManager.put("Menu.background", Color.DARK_GRAY);
         UIManager.put("Menu.foreground", C.COLOR_GOLD);
+        UIManager.put("Menu.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
+        UIManager.put("TextArea.background", Color.BLACK);
+        UIManager.put("TextArea.foreground", C.COLOR_GOLD);
+        UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -251,8 +272,19 @@ public class Gui extends JFrame {
             }
         });
 
+        menu_research = new JMenuItem("Research");
+
+        menu_research.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                showTechWindow();
+            }
+        });
+
         orders_menu.add(menu_build);
+        orders_menu.add(menu_research);
         menubar.add(orders_menu);
+        setUpArchivesMenu();
         this.setJMenuBar(menubar);
 
         build_window = new JDialog(this, true);
@@ -280,6 +312,9 @@ public class Gui extends JFrame {
         build_window.add(build_panel);
         build_window.pack();
 
+        setUpTechWindow();
+        setUpTechDBWindow();
+        setUpManowitzWindow();
         /*
          * create planet map display
          */
@@ -484,6 +519,220 @@ public class Gui extends JFrame {
 
     }
 
+    /**
+     * Open Manowitz volume vol
+     *
+     * @param vol
+     */
+    public void openManowitzVol(int vol) {
+        manowitz_panel.pressContents(vol);
+        manowitz_window.setVisible(true);
+    }
+
+    /**
+     * Close (hide) Manowitz window.
+     */
+    public void closeManowitz() {
+        manowitz_window.setVisible(false);
+    }
+
+    public void setUpArchivesMenu() {
+        archives_menu = new JMenu("Archives");
+        archives_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol1 = new JMenuItem("Volume 1: The Known Worlds");
+        menu_vol1.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(1);
+            }
+        });
+        menu_vol2 = new JMenuItem("Volume 2: Microbiology");
+        menu_vol2.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(2);
+            }
+        });
+        menu_vol3 = new JMenuItem("Volume 3: Physics");
+        menu_vol3.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(3);
+            }
+        });
+        menu_vol4 = new JMenuItem("Volume 4: Psycho-Social");
+        menu_vol4.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(4);
+            }
+        });
+        menu_vol5 = new JMenuItem("Volume 5: Military Units");
+        menu_vol5.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_vol5.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openManowitzVol(5);
+            }
+        });
+
+        archives_menu.add(menu_vol1);
+//        archives_menu.addSeparator();
+        archives_menu.add(menu_vol2);
+        archives_menu.add(menu_vol3);
+        archives_menu.add(menu_vol4);
+//        archives_menu.addSeparator();
+        archives_menu.add(menu_vol5);
+        menubar.add(archives_menu);
+    }
+
+    public void hideTechDBWindow() {
+        tech_db_window.setVisible(false);
+    }
+
+    public void hideTechWindow() {
+        tech_window.setVisible(false);
+    }
+
+    public void showTechWindow() {
+        tech_panel.setTechData();
+        tech_panel.setLabsCost();
+        tech_panel.setRPAvailable();
+        tech_panel.setLabResearches();
+        tech_window.setVisible(true);
+    }
+
+    public void setUpTechWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+        tech_window = new JDialog(this, true);
+//        tech_window.setUndecorated(true);
+        tech_window.setLayout(null);
+        tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
+                ws.tech_window_h));
+        System.out.println("this.getX() = " + this.getX());
+        tech_window.setBounds(this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+//        tech_window.setSize(ws.tech_window_w, ws.build_window_height);
+        tech_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        tech_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                tech_window.setVisible(false);
+            }
+        });
+        tech_panel = new TechPanel(this);
+        tech_panel.setLayout(null);
+        tech_window.add(tech_panel);
+        tech_panel.setBounds(0, 0,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_window.add(tech_panel);
+        tech_window.pack();
+        setDialogSize(tech_window, this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+    }
+
+    public void showTechDBWindow() {
+        tech_db_panel.setTechDBPanel();
+        tech_db_window.setVisible(true);
+    }
+
+    public void setUpTechDBWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+        tech_db_window = new JDialog(this, true);
+        tech_db_window.setLayout(null);
+        tech_db_window.setPreferredSize(new Dimension(ws.tech_window_w,
+                ws.tech_window_h));
+        System.out.println("this.getX() = " + this.getX());
+        tech_db_window.setBounds(this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_db_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        tech_db_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                tech_db_window.setVisible(false);
+            }
+        });
+        tech_db_panel = new TechDBPanel(this);
+        tech_db_panel.setLayout(null);
+        tech_db_window.add(tech_db_panel);
+        tech_db_panel.setBounds(0, 0,
+                ws.tech_window_w, ws.tech_window_h);
+        tech_db_window.add(tech_db_panel);
+        tech_db_window.pack();
+        setDialogSize(tech_db_window, this.getX() + ws.tech_window_x_offset,
+                this.getY() + ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
+    }
+
+    public void showManowitz(int vol, int chapter) {
+        if (!manowitz_panel.findChapter(vol, chapter)) {
+            showInfoWindow("No Manowitz file for this tech.");
+        } else {
+            manowitz_panel.setNrChapters(vol);
+            manowitz_panel.setChapter(vol, chapter);
+            manowitz_panel.setState();
+            manowitz_window.setVisible(true);
+//        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+//                this.getY() + ws.manowitz_window_y_offset,
+//                ws.manowitz_window_w, ws.manowitz_window_h);
+        }
+    }
+
+    public void setUpManowitzWindow() {
+//        JDialog tech_window;
+//        JPanel tech_panel;
+        manowitz_window = new JDialog(this, true);
+//        manowitz_window.setUndecorated(true);
+//        manowitz_window.setLayout(null);
+
+//        manowitz_window.setPreferredSize(new Dimension(ws.manowitz_window_w,
+//                ws.manowitz_window_h));
+//        System.out.println("this.getX() = " + this.getX());
+//        manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
+//                this.getY() + ws.manowitz_window_y_offset,
+//                ws.manowitz_window_w, ws.manowitz_window_h);
+        manowitz_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        manowitz_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                manowitz_window.setVisible(false);
+            }
+        });
+        manowitz_panel = new Manowitz(this);
+        manowitz_panel.setLayout(null);
+        manowitz_window.add(manowitz_panel);
+        manowitz_panel.setBounds(0, 0,
+                ws.manowitz_window_w, ws.manowitz_window_h);
+        manowitz_window.add(manowitz_panel);
+        manowitz_window.pack();
+//        manowitz_window.setSize(ws.manowitz_window_w, ws.manowitz_window_h);
+        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
+                this.getY() + ws.manowitz_window_y_offset,
+                ws.manowitz_window_w, ws.manowitz_window_h);
+    }
+
+    public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
+        Insets insets = this.getInsets();
+        Dimension d_pane = dialog.getContentPane().getSize();
+        Dimension d_window = dialog.getSize();
+        int w_dec_thickness = insets.left + insets.right;
+        int h_dec_thickness = insets.top + insets.bottom;
+        System.out.println("w_dec_thickness = " + w_dec_thickness);
+        System.out.println("h_dec_thickness = " + h_dec_thickness);
+        dialog.setBounds(x, y, w + w_dec_thickness, h + h_dec_thickness);
+    }
+
+//    public int getXOffset() {
+//        Dimension d = this.getContentPane().getSize();
+//        d.width
+//    }
     /**
      * If planet != -1 set planet selected and city selected in Build Panel with
      * planet and city.
@@ -979,6 +1228,9 @@ public class Gui extends JFrame {
                 galactic_map.setGame(game);
                 globe_map.setGame(game);
                 build_panel.setGame(game);
+                tech_panel.setGame(game);
+                tech_db_panel.setGame(game);
+                manowitz_panel.setGame(game);
                 State.setGameRef(game);
                 Comp.setGame(game);
                 game.setPath(null);
