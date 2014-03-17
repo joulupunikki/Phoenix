@@ -202,18 +202,34 @@ public class Economy implements Serializable {
 
     /**
      * Do all production (harvesting and secondary) for current faction.
-     *
+      *
      */
     private void collectResources() {
 
         int[] resource_amounts;    // Resources of each type
 
+        List<Structure> cities = new LinkedList<>();
         for (Structure city : structures) {    // For each structure in structure list
             if (city.owner == turn) {          // Current faction only
-                resource_amounts = calculateActualProduction(city);
-                resources.addResourcesToHex(city.p_idx, city.x, city.y, city.owner, resource_amounts);
+                cities.add(city);
             }
         }
+        // produce in order so that prerequisite resources are produced first
+        for (int i : C.PRODUCTION_ORDER) {
+            for (Structure city : cities) {
+
+                if (city.type == i) {
+                    resource_amounts = calculateActualProduction(city);
+                    resources.addResourcesToHex(city.p_idx, city.x, city.y, city.owner, resource_amounts);
+                }
+            }
+        }
+//        for (Structure city : structures) {    // For each structure in structure list
+//            if (city.owner == turn) {          // Current faction only
+//                resource_amounts = calculateActualProduction(city);
+//                resources.addResourcesToHex(city.p_idx, city.x, city.y, city.owner, resource_amounts);
+//            }
+//        }
     }
 
     /**

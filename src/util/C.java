@@ -227,6 +227,12 @@ public class C {
     public static final int CYCLOTRON_PRODUCTION = 5;
     public static final int FUSORIUM_PRODUCTION = 6;
 
+    // Resource production order
+    public static final int[] PRODUCTION_ORDER = {FARM, ARBORIUM, WELL, MINE,
+        CHEMICALS, BIOPLANT, ELECTRONICS, CERAMSTEEL, WETWARE, FUSORIUM,
+        CYCLOTRON
+    };
+
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
