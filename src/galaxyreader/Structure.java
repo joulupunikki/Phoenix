@@ -50,8 +50,6 @@ public class Structure implements Serializable {
     int Damage;     //short 
 
     public int turns_starving;    // RSW
-
-    public static ArrayList<ArrayList<int[]>> can_build;
     public LinkedList<int[]> build_queue;
     public boolean on_hold_no_res; // queue on hold because of no resources or input units
     Unit upgraded; // input unit used in building
@@ -258,37 +256,6 @@ public class Structure implements Serializable {
         System.out.println("x:     " + x);
         System.out.println("y:     " + y);
         System.out.println("owner: " + owner);
-    }
-
-    public static void setCanBuild(UnitType[][] unit_types) {
-        can_build = new ArrayList<>();
-        can_build.ensureCapacity(C.CITY_TYPES);
-        for (int i = 0; i < C.CITY_TYPES; i++) {
-            can_build.add(new ArrayList<int[]>());
-        }
-
-        for (int i = 0; i < unit_types.length; i++) {
-            for (int j = 0; j < unit_types[i].length; j++) {
-                if (unit_types[i][j] == null) {
-                    continue;
-                }
-                int building = unit_types[i][j].bldgs;
-                if (building > -1) {
-                    int[] unit_type = new int[2];
-                    unit_type[0] = i;
-                    unit_type[1] = j;
-                    if (building < 99) {
-                        can_build.get(building).add(unit_type);
-                    } else if (building == 99) {
-                        for (int k = 0; k < can_build.size(); k++) {
-                            can_build.get(k).add(unit_type);
-                        }
-                    }
-                }
-
-            }
-
-        }
     }
 
     public static String getName(int structure_nr) {

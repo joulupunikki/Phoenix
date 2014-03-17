@@ -122,7 +122,7 @@ public class Game implements Serializable {
         hex_proc = new HexProc(this);
 
         game_resources = new GameResources();
-        Structure.setCanBuild(unit_types);
+//        Structure.setCanBuild(unit_types);
 //        factions = Faction.createFactions();
 
         placeUnits();

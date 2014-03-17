@@ -359,7 +359,7 @@ public class BuildPanel extends JPanel {
         List<Structure> cl2 = new LinkedList<>();
         for (Structure structure : cl) {
             if (structure.owner == game.getTurn() && structure.p_idx == planet) {
-                if (!Structure.can_build.get(structure.type).isEmpty()) {
+                if (!game.getFaction(game.getTurn()).getResearch().can_build.get(structure.type).isEmpty()) {
                     cl2.add(structure);
                 }
             }
@@ -404,7 +404,7 @@ public class BuildPanel extends JPanel {
 
     public void setBuildData(ListSelectionEvent e, Structure city) {
 
-        ArrayList<int[]> al = Structure.can_build.get(city.type);
+        ArrayList<int[]> al = game.getFaction(game.getTurn()).getResearch().can_build.get(city.type);
         int nr_units = al.size();
         UnitType[][] unit_types = game.getUnitTypes();
         int data_len = nr_units;
