@@ -114,7 +114,7 @@ public class HexProc implements Serializable {
                 continue;
             }
             double camo_mod = 1.0;
-            double[][][] unit_spot = game.getResources().getUnitSpot();
+            double[][][] unit_spot = game.getGameResources().getUnitSpot();
             boolean[] terrain = hex.getTerrain();
             for (int i = 0; i < terrain.length; i++) {
                 if (terrain[i]) {

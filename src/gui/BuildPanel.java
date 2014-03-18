@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -33,6 +34,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
@@ -66,6 +68,7 @@ public class BuildPanel extends JPanel {
     private JTable build_table;
     private JTable queue_table;
     private JButton exit;
+    private JTextField[] res_display;
     private static Object[] build_table_header = {"Unit", "Turns Left"};
     private static Object[] city_table_header = {"City", "Building"};
 //    private Object[][] city_table_data;
@@ -77,7 +80,54 @@ public class BuildPanel extends JPanel {
         game = gui.getGame();
         addLists();
         setUpButtons();
+        setUpResDisplay();
 //        List<Planet> planets = game.getPlanets();
+        setUpCoordinateListener(); // for testing positions on panel
+    }
+
+    // for testing positions on panel
+    public void setUpCoordinateListener() {
+        this.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+//                clickOnPlanetMap(e);
+                Point p = e.getPoint();
+                System.out.println("build panel (x,y): " + p.x + ", " + p.y);
+            }
+        });
+    }
+
+    public void setUpResDisplay() {
+        res_display = new JTextField[C.REQUIRED_RESOURCES.length];
+        for (int i = 0; i < res_display.length; i++) {
+            res_display[i] = new JTextField();
+            this.add(res_display[i]);
+            res_display[i].setBounds(ws.bp_res_display_x_offset + i * ws.pw_res_display_x_gap, ws.bp_res_display_y_offset, ws.bp_res_display_w, ws.bp_res_display_h);
+//            res_display[i].setBackground(Color.WHITE);
+            res_display[i].setOpaque(false);
+            res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            res_display[i].setEditable(false);
+            res_display[i].setHorizontalAlignment(JTextField.CENTER);
+            res_display[i].setBorder(null);
+            res_display[i].setFont(ws.font_default);
+//            res_display[i].setText("123");
+        }
+
+    }
+
+    public void drawResAmounts(int[] unit) {
+        int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
+        int planet = (Integer) planet_list.getSelectedValue();
+        System.out.println("Planet name = " + game.getPlanet(planet).name);
+        int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
+        for (int i = 0; i < res_display.length; i++) {
+            if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
+                res_display[i].setForeground(Color.RED);
+            } else {
+                res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            }
+            res_display[i].setText(Util.c4Display(res_needed[C.REQUIRED_RESOURCES[i]]));
+
+        }
     }
 
     public void setUpButtons() {
@@ -99,6 +149,12 @@ public class BuildPanel extends JPanel {
 
     public JList getPlanetList() {
         return planet_list;
+    }
+
+    public void zeroResources() {
+        for (JTextField tf : res_display) {
+            tf.setText("");
+        }
     }
 
     public void zeroBuild() {
@@ -123,6 +179,7 @@ public class BuildPanel extends JPanel {
         zeroCities();
         zeroBuild();
         zeroQueue();
+        zeroResources();
     }
 
     public void addLists() {
@@ -210,6 +267,9 @@ public class BuildPanel extends JPanel {
                 }
                 if (e.getClickCount() == 1) {
                     System.out.println("Single clicked row " + row);
+                    int[] unit = (int[]) build_table.getValueAt(row, 0);
+                    drawResAmounts(unit);
+
                 }
                 if (e.getClickCount() == 2) {
                     System.out.println("Double clicked row " + row);
@@ -263,6 +323,7 @@ public class BuildPanel extends JPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         if (!e.getValueIsAdjusting()) {
                             citySelected(e);
+                            zeroResources();
                         }
                     }
                 });
@@ -294,6 +355,7 @@ public class BuildPanel extends JPanel {
                     public void valueChanged(ListSelectionEvent e) {
                         if (!e.getValueIsAdjusting()) {
                             planetSelected(e, -1);
+                            zeroResources();
                         }
                     }
                 });
@@ -553,9 +615,25 @@ public class BuildPanel extends JPanel {
         byte[][] pallette = gui.getPallette();
         String file = "PCX" + System.getProperty("file.separator") + "UNITBG2.PCX";
         BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 504, 209);
-
+        drawResourceIcons(bi.getRaster());
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
+    }
+
+    public void drawResourceIcons(WritableRaster wr) {
+        int[][] res_icons = gui.getResources().getResIcons();
+        int x = 11;
+        int y = 166;
+        int x_offset = 38;
+        int[] pixel_data = new int[1];
+        int w = C.CARGO_WIDTH;
+        int h = C.CARGO_HEIGHT;
+
+        for (int i = 0; i < C.REQUIRED_RESOURCES.length; i++) {
+            Util.writeImage(pixel_data, C.REQUIRED_RESOURCES[i], res_icons,
+                    wr, ws, w, h, x + i * x_offset, y);
+
+        }
     }
 
     class CustomRendererInt extends JLabel
@@ -689,13 +767,7 @@ public class BuildPanel extends JPanel {
                 int row, int column) {
             Color c_b = Color.BLACK;
             Color c_f = C.COLOR_GOLD;
-            if (isSelected) {
-                setBackground(c_f);
-                setForeground(c_b);
-            } else {
-                setBackground(c_b);
-                setForeground(c_f);
-            }
+
             String val = null;
             if (value == null) {
                 val = " ";
@@ -711,7 +783,25 @@ public class BuildPanel extends JPanel {
                 val = "" + ((Integer) value).intValue();
                 setHorizontalTextPosition(RIGHT);
             }
-
+            int[] tmp = (int[]) table.getValueAt(row, 0);
+            UnitType[][] unit_types = game.getUnitTypes();
+            int[] res_needed = game.getUnitTypes()[tmp[0]][tmp[1]].reqd_res;
+            int planet = (Integer) planet_list.getSelectedValue();
+            System.out.println("Planet name = " + game.getPlanet(planet).name);
+            int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
+            for (int i = 0; i < res_display.length; i++) {
+                if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
+                    c_f = Color.RED;
+                    break;
+                }
+            }
+            if (isSelected) {
+                setBackground(c_f);
+                setForeground(c_b);
+            } else {
+                setBackground(c_b);
+                setForeground(c_f);
+            }
             setFont(ws.font_default);
             setText(val);
 

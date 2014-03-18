@@ -257,6 +257,19 @@ public class WindowSize {
     public int manowitz_close_w = 81;
     public int manowitz_close_h = 25;
 
+    //planet window resource display textfields
+    public int pw_res_display_w = 31;
+    public int pw_res_display_h = 10;
+    public int pw_res_display_x_offset = 129;
+    public int pw_res_display_y_offset = 475 - pw_res_display_h;
+    public int pw_res_display_x_gap = 38;
+
+    //build panel resource display textfields
+    public int bp_res_display_w = 31;
+    public int bp_res_display_h = 10;
+    public int bp_res_display_x_offset = 11;
+    public int bp_res_display_y_offset = 199 - bp_res_display_h;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -512,6 +525,17 @@ public class WindowSize {
             tech_labs_cost_y_offset *= 2;
             tech_labs_cost_w *= 2;
             tech_labs_cost_h *= 2;
+
+            pw_res_display_x_offset *= 2;
+            pw_res_display_y_offset *= 2;
+            pw_res_display_w *= 2;
+            pw_res_display_h *= 2;
+            pw_res_display_x_gap *= 2;
+
+            bp_res_display_w *= 2;
+            bp_res_display_h *= 2;
+            bp_res_display_x_offset *= 2;
+            bp_res_display_y_offset *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

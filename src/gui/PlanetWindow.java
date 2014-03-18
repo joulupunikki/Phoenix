@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.awt.image.WritableRaster;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -39,6 +40,7 @@ public class PlanetWindow extends JPanel {
     JTextField year_display;
     JTextField money_display;
     JTextField city_name;
+    JTextField[] res_display;
     JButton end_turn;
     JButton next_stack;
 
@@ -55,8 +57,20 @@ public class PlanetWindow extends JPanel {
 
         setUpInfoText();
         setUpButtons();
+        setUpResDisplay();
+//        setUpCoordinateListener(); // for testing positions on panel
     }
 
+//    // for testing positions on panel
+//    public void setUpCoordinateListener() {
+//        this.addMouseListener(new MouseAdapter() {
+//            public void mousePressed(MouseEvent e) {
+////                clickOnPlanetMap(e);
+//                Point p = e.getPoint();
+//                System.out.println("Planet window (x,y): " + p.x + ", " + p.y);
+//            }
+//        });
+//    }
     public void setGame(Game game) {
         this.game = game;
     }
@@ -196,6 +210,24 @@ public class PlanetWindow extends JPanel {
 
     }
 
+    public void setUpResDisplay() {
+        res_display = new JTextField[C.RES_TYPES];
+        for (int i = 0; i < res_display.length; i++) {
+            res_display[i] = new JTextField();
+            this.add(res_display[i]);
+            res_display[i].setBounds(ws.pw_res_display_x_offset + i * ws.pw_res_display_x_gap, ws.pw_res_display_y_offset, ws.pw_res_display_w, ws.pw_res_display_h);
+//            res_display[i].setBackground(Color.WHITE);
+            res_display[i].setOpaque(false);
+            res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            res_display[i].setEditable(false);
+            res_display[i].setHorizontalAlignment(JTextField.CENTER);
+            res_display[i].setBorder(null);
+            res_display[i].setFont(ws.font_default);
+            res_display[i].setText("123");
+        }
+
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -207,6 +239,7 @@ public class PlanetWindow extends JPanel {
 
         byte[][] pallette = gui.getPallette();
         BufferedImage bi = Util.loadImage("pcx/plnplat3.pcx", ws.is_double, pallette, 640, 480);
+        drawResourceIcons(bi.getRaster());
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
@@ -264,5 +297,31 @@ public class PlanetWindow extends JPanel {
                 "A.D. " + game.getYear());
         money_display.setText(
                 "4500 FB");
+        drawResAmounts();
     }
+
+    public void drawResAmounts() {
+        int[] res_amounts = game.getResources().getResourcesAvailable(game.getCurrentPlanetNr(), game.getTurn());
+        for (int i = 0; i < res_amounts.length; i++) {
+            res_display[i].setText(Util.c4Display(res_amounts[i]));
+
+        }
+    }
+
+    public void drawResourceIcons(WritableRaster wr) {
+        int[][] res_icons = gui.getResources().getResIcons();
+        int x = 128;
+        int y = 442;
+        int x_offset = 38;
+        int[] pixel_data = new int[1];
+        int w = C.CARGO_WIDTH;
+        int h = C.CARGO_HEIGHT;
+
+        for (int i = 0; i < res_icons.length; i++) {
+            Util.writeImage(pixel_data, i, res_icons,
+                    wr, ws, w, h, x + i * x_offset, y);
+
+        }
+    }
+
 }

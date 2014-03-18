@@ -738,7 +738,7 @@ public class Manowitz extends JPanel {
      * @return
      */
     public LinkedList<Tech> findPrerequisiteTechs(int vol, int chapter) {
-        Tech[] techs = game.getResources().getTech();
+        Tech[] techs = game.getGameResources().getTech();
         boolean[] owned = game.getFaction(game.getTurn()).getResearch().techs;
         Tech tech = null;
         /*

@@ -31,7 +31,7 @@ public class Research implements Serializable {
 
     public Research(Game game) {
         this.game = game;
-        int len = game.getResources().getTech().length;
+        int len = game.getGameResources().getTech().length;
         techs = new boolean[len];
         points = new int[len];
         researched = 0;
@@ -61,7 +61,7 @@ public class Research implements Serializable {
 
         for (int i = 0; i < techs.length; i++) {
             if (techs[i]) {
-                points_left -= game.getResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
+                points_left -= game.getGameResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
             }
 
         }
@@ -76,7 +76,7 @@ public class Research implements Serializable {
             return;
         }
         points[researched] += points_left;
-        int cost = game.getResources().getTech()[researched].stats[C.TECH_COST];
+        int cost = game.getGameResources().getTech()[researched].stats[C.TECH_COST];
         points_left = points[researched] - cost;
         if (points_left >= 0) {
             techs[researched] = true;

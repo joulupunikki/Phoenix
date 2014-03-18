@@ -156,7 +156,7 @@ public class TechPanel extends JPanel {
                     return;
                 }
                 int tech_nr = ((Integer) tech_table.getValueAt(row, 0)).intValue();
-                Tech tech = game.getResources().getTech()[tech_nr];
+                Tech tech = game.getGameResources().getTech()[tech_nr];
                 gui.showManowitz(tech.stats[C.TECH_VOL], tech.stats[C.TECH_CH]);
             }
         });
@@ -251,7 +251,7 @@ public class TechPanel extends JPanel {
             info.setText("");
             return;
         }
-        Tech[] techs = game.getResources().getTech();
+        Tech[] techs = game.getGameResources().getTech();
         String info_text = techs[tech_nr].extra;
 
         for (Tech tech : techs) {
@@ -371,7 +371,7 @@ public class TechPanel extends JPanel {
         Research research = game.getFaction(game.getTurn()).getResearch();
         boolean[] owned_tech = research.techs;
         int researched = research.researched;
-        Tech[] techs = game.getResources().getTech();
+        Tech[] techs = game.getGameResources().getTech();
 
         // find out research categories
         ArrayList<Integer> categories = new ArrayList<>();
@@ -533,10 +533,10 @@ public class TechPanel extends JPanel {
             int i_val = ((Integer) value).intValue();
             switch (column) {
                 case 0:
-                    if (game.getResources().getTech()[((Integer) value).intValue()].stats[C.TECH0] < 800) {
+                    if (game.getGameResources().getTech()[((Integer) value).intValue()].stats[C.TECH0] < 800) {
                         val = "    ";
                     }
-                    val += game.getResources().getTech()[((Integer) value).intValue()].name;
+                    val += game.getGameResources().getTech()[((Integer) value).intValue()].name;
                     setFont(ws.font_default);
                     setText(val);
                     break;

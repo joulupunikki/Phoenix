@@ -62,6 +62,8 @@ public class C {
     public static final int UNIT_SPOT_MOVE = 10;
     public static final int TER_COLOR_HEX = 12;
     public static final int TER_COLOR_PLANET = 5;
+    public static final int CARGO_WIDTH = 34;
+    public static final int CARGO_HEIGHT = 29;
 
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW
@@ -233,6 +235,19 @@ public class C {
         CYCLOTRON
     };
 
+    // Resources used in unit building
+    public static final int[] REQUIRED_RESOURCES = {RES_FOOD,
+        RES_METAL,
+        RES_TRACE,
+        RES_CHEMICALS,
+        RES_BIOCHEMS,
+        RES_ELECTRONICS,
+        RES_CERAMSTEEL,
+        RES_WETWARE,
+        RES_MONOPOLS,
+        RES_GEMS,
+        RES_SINGULARITIES};
+
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;
@@ -247,7 +262,6 @@ public class C {
     public static final int DELTA = 10;
     public static final int ROAD = 11;
     public static final int STRUCTURE = 12;
-
 
     public static final int BARREN_TILE_SET = 4;    // RSW
 
@@ -306,6 +320,7 @@ public class C {
     public static final String S_RES_DAT = "DAT/RES.DAT";    // RSW
 
     public static final String S_TECH_DAT = "DAT/TECH.DAT";
+    public static final String S_CARGO_BIN = "BIN" + S_SEPAR + "CARGO.BIN";
 
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
@@ -317,6 +332,7 @@ public class C {
     public static final Color COLOR_MANOWITZ_TEXT = new Color(92, 44, 16);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
+    public static final Color COLOR_RES_DISP_GREEN = new Color(96, 208, 64);
     public static final int INDEX_COLOR_EFS_BLACK = 14;
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";
@@ -326,10 +342,7 @@ public class C {
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";
     public static final double GRAY_SCALING_FACTOR = 0.5;
 
-
 //    public static final String S_RESOURCE[] = {"Food", "Energy", "Metal", "Trace", "Exotica", "Chemicals", "Biochems", "Electronics", "Ceramsteel", "Wetware", "Monopols", "Gems", "Singularities"};    // Temporary, until we have reader for RES.DAT
-
-
     public static final int STARTING_FIREBIRDS = 4500;
 
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);

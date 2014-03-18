@@ -221,6 +221,10 @@ public class Game implements Serializable {
         return jump_gates;
     }
 
+    public Resources getResources() {
+        return resources;
+    }
+
     public void setResearch(int tech) {
         factions[turn].getResearch().setResearch(tech);
     }
@@ -2022,7 +2026,7 @@ public class Game implements Serializable {
 
     }
 
-    public GameResources getResources() {
+    public GameResources getGameResources() {
         return game_resources;
     }
 

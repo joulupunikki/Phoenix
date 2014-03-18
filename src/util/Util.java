@@ -892,6 +892,22 @@ public class Util {
 
     }
 
+    public static void writeImage(int[] pixel_data, int unit_no,
+            int[][] unit_pics, WritableRaster wr, WindowSize ws,
+            int w, int h, int x, int y) {
+
+//        int x_offset = (C.STRUCT_BIN_WIDTH - C.EFSUNIT_BIN_WIDTH) / 2;
+//        int y_offset = (C.STRUCT_BIN_HEIGHT - C.EFSUNIT_BIN_HEIGHT) / 2;
+        for (int i = 0; i < h; i++) {
+            for (int j = 0; j < w; j++) {
+
+                writeUnitPixel(x + j, y + i, i * w + j,
+                        pixel_data, unit_pics, unit_no, wr, ws);
+
+            }
+        }
+    }
+
     public static void writeUnit(int[] pixel_data, int unit_no,
             int[][] unit_pics, WritableRaster wr, WindowSize ws) {
 
@@ -1705,5 +1721,18 @@ public class Util {
             s = in.readLine().trim();
         }
         return s;
+    }
+
+    public static String c4Display(int nr) {
+        String ret_val = "";
+        if (nr < 10000) {
+            ret_val += nr;
+        } else if (nr < 1000000) {
+            ret_val += (nr / 1000) + "k";
+        } else {
+            ret_val += (nr / 1000000) + "M";
+        }
+
+        return ret_val;
     }
 }

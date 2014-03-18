@@ -11,6 +11,7 @@ import dat.UnitSpot;
 import java.awt.Color;
 import java.util.Properties;
 import util.C;
+import util.Util;
 import util.UtilG;
 
 /**
@@ -24,6 +25,7 @@ public class Resource {
     private Color[] colors;
     private int[][] ter_color;
     private Properties efs_ini;
+    private int[][] res_icons;
 
     public Resource(Gui gui) {
 
@@ -32,6 +34,8 @@ public class Resource {
         setColors(gui.getPallette());
         ter_color = TerColor.readTerColor();
         efs_ini = EfsIni.readEFSINI();
+        res_icons = Util.loadSquares(C.S_CARGO_BIN, C.RES_TYPES,
+                C.CARGO_WIDTH * C.CARGO_HEIGHT);
     }
 
     public void setColors(byte[][] pallette) {
@@ -64,5 +68,9 @@ public class Resource {
 
     public Properties getEFSIni() {
         return efs_ini;
+    }
+
+    public int[][] getResIcons() {
+        return res_icons;
     }
 }
