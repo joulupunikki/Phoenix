@@ -1172,9 +1172,12 @@ public class Game implements Serializable {
      */
     public void buildUnits() {
         for (Structure city : faction_cities) {
+            if (city.build_queue.isEmpty()) {
+                continue;
+            }
             Unit unit = null;
             if (!city.on_hold_no_res) {
-                if (!city.build_queue.isEmpty() && city.turns_left == 1) {
+                if (city.turns_left == 1) {
                     System.out.println("Here");
                     int[] u_t = city.build_queue.getFirst();
                     C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
