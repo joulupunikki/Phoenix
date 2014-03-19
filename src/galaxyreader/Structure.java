@@ -105,14 +105,23 @@ public class Structure implements Serializable {
         upgraded = null;
     }
 
-//    /**
-//     * Tries to start unit building. Called from Game when queue was found to be full.
-//     * Calls tryToBuild(int[], UnitType[][], Game)
-//     * @param game
-//     */
-//    public void tryToBuild(Game game) {
-//        
-//    }
+    public static Unit findInputUnit(int[] unit_type, UnitType[][] unit_types, Game game, Structure city) {
+        int input = unit_types[unit_type[0]][unit_type[1]].unit;
+        Unit input_unit = null;
+        // need to use this.p_idx building city may not be on current planet
+        List<Unit> stack = game.getPlanetGrid(city.p_idx).getHex(city.x, city.y).getStack();
+        if (input > -1) {
+            for (Unit unit : Util.xS(stack)) {
+                if (unit.type == input && unit.t_lvl == 0) {
+                    input_unit = unit;
+                    break;
+                }
+            }
+
+        }
+        return input_unit;
+    }
+
     /**
      * Tries to start unit building. Will check for existence of input unit and
      * TODO resources, if these are not found will put queue on hold else will
@@ -132,13 +141,14 @@ public class Structure implements Serializable {
         List<Unit> stack = game.getPlanetGrid(this.p_idx).getHex(this.x, this.y).getStack();
         boolean resources_found = false;
         if (input > -1) {
-            for (Unit unit : Util.xS(stack)) {
-                if (unit.type == input && unit.t_lvl == 0) {
-                    input_found = true;
-                    input_unit = unit;
-                    break;
-                }
-            }
+            input_unit = findInputUnit(unit_type, unit_types, game, this);
+//            for (Unit unit : Util.xS(stack)) {
+//                if (unit.type == input && unit.t_lvl == 0) {
+//                    input_found = true;
+//                    input_unit = unit;
+//                    break;
+//                }
+//            }
 
         }
 
@@ -146,7 +156,7 @@ public class Structure implements Serializable {
         resources_found = checkForResources(unit_type, game);
 
         on_hold_no_res = false;
-        if ((input > -1 && !input_found) || !resources_found) {
+        if ((input > -1 && input_unit == null) || !resources_found) {
             on_hold_no_res = true;
             return;
         }

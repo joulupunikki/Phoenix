@@ -784,8 +784,18 @@ public class BuildPanel extends JPanel {
                 val = "" + ((Integer) value).intValue();
                 setHorizontalTextPosition(RIGHT);
             }
+            // is input unit needed and available
             int[] tmp = (int[]) table.getValueAt(row, 0);
             UnitType[][] unit_types = game.getUnitTypes();
+            if (unit_types[tmp[0]][tmp[1]].unit > -1) {
+                Structure city = (Structure) city_table.getValueAt(city_table.getSelectedRow(), 0);
+                
+                Unit unit = Structure.findInputUnit(tmp, unit_types, game, city);
+                if (unit == null) {
+                    c_f = Color.WHITE;
+                }
+            }
+            // are resources available
             int[] res_needed = game.getUnitTypes()[tmp[0]][tmp[1]].reqd_res;
             int planet = (Integer) planet_list.getSelectedValue();
             System.out.println("Planet name = " + game.getPlanet(planet).name);
@@ -840,6 +850,10 @@ public class BuildPanel extends JPanel {
                 setHorizontalTextPosition(RIGHT);
             }
 
+            Structure city = (Structure) city_table.getValueAt(city_table.getSelectedRow(), 0);
+            if (city.on_hold_no_res && row == 0) {
+                c_f = Color.LIGHT_GRAY;
+            }
             if (isSelected) {
                 setBackground(c_f);
                 setForeground(c_b);
