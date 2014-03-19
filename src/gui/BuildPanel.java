@@ -39,6 +39,7 @@ import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import static javax.swing.SwingConstants.CENTER;
+import static javax.swing.SwingConstants.RIGHT;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
@@ -205,8 +206,8 @@ public class BuildPanel extends JPanel {
         header.setBackground(Color.black);
         header.setForeground(C.COLOR_GOLD);
         queue_table.setRowHeight(ws.city_table_row_height);
-        queue_table.setDefaultRenderer(Object.class, new BuildTableRenderer());
-        queue_table.setDefaultRenderer(Integer.class, new BuildTableRenderer());
+        queue_table.setDefaultRenderer(Object.class, new QueueTableRenderer());
+        queue_table.setDefaultRenderer(Integer.class, new QueueTableRenderer());
         queue_table.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 JTable table = (JTable) e.getSource();
@@ -795,6 +796,50 @@ public class BuildPanel extends JPanel {
                     break;
                 }
             }
+            if (isSelected) {
+                setBackground(c_f);
+                setForeground(c_b);
+            } else {
+                setBackground(c_b);
+                setForeground(c_f);
+            }
+            setFont(ws.font_default);
+            setText(val);
+
+            return this;
+        }
+    }
+
+    public class QueueTableRenderer extends JLabel
+            implements TableCellRenderer {
+
+        public QueueTableRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(
+                JTable table, Object value,
+                boolean isSelected, boolean hasFocus,
+                int row, int column) {
+            Color c_b = Color.BLACK;
+            Color c_f = C.COLOR_GOLD;
+
+            String val = null;
+            if (value == null) {
+                val = " ";
+            } else if (value instanceof int[]) {
+                int[] tmp = (int[]) value;
+//            String val = Structure.getName(str.type);
+                if (tmp[0] == -1) {
+                    val = " ";
+                }
+                UnitType[][] unit_types = game.getUnitTypes();
+                val = unit_types[tmp[0]][tmp[1]].name;
+            } else {
+                val = "" + ((Integer) value).intValue();
+                setHorizontalTextPosition(RIGHT);
+            }
+
             if (isSelected) {
                 setBackground(c_f);
                 setForeground(c_b);

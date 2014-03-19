@@ -142,15 +142,16 @@ public class Structure implements Serializable {
 
         }
 
-        // TODO check for existence of resources
-        resources_found = true;
+        //check for existence of resources
+        resources_found = checkForResources(unit_type, game);
 
         on_hold_no_res = false;
         if ((input > -1 && !input_found) || !resources_found) {
             on_hold_no_res = true;
             return;
         }
-        // TODO subtract resources
+        //subtract resources
+        subtractResources(unit_type, game);
         if (input > -1) {
 
             if (input_unit.carrier != null) {
@@ -167,6 +168,28 @@ public class Structure implements Serializable {
             game.deleteUnit2(input_unit);
             upgraded = input_unit;
         }
+    }
+
+    public void subtractResources(int[] unit, Game game) {
+        UnitType[][] unit_types = game.getUnitTypes();
+        int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
+        if (!game.getResources().consumeResources(this.p_idx, this.owner, res_needed)) {
+            throw new AssertionError();
+        }
+    }
+
+    public boolean checkForResources(int[] unit, Game game) {
+        boolean ret_val = true;
+        UnitType[][] unit_types = game.getUnitTypes();
+        int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
+        int[] res_avail = game.getResources().getResourcesAvailable(this.p_idx, this.owner);
+        for (int i = 0; i < C.REQUIRED_RESOURCES.length; i++) {
+            if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
+                ret_val = false;
+                break;
+            }
+        }
+        return ret_val;
     }
 
     /**
@@ -192,11 +215,13 @@ public class Structure implements Serializable {
      * @param game the value of game
      */
     public void removeFromQueue(int index, UnitType[][] unit_types, Game game) {
-        build_queue.remove(index);
+        int[] removed = build_queue.remove(index);
         if (index == 0) {
+            // will turns left ever be 0 when this method is called ?
             if (turns_left != 0) {
                 if (!on_hold_no_res) {
-                    // TODO return resources
+                    //return resources
+                    returnResources(game, removed);
                     if (upgraded != null) {
                         System.out.println("game = " + game);
                         Hex hex = game.findRoom(this, upgraded.move_type);
@@ -224,6 +249,11 @@ public class Structure implements Serializable {
                 tryToStartBuild(u, unit_types, game);
             }
         }
+    }
+
+    public void returnResources(Game game, int[] unit) {
+        int[] amount = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
+        game.getResources().addResourcesToHex(this.p_idx, this.x, this.y, this.owner, amount);
     }
 
     public Unit buildUnits(UnitType[][] unit_types, Game game, Hex hex) {
