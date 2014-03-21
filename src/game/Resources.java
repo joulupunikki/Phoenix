@@ -1,16 +1,15 @@
 package game;
 
 import dat.EfsIni;
+import dat.Prod;
+import dat.ResPair;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -32,6 +31,8 @@ public class Resources implements Serializable {
     // Local data
     private List<List<List<LinkedList<Unit>>>> all_pods;
     private int resource_total[][][];
+    // production and consumption of resources by production/consumption, faction, planet, resource
+    private int prod_cons[][][][];
 
     public Resources(Game game) {
 
@@ -42,6 +43,116 @@ public class Resources implements Serializable {
         this.structures = game.getStructures();
 
         generatePodLists();
+    }
+
+//    public int getProdCons(int pc, int f_idx, int p_idx, int res) {
+//        return prod_cons[pc][f_idx][p_idx][res];
+//    }
+    public int[][][][] getProdCons() {
+        return prod_cons;
+    }
+
+    /**
+     * Initializes production and consumption data. The prod_cons variable
+     * contains production and consumption of resources by
+     * production/consumption, faction, planet, resource.
+     *
+     * @param econ
+     */
+    public void initializeProdCons(Economy econ, Prod[] prod_table) {
+
+        int nr_planets = planets.size();
+        prod_cons = new int[2][][][];
+        for (int i = 0; i < prod_cons.length; i++) {
+
+            prod_cons[i] = new int[C.NR_FACTIONS][][];
+
+            for (int f_idx = 0; f_idx < C.NR_FACTIONS; f_idx++) {
+
+                prod_cons[i][f_idx] = new int[nr_planets][];
+
+                for (int p_idx = 0; p_idx < nr_planets; p_idx++) {
+
+                    prod_cons[i][f_idx][p_idx] = new int[C.RES_TYPES];
+
+                    for (int r_type = 0; r_type < C.RES_TYPES; r_type++) {
+
+                        prod_cons[i][f_idx][p_idx][r_type] = 0;
+                    }
+                }
+            }
+        }
+
+        for (Structure city : structures) {
+            prod_cons[C.CONS][city.owner][city.p_idx][C.RES_FOOD] += 10;
+            switch (city.type) {
+
+                case C.FARM:
+
+                case C.ARBORIUM:
+
+                case C.WELL:
+
+                case C.MINE:
+                    addHarvestToProdCons(econ.calculateActualProduction(city), city);
+                    break;
+                case C.CHEMICALS:
+
+                case C.BIOPLANT:
+
+                case C.ELECTRONICS:
+
+                case C.CERAMSTEEL:
+
+                case C.WETWARE:
+
+                case C.FUSORIUM:
+
+                case C.CYCLOTRON:
+                    addProductionToProdCons(city, prod_table, Util.productionType(city));
+                    break;
+                default:
+                    break;
+            }
+        }
+        for (Unit unit : units) {
+            if (unit.type_data.eat == 1) {
+                prod_cons[C.CONS][unit.owner][unit.p_idx][C.RES_FOOD] += 1;
+            }
+        }
+    }
+
+    /**
+     * Add harvest of a city to prod_cons
+     *
+     * @param amounts
+     * @param city
+     */
+    public void addHarvestToProdCons(int[] amounts, Structure city) {
+        for (int i = 0; i < amounts.length; i++) {
+            prod_cons[C.PROD][city.owner][city.p_idx][i] += amounts[i];
+        }
+    }
+
+    /**
+     * Add production and consumption of a city to prod_cons
+     *
+     * @param city
+     * @param prod_table
+     * @param prod_type
+     */
+    public void addProductionToProdCons(Structure city, Prod[] prod_table, int prod_type) {
+        for (int i = 0; i < 3; i++) {    // For up to 3 possible resource needs
+            ResPair need = prod_table[prod_type].need[i];
+            if (need == null) {    // When < 3 needs, remaining items in array will be null, so check for that
+                break;
+            }
+            prod_cons[C.CONS][city.owner][city.p_idx][need.resource_type] += need.resource_amount;
+
+        }
+        ResPair make = prod_table[prod_type].make;
+        //TODO adjust for loyalty and health
+        prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] += make.resource_amount;
     }
 
     /**

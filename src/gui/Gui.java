@@ -103,6 +103,9 @@ public class Gui extends JFrame {
     private JDialog tech_db_window;   // window holding tech database
     private Manowitz manowitz_panel;
     private JDialog manowitz_window;
+    // resource info panel
+    private ResourcePanel resource_panel;
+    private JDialog resource_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -315,6 +318,7 @@ public class Gui extends JFrame {
         setUpTechWindow();
         setUpTechDBWindow();
         setUpManowitzWindow();
+        setUpResourceWindow();
         /*
          * create planet map display
          */
@@ -456,7 +460,9 @@ public class Gui extends JFrame {
         ActionListener timer_listener = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 animation_blink = !animation_blink;
-                main_windows.repaint();
+                if (!stack_moving) {
+                    main_windows.repaint();
+                }
             }
         };
         Timer anim_timer = new Timer(delay, timer_listener);
@@ -506,7 +512,9 @@ public class Gui extends JFrame {
         ActionListener cycle_listener = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
 
-                main_windows.repaint();
+                if (!stack_moving) {
+                    main_windows.repaint();
+                }
                 color_cycle_count++;
                 if (color_cycle_count == 5) {
                     color_cycle_count = 0;
@@ -599,6 +607,40 @@ public class Gui extends JFrame {
         tech_panel.setRPAvailable();
         tech_panel.setLabResearches();
         tech_window.setVisible(true);
+    }
+
+    public void showResourceWindow(int resource) {
+        resource_panel.setText(resource);
+        resource_window.setVisible(true);
+    }
+
+    public void hideResourceWindow() {
+        resource_window.setVisible(false);
+    }
+
+    public void setUpResourceWindow() {
+//        JDialog resource_window;
+//        JPanel resource_panel;
+        resource_window = new JDialog(this, true);
+        resource_window.setLayout(null);
+        resource_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        resource_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                resource_window.setVisible(false);
+            }
+        });
+        resource_panel = new ResourcePanel(this);
+        resource_panel.setLayout(null);
+        resource_window.add(resource_panel);
+        resource_panel.setBounds(0, 0,
+                ws.rw_width, ws.rw_height);
+        resource_window.add(resource_panel);
+        resource_window.pack();
+        setDialogSize(resource_window, this.getX() + ws.rw_x_offset,
+                this.getY() + ws.rw_y_offset,
+                ws.rw_width, ws.rw_height);
     }
 
     public void setUpTechWindow() {
@@ -1231,6 +1273,7 @@ public class Gui extends JFrame {
                 tech_panel.setGame(game);
                 tech_db_panel.setGame(game);
                 manowitz_panel.setGame(game);
+                resource_panel.setGame(game);
                 State.setGameRef(game);
                 Comp.setGame(game);
                 game.setPath(null);
@@ -1531,6 +1574,10 @@ public class Gui extends JFrame {
 
     public JPanel getPlanetWindow() {
         return planet_window;
+    }
+
+    public JPanel getPlanetMap() {
+        return planet_map;
     }
 
     public JPanel getSpaceWindow() {

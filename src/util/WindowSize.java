@@ -270,6 +270,43 @@ public class WindowSize {
     public int bp_res_display_x_offset = 11;
     public int bp_res_display_y_offset = 199 - bp_res_display_h;
 
+    //resource window
+    public int rw_x_offset = 124;
+    public int rw_y_offset = 32;
+    public int rw_width = 504;
+    public int rw_height = 300;
+
+    //resource icon coordinates on planet window
+    public int ri_x = 128;
+    public int ri_y = 442;
+    public int ri_w = C.CARGO_WIDTH;
+    public int ri_h = C.CARGO_HEIGHT;
+    public int ri_x_gap = 38;
+
+    //resource window exit button
+    public int rw_exit_width = 50;
+    public int rw_exit_height = 15;
+    public int rw_exit_x_offset = rw_width - rw_exit_width - 10;
+    public int rw_exit_y_offset = rw_height - rw_exit_height - 10;
+
+    //resource window prod/cons textfields
+    public int rw_pct_x_offset = 5;
+    public int rw_pct_width = rw_exit_x_offset - rw_pct_x_offset - 5;
+    public int rw_pct_height = 15;
+    public int rw_pct_y_offset = rw_height - rw_pct_height - rw_exit_height - 5;
+
+    //resource window resource name
+    public int rw_rn_x = C.CARGO_WIDTH + 5;
+    public int rw_rn_y = 5;
+    public int rw_rn_w = rw_width / 2;
+    public int rw_rn_h = 15;
+
+//    //planet window resource display text postions
+//    public int pw_rdt_x = 129;
+//    public int pw_rdt_y = 475;
+//    public int pw_rdt_w = 31;
+//    public int pw_rdt_x_gap = 38;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -536,6 +573,37 @@ public class WindowSize {
             bp_res_display_h *= 2;
             bp_res_display_x_offset *= 2;
             bp_res_display_y_offset *= 2;
+
+            rw_x_offset *= 2;
+            rw_y_offset *= 2;
+            rw_width *= 2;
+            rw_height *= 2;
+
+            ri_x *= 2;
+            ri_y *= 2;
+            ri_w *= 2;
+            ri_h *= 2;
+            ri_x_gap *= 2;
+
+            rw_exit_x_offset *= 2;
+            rw_exit_y_offset *= 2;
+            rw_exit_width *= 2;
+            rw_exit_height *= 2;
+
+            rw_pct_x_offset *= 2;
+            rw_pct_y_offset *= 2;
+            rw_pct_width *= 2;
+            rw_pct_height *= 2;
+
+            rw_rn_x *= 2;
+            rw_rn_y *= 2;
+            rw_rn_w *= 2;
+            rw_rn_h *= 2;
+
+//            pw_rdt_x *= 2;
+//            pw_rdt_y *= 2;
+//            pw_rdt_w *= 2;
+//            pw_rdt_x_gap *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

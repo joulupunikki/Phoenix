@@ -41,6 +41,14 @@ public class PW1 extends PW {
 
     }
 
+    public void clickOnPlanetWindow(MouseEvent e) {
+        Point p = e.getPoint();
+        int res = SU.isOnResourceIcon(p);
+        if (res > -1) {
+            SU.clickOnResourceIcon(res);
+        }
+    }
+
     public void wheelRotated(MouseWheelEvent e) {
         SU.wheelOnPlanetMap(e);
 

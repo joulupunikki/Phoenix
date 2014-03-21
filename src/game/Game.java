@@ -225,6 +225,10 @@ public class Game implements Serializable {
         return resources;
     }
 
+    public Economy getEconomy() {
+        return economy;
+    }
+
     public void setResearch(int tech) {
         factions[turn].getResearch().setResearch(tech);
     }

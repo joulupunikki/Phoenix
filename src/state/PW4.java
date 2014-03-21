@@ -82,7 +82,11 @@ public class PW4 extends PW {
                 gui.setMenus(true);
             }
         }
-        gui.getPlanetWindow().repaint();
+        if (0 < gui.getStack_move_counter() && gui.getStack_move_counter() < 20) {
+            gui.getPlanetMap().repaint();
+        } else {
+            gui.getPlanetWindow().repaint();
+        }
     }
 
     // hides methods from PW
@@ -97,4 +101,8 @@ public class PW4 extends PW {
 
     public void pressSpaceButton() {
     }
+
+    public void clickOnPlanetWindow(MouseEvent e) {
+    }
+
 }

@@ -5,6 +5,7 @@
 package util;
 
 import static dat.EfsIni.processLine;
+import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
 import game.Hex;
@@ -1735,4 +1736,46 @@ public class Util {
 
         return ret_val;
     }
+
+    public static int productionType(Structure city) {
+        int ret_val = -1;
+        switch (city.type) {
+
+//                case C.FARM:
+//
+//                case C.ARBORIUM:
+//
+//                case C.WELL:
+//
+//                case C.MINE:
+//                    ;
+//                    break;
+            case C.CHEMICALS:
+                ret_val = C.CHEMICALS_PRODUCTION;
+                break;
+            case C.BIOPLANT:
+                ret_val = C.BIOPLANT_PRODUCTION;
+                break;
+            case C.ELECTRONICS:
+                ret_val = C.ELECTRONICS_PRODUCTION;
+                break;
+            case C.CERAMSTEEL:
+                ret_val = C.CERAMSTEEL_PRODUCTION;
+                break;
+            case C.WETWARE:
+                ret_val = C.WETWARE_PRODUCTION;
+                break;
+            case C.FUSORIUM:
+                ret_val = C.FUSORIUM_PRODUCTION;
+                break;
+            case C.CYCLOTRON:
+                ret_val = C.CYCLOTRON_PRODUCTION;
+                break;
+            default:
+                throw new AssertionError();
+
+        }
+        return ret_val;
+    }
+
 }

@@ -496,6 +496,31 @@ public class SU extends State {
 
     }
 
+    /**
+     * If on planet window a resource icon was clicked return resource type,
+     * otherwise return -1.
+     *
+     * @param p
+     * @return
+     */
+    public static int isOnResourceIcon(Point p) {
+        int ret_val = -1;
+        int x = p.x;
+        int y = p.y;
+        for (int i = 0; i < C.RES_TYPES; i++) {
+            if (x >= ws.ri_x + i * ws.ri_x_gap && x <= ws.ri_x + ws.ri_w + i * ws.ri_x_gap
+                    && y >= ws.ri_y && y <= ws.ri_y + ws.ri_h) {
+                ret_val = i;
+                break;
+            }
+        }
+        return ret_val;
+    }
+
+    public static void clickOnResourceIcon(int resource) {
+        gui.showResourceWindow(resource);
+    }
+
     public static void clickOnStackDisplay(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             SU.clickOnStackDisplayButton1(e);

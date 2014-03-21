@@ -248,6 +248,10 @@ public class C {
         RES_GEMS,
         RES_SINGULARITIES};
 
+    // Production 1 Consumption 0
+    public static final int PROD = 1;
+    public static final int CONS = 0;
+
     // terrain types
     public static final int OCEAN = 0;
     public static final int GRASS = 1;

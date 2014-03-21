@@ -48,6 +48,19 @@ public class PW extends State {
         game.setMapOrigin(q);
     }
 
+    public void clickOnPlanetWindow(MouseEvent e) {
+        Point p = e.getPoint();
+        if (SU.isOnStackDisplay(p)) {
+            SU.clickOnStackDisplay(e);
+        } else {
+            int res = SU.isOnResourceIcon(p);
+            if (res > -1) {
+                SU.clickOnResourceIcon(res);
+            }
+        }
+
+    }
+
 //    public void pressNextStackButton() {
 //        System.out.println("this = " + this);
 //        Point p = game.getSelectedPoint();

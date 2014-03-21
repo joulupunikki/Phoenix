@@ -53,9 +53,19 @@ public class Economy implements Serializable {
         harvest_table = Harvest.readHarvestDats(game);    // Read in harvest data from FARM.DAT, etc        
         prod_table = Prod.readProdDat(game);    // Read in secondary production data from PROD.DAT
 
+        // Initialize production/consumption data
+        this.resources.initializeProdCons(this, prod_table);
 //        testPrintProdTable();
 //        testPrintHarvestTable();
 //        testPrintResTypeTable();
+    }
+
+    public ResType[] getResType() {
+        return res_types;
+    }
+
+    public String getResName(int resource) {
+        return res_types[resource].name;
     }
 
     /**

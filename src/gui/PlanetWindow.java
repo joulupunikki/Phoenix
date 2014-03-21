@@ -19,6 +19,7 @@ import java.awt.image.WritableRaster;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import util.C;
@@ -40,7 +41,7 @@ public class PlanetWindow extends JPanel {
     JTextField year_display;
     JTextField money_display;
     JTextField city_name;
-    JTextField[] res_display;
+    JLabel[] res_display;
     JButton end_turn;
     JButton next_stack;
 
@@ -48,6 +49,10 @@ public class PlanetWindow extends JPanel {
 
     JButton build;
 
+    //bug test
+    long test_long = 0;
+//    long time;
+//    boolean start = true;
 //    JButton 
     public PlanetWindow(Gui gui) {
         this.gui = gui;
@@ -211,16 +216,16 @@ public class PlanetWindow extends JPanel {
     }
 
     public void setUpResDisplay() {
-        res_display = new JTextField[C.RES_TYPES];
+        res_display = new JLabel[C.RES_TYPES];
         for (int i = 0; i < res_display.length; i++) {
-            res_display[i] = new JTextField();
+            res_display[i] = new JLabel();
             this.add(res_display[i]);
             res_display[i].setBounds(ws.pw_res_display_x_offset + i * ws.pw_res_display_x_gap, ws.pw_res_display_y_offset, ws.pw_res_display_w, ws.pw_res_display_h);
 //            res_display[i].setBackground(Color.WHITE);
             res_display[i].setOpaque(false);
             res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
-            res_display[i].setEditable(false);
-            res_display[i].setHorizontalAlignment(JTextField.CENTER);
+//            res_display[i].setEditable(false);
+            res_display[i].setHorizontalAlignment(JLabel.CENTER);
             res_display[i].setBorder(null);
             res_display[i].setFont(ws.font_default);
             res_display[i].setText("123");
@@ -232,7 +237,14 @@ public class PlanetWindow extends JPanel {
         super.paintComponent(g);
 
         renderPlanetWindow(g);
-
+        System.out.println("Repaint planet window " + test_long++ + ", stack move counter = " + gui.getStackMoveCounter());
+//        test_long++;
+//        if (start) {
+//            time = System.currentTimeMillis();
+//            start = false;
+//        } else if (test_long == 1000) {
+//            System.out.println("" + test_long + " paints in " + (System.currentTimeMillis() - time) + " ms.");
+//        }
     }
 
     public void renderPlanetWindow(Graphics g) {
@@ -302,12 +314,17 @@ public class PlanetWindow extends JPanel {
 
     public void drawResAmounts() {
         int[] res_amounts = game.getResources().getResourcesAvailable(game.getCurrentPlanetNr(), game.getTurn());
-        for (int i = 0; i < res_amounts.length; i++) {
+        for (int i = 0; i < res_display.length; i++) {
             res_display[i].setText(Util.c4Display(res_amounts[i]));
 
         }
     }
 
+//    public void drawResAmounts2() {
+//        Font font = ws.font_default;
+//        FontMetrics fm = new FontMetrics(font);
+//
+//    }
     public void drawResourceIcons(WritableRaster wr) {
         int[][] res_icons = gui.getResources().getResIcons();
         int x = 128;

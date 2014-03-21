@@ -47,12 +47,12 @@ public class PW2 extends PW {
 
     }
 
-    public void clickOnPlanetWindow(MouseEvent e) {
-        Point p = e.getPoint();
-        if (SU.isOnStackDisplay(p)) {
-            SU.clickOnStackDisplay(e);
-        }
-    }
+//    public void clickOnPlanetWindow(MouseEvent e) {
+//        Point p = e.getPoint();
+//        if (SU.isOnStackDisplay(p)) {
+//            SU.clickOnStackDisplay(e);
+//        }
+//    }
 
 //    public void clickOnStackDisplay(MouseEvent e) {
 //        if (e.getButton() == MouseEvent.BUTTON1) {
