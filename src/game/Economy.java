@@ -68,6 +68,10 @@ public class Economy implements Serializable {
         return res_types[resource].name;
     }
 
+    public void updateProdConsForCity(Structure city, boolean add) {
+        resources.updateProdConsForCity(this, prod_table, city, add);
+    }
+
     /**
      * Update one faction's holdings at start of its turn
      *
@@ -107,7 +111,7 @@ public class Economy implements Serializable {
 
         for (Structure city : structures) {
             if (city.owner == turn) {
-                city.health = Math.min(city.health + efs_ini.city_heal_rate, 100);
+                game.adjustCityHealth(city, Math.min(city.health + efs_ini.city_heal_rate, 100));
             }
         }
 
@@ -154,7 +158,7 @@ public class Economy implements Serializable {
                         if (deficit < this_city_needs) {    // Had enough to feed city partly, so reduce health loss proportionally
                             health_loss = health_loss * ((double) deficit / this_city_needs);
                         }
-                        city.health = Math.max(city.health - (int) health_loss, 0);
+                        game.adjustCityHealth(city, Math.max(city.health - (int) health_loss, 0));
 //                        if (city.health == 0) {
 //                            game.deleteStructure(city);    // Not needed at present; cities can't fall to 0 health without plague.
 //                        }
@@ -167,7 +171,7 @@ public class Economy implements Serializable {
                 List<Unit> stack = hex.getStack();
                 StackIterator iter2 = new StackIterator(stack);
                 for (Unit unit = iter2.next(); unit != null; unit = iter2.next()) {    // For each unit in stack (including cargo)
-                    if (unit.owner == turn && unit.type_data.eat != 0 && !unit.in_space) {    // Unit needs feeding
+                    if (unit.owner == turn && unit.type_data.eat && !unit.in_space) {    // Unit needs feeding
                         food_needed += 1;
                         if (food_needed > food_available) {
                             unit.turns_starving += 1;

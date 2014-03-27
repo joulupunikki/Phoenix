@@ -76,7 +76,7 @@ public class UnitType implements Serializable {
     public int tax;
     public int flock;
     public int range;
-    public int eat;
+    public boolean eat;
     public int rank;
     public int rop;
 
@@ -195,7 +195,11 @@ public class UnitType implements Serializable {
         tax = processIntVal(stats, m);
         flock = processIntVal(stats, m);
         range = processIntVal(stats, m);
-        eat = processIntVal(stats, m);
+        if (processIntVal(stats, m) == 1) {
+            eat = true;
+        } else {
+            eat = false;
+        }
         Util.debugPrint("eat: " + eat);
         rank = processIntVal(stats, m);
         Util.debugPrint("rank: " + rank);

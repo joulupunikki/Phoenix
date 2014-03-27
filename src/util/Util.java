@@ -1726,7 +1726,7 @@ public class Util {
 
     public static String c4Display(int nr) {
         String ret_val = "";
-        if (nr < 10000) {
+        if (nr < 100000) {
             ret_val += nr;
         } else if (nr < 1000000) {
             ret_val += (nr / 1000) + "k";

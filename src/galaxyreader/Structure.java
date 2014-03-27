@@ -36,7 +36,7 @@ public class Structure implements Serializable {
     int city_info;        //union short/short/short
     int prev_type;           //short 
     int unit_loyalty;        //short 
-    int loyalty;   //short 
+    public int loyalty;   //short
     int stack_info;      //union short/short
     int used_unitt_lvl;    //short
     int tech_type; //short
@@ -124,7 +124,7 @@ public class Structure implements Serializable {
 
     /**
      * Tries to start unit building. Will check for existence of input unit and
-     * TODO resources, if these are not found will put queue on hold else will
+     * resources, if these are not found will put queue on hold else will
      * stash away input unit and subtract resources and start building (not put
      * queue on hold).
      *
@@ -175,7 +175,7 @@ public class Structure implements Serializable {
                     stack.add(unit);
                 }
             }
-            game.deleteUnit2(input_unit);
+            game.deleteUnitNotInCombat(input_unit);
             upgraded = input_unit;
         }
     }
@@ -227,22 +227,27 @@ public class Structure implements Serializable {
     public void removeFromQueue(int index, UnitType[][] unit_types, Game game) {
         int[] removed = build_queue.remove(index);
         if (index == 0) {
-            // will turns left ever be 0 when this method is called ?
+            // turns left == 0 if unit just built
             if (turns_left != 0) {
                 if (!on_hold_no_res) {
                     //return resources
                     returnResources(game, removed);
+                    //try to return input unit if any
                     if (upgraded != null) {
                         System.out.println("game = " + game);
                         Hex hex = game.findRoom(this, upgraded.move_type);
                         System.out.println("hex = " + hex);
                         if (hex != null) {
-                            List<Unit> stack = hex.getStack();
-                            stack.add(upgraded);
-                            game.getUnits().add(upgraded);
-                            game.getUnmovedUnits().add(upgraded);
-                            game.unSpot(stack);
-                            game.getHexProc().spotProc(hex, stack);
+                            Unit unit = game.createUnitInHex(p_idx, hex.getX(),
+                                    hex.getY(), owner, upgraded.type, upgraded.t_lvl,
+                                    upgraded.res_relic, upgraded.amount);
+                            unit.health = upgraded.health;
+//                            List<Unit> stack = hex.getStack();
+//                            stack.add(upgraded);
+//                            game.getUnits().add(upgraded);
+//                            game.getUnmovedUnits().add(upgraded);
+//                            game.unSpot(stack);
+//                            game.getHexProc().spotProc(hex, stack);
                         } else {
                             game.getFaction(game.getTurn()).addMessage(new Message(null, C.Msg.CITY_FULL, game.getYear(), this));
                         }
@@ -266,21 +271,30 @@ public class Structure implements Serializable {
         game.getResources().addResourcesToHex(this.p_idx, this.x, this.y, this.owner, amount);
     }
 
+    /**
+     *
+     * @param unit_types
+     * @param game
+     * @param hex
+     * @return null
+     */
     public Unit buildUnits(UnitType[][] unit_types, Game game, Hex hex) {
         Unit unit = null;
         turns_left--;
         if (turns_left == 0) {
-            unit = new Unit(p_idx, x, y, owner);
+
+//            unit = new Unit(p_idx, x, y, owner);
             int[] u_type = build_queue.getFirst();
-            unit.type = u_type[0];
-            unit.t_lvl = u_type[1];
-            unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;
-            unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
-            unit.type_data = unit_types[u_type[0]][u_type[1]];
-            upgraded = null;
-            hex.addUnit(unit);
-            // called before resetUnmovedUnits();
-            game.getUnits().add(unit);
+            game.createUnitInHex(p_idx, hex.getX(), hex.getY(), owner, u_type[0], u_type[1], 0, 0);
+//            unit.type = u_type[0];
+//            unit.t_lvl = u_type[1];
+//            unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;
+//            unit.move_type = unit_types[u_type[0]][u_type[1]].move_type;
+//            unit.type_data = unit_types[u_type[0]][u_type[1]];
+//            upgraded = null;
+//            hex.addUnit(unit);
+//            // called before resetUnmovedUnits();
+//            game.getUnits().add(unit);
             removeFromQueue(0, unit_types, game);
 
         }

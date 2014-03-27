@@ -74,6 +74,7 @@ public class BuildPanel extends JPanel {
     private static Object[] city_table_header = {"City", "Building"};
 //    private Object[][] city_table_data;
 //    private Object[][] build_table_data;
+    private int input_unit_nr = -1;
 
     public BuildPanel(Gui gui) {
         this.gui = gui;
@@ -156,6 +157,7 @@ public class BuildPanel extends JPanel {
         for (JTextField tf : res_display) {
             tf.setText("");
         }
+        input_unit_nr = -1;
     }
 
     public void zeroBuild() {
@@ -269,8 +271,14 @@ public class BuildPanel extends JPanel {
                 if (e.getClickCount() == 1) {
                     System.out.println("Single clicked row " + row);
                     int[] unit = (int[]) build_table.getValueAt(row, 0);
+                    int input = game.getUnitTypes()[unit[0]][unit[1]].unit;
+                    if (input > -1) {
+                        input_unit_nr = input;
+                    } else {
+                        input_unit_nr = -1;
+                    }
                     drawResAmounts(unit);
-
+                    repaint();
                 }
                 if (e.getClickCount() == 2) {
                     System.out.println("Double clicked row " + row);
@@ -570,13 +578,13 @@ public class BuildPanel extends JPanel {
         setQueueData(e, city);
     }
 
-    public void buildSelected(ListSelectionEvent e) {
-        int row = build_table.getSelectedRow();
-        if (row == -1) {
-            return;
-        }
-        Object tmp = build_table.getValueAt(row, 0);
-    }
+//    public void buildSelected(ListSelectionEvent e) {
+//        int row = build_table.getSelectedRow();
+//        if (row == -1) {
+//            return;
+//        }
+//        Object tmp = build_table.getValueAt(row, 0);
+//    }
 
     public void setPlanets() {
         boolean[] planets = new boolean[game.getPlanets().size()];
@@ -627,14 +635,28 @@ public class BuildPanel extends JPanel {
         int y = 166;
         int x_offset = 38;
         int[] pixel_data = new int[1];
-        int w = C.CARGO_WIDTH;
-        int h = C.CARGO_HEIGHT;
+        int w;
+        int h;
+        int i = 0;
+        // if we need input unit draw its icon instead of resource 0
+        if (input_unit_nr > -1) {
+            i = 1;
+            w = C.EFSUNIT_BIN_WIDTH;
+            h = C.EFSUNIT_BIN_HEIGHT;
+            int[][] unit_icons = Gui.getUnitIcons();
+            Util.writeImage(pixel_data, input_unit_nr, unit_icons,
+                    wr, ws, w, h, x, y);
+        }
 
-        for (int i = 0; i < C.REQUIRED_RESOURCES.length; i++) {
+        w = C.CARGO_WIDTH;
+        h = C.CARGO_HEIGHT;
+
+        for (; i < C.REQUIRED_RESOURCES.length; i++) {
             Util.writeImage(pixel_data, C.REQUIRED_RESOURCES[i], res_icons,
                     wr, ws, w, h, x + i * x_offset, y);
 
         }
+
     }
 
     class CustomRendererInt extends JLabel
@@ -789,7 +811,7 @@ public class BuildPanel extends JPanel {
             UnitType[][] unit_types = game.getUnitTypes();
             if (unit_types[tmp[0]][tmp[1]].unit > -1) {
                 Structure city = (Structure) city_table.getValueAt(city_table.getSelectedRow(), 0);
-                
+
                 Unit unit = Structure.findInputUnit(tmp, unit_types, game, city);
                 if (unit == null) {
                     c_f = Color.WHITE;

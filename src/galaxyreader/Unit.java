@@ -38,7 +38,7 @@ public class Unit implements Serializable {
     public int res_relic; //char/Union of char/char - RSW made public
     public int amount;     //short - RSW made public
     public int health;     //char 
-    public int health_tmp; //original
+    public int health_tmp; // used and initialized during battles
     int sect;       //char 
     int unit_no;     //int 
     int flags;      //UINT 
@@ -265,7 +265,7 @@ public class Unit implements Serializable {
 //         System.out.println("camo "+camo);
 //         System.out.println("");
         move_points = type_data.move_pts;
-        loyalty = 100;
+        loyalty = 75;
         health = 100;
         health_tmp = health;
         experience = 0;    // Set all the rest to zero for now

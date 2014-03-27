@@ -48,8 +48,52 @@ public class Resources implements Serializable {
 //    public int getProdCons(int pc, int f_idx, int p_idx, int res) {
 //        return prod_cons[pc][f_idx][p_idx][res];
 //    }
+    /**
+     * Add amount to prod_cons. Can be negative.
+     *
+     * @param pc
+     * @param f_idx
+     * @param p_idx
+     * @param res
+     * @param amount
+     */
+    public void addToProdCons(int pc, int f_idx, int p_idx, int res, int amount) {
+        prod_cons[pc][f_idx][p_idx][res] += amount;
+    }
+
     public int[][][][] getProdCons() {
         return prod_cons;
+    }
+
+    /**
+     * Get resources budget balance ie (production - consumption) for each
+     * resource. Returns planet balance if universal warehouse is off, galaxy
+     * balance otherwise.
+     *
+     * @param f_idx
+     * @param p_idx
+     * @return
+     */
+    public int[] getProdConsBalance(int f_idx, int p_idx) {
+        int[] ret_val = new int[C.RES_TYPES];
+        if (game.getEfs_ini().universal_warehouse) {
+            for (int i = 0; i < prod_cons[C.PROD][f_idx].length; i++) {
+                for (int j = 0; j < ret_val.length; j++) {
+                    ret_val[j] -= prod_cons[C.CONS][f_idx][i][j];
+                    ret_val[j] += prod_cons[C.PROD][f_idx][i][j];
+
+                }
+
+            }
+        } else {
+            for (int j = 0; j < ret_val.length; j++) {
+                ret_val[j] -= prod_cons[C.CONS][f_idx][p_idx][j];
+                ret_val[j] += prod_cons[C.PROD][f_idx][p_idx][j];
+
+            }
+        }
+
+        return ret_val;
     }
 
     /**
@@ -84,75 +128,106 @@ public class Resources implements Serializable {
         }
 
         for (Structure city : structures) {
-            prod_cons[C.CONS][city.owner][city.p_idx][C.RES_FOOD] += 10;
-            switch (city.type) {
-
-                case C.FARM:
-
-                case C.ARBORIUM:
-
-                case C.WELL:
-
-                case C.MINE:
-                    addHarvestToProdCons(econ.calculateActualProduction(city), city);
-                    break;
-                case C.CHEMICALS:
-
-                case C.BIOPLANT:
-
-                case C.ELECTRONICS:
-
-                case C.CERAMSTEEL:
-
-                case C.WETWARE:
-
-                case C.FUSORIUM:
-
-                case C.CYCLOTRON:
-                    addProductionToProdCons(city, prod_table, Util.productionType(city));
-                    break;
-                default:
-                    break;
-            }
+            updateProdConsForCity(econ, prod_table, city, true);
         }
         for (Unit unit : units) {
-            if (unit.type_data.eat == 1) {
+            if (unit.type_data.eat && !unit.in_space) {
                 prod_cons[C.CONS][unit.owner][unit.p_idx][C.RES_FOOD] += 1;
             }
         }
     }
 
     /**
-     * Add harvest of a city to prod_cons
+     * Update prod_cons with city's data.
      *
-     * @param amounts
+     * @param econ
+     * @param prod_table
      * @param city
+     * @param add add if true subtract if false
      */
-    public void addHarvestToProdCons(int[] amounts, Structure city) {
-        for (int i = 0; i < amounts.length; i++) {
-            prod_cons[C.PROD][city.owner][city.p_idx][i] += amounts[i];
+    public void updateProdConsForCity(Economy econ, Prod[] prod_table, Structure city, boolean add) {
+        if (add) {
+            prod_cons[C.CONS][city.owner][city.p_idx][C.RES_FOOD] += city.health / 10;
+        } else {
+            prod_cons[C.CONS][city.owner][city.p_idx][C.RES_FOOD] -= city.health / 10;
+        }
+        switch (city.type) {
+
+            case C.FARM:
+
+            case C.ARBORIUM:
+
+            case C.WELL:
+
+            case C.MINE:
+                addHarvestToProdCons(econ.calculateActualProduction(city), city, add);
+                break;
+            case C.CHEMICALS:
+
+            case C.BIOPLANT:
+
+            case C.ELECTRONICS:
+
+            case C.CERAMSTEEL:
+
+            case C.WETWARE:
+
+            case C.FUSORIUM:
+
+            case C.CYCLOTRON:
+                addProductionToProdCons(city, prod_table, Util.productionType(city), add);
+                break;
+            default:
+                break;
         }
     }
 
     /**
-     * Add production and consumption of a city to prod_cons
+     * Add or subtract harvest of a city to or from prod_cons
+     *
+     * @param amounts
+     * @param city
+     * @param add add if true, subtract if false
+     */
+    public void addHarvestToProdCons(int[] amounts, Structure city, boolean add) {
+        for (int i = 0; i < amounts.length; i++) {
+            //should be allready adjusted for loyalty & health
+            //by call to calculateActualProduction
+            if (add) {
+                prod_cons[C.PROD][city.owner][city.p_idx][i] += amounts[i];
+            } else {
+                prod_cons[C.PROD][city.owner][city.p_idx][i] -= amounts[i];
+            }
+        }
+    }
+
+    /**
+     * Add or subtract production and consumption of a city to or from prod_cons
      *
      * @param city
      * @param prod_table
      * @param prod_type
+     * @param add add if true, subtract if false
      */
-    public void addProductionToProdCons(Structure city, Prod[] prod_table, int prod_type) {
+    public void addProductionToProdCons(Structure city, Prod[] prod_table, int prod_type, boolean add) {
         for (int i = 0; i < 3; i++) {    // For up to 3 possible resource needs
             ResPair need = prod_table[prod_type].need[i];
             if (need == null) {    // When < 3 needs, remaining items in array will be null, so check for that
                 break;
             }
-            prod_cons[C.CONS][city.owner][city.p_idx][need.resource_type] += need.resource_amount;
-
+            if (add) {
+                prod_cons[C.CONS][city.owner][city.p_idx][need.resource_type] += need.resource_amount;
+            } else {
+                prod_cons[C.CONS][city.owner][city.p_idx][need.resource_type] -= need.resource_amount;
+            }
         }
         ResPair make = prod_table[prod_type].make;
         //TODO adjust for loyalty and health
-        prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] += make.resource_amount;
+        if (add) {
+            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] += make.resource_amount; // * (city.health / 100.0) * (city.loyalty / 100.0);
+        } else {
+            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] -= make.resource_amount;
+        }
     }
 
     /**

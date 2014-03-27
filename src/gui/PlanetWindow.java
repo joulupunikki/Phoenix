@@ -237,7 +237,7 @@ public class PlanetWindow extends JPanel {
         super.paintComponent(g);
 
         renderPlanetWindow(g);
-        System.out.println("Repaint planet window " + test_long++ + ", stack move counter = " + gui.getStackMoveCounter());
+//        System.out.println("Repaint planet window " + test_long++ + ", stack move counter = " + gui.getStackMoveCounter());
 //        test_long++;
 //        if (start) {
 //            time = System.currentTimeMillis();
@@ -314,7 +314,13 @@ public class PlanetWindow extends JPanel {
 
     public void drawResAmounts() {
         int[] res_amounts = game.getResources().getResourcesAvailable(game.getCurrentPlanetNr(), game.getTurn());
+        int[] balance = game.getResources().getProdConsBalance(game.getTurn(), game.getCurrentPlanetNr());
         for (int i = 0; i < res_display.length; i++) {
+            if (balance[i] < 0) {
+                res_display[i].setForeground(Color.RED);
+            } else {
+                res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            }
             res_display[i].setText(Util.c4Display(res_amounts[i]));
 
         }

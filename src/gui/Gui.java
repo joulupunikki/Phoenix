@@ -124,6 +124,10 @@ public class Gui extends JFrame {
     private JMenuItem menu_vol3;
     private JMenuItem menu_vol4;
     private JMenuItem menu_vol5;
+    private JMenu wizard_menu;
+    private JMenuItem menu_all_tech;
+    private JMenuItem menu_all_resources;
+    private JMenuItem menu_randomize_rng;
 
     private Resource resources;
     //stack display window
@@ -288,6 +292,9 @@ public class Gui extends JFrame {
         orders_menu.add(menu_research);
         menubar.add(orders_menu);
         setUpArchivesMenu();
+        if (C.WIZARD_MODE) {
+            setUpWizardModeMenu();
+        }
         this.setJMenuBar(menubar);
 
         build_window = new JDialog(this, true);
@@ -542,6 +549,39 @@ public class Gui extends JFrame {
      */
     public void closeManowitz() {
         manowitz_window.setVisible(false);
+    }
+
+    public void setUpWizardModeMenu() {
+        wizard_menu = new JMenu("WIZARD MODE");
+        menu_all_tech = new JMenuItem("Get all techs.");
+        menu_all_tech.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_all_tech.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean[] techs = game.getFaction(game.getTurn()).getResearch().techs;
+                for (int i = 0; i < techs.length; i++) {
+                    techs[i] = true;
+                }
+                game.getFaction(game.getTurn()).getResearch().setCanBuild(game.getUnitTypes());
+            }
+        });
+        menu_all_resources = new JMenuItem("Get all resources.");
+        menu_all_resources.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_all_resources.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                game.getAllResources();
+            }
+        });
+        menu_randomize_rng = new JMenuItem("Randomize RNG.");
+        menu_randomize_rng.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_randomize_rng.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                game.getRandom().setSeed(System.currentTimeMillis());
+            }
+        });
+        wizard_menu.add(menu_all_tech);
+        wizard_menu.add(menu_all_resources);
+        wizard_menu.add(menu_randomize_rng);
+        menubar.add(wizard_menu);
     }
 
     public void setUpArchivesMenu() {

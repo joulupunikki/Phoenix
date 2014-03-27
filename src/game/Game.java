@@ -29,6 +29,7 @@ import java.util.Random;
 import util.C;
 import util.StackIterator;
 import util.Util;
+import util.Util.HexIter;
 
 /**
  *
@@ -1187,7 +1188,7 @@ public class Game implements Serializable {
                     C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
                     Hex hex = findRoom(city, move);
                     if (hex != null) {
-                        unit = city.buildUnits(unit_types, this, hex);
+                        city.buildUnits(unit_types, this, hex);
 
                     } else {
                         factions[turn].addMessage(new Message(null, C.Msg.CITY_FULL, year, city));
@@ -2022,6 +2023,20 @@ public class Game implements Serializable {
         this.unit_types = unit_types;
     }
 
+    public void getAllResources() {
+        HexIter iter = Util.getHexIter(this, getCurrentPlanetNr());
+        Hex hex = iter.next();
+        while (hex != null) {
+            if (!hex.getTerrain(C.OCEAN) && hex.getStack().isEmpty() && hex.getStructure() == null) {
+                for (int i = 0; i < C.RES_TYPES; i++) {
+                    createUnitInHex(getCurrentPlanetNr(), hex.getX(), hex.getY(), getTurn(), C.CARGO_UNIT_TYPE, 0, i, 999);
+                }
+                break;
+            }
+            hex = iter.next();
+        }
+    }
+
     public void setMaxSpotRange() {
         int spotting = 0;
         for (Unit unit : units) {
@@ -2043,6 +2058,69 @@ public class Game implements Serializable {
 //    public int getMaxSpotRange() {
 //        return max_spot_range;
 //    }
+    /**
+     * Capture (or change ownership of) city. City ownership change must be done
+     * thru this method to update production and consumption data.
+     *
+     * @param city
+     * @param new_owner
+     */
+    public void captureCity(Structure city, int new_owner) {
+        //subtract prod_cons for old owner
+        economy.updateProdConsForCity(city, false);
+        city.owner = new_owner;
+        //add prod_cons for new owner
+        economy.updateProdConsForCity(city, true);
+    }
+
+    /**
+     * Creates a city. New cities must be created thru this method to update
+     * production and consumption data.
+     *
+     * @param owner
+     * @param p_idx
+     * @param x
+     * @param y
+     * @return
+     */
+    public Structure createCity(int owner, int p_idx, int x, int y) {
+        Structure city = null;
+
+        // update production/consumption data
+        economy.updateProdConsForCity(city, true);
+        return city;
+    }
+
+    /**
+     * Adjust city health to new health. City health must be changed thru this
+     * method to update production and consumption data.
+     *
+     * @param city
+     * @param new_health
+     */
+    public void adjustCityHealth(Structure city, int new_health) {
+        //subtract prod_cons for old health
+        economy.updateProdConsForCity(city, false);
+        city.health = new_health;
+        //add prod_cons for new health
+        economy.updateProdConsForCity(city, true);
+    }
+
+    /**
+     * Adjust city loyalty to new loyalty. City loyalty must be changed thru
+     * this method to update production and consumption data.
+     *
+     * @param city
+     * @param new_loyalty
+     */
+    public void adjustCityLoyalty(Structure city, int new_loyalty) {
+        //subtract subtract prod_cons for old loyalty
+        economy.updateProdConsForCity(city, false);
+        city.loyalty = new_loyalty;
+        //add prod_cons for new loyalty
+        economy.updateProdConsForCity(city, true);
+    }
+
     /**
      * Make and place fresh unit from scratch, not from Galaxy file. Places unit
      * on a planet at specified coordinates. Units cannot be created in space
@@ -2077,6 +2155,9 @@ public class Game implements Serializable {
 //            System.out.println("spotted[] after: " + Arrays.toString(unit.spotted));    //DEBUG
             if (unit.type == C.CARGO_UNIT_TYPE) {
                 resources.addToPodLists(unit);    // Locations of cargo pods are tracked by class Resources
+            }
+            if (unit.type_data.eat) {
+                resources.addToProdCons(C.CONS, owner, p_idx, C.RES_FOOD, 1);
             }
 
 //            System.out.println("*** createUnitInHex: created " + unit.type_data.name + " at " + p_idx + ", "
@@ -2206,6 +2287,10 @@ public class Game implements Serializable {
             resources.removeFromPodLists(unit);    // Locations of cargo pods are tracked by class Resources
         }
 
+        // Remove planetbound eaters from list of eaters
+        if (unit.type_data.eat && !unit.in_space) {
+            resources.addToProdCons(C.CONS, unit.owner, unit.p_idx, C.RES_FOOD, -1);
+        }
 //        System.out.println("*** deleteEmptyUnit: deleted " + unit.type_data.name + " at " + unit.p_idx + ", "
 //                + unit.x + ", " + unit.y + ", " + unit.in_space);    // TESTING
         // If there are any units spotted only by this one, we should clear their spotted flags. ???
@@ -2225,7 +2310,14 @@ public class Game implements Serializable {
         if (unit.type == C.CARGO_UNIT_TYPE) {
             resources.removeFromPodLists(unit);    // Locations of cargo pods are tracked by class Resources
         }
-
+        // units in_space do not eat
+        if (unit.type_data.eat && in_space != unit.in_space) {
+            if (in_space) {
+                resources.addToProdCons(C.CONS, unit.owner, p_idx, C.RES_FOOD, -1);
+            } else {
+                resources.addToProdCons(C.CONS, unit.owner, p_idx, C.RES_FOOD, 1);
+            }
+        }
         unit.in_space = in_space;
         unit.p_idx = p_idx;
         unit.x = x;
@@ -2251,6 +2343,13 @@ public class Game implements Serializable {
 
         if (unit.type == C.CARGO_UNIT_TYPE) {
             resources.removeFromPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
+        }
+
+        // update food consumption data
+        if (unit.type_data.eat && !unit.in_space) {
+            resources.addToProdCons(C.CONS, unit.owner, unit.p_idx, C.RES_FOOD, -1);
+            resources.addToProdCons(C.CONS, new_owner, unit.p_idx, C.RES_FOOD, 1);
+
         }
 
         unit.owner = new_owner;
