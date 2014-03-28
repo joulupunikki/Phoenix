@@ -25,6 +25,7 @@ public class Resource {
     private Color[] colors;
     private int[][] ter_color;
     private Properties efs_ini;
+    private Properties phoenix_ini;
     private int[][] res_icons;
 
     public Resource(Gui gui) {
@@ -34,6 +35,7 @@ public class Resource {
         setColors(gui.getPallette());
         ter_color = TerColor.readTerColor();
         efs_ini = EfsIni.readEFSINI();
+        phoenix_ini = EfsIni.readPhoenixIni();
         res_icons = Util.loadSquares(C.S_CARGO_BIN, C.RES_TYPES,
                 C.CARGO_WIDTH * C.CARGO_HEIGHT);
     }
@@ -68,6 +70,10 @@ public class Resource {
 
     public Properties getEFSIni() {
         return efs_ini;
+    }
+
+    public Properties getPhoenixIni() {
+        return phoenix_ini;
     }
 
     public int[][] getResIcons() {

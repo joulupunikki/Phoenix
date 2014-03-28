@@ -157,7 +157,7 @@ public class Game implements Serializable {
 
         battle.battleInit(random, damage, target, terr_cost, this, planets);
 
-        efs_ini = EfsIni.readEfsIni(gui_resource.getEFSIni());
+        efs_ini = EfsIni.readEfsIni(gui_resource.getEFSIni(), gui_resource.getPhoenixIni());
         resources = new Resources(this);
         economy = new Economy(this, resources);
 

@@ -91,10 +91,10 @@ public class EfsIni implements Serializable {
     public boolean rebellion = true;
 
     // Phoenix game options
-    public int lab_points = 1000;
-    public int lab_cost = 500;
+    public int lab_points = -1;
+    public int lab_cost = -1;
 
-    public EfsIni(Properties efs_ini) {
+    public EfsIni(Properties efs_ini, Properties phoenix_ini) {
         starting_credits = Integer.parseInt((efs_ini.getProperty("starting_credits")).trim());
         default_tax_rate = Integer.parseInt((efs_ini.getProperty("default_tax_rate")).trim());
         default_tithe_rate = Integer.parseInt((efs_ini.getProperty("default_tithe_rate")).trim());
@@ -102,12 +102,31 @@ public class EfsIni implements Serializable {
         unit_heal_in_city = Integer.parseInt((efs_ini.getProperty("unit_heal_in_city")).trim());
         unit_heal = Integer.parseInt((efs_ini.getProperty("unit_heal")).trim());
         health_loss_for_famine = Integer.parseInt((efs_ini.getProperty("health_loss_for_famine")).trim());
+
+        //phoenix.ini values
+        lab_points = Integer.parseInt((phoenix_ini.getProperty("lab_points")).trim());
+        lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());
+
     }
 
-    public static EfsIni readEfsIni(Properties efs_ini) {
-        EfsIni ret_val = new EfsIni(efs_ini);
+    public static EfsIni readEfsIni(Properties efs_ini, Properties phoenix_ini) {
+        EfsIni ret_val = new EfsIni(efs_ini, phoenix_ini);
 
         return ret_val;
+    }
+
+    public static Properties readPhoenixIni() {
+        Properties phoenix_ini = new Properties();
+        String file_name = "PHOENIX/PHOENIX.INI";
+
+        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
+            phoenix_ini.load(in);
+        } catch (Exception e) {
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, -1);
+        }
+
+        return phoenix_ini;
     }
 
     public static Properties readEFSINI() {
