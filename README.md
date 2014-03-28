@@ -18,7 +18,7 @@ Due to the large size of the uncompressed save files (10MB) and the fact that ja
 
 Binary distribution
 -------------------
-Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS directory where `EFS.EXE` resides. To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
+Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
 `C:\Program Files\Java\jdk1.7.0` you would type `"C:\Program Files\Java\jdk1.7.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
@@ -31,19 +31,27 @@ Unzip the package then go to `Phoenix/src`,
 
 - on Linux/Unix type `javac phoenix/Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt */*.class`. 
 
-Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS directory where `EFS.EXE` resides. To run the game follow the instructions for the binary distribution.
+Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. To run the game follow the instructions for the binary distribution.
 
 Changes
 =======
 
-Upcoming in version 0.9.0
+New in version 0.9.0
 -------------------------
 
-Primary resource harvesting implemented.
+Primary resource harvesting and secondary resource production implemented by RSW.
 
-Food consumption implemented.
+Food consumption implemented by RSW.
 
-Basic unit building implemented. To build select "orders"->"build units" form menubar or use standard EFS methods. Differs from standard EFS in that on the lower left of the build window you have a list of planets where you have cities. Select planet by  clicking and then on the lower right a list of cities on the planet will be displayed. Select a city by clicking and you will have EFS style selection of buildable units on the upper left and on the upper right you have a build queue. If you click on the build button in planet window or city window the planet and city will be pre-selected so that the current city will be used. Double click on units to add to the build queue. Double click on units in the build queue to remove units from the build queue. The building currently takes into account only input units (queue will be placed on hold if input unit is missing) not available resources or technologies.
+Unit building implemented. To build select "orders"->"build units" form menubar or use standard EFS methods. Differs from standard EFS in that on the lower left of the build window you have a list of planets where you have cities. Select planet by  clicking and then on the lower right a list of cities on the planet will be displayed. Select a city by clicking and you will have EFS style selection of buildable units on the upper left and on the upper right you have a build queue. Only units for which you have required technologies will be buildable. If you click on the build button in planet window or city window the planet and city will be pre-selected so that the current city will be used. Double click on units to add to the build queue. Double click on units in the build queue to remove units from the build queue. If resources necessary to build unit are missing the unit will be shown red in the selection of buildable units. If the input unit is missing the unit will be shown in white. It is possible to queue units for which you don't have enough resources or input units. In such a case the city build queue will be put on hold and the first unit in the queue will be shown in gray color. Units will be built on city hex or immediately surrounding hexes if city hex is full. If all hexes are full production will be delayed by one turn. Note that since messages are not fully implemented yet you won't be notified when building is completed.
+
+Research and technologies implemented. To research select "orders"->"research" form menubar. Research works more or less as in standard EFS except that all labs are assigned as one. Doubleclick on technologies to assign labs. Note that since messages are not fully implemented yet you won't be notified at beginning of your turn if research is completed.
+
+Manowitz archives implemented. Manowitz works as in standard EFS except for the previous button which takes you to the beginning of the previous chapter.
+
+PHOENIX/PHOENIX.INI file introduced to contain configurable game parameters beyond those in EFS.INI.
+
+Currently Phoenix has a Wizard mode menu for testing. You can get all techs, 999 of all resources on current planet or randomize the RNG.
 
 New in version 0.8.3
 --------------------
