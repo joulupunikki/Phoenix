@@ -181,7 +181,7 @@ public class EfsIni implements Serializable {
         final int BEGIN = 0;
         final int PROPERTY = 1;
         final int VALUE = 2;
-        int state = PROPERTY;
+        int state = BEGIN;
         for (int i = 0; i < line.length() && loop; i++) {
 
             switch (state) {
