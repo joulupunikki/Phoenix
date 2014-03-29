@@ -26,20 +26,22 @@ If you get an error saying java not found then likely java is not in the path an
 Source distribution
 -------------------
 
-Unzip the package then go to `Phoenix/src`,
+Unzip the package then go to the `etc` directory and copy the contents to your EFS directory where `EFS.EXE` resides.
+
+Then go to the `src` directory,
 - on Windows click on `build.bat` to build `Phoenix.jar` or type `javac phoenix\Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt @classes.list`
 
 - on Linux/Unix type `javac phoenix/Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt */*.class`. 
 
-Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. To run the game follow the instructions for the binary distribution.
+Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS directory where `EFS.EXE` resides. To run the game follow the instructions for the binary distribution.
 
 Changes
 =======
 
 New in version 0.9.0
--------------------------
+--------------------
 
-Primary resource harvesting and secondary resource production implemented by RSW.
+Resources implemented. Primary resource harvesting and secondary resource production implemented by RSW. Resource icons and resource amount display added to planet window and build panel. Click on a resource icon in planet window to see resource production and consumption statistics. Resource amount on planet window shown in red if planetary (galactic if universal warehouse on) resource consumption exceeds production. Note that since messages are not fully implemented yet you won't be notified if you lack the necessary resources for secondary production.
 
 Food consumption implemented by RSW.
 
@@ -51,7 +53,9 @@ Manowitz archives implemented. Manowitz works as in standard EFS except for the 
 
 PHOENIX/PHOENIX.INI file introduced to contain configurable game parameters beyond those in EFS.INI.
 
-Currently Phoenix has a Wizard mode menu for testing. You can get all techs, 999 of all resources on current planet or randomize the RNG.
+Currently Phoenix has a Wizard mode menu to aid in testing. You can get all techs, 999 of all resources on current planet or randomize the RNG.
+
+Currently the double red triangle button in planet and space windows goes through cargo pods instead of all faction units.
 
 New in version 0.8.3
 --------------------
