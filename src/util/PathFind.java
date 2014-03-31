@@ -117,7 +117,9 @@ public class PathFind {
         UnitType[][] unit_types = g.getUnitTypes();
         C.MoveType move_type = unit_types[u.type][u.t_lvl].move_type;
         int move_points = unit_types[u.type][u.t_lvl].move_pts;
-
+        if (move_points == 0) {
+            return Integer.MAX_VALUE;
+        }
         for (ListIterator<Hex> it = path.listIterator(1); it.hasNext();) {
             Hex hex = it.next();
             int tmp = hex.getMoveCost(move_type.ordinal());
