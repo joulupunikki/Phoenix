@@ -5,8 +5,8 @@
  */
 package game;
 
-import dat.UnitType;
 import galaxyreader.Planet;
+import galaxyreader.Structure;
 import galaxyreader.Unit;
 import java.awt.Point;
 import java.io.Serializable;
@@ -695,6 +695,15 @@ public class Battle implements Serializable {
         removeDead(stack_a);
         removeDead(stack_b);
 
+        if (combat_type.equals(C.GROUND_COMBAT)) {
+            if (game.isCapture()) {
+                game.capture();
+                Structure city = path.get(1).getStructure();
+                if (city != null) {
+                    game.captureCity(city, stack_a.get(0).owner);
+                }
+            }
+        }
 //        removeDead(game.getUnits());
 //        removeDead(game.getUnmovedUnits());
         combat_stack_a = null;
