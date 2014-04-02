@@ -64,6 +64,10 @@ public class Economy implements Serializable {
         return res_types;
     }
 
+    public Prod[] getProd() {
+        return prod_table;
+    }
+
     public String getResName(int resource) {
         return res_types[resource].name;
     }
@@ -216,7 +220,7 @@ public class Economy implements Serializable {
 
     /**
      * Do all production (harvesting and secondary) for current faction.
-      *
+     *
      */
     private void collectResources() {
 
@@ -343,11 +347,18 @@ public class Economy implements Serializable {
             // Get resources from terrain
             boolean[] terrain_array = hex.getTerrain();    // Get boolean array of terrain types for the hex
 
-            // Find top-most terrain in hex, excluding road
+//            // Find top-most terrain in hex, excluding road
+//            int terrain = 0;
+//            for (int i = 0; i < C.HARVEST_TERRAINS; i++) {    // C.HARVEST_TERRAINS is number of possible terrains, excluding road, i.e. 11
+//                if (terrain_array[i]) {
+//                    terrain = i;    // Remember the last true terrain
+//                }
+//            }
+            // Find top-most terrain in hex, excluding road BUGFIX tree before mountain and hill
             int terrain = 0;
             for (int i = 0; i < C.HARVEST_TERRAINS; i++) {    // C.HARVEST_TERRAINS is number of possible terrains, excluding road, i.e. 11
-                if (terrain_array[i]) {
-                    terrain = i;    // Remember the last true terrain
+                if (terrain_array[C.HARVEST_TERRAIN_ORDER[i]]) {
+                    terrain = C.HARVEST_TERRAIN_ORDER[i];    // Remember the last true terrain
                 }
             }
 
@@ -357,8 +368,8 @@ public class Economy implements Serializable {
                     break;
                 }
                 resource_amounts[pair.resource_type] += pair.resource_amount;    // Accumulate the resource
+                }
             }
-        }
 
         // For cities close to map edge, up-rate pro-rata for imaginary hexes off the edge of the map
         for (int i = 0; i < resource_amounts.length; i++) {    // For each resource type

@@ -260,6 +260,7 @@ public class PlanetWindow extends JPanel {
         int faction = game.getSelectedFaction();
         boolean enable_launch = false;
         boolean enable_build = false;
+        boolean enable_build_city = false;
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
 
@@ -287,7 +288,9 @@ public class PlanetWindow extends JPanel {
                                 enable_launch = true;
                             } else {
                                 enable_launch = false;
-                                break;
+                            }
+                            if (unit.type == C.ENGINEER_UNIT_TYPE) {
+                                enable_build_city = true;
                             }
                         }
                     }
@@ -296,6 +299,7 @@ public class PlanetWindow extends JPanel {
         }
 
         gui.enableLaunchButton(enable_launch);
+        gui.enableBuildCityMenuItem(enable_build_city);
         if (enable_build) {
             build.setBorder(C.GOLD_BORDER);
         } else {

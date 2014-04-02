@@ -1741,15 +1741,18 @@ public class Util {
         int ret_val = -1;
         switch (city.type) {
 
-//                case C.FARM:
-//
-//                case C.ARBORIUM:
-//
-//                case C.WELL:
-//
-//                case C.MINE:
-//                    ;
-//                    break;
+            case C.FARM:
+                ret_val = C.FARM_HARVESTING;
+                break;
+            case C.ARBORIUM:
+                ret_val = C.ARBORIUM_HARVESTING;
+                break;
+            case C.WELL:
+                ret_val = C.WELL_HARVESTING;
+                break;
+            case C.MINE:
+                ret_val = C.MINE_HARVESTING;
+                break;
             case C.CHEMICALS:
                 ret_val = C.CHEMICALS_PRODUCTION;
                 break;
@@ -1772,10 +1775,59 @@ public class Util {
                 ret_val = C.CYCLOTRON_PRODUCTION;
                 break;
             default:
-                throw new AssertionError();
+//                throw new AssertionError();
 
         }
         return ret_val;
+    }
+
+    public static String getResName(int res_type) {
+        String res;
+        switch (res_type) {
+            case C.RES_FOOD:
+                res = "Food";
+                break;
+            case C.RES_METAL:
+                res = "Metal";
+                break;
+            case C.RES_TRACE:
+                res = "Trace";
+                break;
+            case C.RES_ENERGY:
+                res = "Energy";
+                break;
+            case C.RES_EXOTICA:
+                res = "Exotica";
+                break;
+            case C.RES_GEMS:
+                res = "Gems";
+                break;
+            case C.RES_CHEMICALS:
+                res = "Chemicals";
+                break;
+            case C.RES_BIOCHEMS:
+                res = "Biochems";
+                break;
+            case C.RES_ELECTRONICS:
+                res = "Electronics";
+                break;
+            case C.RES_CERAMSTEEL:
+                res = "Ceramsteel";
+                break;
+            case C.RES_WETWARE:
+                res = "Wetware";
+                break;
+            case C.RES_MONOPOLS:
+                res = "Monopols";
+                break;
+            case C.RES_SINGULARITIES:
+                res = "Singularities";
+                break;
+            default:
+                throw new AssertionError();
+        }
+
+        return res;
     }
 
 }

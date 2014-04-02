@@ -4,6 +4,9 @@
  */
 package util;
 
+import gui.BuildCityPanel;
+import java.awt.image.WritableRaster;
+
 /**
  *
  * @author joulupunikki
@@ -42,6 +45,43 @@ public class UtilG {
 
         }
         return ret_val;
+    }
+
+    public static void writeStruct(int x, int y, int[] pixel_data,
+            int[][] structures, int city_no, WritableRaster wr, WindowSize ws) {
+
+        int dx = 0;
+        int dy = 0;
+
+        for (int i = 0; i < C.STRUCT_BIN_HEIGHT; i++) {
+            for (int j = 0; j < C.STRUCT_BIN_WIDTH; j++) {
+
+                dx = x + j;
+                dy = y + i;
+
+                writePixel(dx, dy, i * C.STRUCT_BIN_WIDTH + j,
+                        pixel_data, structures, city_no, wr, ws);
+
+            }
+        }
+    }
+
+    public static void writePixel(int x, int y, int t_idx, int[] pixel_data, int[][] structures,
+            int city_no, WritableRaster wr, WindowSize ws) {
+
+        pixel_data[0] = structures[city_no][t_idx];
+
+        if (pixel_data[0] != 0) {
+            // if double window size scale image
+            if (ws.is_double) {
+                wr.setPixel(2 * x, 2 * y, pixel_data);
+                wr.setPixel(2 * x + 1, 2 * y, pixel_data);
+                wr.setPixel(2 * x, 2 * y + 1, pixel_data);
+                wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
+            } else {
+                wr.setPixel(x, y, pixel_data);
+            }
+        }
     }
 
     /**

@@ -105,6 +105,22 @@ public class Structure implements Serializable {
         upgraded = null;
     }
 
+    /**
+     * Creates a skeleton city, for calculating resource production in build
+     * city panel.
+     *
+     * @param type
+     * @param p_idx
+     * @param x
+     * @param y
+     */
+    public Structure(int type, int p_idx, int x, int y) {
+        this.type = type;
+        this.p_idx = p_idx;
+        this.x = x;
+        this.y = y;
+    }
+
     public static Unit findInputUnit(int[] unit_type, UnitType[][] unit_types, Game game, Structure city) {
         int input = unit_types[unit_type[0]][unit_type[1]].unit;
         Unit input_unit = null;

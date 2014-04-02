@@ -306,6 +306,40 @@ public class WindowSize {
 //    public int pw_rdt_y = 475;
 //    public int pw_rdt_w = 31;
 //    public int pw_rdt_x_gap = 38;
+    //build city window city icons
+    public int bcw_ci_w = C.STRUCT_BIN_WIDTH;
+    public int bcw_ci_h = C.STRUCT_BIN_HEIGHT;
+    public int bcw_ci_x = 5;
+    public int bcw_ci_y = 5;
+    public int bcw_ci_gap = bcw_ci_h + bcw_ci_y;
+
+    //build city window upper labels
+    public int bcw_ul_w = 30;
+    public int bcw_ul_h = 10;
+    public int bcw_ul_x = bcw_ci_x * 2 + bcw_ci_w;
+    public int bcw_ul_y = 5;
+
+    public Font font_bcw_2;
+    public int font_bcw_2_size = 9;
+
+    //build city window lower labels
+    public int bcw_ll_w = 30;
+    public int bcw_ll_h = 8;
+    public int bcw_ll_x = bcw_ci_x * 2 + bcw_ci_w;
+    public int bcw_ll_y = 5 + bcw_ul_h;
+
+    //full window (640x480) exit button, lower right corner
+    public int fw_eb_w = 50;
+    public int fw_eb_h = 15;
+    public int fw_eb_x = main_window_width - fw_eb_w - 5;
+    public int fw_eb_y = main_window_height - fw_eb_h - 5;
+
+    //standard button width & height
+    public int sb_w = 50;
+    public int sb_h = 15;
+
+    //build city window build button
+    public int bcw_bb_x = fw_eb_x - 5 - sb_w;
 
     public WindowSize(boolean is_double) {
 
@@ -604,6 +638,33 @@ public class WindowSize {
 //            pw_rdt_y *= 2;
 //            pw_rdt_w *= 2;
 //            pw_rdt_x_gap *= 2;
+            bcw_ci_w *= 2;
+            bcw_ci_h *= 2;
+            bcw_ci_x *= 2;
+            bcw_ci_y *= 2;
+            bcw_ci_gap *= 2;
+
+            bcw_ul_w *= 2;
+            bcw_ul_h *= 2;
+            bcw_ul_x *= 2;
+            bcw_ul_y *= 2;
+
+            font_bcw_2_size *= 2;
+
+            bcw_ll_w *= 2;
+            bcw_ll_h *= 2;
+            bcw_ll_x *= 2;
+            bcw_ll_y *= 2;
+
+            fw_eb_w *= 2;
+            fw_eb_h *= 2;
+            fw_eb_x *= 2;
+            fw_eb_y *= 2;
+
+            sb_w *= 2;
+            sb_h *= 2;
+
+            bcw_bb_x *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 
@@ -615,5 +676,6 @@ public class WindowSize {
 
         font_abbrev = new Font("Arial", Font.PLAIN, font_default_size);
 
+        font_bcw_2 = new Font("Arial", Font.PLAIN, font_bcw_2_size);
     }
 }

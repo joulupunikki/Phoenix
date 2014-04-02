@@ -1902,6 +1902,10 @@ public class Game implements Serializable {
         return str_build[index];
     }
 
+    public StrBuild[] getStrBuild() {
+        return str_build;
+    }
+
     public void setMapOrigin(Point p) {
         planet_map_origin = p;
 
@@ -2083,7 +2087,7 @@ public class Game implements Serializable {
      * @param y
      * @return
      */
-    public Structure createCity(int owner, int p_idx, int x, int y) {
+    public Structure createCity(int owner, int p_idx, int x, int y, int type) {
         Structure city = null;
 
         // update production/consumption data

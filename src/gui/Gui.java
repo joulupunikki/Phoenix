@@ -106,6 +106,9 @@ public class Gui extends JFrame {
     // resource info panel
     private ResourcePanel resource_panel;
     private JDialog resource_window;
+    // build city panel
+    private BuildCityPanel build_city_panel;
+    private JDialog build_city_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -117,6 +120,7 @@ public class Gui extends JFrame {
     private JMenu orders_menu;
     private JMenuItem menu_build;
     private JMenuItem menu_research;
+    private JMenuItem menu_build_city;
     private JPopupMenu stack_menu;
     private JMenu archives_menu;
     private JMenuItem menu_vol1;
@@ -269,28 +273,7 @@ public class Gui extends JFrame {
         file_menu.add(menu_save);
 
         menubar.add(file_menu);
-
-        orders_menu = new JMenu("Orders");
-        menu_build = new JMenuItem("Build units");
-
-        menu_build.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                showBuildWindow(e, -1, null);
-            }
-        });
-
-        menu_research = new JMenuItem("Research");
-
-        menu_research.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-                showTechWindow();
-            }
-        });
-
-        orders_menu.add(menu_build);
-        orders_menu.add(menu_research);
-        menubar.add(orders_menu);
+        setUpOrdersMenu();
         setUpArchivesMenu();
         if (C.WIZARD_MODE) {
             setUpWizardModeMenu();
@@ -326,6 +309,7 @@ public class Gui extends JFrame {
         setUpTechDBWindow();
         setUpManowitzWindow();
         setUpResourceWindow();
+        setUpBuildCityWindow();
         /*
          * create planet map display
          */
@@ -584,6 +568,39 @@ public class Gui extends JFrame {
         menubar.add(wizard_menu);
     }
 
+    public void setUpOrdersMenu() {
+        orders_menu = new JMenu("Orders");
+        menu_build = new JMenuItem("Build units");
+
+        menu_build.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showBuildWindow(e, -1, null);
+            }
+        });
+
+        menu_research = new JMenuItem("Research");
+
+        menu_research.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                showTechWindow();
+            }
+        });
+
+        menu_build_city = new JMenuItem("Build City");
+
+        menu_build_city.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                showBuildCityWindow();
+            }
+        });
+        orders_menu.add(menu_build);
+        orders_menu.add(menu_research);
+        orders_menu.add(menu_build_city);
+        menubar.add(orders_menu);
+    }
+
     public void setUpArchivesMenu() {
         archives_menu = new JMenu("Archives");
         archives_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -649,6 +666,40 @@ public class Gui extends JFrame {
         tech_window.setVisible(true);
     }
 
+    public void showBuildCityWindow() {
+        if (build_city_panel.initPanel()) {
+            build_city_window.setVisible(true);
+        }
+    }
+
+    public void hideBuildCityWindow() {
+        build_city_window.setVisible(false);
+    }
+
+    public void setUpBuildCityWindow() {
+//        JDialog build_city_window;
+//        JPanel build_city_panel;
+        build_city_window = new JDialog(this, true);
+        build_city_window.setLayout(null);
+        build_city_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        build_city_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+
+                build_city_window.setVisible(false);
+            }
+        });
+        build_city_panel = new BuildCityPanel(this);
+        build_city_panel.setLayout(null);
+        build_city_window.add(build_city_panel);
+        build_city_panel.setBounds(0, 0,
+                ws.main_window_width, ws.main_window_height);
+        build_city_window.pack();
+        setDialogSize(build_city_window, this.getX(),
+                this.getY(),
+                ws.main_window_width, ws.main_window_height);
+    }
+
     public void showResourceWindow(int resource) {
         resource_panel.setText(resource);
         resource_window.setVisible(true);
@@ -676,7 +727,7 @@ public class Gui extends JFrame {
         resource_window.add(resource_panel);
         resource_panel.setBounds(0, 0,
                 ws.rw_width, ws.rw_height);
-        resource_window.add(resource_panel);
+//        resource_window.add(resource_panel);
         resource_window.pack();
         setDialogSize(resource_window, this.getX() + ws.rw_x_offset,
                 this.getY() + ws.rw_y_offset,
@@ -1314,6 +1365,7 @@ public class Gui extends JFrame {
                 tech_db_panel.setGame(game);
                 manowitz_panel.setGame(game);
                 resource_panel.setGame(game);
+                build_city_panel.setGame(game);
                 State.setGameRef(game);
                 Comp.setGame(game);
                 game.setPath(null);
@@ -1380,6 +1432,16 @@ public class Gui extends JFrame {
         JOptionPane.showMessageDialog(this, message, null, JOptionPane.PLAIN_MESSAGE);
     }
 
+    public boolean showConfirmWindow(String message) {
+        int reply = JOptionPane.showConfirmDialog(this,
+                message, null, JOptionPane.YES_NO_OPTION);
+        if (reply == JOptionPane.OK_OPTION) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void setMouseCursor() {
 
         int wt;
@@ -1425,6 +1487,10 @@ public class Gui extends JFrame {
 
         this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(alpha_img, new Point(0, 0), "sceptor"));
 
+    }
+
+    public void enableBuildCityMenuItem(boolean enabled) {
+        menu_build_city.setEnabled(enabled);
     }
 
     public void enableLaunchButton(boolean enabled) {

@@ -139,7 +139,7 @@ public class TerColor {
                     System.out.println("SPACE");
                     if (s.charAt(index) == ' ') {
 
-                    } else if (s.charAt(index) >= '1' && s.charAt(index) <= '9') {
+                    } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
 
                         start = index;
                         state = NUM;
@@ -151,7 +151,7 @@ public class TerColor {
                     System.out.println("NUM");
                     if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
 
-                    } else if (counter == C.TER_COLOR_PLANET - 1) {
+                    } else if (counter == vals.length - 1) {
                         if (s.charAt(index) == '"') {
                             vals[counter++] = Integer.parseInt(s.substring(start, index));
                             loop = false;

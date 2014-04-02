@@ -231,6 +231,13 @@ public class C {
     public static final int CYCLOTRON_PRODUCTION = 5;
     public static final int FUSORIUM_PRODUCTION = 6;
 
+    // Harvesting cities
+    public static final int[] HARVESTING_CITIES = {FARM, ARBORIUM, WELL, MINE};
+
+    // Producing cities
+    public static final int[] PRODUCING_CITIES = {CHEMICALS, BIOPLANT, ELECTRONICS, CERAMSTEEL, WETWARE, FUSORIUM,
+        CYCLOTRON};
+
     // Resource production order
     public static final int[] PRODUCTION_ORDER = {FARM, ARBORIUM, WELL, MINE,
         CHEMICALS, BIOPLANT, ELECTRONICS, CERAMSTEEL, WETWARE, FUSORIUM,
@@ -269,13 +276,42 @@ public class C {
     public static final int ROAD = 11;
     public static final int STRUCTURE = 12;
 
+    public static final int[] HARVEST_TERRAIN_ORDER = {
+        OCEAN,
+        GRASS,
+        ARID_GRASS,
+        DESERT,
+        ICE,
+        TUNDRA,
+        TREE,
+        MOUNTAIN,
+        HILL,
+        RIVER,
+        DELTA
+    };
+//    // terrain types BUG FIX TEST ORIGINALS ABOVE
+//    // moved tree before mountain
+//    public static final int OCEAN = 0;
+//    public static final int GRASS = 1;
+//    public static final int ARID_GRASS = 2;
+//    public static final int DESERT = 3;
+//    public static final int ICE = 4;
+//    public static final int TUNDRA = 5;
+//    public static final int TREE = 6;
+//    public static final int MOUNTAIN = 7;
+//    public static final int HILL = 8;
+//    public static final int RIVER = 9;
+//    public static final int DELTA = 10;
+//    public static final int ROAD = 11;
+//    public static final int STRUCTURE = 12;
+
     public static final int BARREN_TILE_SET = 4;    // RSW
 
     // Unit types (only needed for units with special abilities)
     public static final int SPACE_CARRIER_UNIT_TYPE = 16;    // RSW
     public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
-
+    public static final int ENGINEER_UNIT_TYPE = 53;
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 
     // faction id's

@@ -4,6 +4,7 @@
  */
 package dat;
 
+import static dat.TerColor.processIntVals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Serializable;
@@ -19,9 +20,20 @@ import util.Util;
 public class StrBuild implements Serializable {
 
     public String name;
-//    public int water public int land public int road public int barren public int neutral public int build public int area public int Crd/Trn public int Credits public int Turns2Bld public int Tech public int Value
+    public int water;
+    public int land;
+    public int road;
+    public int barren;
+    public int neutral;
+    public int build;
+    public int area;
+    public int crd_trn;
+    public int credits;
+    public int turns_2_bld;
+    public int tech;
+    public int value;
 
-    public StrBuild(String s) {
+    public StrBuild(String s, String file_name, int line_nr) {
 
         Pattern name_pat = Pattern.compile("\"[0-9a-zA-Z ]+\"");
 
@@ -32,25 +44,27 @@ public class StrBuild implements Serializable {
         m.find();
 
         name = s.substring(m.start() + 1, m.end() - 1);
-//        System.out.println("name = " + name);
-//                //skip "stats"
-//        m.find();
-//        m.find();
-//
-//                    Pattern stats_pattern = Pattern.compile("\"[0-9]+\"");
-//
-//        m = stats_pattern.matcher(s);
-//        
-//        //last one is a big string of one text and dozens of integer values
-//        String stats = s.substring(m.start() + 1, m.end() - 1);
-//        
-//        stats_pattern = Pattern.compile("[0-9]+");
-//        
-//        m = stats_pattern.matcher(stats);
-//        
-//        m.find();     
-//        
-//        water = UnitType.processIntVal(stats, m);
+
+        //skip "stats"
+        m.find();
+        m.find();
+
+        String values = s.substring(m.start() + 1, m.end());
+        System.out.println("values = " + values);
+        int[] int_vals = new int[12];
+        processIntVals(values, int_vals, file_name, line_nr);
+        water = int_vals[0];
+        land = int_vals[1];
+        road = int_vals[2];
+        barren = int_vals[3];
+        neutral = int_vals[4];
+        build = int_vals[5];
+        area = int_vals[6];
+        crd_trn = int_vals[7];
+        credits = int_vals[8];
+        turns_2_bld = int_vals[9];
+        tech = int_vals[10];
+        value = int_vals[11];
 
     }
 
@@ -91,7 +105,7 @@ public class StrBuild implements Serializable {
                             // else read data
                         } else {
 
-                            str_build[index++] = new StrBuild(s);
+                            str_build[index++] = new StrBuild(s, file_name, line_nr);
 
                         }
                         // else between } and {
