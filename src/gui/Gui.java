@@ -981,6 +981,8 @@ public class Gui extends JFrame {
             }
             u = iterator.next();
         }
+        // to update build city menu item
+        SU.setStateUpKeep(state);
     }
 
     public Resource getResources() {
@@ -1692,6 +1694,7 @@ public class Gui extends JFrame {
 
     public void setCurrentState(State s) {
         state = s;
+        SU.setStateUpKeep(s);
 //        state_ref.setState(s);
     }
 

@@ -35,6 +35,30 @@ import util.Util;
 public class SU extends State {
 //    public static void click
 
+    /**
+     * Does changes to gui state based on what state the UI is in. Updates build
+     * city menu item status.
+     *
+     * @param s Ui state.
+     */
+    public static void setStateUpKeep(State s) {
+        if (s instanceof PW2 || s instanceof PW3) {
+            List<Unit> stack = game.getSelectedStack();
+            boolean enable_build = false;
+            if (stack != null) {
+                for (Unit unit1 : Util.xS(stack)) {
+                    if (unit1.type == C.ENGINEER_UNIT_TYPE && unit1.selected && !unit1.in_space) {
+                        enable_build = true;
+                        break;
+                    }
+                }
+            }
+            gui.enableBuildCityMenuItem(enable_build);
+        } else {
+            gui.enableBuildCityMenuItem(false);
+        }
+    }
+
     public static Point getPlanetMapClickPoint(MouseEvent e) { //, Game game, WindowSize ws) {
 
         Point p = e.getPoint();
@@ -595,6 +619,8 @@ public class SU extends State {
                             }
                         }
                     }
+                    // to update build city menu item
+                    setStateUpKeep(gui.getCurrentState());
                     LinkedList<Hex> path = game.getPath();
                     if (path != null) {
                         Point path_end = new Point(path.getLast().getX(), path.getLast().getY());

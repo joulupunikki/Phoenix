@@ -1094,6 +1094,9 @@ public class Game implements Serializable {
     public List<Unit> getSelectedStack() {
         List<Unit> stack = null;
         Point p = getSelectedPoint();
+        if (p == null) {
+            return null;
+        }
         int faction = getSelectedFaction();
         if (faction == -1) {
             stack = getPlanetGrid(getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
