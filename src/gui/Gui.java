@@ -673,6 +673,7 @@ public class Gui extends JFrame {
     }
 
     public void hideBuildCityWindow() {
+        build_city_panel.zeroUnit();
         build_city_window.setVisible(false);
     }
 
@@ -685,8 +686,7 @@ public class Gui extends JFrame {
                 JDialog.DO_NOTHING_ON_CLOSE);
         build_city_window.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-
-                build_city_window.setVisible(false);
+                hideBuildCityWindow();
             }
         });
         build_city_panel = new BuildCityPanel(this);

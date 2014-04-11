@@ -121,6 +121,16 @@ public class Structure implements Serializable {
         this.y = y;
     }
 
+    public Structure(int owner, int type, int p_idx, int x, int y, int health) {
+        this.owner = owner;
+        this.type = type;
+        this.p_idx = p_idx;
+        this.x = x;
+        this.y = y;
+        this.health = health;
+        this.build_queue = new LinkedList<>();
+    }
+
     public static Unit findInputUnit(int[] unit_type, UnitType[][] unit_types, Game game, Structure city) {
         int input = unit_types[unit_type[0]][unit_type[1]].unit;
         Unit input_unit = null;

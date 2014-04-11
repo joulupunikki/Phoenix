@@ -2087,9 +2087,11 @@ public class Game implements Serializable {
      * @param y
      * @return
      */
-    public Structure createCity(int owner, int p_idx, int x, int y, int type) {
-        Structure city = null;
-
+    public Structure createCity(int owner, int p_idx, int x, int y, int type, int health) {
+        Structure city = new Structure(owner, type, p_idx, x, y, health);
+        Hex hex = getHexFromPXY(p_idx, x, y);
+        hex.placeStructure(city);
+        structures.add(city);
         // update production/consumption data
         economy.updateProdConsForCity(city, true);
         return city;

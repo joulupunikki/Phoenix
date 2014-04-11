@@ -32,9 +32,11 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -1830,4 +1832,55 @@ public class Util {
         return res;
     }
 
+    /**
+     * Find and return the set of all hexes within a certain radius of a given
+     * hex.
+     *
+     * Typically this is called with radius 2, for harvesting cities, in which
+     * case it returns a set of 17 hexes (unless the radius extends off the top
+     * or bottom of the map.
+     *
+     * @param hex The central hex
+     * @param radius The distance in hexes to extend the search
+     * @return Set of hexes within the radius
+     *
+     */
+    public static Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {
+
+        // Find the neighbours of the given hex, and then the neighbours of those neighbours, etc.
+        // To avoid adding the same hex more than once, use Set instead of List, as that leaves it
+        // to the JRE to avoid duplicates
+        Set<Hex> ret_val = new HashSet<>();    // Set of hexes to be returned
+        LinkedList<Hex> queue = new LinkedList<>();
+        LinkedList<Integer> queueR = new LinkedList<>();
+
+        ret_val.add(hex);
+        if (radius < 1) {
+            return ret_val;
+        }
+
+        queue.add(hex);
+        queueR.add(new Integer(0));
+        while (!queue.isEmpty()) {
+            Hex father = queue.pop();
+            int r = queueR.pop().intValue();
+            Hex[] neighbours = father.getNeighbours();
+            for (Hex child : neighbours) {
+                if (child != null && ret_val.add(child)) {
+                    int child_r = r + 1;
+                    if (child_r < radius) {
+                        queue.add(child);
+                        queueR.add(new Integer(child_r));
+                    }
+                }
+            }
+        }
+        return ret_val;
+    }
+
+//    public static class HexR {
+//        Hex hex;
+//        int rad;
+//
+//    }
 }

@@ -12,6 +12,7 @@ import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Economy;
 import game.Game;
+import game.Hex;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -23,11 +24,14 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import state.PW1;
 import util.C;
 import util.Util;
+import util.Util.HexIter;
 import util.UtilG;
 import util.WindowSize;
 
@@ -49,6 +53,7 @@ public class BuildCityPanel extends JPanel {
     private int selected_slot;
     private int buildables_nr;
     private boolean[] reqd_tech;
+    private boolean[] harvest_in_4;
     private int[] buildables;
     private Unit unit;
 
@@ -58,9 +63,6 @@ public class BuildCityPanel extends JPanel {
         game = gui.getGame();
         str_build = game.getStrBuild();
 
-        byte[][] pallette = gui.getPallette();
-        String file = "PCX" + C.S_SEPAR + "BG0.PCX";
-        bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
         int tile_set = game.getPlanet(game.getCurrentPlanetNr()).tile_set_type;
         structures = Gui.getStructureTiles(tile_set);
         color_scaler = gui.getResources().getColorScaler();
@@ -81,7 +83,7 @@ public class BuildCityPanel extends JPanel {
                                 && p.y < ws.bcw_ci_y + j * ws.bcw_ci_gap + ws.bcw_ci_h) {
                             int selected = i * 10 + j;
                             System.out.println("In box");
-                            if (selected < 19 && reqd_tech[selected]) {
+                            if (selected < 19 && reqd_tech[selected] && !harvest_in_4[selected]) {
                                 System.out.println("Selected set");
                                 selected_slot = selected;
                                 repaint();
@@ -96,6 +98,10 @@ public class BuildCityPanel extends JPanel {
         });
     }
 
+    public void zeroUnit() {
+        unit = null;
+    }
+
     public void setUpButtons() {
         exit = new JButton("Exit");
         exit.setFont(ws.font_default);
@@ -106,6 +112,7 @@ public class BuildCityPanel extends JPanel {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                unit = null;
                 gui.hideBuildCityWindow();
             }
         });
@@ -119,13 +126,31 @@ public class BuildCityPanel extends JPanel {
         build.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int city_nr = buildables[selected_slot];
+                int city_type = buildables[selected_slot];
 
-                if (!gui.showConfirmWindow("Are you sure you want to build a "
-                        + game.getStrBuild(city_nr).name + " ?")) {
+                Hex hex = game.getHexFromPXY(unit.p_idx, unit.x, unit.y);
+
+                if (hex.getStructure() != null) {
+                    gui.showInfoWindow("Already a structure here.");
                     return;
                 }
 
+                if (!gui.showConfirmWindow("Are you sure you want to build a "
+                        + game.getStrBuild(city_type).name + " ?")) {
+                    return;
+                }
+
+                Structure new_city = game.createCity(unit.owner, unit.p_idx, unit.x, unit.y, city_type, 50);
+//                hex.placeStructure(new_city);
+//                game.getStructures().add(new_city);
+                game.deleteUnitNotInCombat(unit);
+                unit = null;
+                if (game.getSelectedStack().isEmpty()) {
+                    game.setSelectedPoint(null, -1);
+                    game.setPath(null);
+                    gui.setCurrentState(PW1.get());
+                }
+                gui.hideBuildCityWindow();
             }
         });
     }
@@ -141,7 +166,7 @@ public class BuildCityPanel extends JPanel {
         List<Unit> stack = game.getSelectedStack();
         unit = null;
         for (Unit unit1 : Util.xS(stack)) {
-            if (unit1.type == C.ENGINEER_UNIT_TYPE) {
+            if (unit1.type == C.ENGINEER_UNIT_TYPE && !unit1.in_space) {
                 unit = unit1;
             }
         }
@@ -149,6 +174,10 @@ public class BuildCityPanel extends JPanel {
         if (unit == null) {
             return false;
         }
+
+        byte[][] pallette = gui.getPallette();
+        String file = "PCX" + C.S_SEPAR + "BG0.PCX";
+        bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
 
         // get number of buildable cities
         buildables_nr = 0;
@@ -170,12 +199,71 @@ public class BuildCityPanel extends JPanel {
                 buildables[index] = i;
                 if (techs[str_build[i].tech]) {
                     reqd_tech[index] = true;
-                    selected_slot = index;
                 }
                 index++;
             }
 
         }
+
+        // for harvesting cities check that no harvesting city within 4 hexes
+        harvest_in_4 = new boolean[buildables_nr];
+        Hex hex = game.getHexFromPXY(unit.p_idx, unit.x, unit.y);
+        Set<Hex> hexes_in_4 = Util.getHexesWithinRadiusOf(hex, 4);
+        loop:
+        for (Hex hex1 : hexes_in_4) {
+            Structure str = hex1.getStructure();
+            if (str != null) {
+                for (int i : C.HARVESTING_CITIES) {
+                    if (str.type == i) {
+                        for (int j = 0; j < buildables_nr; j++) {
+                            for (int k : C.HARVESTING_CITIES) {
+                                if (buildables[j] == k) {
+                                    harvest_in_4[j] = true;
+                                }
+                            }
+                        }
+                        break loop;
+                    }
+                }
+            }
+        }
+
+        // for palaces and shields, check that no such structure exists on planet
+        // mark this in harvest_in_4
+        HexIter iter = Util.getHexIter(game, unit.p_idx);
+        Hex hex1 = iter.next();
+        while (hex1 != null) {
+            Structure city = hex1.getStructure();
+            if (city != null) {
+                if (city.type == C.PALACE) {
+                    for (int i = 0; i < buildables_nr; i++) {
+                        if (buildables[i] == C.PALACE) {
+                            harvest_in_4[i] = true;
+                            break;
+                        }
+
+                    }
+                } else if (city.type == C.SHIELD) {
+                    for (int i = 0; i < buildables_nr; i++) {
+                        if (buildables[i] == C.SHIELD) {
+                            harvest_in_4[i] = true;
+                            break;
+                        }
+
+                    }
+                }
+            }
+            hex1 = iter.next();
+        }
+
+        // set first eligible buildable as selected
+        for (int i = 0; i < buildables.length; i++) {
+            if (reqd_tech[i] && !harvest_in_4[i]) {
+                selected_slot = i;
+                break;
+            }
+        }
+
         return true;
     }
 
@@ -199,7 +287,7 @@ public class BuildCityPanel extends JPanel {
             for (int j = 0; j < 10; j++) {
                 int idx = i * 10 + j;
                 if (idx < buildables_nr) {
-                    if (!reqd_tech[idx]) {
+                    if (!reqd_tech[idx] || harvest_in_4[idx]) {
                         System.out.println("darken");
                         darken(ws.bcw_ci_x / divide + i * 320,
                                 (ws.bcw_ci_y + j * ws.bcw_ci_gap) / divide, bi.getRaster(), ws);
@@ -222,7 +310,6 @@ public class BuildCityPanel extends JPanel {
                         ws.bcw_ci_y + j * ws.bcw_ci_gap, ws.bcw_ci_w, ws.bcw_ci_h);
             }
         }
-
 
         // print city type, missing tech, harvesting, producing and consuming
         Structure city = new Structure(0, unit.p_idx, unit.x, unit.y);
