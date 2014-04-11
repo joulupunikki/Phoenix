@@ -204,7 +204,7 @@ public class PathFind {
                     if (move_cost == 0) {
                         result = 0;
                     } else {
-                        result = (int) Math.floor(move_cost);
+                        result = (int) Math.ceil(move_cost);
                         if (result == 0) {
                             result = 1;
                         }
