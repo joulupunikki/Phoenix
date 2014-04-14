@@ -11,25 +11,33 @@ import util.C;
 import util.Util;
 
 /**
+ * Planet Window PW, superclass of all Planet Windows
  *
  * @author joulupunikki
  */
-public class PW extends State {
+public class PW extends MW {
 
-    public void pressNextStackButton() {
-        SU.pressNextStackButtonSU();
-    }
-
-    public void pressSkipStackButton() {
-        SU.pressSkipStackButtonSU();
-    }
-
-    public void pressEndTurnButton() {
-        game.endTurn();
-        game.setPath(null);
-        SU.selectNextUnmovedUnit();
-
-    }
+//    public void pressNextStackButton() {
+//        SU.pressNextStackButtonSU();
+//    }
+//
+//    public void pressSkipStackButton() {
+//        SU.pressSkipStackButtonSU();
+//    }
+//
+//    public void pressEndTurnButton() {
+//        if (game.getEfs_ini().pbem) {
+//            game.setSelectedPoint(null, -1);
+//            game.setSelectedFaction(-1);
+//            gui.saveGame();
+//            return;
+//        }
+//        game.endTurn();
+//        game.setPath(null);
+//
+//        SU.selectNextUnmovedUnit();
+//
+//    }
 
     public void pressSpaceButton() {
         SU.pressSpaceButtonSU();

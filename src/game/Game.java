@@ -118,7 +118,7 @@ public class Game implements Serializable {
         unmoved_units = new LinkedList<>();
         faction_cities = new LinkedList<>();
         this.current_planet = current_planet;
-        year = 4956;
+        year = C.STARTING_YEAR;
         turn = -1;
         hex_proc = new HexProc(this);
 
@@ -1138,6 +1138,7 @@ public class Game implements Serializable {
         while (!human_ctrl[turn]) {
             advanceTurn();
         }
+
     }
 
     public void endTurn() {

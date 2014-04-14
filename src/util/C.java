@@ -66,6 +66,7 @@ public class C {
     public static final int TER_COLOR_PLANET = 5;
     public static final int CARGO_WIDTH = 34;
     public static final int CARGO_HEIGHT = 29;
+    public static final int STARTING_YEAR = 4956;
 
     public static final int HARVEST_TERRAINS = 11;    // RSW
     public static final int HARVEST_PLANETS = 5;    // RSW

@@ -58,6 +58,11 @@ public class MM1 extends State {
     public void pressPlayButton() {
         if (game.humanPlayerPresent()) {
             game.beginGame();
+            // if pbem ask for new passwd
+            if (game.getEfs_ini().pbem.pbem) {
+                game.getEfs_ini().pbem.getPasswd(game.getTurn(), gui);
+            }
+            
             SU.selectNextUnmovedUnit();
         } else {
             JOptionPane.showMessageDialog(gui, "Need to select at least one human player.", null, JOptionPane.PLAIN_MESSAGE);

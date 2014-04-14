@@ -1302,8 +1302,10 @@ public class Gui extends JFrame {
         String path_name = System.getProperty("user.dir")
                 + System.getProperty("file.separator") + "SAV";
         chooser.setCurrentDirectory(new File(path_name));
+
         int returnVal = chooser.showSaveDialog(this);
         System.out.println("path_name = " + path_name);
+//        System.exit(0);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             final String save_name = chooser.getCurrentDirectory().getAbsolutePath()
                     + System.getProperty("file.separator")
@@ -1319,6 +1321,10 @@ public class Gui extends JFrame {
             new SaveWorker(this, save_name).execute();
 
             loadsave_dialog.setVisible(true);
+
+            if (game.getEfs_ini().pbem.pbem && game.getEfs_ini().pbem.end_turn) {
+                toMainMenu();
+            }
             this.setCursor(cursor);
         }
     }
@@ -1353,32 +1359,54 @@ public class Gui extends JFrame {
                     ObjectInputStream s = new ObjectInputStream(gis)) {
                 game = (Game) s.readObject();
                 System.out.println("after read object");
-                space_map.setGame(game);
-                planet_map.setGame(game);
-                planet_window.setGame(game);
-                space_window.setGame(game);
-                unit_info_window.setGame(game);
-                main_menu.setGame(game);
-                combat_window.setGame(game);
-                galactic_map.setGame(game);
-                globe_map.setGame(game);
-                build_panel.setGame(game);
-                tech_panel.setGame(game);
-                tech_db_panel.setGame(game);
-                manowitz_panel.setGame(game);
-                resource_panel.setGame(game);
-                build_city_panel.setGame(game);
-                State.setGameRef(game);
-                Comp.setGame(game);
+//                space_map.setGame(game);
+//                planet_map.setGame(game);
+//                planet_window.setGame(game);
+//                space_window.setGame(game);
+//                unit_info_window.setGame(game);
+//                main_menu.setGame(game);
+//                combat_window.setGame(game);
+//                galactic_map.setGame(game);
+//                globe_map.setGame(game);
+//                build_panel.setGame(game);
+//                tech_panel.setGame(game);
+//                tech_db_panel.setGame(game);
+//                manowitz_panel.setGame(game);
+//                resource_panel.setGame(game);
+//                build_city_panel.setGame(game);
+//                State.setGameRef(game);
+//                Comp.setGame(game);
+                setGameReferences();
                 game.setPath(null);
                 game.setJumpPath(null);
+                if (game.getEfs_ini().pbem.pbem) {
+
+                    if (game.getEfs_ini().pbem.end_turn) {
+                        game.getEfs_ini().pbem.end_turn = false;
+                        game.endTurn();
+                        // TODO test signatures of datafiles
+                    }
+                    // if game.first year && no_passwd ask for a new password
+                    // else ask for password if fail return to main menu
+                    if (game.getYear() == C.STARTING_YEAR
+                            && game.getEfs_ini().pbem.passwd_hashes[game.getTurn()] == null) {
+                        game.getEfs_ini().pbem.getPasswd(game.getTurn(), gui);
+                    } else {
+                        if (!game.getEfs_ini().pbem.testPasswd(game.getTurn(), gui)) {
+                            return null;
+                        }
+                    }
+                }
                 Point p = game.getSelectedPoint();
                 if (p == null) {
                     SU.selectNextUnmovedUnit();
+
                 } else {
+                    System.out.println("selected stack");
                     List<Unit> stack = game.getSelectedStack();
                     SU.centerMapOnUnit(stack.get(0));
                 }
+//                System.exit(0);
             } catch (Throwable ex) {
                 Util.logEx(null, ex, "Load game failed");
                 showInfoWindow("Load failed");
@@ -1428,6 +1456,54 @@ public class Gui extends JFrame {
         public void done() {
             gui.cancelLoadSaveDialog();
         }
+    }
+
+    public void toMainMenu() {
+        if (args.length == 2) {
+            game = new Game(args[1], 14);
+            game.init(resources);
+        } else {
+            game = new Game("GALAXY.GAL", 14);
+            game.init(resources);
+        }
+        setGameReferences();
+        initGui();
+        SU.setWindow(C.S_MAIN_MENU);
+        setCurrentState(MM1.get());
+    }
+
+    /**
+     * Initializes various aspects of gui. Called when ever game is initialized
+     * beyond initialization at game startup.
+     */
+    private void initGui() {
+        main_menu.initMainMenu();
+    }
+
+    /**
+     * Sets game references for various gui and other objects. Called when ever
+     * game is loaded or initialized beyond initialization at game startup.
+     */
+    private void setGameReferences() {
+        space_map.setGame(game);
+        planet_map.setGame(game);
+        planet_window.setGame(game);
+        space_window.setGame(game);
+        unit_info_window.setGame(game);
+        main_menu.setGame(game);
+        combat_window.setGame(game);
+        galactic_map.setGame(game);
+        globe_map.setGame(game);
+        build_panel.setGame(game);
+        tech_panel.setGame(game);
+        tech_db_panel.setGame(game);
+        manowitz_panel.setGame(game);
+        resource_panel.setGame(game);
+        build_city_panel.setGame(game);
+        State.setGameRef(game);
+        Comp.setGame(game);
+        game.setPath(null);
+        game.setJumpPath(null);
     }
 
     public void showInfoWindow(String message) {

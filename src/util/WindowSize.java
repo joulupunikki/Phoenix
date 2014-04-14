@@ -341,6 +341,12 @@ public class WindowSize {
     //build city window build button
     public int bcw_bb_x = fw_eb_x - 5 - sb_w;
 
+    //main menu pbem button
+    public int mm_pbem_w = 100;
+    public int mm_pbem_h = 30;
+    public int mm_pbem_x = main_window_width - mm_pbem_w - 10;
+    public int mm_pbem_y = main_window_height - 3 * mm_pbem_h;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -665,6 +671,11 @@ public class WindowSize {
             sb_h *= 2;
 
             bcw_bb_x *= 2;
+
+            mm_pbem_w *= 2;
+            mm_pbem_h *= 2;
+            mm_pbem_x *= 2;
+            mm_pbem_y *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

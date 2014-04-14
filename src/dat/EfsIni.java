@@ -5,6 +5,7 @@
  */
 package dat;
 
+import game.PBEM;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -89,6 +90,7 @@ public class EfsIni implements Serializable {
     public boolean consume_food = true;
     public boolean plague = true;
     public boolean rebellion = true;
+    public PBEM pbem = null;
 
     // Phoenix game options
     public int lab_points = -1;
@@ -107,6 +109,7 @@ public class EfsIni implements Serializable {
         lab_points = Integer.parseInt((phoenix_ini.getProperty("lab_points")).trim());
         lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());
 
+        pbem = new PBEM();
     }
 
     public static EfsIni readEfsIni(Properties efs_ini, Properties phoenix_ini) {

@@ -4,7 +4,6 @@
  */
 package util;
 
-import static dat.EfsIni.processLine;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
@@ -26,9 +25,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.CharBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -1883,4 +1885,89 @@ public class Util {
 //        int rad;
 //
 //    }
+    /**
+     * Convert char[] to byte[]. From stackoverflow.com.
+     *
+     * @param c
+     * @return
+     */
+    public static byte[] toBytes(char[] c) {
+        CharBuffer cb = CharBuffer.wrap(c);
+        ByteBuffer bb = Charset.forName("UTF-8").encode(cb);
+        byte[] bytes = Arrays.copyOfRange(bb.array(),
+                bb.position(), bb.limit());
+        Arrays.fill(cb.array(), '\u0000');
+        Arrays.fill(bb.array(), (byte) 0);
+        return bytes;
+    }
+
+    public static char[] byteToHex(byte[] b) {
+        byte[] bytes = new byte[b.length];
+        System.arraycopy(b, 0, bytes, 0, b.length);
+        char[] hexes = new char[2 * bytes.length];
+        for (int i = 0; i < bytes.length; i++) {
+            int conv = bytes[i] & 0xf;
+            hexes[2 * i + 1] = intToHex(conv);
+            conv = (bytes[i] >>>= 4) & 0xf;
+            hexes[2 * i] = intToHex(conv);
+        }
+        return hexes;
+    }
+
+    public static char intToHex(int n) {
+        char c = '0';
+        switch (n) {
+            case 0:
+                break;
+            case 1:
+                c = '1';
+                break;
+            case 2:
+                c = '2';
+                break;
+            case 3:
+                c = '3';
+                break;
+            case 4:
+                c = '4';
+                break;
+            case 5:
+                c = '5';
+                break;
+            case 6:
+                c = '6';
+                break;
+            case 7:
+                c = '7';
+                break;
+            case 8:
+                c = '9';
+                break;
+            case 9:
+                c = '9';
+                break;
+            case 10:
+                c = 'a';
+                break;
+            case 11:
+                c = 'b';
+                break;
+            case 12:
+                c = 'c';
+                break;
+            case 13:
+                c = 'd';
+                break;
+            case 14:
+                c = 'e';
+                break;
+            case 15:
+                c = 'f';
+                break;
+            default:
+                throw new AssertionError();
+        }
+        return c;
+    }
+
 }

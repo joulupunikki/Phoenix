@@ -33,7 +33,7 @@ public class MainMenu extends JPanel {
     private Gui gui;
     private Game game;
     private WindowSize ws;
-// 
+    private JButton pbem;
     private JCheckBox[] hc;
 
     public MainMenu(Gui gui) {
@@ -43,6 +43,36 @@ public class MainMenu extends JPanel {
         game = gui.getGame();
 
         setUpWindow();
+        setUpButtons();
+    }
+
+    public void setUpButtons() {
+        pbem = new JButton("PBEM Off");
+        pbem.setFont(ws.font_default);
+        pbem.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(pbem);
+        pbem.setBounds(ws.mm_pbem_x, ws.mm_pbem_y,
+                ws.mm_pbem_w, ws.mm_pbem_h);
+        pbem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.getEfs_ini().pbem.pbem = !game.getEfs_ini().pbem.pbem;
+                initPBEMButton();
+            }
+        });
+    }
+
+    private void initPBEMButton() {
+        if (game.getEfs_ini().pbem.pbem) {
+            pbem.setText("PBEM On");
+        } else {
+            pbem.setText("PBEM Off");
+        }
+    }
+
+    public void initMainMenu() {
+        initPBEMButton();
+        setDefaultHumanControl();
     }
 
     public void setGame(Game game) {
@@ -50,6 +80,10 @@ public class MainMenu extends JPanel {
     }
 
     public void setDefaultHumanControl() {
+
+        for (JCheckBox jcb : hc) {
+            jcb.setSelected(false);
+        }
         hc[0].setSelected(true);
     }
 
