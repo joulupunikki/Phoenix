@@ -8,6 +8,7 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.PBEM;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -113,6 +114,7 @@ public class Gui extends JFrame {
     // build city panel
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
+    private PBEMGui pbem_gui;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -226,7 +228,8 @@ public class Gui extends JFrame {
         }
         UIManager.put("OptionPane.messageFont", ws.font_default);
         UIManager.put("Button.font", ws.font_default);
-        game.getEfs_ini().pbem.getDATAHashes();
+        pbem_gui = new PBEMGui(game);
+        pbem_gui.getDATAHashes();
         this.setSize(ws.main_window_width, ws.main_window_height);
 
         loadHexTiles();
@@ -1314,18 +1317,18 @@ public class Gui extends JFrame {
                 if (pbem.end_turn) {
                     pbem.end_turn = false;
                     game.endTurn();
-                    pbem.testDATAHashes(this);
+                    pbem_gui.testDATAHashes(this);
                 }
                 if (pbem.password_revocation) {  // if password revocation sequence
-                    int password_turn = pbem.passwordTurn(game); // get next confirmation giver
-                    if (pbem.testPasswd(password_turn, this, game) == PBEM.PASSWORD_OK) { // test password
-                        pbem.setRevokeConfirm(password_turn); // set confirmation password
-                        if (pbem.testConfirmPasswdsSet(game)) { // if all confirmations given
-                            pbem.revokePassword(); // zero password of revoked player
+                    int password_turn = pbem_gui.passwordTurn(game); // get next confirmation giver
+                    if (pbem_gui.testPasswd(password_turn, this, game) == PBEMGui.PASSWORD_OK) { // test password
+                        pbem_gui.setRevokeConfirm(password_turn); // set confirmation password
+                        if (pbem_gui.testConfirmPasswdsSet(game)) { // if all confirmations given
+                            pbem_gui.revokePassword(); // zero password of revoked player
                             if (!pbem.revocation_action) { // if action == set to computer control
                                 game.setFactionPlayer(pbem.revoked_player, false); // set to computer control
                                 game.endTurn(); // process turn
-                                pbem.zeroRevocationConfirm(); // zero revocation confirmation passwords                                
+                                pbem_gui.zeroRevocationConfirm(); // zero revocation confirmation passwords
                                 pbem.revoked_player = -1; // set revoked player to -1
                             }
                             pbem.password_revocation = false; // cancel password revocation flag
@@ -1345,17 +1348,17 @@ public class Gui extends JFrame {
                 // if password revocation save & return to main menu
                 if (game.getYear() == C.STARTING_YEAR
                         && pbem.passwd_hashes[game.getTurn()] == null) {
-                    pbem.getPasswd(game.getTurn(), this);
+                    pbem_gui.getPasswd(game.getTurn(), this);
                 } else if (pbem.passwd_hashes[game.getTurn()] == null
-                        && pbem.testConfirmPasswdsSet(game)) {
-                    pbem.getPasswd(game.getTurn(), this);
-                    pbem.zeroRevocationConfirm();
+                        && pbem_gui.testConfirmPasswdsSet(game)) {
+                    pbem_gui.getPasswd(game.getTurn(), this);
+                    pbem_gui.zeroRevocationConfirm();
                     pbem.revoked_player = -1;
                 } else {
-                    int reply = pbem.testPasswd(game.getTurn(), this, game);
-                    if (reply == PBEM.PASSWORD_FAIL) {
+                    int reply = pbem_gui.testPasswd(game.getTurn(), this, game);
+                    if (reply == PBEMGui.PASSWORD_FAIL) {
                         return;
-                    } else if (reply == PBEM.PASSWORD_REVOKE) {
+                    } else if (reply == PBEMGui.PASSWORD_REVOKE) {
                         saveGame();
                         toMainMenu();
                         return;
@@ -1524,7 +1527,7 @@ public class Gui extends JFrame {
         }
         setGameReferences();
         initGui();
-        game.getEfs_ini().pbem.getDATAHashes();
+        pbem_gui.getDATAHashes();
         SU.setWindow(C.S_MAIN_MENU);
         setCurrentState(MM1.get());
     }
@@ -1557,6 +1560,7 @@ public class Gui extends JFrame {
         manowitz_panel.setGame(game);
         resource_panel.setGame(game);
         build_city_panel.setGame(game);
+        pbem_gui.setPBEMRef(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);
@@ -2013,5 +2017,9 @@ public class Gui extends JFrame {
      */
     public void setInfo_unit(Unit info_unit) {
         this.info_unit = info_unit;
+    }
+
+    public PBEMGui getPBEMGui() {
+        return pbem_gui;
     }
 }

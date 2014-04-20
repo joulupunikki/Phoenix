@@ -6,7 +6,7 @@
 package gui;
 
 import game.Game;
-import gui.Gui;
+import game.PBEM;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +17,6 @@ import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -35,29 +33,13 @@ import util.Util;
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class PBEM implements Serializable {
+public class PBEMGui implements Serializable {
 
     public static final int PASSWORD_FAIL = 0;
     public static final int PASSWORD_OK = 1;
     public static final int PASSWORD_REVOKE = 2;
 
-    // true iff game is pbem false otherwise
-    public boolean pbem = false;
-    // true iff end_turn button has been pressed to save game
-    public boolean end_turn = false;
-    // true iff password revocation sequence has been started
-    public boolean password_revocation = false;
-    // faction/player whose password will be revoked
-    public int revoked_player = -1;
-    // true == zero password; false == set to computer control
-    public boolean revocation_action = false;
-    // salt for digests
-    public byte[] salt = null;
-    // starting player data file checksums
-    public Map<String, byte[]> checksums = new HashMap<>();
-    // revocation confirmation passwords, hash of passwd_hashes and salt
-    public byte[][] revoke_confirm = new byte[C.NR_FACTIONS][];
-    public byte[][] passwd_hashes = new byte[C.NR_FACTIONS][];
+
 
     private JDialog dialog;
     private JLabel text;
@@ -66,14 +48,14 @@ public class PBEM implements Serializable {
     private int f_idx;
     private int tries;
     private int passwd_ok;
+    private PBEM pbem;
 
-    public PBEM() {
-        for (int i = 0; i < passwd_hashes.length; i++) {
-            passwd_hashes[i] = null;
-            revoke_confirm[i] = null;
-        }
-        long long_val = System.currentTimeMillis();
-        salt = String.valueOf(long_val).getBytes();
+    public PBEMGui(Game game) {
+        pbem = game.getEfs_ini().pbem;
+    }
+
+    public void setPBEMRef(Game game) {
+        pbem = game.getEfs_ini().pbem;
     }
 
     public File[] getDataFiles() {
@@ -141,7 +123,7 @@ public class PBEM implements Serializable {
         // count on file length fitting into an int
         byte[] data = Util.readFile(file_name, (int) file.length(), ByteOrder.BIG_ENDIAN);
         MessageDigest md = getMessageDigest();
-        return digest(md, data, salt);
+        return digest(md, data, pbem.salt);
 
     }
 
@@ -149,10 +131,10 @@ public class PBEM implements Serializable {
         File[] dat_files = getDataFiles();
         for (File file : dat_files) {
             System.out.println("file = " + file.getName());
-            checksums.put(file.getName(), getHash(file, "DAT"));
+            pbem.checksums.put(file.getName(), getHash(file, "DAT"));
         }
         File file = new File("PHOENIX" + C.S_SEPAR + "PHOENIX.INI");
-        checksums.put(file.getName(), getHash(file, "PHOENIX"));
+        pbem.checksums.put(file.getName(), getHash(file, "PHOENIX"));
         String[] main_args = Gui.getMainArgs();
         String galaxy_name;
         String dir = null;
@@ -166,7 +148,7 @@ public class PBEM implements Serializable {
             galaxy_name = "GALAXY.GAL";
         }
         file = new File(galaxy_name);
-        checksums.put(file.getName(), getHash(file, dir));
+        pbem.checksums.put(file.getName(), getHash(file, dir));
 //        System.out.println(file.getAbsolutePath());
 //        System.exit(0);
     }
@@ -194,7 +176,7 @@ public class PBEM implements Serializable {
 
     public void testDATAHashes(Gui gui) {
         String diff = "";
-        for (String key : checksums.keySet()) {
+        for (String key : pbem.checksums.keySet()) {
             String file_name;
             String dir = null;
             if (key.startsWith("GAL/") || key.startsWith("GAL\\")) {
@@ -218,7 +200,7 @@ public class PBEM implements Serializable {
             }
             File file = new File(file_path);
             byte[] hash = getHash(file, dir);
-            byte[] stored = checksums.get(key);
+            byte[] stored = pbem.checksums.get(key);
             if (!compHashes(hash, stored)) {
                 diff = diff + " " + key;
             }
@@ -287,7 +269,7 @@ public class PBEM implements Serializable {
                     Util.logEx(null, ex);
                     System.exit(1);
                 }
-                passwd_hashes[f_idx] = digest(md, Util.toBytes(pw1), salt);
+                pbem.passwd_hashes[f_idx] = digest(md, Util.toBytes(pw1), pbem.salt);
                 Arrays.fill(pw1, '0');
                 Arrays.fill(pw2, '0');
                 dialog.setVisible(false);
@@ -324,12 +306,12 @@ public class PBEM implements Serializable {
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
         String revoke_info_str;
-        if (revocation_action) {
-            revoke_info_str = "Zeroing password of " + Util.getFactionName(revoked_player);
+        if (pbem.revocation_action) {
+            revoke_info_str = "Zeroing password of " + Util.getFactionName(pbem.revoked_player);
         } else {
-            revoke_info_str = "Setting " + Util.getFactionName(revoked_player) + " to computer control";
+            revoke_info_str = "Setting " + Util.getFactionName(pbem.revoked_player) + " to computer control";
         }
-        JLabel text_revoke_info = new JLabel("Password revocation of " + Util.getFactionName(revoked_player));
+        JLabel text_revoke_info = new JLabel("Password revocation of " + Util.getFactionName(pbem.revoked_player));
         JLabel text_revoke_info2 = new JLabel(revoke_info_str);
         text = new JLabel("Enter password, noble " + Util.getFactionName(f_idx));
         text.setForeground(C.COLOR_GOLD);
@@ -350,8 +332,8 @@ public class PBEM implements Serializable {
                     return;
                 }
                 getAction(gui_ref, game_ref);
-                password_revocation = true;
-                revoked_player = game_ref.getTurn();
+                pbem.password_revocation = true;
+                pbem.revoked_player = game_ref.getTurn();
                 passwd_ok = PASSWORD_REVOKE;
                 dialog.setVisible(false);
                 dialog.dispose(); //To change body of generated methods, choose Tools | Templates.
@@ -374,13 +356,13 @@ public class PBEM implements Serializable {
                     Util.logEx(null, ex);
                     System.exit(1);
                 }
-                byte[] passwd_hash = digest(md, Util.toBytes(pw1), salt);
+                byte[] passwd_hash = digest(md, Util.toBytes(pw1), pbem.salt);
                 System.out.print("Provided hash: ");
                 System.out.println(Util.byteToHex(passwd_hash));
                 System.out.print("Stored hash  : ");
-                System.out.println(Util.byteToHex(passwd_hashes[f_idx]));
+                System.out.println(Util.byteToHex(pbem.passwd_hashes[f_idx]));
                 for (int i = 0; i < passwd_hash.length; i++) {
-                    if (passwd_hash[i] != passwd_hashes[f_idx][i]) {
+                    if (passwd_hash[i] != pbem.passwd_hashes[f_idx][i]) {
                         match = false;
                         break;
                     }
@@ -402,14 +384,14 @@ public class PBEM implements Serializable {
                 dialog.dispose(); //To change body of generated methods, choose Tools | Templates.
             }
         });
-        if (password_revocation) {
+        if (pbem.password_revocation) {
             dialog.getContentPane().add(text_revoke_info);
             dialog.getContentPane().add(text_revoke_info2);
         }
         dialog.getContentPane().add(text);
         dialog.getContentPane().add(pwf1);
         dialog.getContentPane().add(button);
-        if (!password_revocation && testConfirmPasswdsNull(game) && moreThan2Humans(game)) {
+        if (!pbem.password_revocation && testConfirmPasswdsNull(game) && moreThan2Humans(game)) {
             dialog.getContentPane().add(text_revoke);
             dialog.getContentPane().add(revoke_button);
         }
@@ -451,7 +433,7 @@ public class PBEM implements Serializable {
         boolean ret_val = true;
         boolean[] players = game.getHumanControl();
         for (int i = 0; i < players.length; i++) {
-            if (players[i] == true && revoke_confirm[i] != null) {
+            if (players[i] == true && pbem.revoke_confirm[i] != null) {
                 ret_val = false;
                 break;
             }
@@ -466,22 +448,22 @@ public class PBEM implements Serializable {
      */
     public void setRevokeConfirm(int faction) {
         MessageDigest md = getMessageDigest();
-        revoke_confirm[faction] = digest(md, passwd_hashes[faction], salt);
+        pbem.revoke_confirm[faction] = digest(md, pbem.passwd_hashes[faction], pbem.salt);
     }
 
     /**
      * Zero (set null) password of <code> revoked_player </code>
      */
     public void revokePassword() {
-        passwd_hashes[revoked_player] = null;
+        pbem.passwd_hashes[pbem.revoked_player] = null;
     }
 
     /**
      * Zero (set null) revocation confirmation passwords
      */
     public void zeroRevocationConfirm() {
-        for (int i = 0; i < revoke_confirm.length; i++) {
-            revoke_confirm[i] = null;
+        for (int i = 0; i < pbem.revoke_confirm.length; i++) {
+            pbem.revoke_confirm[i] = null;
         }
     }
 
@@ -495,14 +477,14 @@ public class PBEM implements Serializable {
         boolean ret_val = true;
         boolean[] players = game.getHumanControl();
         for (int i = 0; i < players.length; i++) {
-            if (i != revoked_player && players[i] == true) {
-                if (revoke_confirm[i] == null) {
+            if (i != pbem.revoked_player && players[i] == true) {
+                if (pbem.revoke_confirm[i] == null) {
                     ret_val = false;
                     break;
                 }
                 MessageDigest md = getMessageDigest();
-                byte[] confirm_hash = digest(md, passwd_hashes[i], salt);
-                if (!compHashes(confirm_hash, revoke_confirm[i])) {
+                byte[] confirm_hash = digest(md, pbem.passwd_hashes[i], pbem.salt);
+                if (!compHashes(confirm_hash, pbem.revoke_confirm[i])) {
                     ret_val = false;
                     break;
                 }
@@ -520,16 +502,16 @@ public class PBEM implements Serializable {
     public int passwordTurn(Game game) {
         int ret_val = -1;
         boolean[] players = game.getHumanControl();
-        int idx = revoked_player;
+        int idx = pbem.revoked_player;
         idx++;
         for (;; idx++) {
             if (idx == players.length) {
                 idx = 0;
             }
-            if (idx == revoked_player) {
+            if (idx == pbem.revoked_player) {
                 break;
             }
-            if (players[idx] == true && revoke_confirm[idx] == null) {
+            if (players[idx] == true && pbem.revoke_confirm[idx] == null) {
                 ret_val = idx;
                 break;
             }
@@ -582,7 +564,7 @@ public class PBEM implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                revocation_action = true;
+                pbem.revocation_action = true;
                 dialog.setVisible(false);
                 dialog.dispose(); //To change body of generated methods, choose Tools | Templates.
             }
@@ -594,7 +576,7 @@ public class PBEM implements Serializable {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                revocation_action = false;
+                pbem.revocation_action = false;
                 dialog.setVisible(false);
                 dialog.dispose(); //To change body of generated methods, choose Tools | Templates.
             }

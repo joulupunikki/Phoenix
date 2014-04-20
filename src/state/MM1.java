@@ -60,7 +60,7 @@ public class MM1 extends State {
             game.beginGame();
             // if pbem ask for new passwd
             if (game.getEfs_ini().pbem.pbem) {
-                game.getEfs_ini().pbem.getPasswd(game.getTurn(), gui);
+                gui.getPBEMGui().getPasswd(game.getTurn(), gui);
             }
             
             SU.selectNextUnmovedUnit();

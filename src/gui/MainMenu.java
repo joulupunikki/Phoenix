@@ -35,7 +35,7 @@ public class MainMenu extends JPanel {
     private WindowSize ws;
     private JButton pbem;
     private JCheckBox[] hc;
-    PBEM test;
+    PBEMGui test;
 
     public MainMenu(Gui gui) {
         this.gui = gui;
@@ -160,8 +160,8 @@ public class MainMenu extends JPanel {
         play.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
                 ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
         play.setEnabled(true);
-        test = new PBEM();
-        test.getDATAHashes();
+//        test = new PBEMGui();
+//        test.getDATAHashes();
 
         play.addActionListener(new ActionListener() {
             @Override
