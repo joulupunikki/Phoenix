@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package gui;
 
+import game.Game;
 import gui.Gui;
 import java.awt.Component;
 import java.awt.event.ActionEvent;

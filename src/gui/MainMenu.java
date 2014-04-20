@@ -5,7 +5,6 @@
 package gui;
 
 import game.Game;
-import game.PBEM;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
