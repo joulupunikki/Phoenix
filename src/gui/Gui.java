@@ -13,6 +13,8 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -60,6 +63,7 @@ import state.MM1;
 import state.SU;
 import state.State;
 import state.StateRef;
+import state.WS;
 import util.C;
 import util.Comp;
 import util.StackIterator;
@@ -220,6 +224,9 @@ public class Gui extends JFrame {
             System.out.println("usage: java -jar Gui.jar 1|2 galaxy.gal");
             System.exit(0);
         }
+        UIManager.put("OptionPane.messageFont", ws.font_default);
+        UIManager.put("Button.font", ws.font_default);
+        game.getEfs_ini().pbem.getDATAHashes();
         this.setSize(ws.main_window_width, ws.main_window_height);
 
         loadHexTiles();
@@ -516,6 +523,10 @@ public class Gui extends JFrame {
         Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
         cycle_timer.start();
 
+    }
+
+    public static String[] getMainArgs() {
+        return args;
     }
 
     /**
@@ -1270,6 +1281,8 @@ public class Gui extends JFrame {
     }
 
     public void loadGame() {
+        // to set attributes of chooser components google "Darryl SwingUtils"
+        // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
         String path_name = System.getProperty("user.dir")
                 + System.getProperty("file.separator") + "SAV";
@@ -1295,6 +1308,8 @@ public class Gui extends JFrame {
     }
 
     public void saveGame() {
+        // to set attributes of chooser components google "Darryl SwingUtils"
+        // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
 //        FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //                "JPG & GIF Images", "jpg", "gif");
@@ -1384,7 +1399,7 @@ public class Gui extends JFrame {
                     if (game.getEfs_ini().pbem.end_turn) {
                         game.getEfs_ini().pbem.end_turn = false;
                         game.endTurn();
-                        // TODO test signatures of datafiles
+                        game.getEfs_ini().pbem.testDATAHashes(gui);
                     }
                     // if game.first year && no_passwd ask for a new password
                     // else ask for password if fail return to main menu
@@ -1459,6 +1474,7 @@ public class Gui extends JFrame {
     }
 
     public void toMainMenu() {
+        setCurrentState(WS.get());
         if (args.length == 2) {
             game = new Game(args[1], 14);
             game.init(resources);
@@ -1468,6 +1484,7 @@ public class Gui extends JFrame {
         }
         setGameReferences();
         initGui();
+        game.getEfs_ini().pbem.getDATAHashes();
         SU.setWindow(C.S_MAIN_MENU);
         setCurrentState(MM1.get());
     }
@@ -1507,7 +1524,85 @@ public class Gui extends JFrame {
     }
 
     public void showInfoWindow(String message) {
-        JOptionPane.showMessageDialog(this, message, null, JOptionPane.PLAIN_MESSAGE);
+        Font f = (Font) UIManager.get("OptionPane.messageFont");
+        String s = setLineBreaks(message, f);
+//        JOptionPane pane = new JOptionPane(s);
+        JOptionPane.showMessageDialog(this, s, null, JOptionPane.PLAIN_MESSAGE);
+
+    }
+
+    public String setLineBreaks(String text, Font font) {
+        List<String> words = new ArrayList<>();
+        String word = "";
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c != ' ' && c != '\n' && c != '\r') {
+                word += c;
+            } else if (c == '\r') {
+                System.out.println("CR");
+            } else {
+
+                words.add(word);
+                System.out.println("word = " + word);
+                word = "" + c;
+                words.add(word);
+                System.out.println("word = " + word);
+                word = "";
+            }
+        }
+        if (word != null && !word.equalsIgnoreCase("")) {
+            words.add(word);
+        }
+        // join words into lines that just fit on 4/5 of main window
+        FontMetrics fm = this.getFontMetrics(font);
+        ArrayList<String> lines = new ArrayList<>();
+        int width = ws.main_window_width * 4 / 5;
+        String line = "";
+        for (int i = 0; i < words.size(); i++) {
+            word = words.get(i);
+            if (!word.equalsIgnoreCase("\n")) {
+                if (fm.stringWidth(line + word) <= width) {
+                    if (!word.equalsIgnoreCase(" ") || !line.equalsIgnoreCase("")) {
+                        line += word;
+                    }
+                } else {
+                    lines.add(line);
+                    System.out.println("line = " + line);
+                    line = "";
+                    line += word;
+                }
+            } else {
+                if (fm.stringWidth(line + word) <= width) {
+                    line += word;
+                    lines.add(line);
+                    System.out.println("line = " + line);
+                    line = "";
+
+                } else {
+                    lines.add(line);
+                    System.out.println("line = " + line);
+                    line = word;
+                    lines.add(line);
+                    System.out.println("line = " + line);
+                    line = "";
+                }
+            }
+        }
+        if (!line.equalsIgnoreCase("")) {
+            lines.add(line);
+        }
+
+        String ret_val = "";
+        boolean linefeed = false;
+        for (String string : lines) {
+            if (linefeed) {
+                ret_val += "\n";
+            }
+            ret_val += string;
+            linefeed = true;
+        }
+        return ret_val;
+
     }
 
     public boolean showConfirmWindow(String message) {

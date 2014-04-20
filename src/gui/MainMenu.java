@@ -5,6 +5,7 @@
 package gui;
 
 import game.Game;
+import game.PBEM;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -35,6 +36,7 @@ public class MainMenu extends JPanel {
     private WindowSize ws;
     private JButton pbem;
     private JCheckBox[] hc;
+    PBEM test;
 
     public MainMenu(Gui gui) {
         this.gui = gui;
@@ -159,10 +161,15 @@ public class MainMenu extends JPanel {
         play.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
                 ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
         play.setEnabled(true);
+        test = new PBEM();
+        test.getDATAHashes();
+
         play.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gui.getCurrentState().pressPlayButton();
+//                test.testDATAHashes(gui);
+//                System.exit(0);
             }
         });
     }
