@@ -1129,6 +1129,10 @@ public class Game implements Serializable {
         return rv;
     }
 
+    public boolean[] getHumanControl() {
+        return human_ctrl;
+    }
+
     public int getYear() {
         return year;
     }

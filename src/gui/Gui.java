@@ -8,6 +8,7 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.PBEM;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -191,7 +192,7 @@ public class Gui extends JFrame {
         UIManager.put("TextArea.background", Color.BLACK);
         UIManager.put("TextArea.foreground", C.COLOR_GOLD);
         UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
-
+        UIManager.put("Label.foreground", C.COLOR_GOLD);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         String[] args = Gui.args;
@@ -1298,12 +1299,82 @@ public class Gui extends JFrame {
 //            JDialog load_dialog = showProgressBar("Loading game");
 
             loadsave_dialog = showProgressBar("Loading game");
-            Cursor cursor = this.getCursor();
-            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+//            Cursor cursor = this.getCursor();
+//            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
             new LoadWorker(this, load_name).execute();
 
             loadsave_dialog.setVisible(true);
-            this.setCursor(cursor);
+
+            setGameReferences();
+            game.setPath(null);
+            game.setJumpPath(null);
+            PBEM pbem = game.getEfs_ini().pbem;
+
+            if (pbem.pbem) {
+
+                if (pbem.end_turn) {
+                    pbem.end_turn = false;
+                    game.endTurn();
+                    pbem.testDATAHashes(this);
+                }
+                if (pbem.password_revocation) {  // if password revocation sequence
+                    int password_turn = pbem.passwordTurn(game); // get next confirmation giver
+                    if (pbem.testPasswd(password_turn, this, game) == PBEM.PASSWORD_OK) { // test password
+                        pbem.setRevokeConfirm(password_turn); // set confirmation password
+                        if (pbem.testConfirmPasswdsSet(game)) { // if all confirmations given
+                            pbem.revokePassword(); // zero password of revoked player
+                            if (!pbem.revocation_action) { // if action == set to computer control
+                                game.setFactionPlayer(pbem.revoked_player, false); // set to computer control
+                                game.endTurn(); // process turn
+                                pbem.zeroRevocationConfirm(); // zero revocation confirmation passwords                                
+                                pbem.revoked_player = -1; // set revoked player to -1
+                            }
+                            pbem.password_revocation = false; // cancel password revocation flag
+                        }
+                        saveGame();
+                        toMainMenu();
+                        return;
+                    } else {
+                        toMainMenu();
+                        return;
+                    }
+                }
+                // if game.first year && no_passwd ask for a new password
+                // else if no_passwd && all revocation confirm passwords set ask
+                // for a new password && zero all revocation confirm passwords
+                // else ask for password if fail return to main menu
+                // if password revocation save & return to main menu
+                if (game.getYear() == C.STARTING_YEAR
+                        && pbem.passwd_hashes[game.getTurn()] == null) {
+                    pbem.getPasswd(game.getTurn(), this);
+                } else if (pbem.passwd_hashes[game.getTurn()] == null
+                        && pbem.testConfirmPasswdsSet(game)) {
+                    pbem.getPasswd(game.getTurn(), this);
+                    pbem.zeroRevocationConfirm();
+                    pbem.revoked_player = -1;
+                } else {
+                    int reply = pbem.testPasswd(game.getTurn(), this, game);
+                    if (reply == PBEM.PASSWORD_FAIL) {
+                        return;
+                    } else if (reply == PBEM.PASSWORD_REVOKE) {
+                        saveGame();
+                        toMainMenu();
+                        return;
+                    }
+                }
+            }
+            Point p = game.getSelectedPoint();
+            if (p == null) {
+                SU.selectNextUnmovedUnit();
+
+            } else {
+                System.out.println("selected stack");
+                List<Unit> stack = game.getSelectedStack();
+                SU.centerMapOnUnit(stack.get(0));
+            }
+//                System.exit(0);
+
+//            this.setCursor(cursor);
         }
     }
 
@@ -1391,37 +1462,7 @@ public class Gui extends JFrame {
 //                build_city_panel.setGame(game);
 //                State.setGameRef(game);
 //                Comp.setGame(game);
-                setGameReferences();
-                game.setPath(null);
-                game.setJumpPath(null);
-                if (game.getEfs_ini().pbem.pbem) {
 
-                    if (game.getEfs_ini().pbem.end_turn) {
-                        game.getEfs_ini().pbem.end_turn = false;
-                        game.endTurn();
-                        game.getEfs_ini().pbem.testDATAHashes(gui);
-                    }
-                    // if game.first year && no_passwd ask for a new password
-                    // else ask for password if fail return to main menu
-                    if (game.getYear() == C.STARTING_YEAR
-                            && game.getEfs_ini().pbem.passwd_hashes[game.getTurn()] == null) {
-                        game.getEfs_ini().pbem.getPasswd(game.getTurn(), gui);
-                    } else {
-                        if (!game.getEfs_ini().pbem.testPasswd(game.getTurn(), gui)) {
-                            return null;
-                        }
-                    }
-                }
-                Point p = game.getSelectedPoint();
-                if (p == null) {
-                    SU.selectNextUnmovedUnit();
-
-                } else {
-                    System.out.println("selected stack");
-                    List<Unit> stack = game.getSelectedStack();
-                    SU.centerMapOnUnit(stack.get(0));
-                }
-//                System.exit(0);
             } catch (Throwable ex) {
                 Util.logEx(null, ex, "Load game failed");
                 showInfoWindow("Load failed");
