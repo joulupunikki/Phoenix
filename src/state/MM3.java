@@ -12,11 +12,11 @@ import javax.swing.JOptionPane;
  *
  * @author joulupunikki
  */
-public class MM1 extends State {
+public class MM3 extends State {
 
-    private static MM1 instance = new MM1();
+    private static MM3 instance = new MM3();
 
-    public MM1() {
+    public MM3() {
     }
 
     public static State get() {

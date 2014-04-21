@@ -60,7 +60,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
-import state.MM1;
+import state.MM3;
 import state.SU;
 import state.State;
 import state.StateRef;
@@ -97,6 +97,7 @@ public class Gui extends JFrame {
     //holds the unit info window/stack window
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
+    private MainMenu.W1 main_menu1;
     private CombatWindow combat_window;
     private BuildPanel build_panel;
     private JDialog build_window;
@@ -226,8 +227,11 @@ public class Gui extends JFrame {
             System.out.println("usage: java -jar Gui.jar 1|2 galaxy.gal");
             System.exit(0);
         }
+        // set fonts after game has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_default);
         UIManager.put("Button.font", ws.font_default);
+        UIManager.put("Label.font", ws.font_default);
+        // set up PBEM
         pbem_gui = new PBEMGui(game);
         pbem_gui.getDATAHashes();
         this.setSize(ws.main_window_width, ws.main_window_height);
@@ -423,6 +427,11 @@ public class Gui extends JFrame {
                 ws.main_window_height));
         unit_info_window.setUpWindow();
 
+        main_menu1 = new MainMenu.W1(this);
+        main_menu1.setLayout(null);
+        main_menu1.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
         main_menu = new MainMenu(this);
         main_menu.setLayout(null);
         main_menu.setPreferredSize(new Dimension(ws.main_window_width,
@@ -436,7 +445,9 @@ public class Gui extends JFrame {
 
         main_windows = new JPanel(new CardLayout());
 
+        
         main_windows.add(main_menu, C.S_MAIN_MENU);
+        main_windows.add(main_menu1, C.S_MAIN_MENU1);
         main_windows.add(planet_window, C.S_PLANET_MAP);
         main_windows.add(space_window, C.S_STAR_MAP);
         main_windows.add(unit_info_window, C.S_UNIT_INFO);
@@ -449,7 +460,7 @@ public class Gui extends JFrame {
         setUpCityDialog3(game, ws);
 
 //        State.setReferences(this, game, ws);
-        state = MM1.get();
+        state = MM3.get();
 
         this.pack();
         this.setVisible(true);
@@ -1529,7 +1540,7 @@ public class Gui extends JFrame {
         initGui();
         pbem_gui.getDATAHashes();
         SU.setWindow(C.S_MAIN_MENU);
-        setCurrentState(MM1.get());
+        setCurrentState(MM3.get());
     }
 
     /**

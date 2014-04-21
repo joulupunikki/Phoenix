@@ -347,6 +347,11 @@ public class WindowSize {
     public int mm_pbem_x = main_window_width - mm_pbem_w - 10;
     public int mm_pbem_y = main_window_height - 3 * mm_pbem_h;
 
+    //main menu start new button
+    public int mm_sn_w = main_window_width / 3;
+    public int mm_sn_y = main_window_height * 2 / 5;
+    public int mm_sn_x = mm_sn_w;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -676,6 +681,10 @@ public class WindowSize {
             mm_pbem_h *= 2;
             mm_pbem_x *= 2;
             mm_pbem_y *= 2;
+
+            mm_sn_w *= 2;
+            mm_sn_y *= 2;
+            mm_sn_x *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

@@ -345,6 +345,7 @@ public class C {
     public static final String S_STAR_MAP = "star map";
     public static final String S_UNIT_INFO = "unit info";
     public static final String S_MAIN_MENU = "main menu";
+    public static final String S_MAIN_MENU1 = "main menu1";
     public static final String S_COMBAT_WINDOW = "combat window";
     public static final String S_UNIT_DAT = "DAT/UNIT.DAT";
     public static final String S_EFSUNIT_BIN = "BIN/EFSUNIT.BIN";

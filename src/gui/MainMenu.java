@@ -172,4 +172,94 @@ public class MainMenu extends JPanel {
             }
         });
     }
+
+    /**
+     * Main Menu Window 1
+     */
+    public static class W1 extends JPanel {
+
+        private Gui gui;
+        private Game game;
+        private WindowSize ws;
+        private JButton start_new;
+        private JButton load_game;
+        private JButton quit_game;
+
+        public W1(Gui gui) {
+            this.gui = gui;
+            ws = Gui.getWindowSize();
+
+            game = gui.getGame();
+
+            setUpButtons();
+        }
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            renderMainMenu(g);
+
+        }
+
+        public void renderMainMenu(Graphics g) {
+
+            byte[][] pallette = gui.getPallette();
+            BufferedImage bi = Util.loadImage("pcx/cathed3.pcx", ws.is_double, pallette, 640, 480);
+
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(bi, null, 0, 0);
+
+            g.setColor(C.COLOR_GOLD);
+            g.drawString("Emperor Of The Fading Suns", ws.human_control_selection_x, ws.human_control_selection_y - 15);
+        }
+
+        public void setUpButtons() {
+            setUpStartNew();
+            setUpLoadSaved();
+            setUpQuit();
+        }
+
+        public void setUpStartNew() {
+            start_new = new JButton("Start New");
+            start_new.setFont(ws.font_default);
+            start_new.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(start_new);
+            start_new.setBounds(ws.mm_sn_x, ws.mm_sn_y,
+                    ws.mm_sn_w, ws.sb_h);
+            start_new.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                }
+            });
+        }
+        public void setUpLoadSaved() {
+            load_game = new JButton("Load Saved Game");
+            load_game.setFont(ws.font_default);
+            load_game.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(load_game);
+            load_game.setBounds(ws.mm_sn_x, ws.mm_sn_y + ws.sb_h * 5 / 2,
+                    ws.mm_sn_w, ws.sb_h);
+            load_game.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    gui.loadGame();
+                }
+            });
+        }
+        public void setUpQuit() {
+            quit_game = new JButton("Quit Game");
+            quit_game.setFont(ws.font_default);
+            quit_game.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(quit_game);
+            quit_game.setBounds(ws.mm_sn_x, ws.mm_sn_y + 2 * ws.sb_h * 5 / 2,
+                    ws.mm_sn_w, ws.sb_h);
+            quit_game.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+        }
+    }
+
 }
