@@ -60,6 +60,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
+import state.MM1;
 import state.MM3;
 import state.SU;
 import state.State;
@@ -124,6 +125,7 @@ public class Gui extends JFrame {
     private JMenuItem menu_exit;
     private JMenuItem menu_load;
     private JMenuItem menu_save;
+    private JMenuItem menu_restart;
     private JMenu orders_menu;
     private JMenuItem menu_build;
     private JMenuItem menu_research;
@@ -256,6 +258,7 @@ public class Gui extends JFrame {
         menu_exit = new JMenuItem("Exit Game");
         menu_load = new JMenuItem("Load Game");
         menu_save = new JMenuItem("Save Game");
+        menu_restart = new JMenuItem("Restart");
 
         menubar.setBackground(Color.DARK_GRAY);
         file_menu.setBackground(Color.DARK_GRAY);
@@ -281,10 +284,17 @@ public class Gui extends JFrame {
 
             }
         });
+        menu_restart.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                toMainMenu();
 
-        file_menu.add(menu_exit);
-        file_menu.add(menu_load);
+            }
+        });
+
         file_menu.add(menu_save);
+        file_menu.add(menu_load);
+        file_menu.add(menu_restart);
+        file_menu.add(menu_exit);
 
         menubar.add(file_menu);
         setUpOrdersMenu();
@@ -445,9 +455,9 @@ public class Gui extends JFrame {
 
         main_windows = new JPanel(new CardLayout());
 
-        
-        main_windows.add(main_menu, C.S_MAIN_MENU);
         main_windows.add(main_menu1, C.S_MAIN_MENU1);
+        main_windows.add(main_menu, C.S_MAIN_MENU);
+        
         main_windows.add(planet_window, C.S_PLANET_MAP);
         main_windows.add(space_window, C.S_STAR_MAP);
         main_windows.add(unit_info_window, C.S_UNIT_INFO);
@@ -460,7 +470,8 @@ public class Gui extends JFrame {
         setUpCityDialog3(game, ws);
 
 //        State.setReferences(this, game, ws);
-        state = MM3.get();
+        setMenus(false);
+        state = MM1.get();
 
         this.pack();
         this.setVisible(true);
@@ -1539,8 +1550,8 @@ public class Gui extends JFrame {
         setGameReferences();
         initGui();
         pbem_gui.getDATAHashes();
-        SU.setWindow(C.S_MAIN_MENU);
-        setCurrentState(MM3.get());
+        SU.setWindow(C.S_MAIN_MENU1);
+        setCurrentState(MM1.get());
     }
 
     /**

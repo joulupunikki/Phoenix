@@ -78,7 +78,7 @@ public class WindowSize {
     public int info_text_field_w = stack_display_x2 - stack_display_x_offset;
     public int info_text_field_h = 10;
     public Font font_default;
-    public int font_default_size = 9;
+    public int font_default_size = 10;
     public int end_turn_button_w = 54;
     public int end_turn_button_h = 50;
     public int end_turn_button_x = 7;
@@ -351,6 +351,9 @@ public class WindowSize {
     public int mm_sn_w = main_window_width / 3;
     public int mm_sn_y = main_window_height * 2 / 5;
     public int mm_sn_x = mm_sn_w;
+
+    public Font font_large;
+    public int font_large_size = 11;
 
     public WindowSize(boolean is_double) {
 
@@ -697,5 +700,7 @@ public class WindowSize {
         font_abbrev = new Font("Arial", Font.PLAIN, font_default_size);
 
         font_bcw_2 = new Font("Arial", Font.PLAIN, font_bcw_2_size);
+
+        font_large = new Font("Arial", Font.BOLD, font_large_size);
     }
 }

@@ -110,6 +110,18 @@ public abstract class State {
     public void clickOnGlobeMap(MouseEvent e) {
     }
 
+    public void pressStartNew() {
+
+    }
+
+    public void pressLoadGame() {
+
+    }
+
+    public void pressQuit() {
+
+    }
+
     public void error() {
         try {
             error2();

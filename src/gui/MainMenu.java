@@ -16,9 +16,9 @@ import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.Border;
+import javax.swing.SwingConstants;
 import util.C;
 import util.Util;
 import util.WindowSize;
@@ -184,6 +184,8 @@ public class MainMenu extends JPanel {
         private JButton start_new;
         private JButton load_game;
         private JButton quit_game;
+        private JLabel name;
+        private JLabel name2;
 
         public W1(Gui gui) {
             this.gui = gui;
@@ -209,14 +211,28 @@ public class MainMenu extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
 
-            g.setColor(C.COLOR_GOLD);
-            g.drawString("Emperor Of The Fading Suns", ws.human_control_selection_x, ws.human_control_selection_y - 15);
+//            g.setColor(C.COLOR_GOLD);
+//            g.drawString("Emperor Of The Fading Suns", ws.human_control_selection_x, ws.human_control_selection_y - 15);
         }
 
         public void setUpButtons() {
+            setUpName();
             setUpStartNew();
             setUpLoadSaved();
             setUpQuit();
+        }
+
+        public void setUpName() {
+            name = new JLabel("Emperor Of The Fading Suns");
+            name.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7,
+                    ws.mm_sn_w, ws.sb_h);
+            name.setHorizontalAlignment(SwingConstants.CENTER);
+            this.add(name);
+            name2 = new JLabel("Phoenix remake/patch " + C.S_VERSION);
+            name2.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7 + ws.sb_h,
+                    ws.mm_sn_w, ws.sb_h);
+            name2.setHorizontalAlignment(SwingConstants.CENTER);
+            this.add(name2);
         }
 
         public void setUpStartNew() {
@@ -229,9 +245,11 @@ public class MainMenu extends JPanel {
             start_new.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    gui.getCurrentState().pressStartNew();
                 }
             });
         }
+
         public void setUpLoadSaved() {
             load_game = new JButton("Load Saved Game");
             load_game.setFont(ws.font_default);
@@ -242,10 +260,11 @@ public class MainMenu extends JPanel {
             load_game.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    gui.loadGame();
+                    gui.getCurrentState().pressLoadGame();
                 }
             });
         }
+
         public void setUpQuit() {
             quit_game = new JButton("Quit Game");
             quit_game.setFont(ws.font_default);
@@ -256,7 +275,7 @@ public class MainMenu extends JPanel {
             quit_game.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    System.exit(0);
+                    gui.getCurrentState().pressQuit();
                 }
             });
         }
