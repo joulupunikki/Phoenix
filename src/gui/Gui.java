@@ -230,9 +230,9 @@ public class Gui extends JFrame {
             System.exit(0);
         }
         // set fonts after game has been initialized
-        UIManager.put("OptionPane.messageFont", ws.font_default);
-        UIManager.put("Button.font", ws.font_default);
-        UIManager.put("Label.font", ws.font_default);
+        UIManager.put("OptionPane.messageFont", ws.font_large);
+        UIManager.put("Button.font", ws.font_large);
+        UIManager.put("Label.font", ws.font_large);
         // set up PBEM
         pbem_gui = new PBEMGui(game);
         pbem_gui.getDATAHashes();

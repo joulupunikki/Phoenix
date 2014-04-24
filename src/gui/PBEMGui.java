@@ -27,6 +27,7 @@ import javax.swing.JPasswordField;
 import javax.swing.WindowConstants;
 import util.C;
 import util.Util;
+import util.UtilG;
 
 /**
  * Class containing variables and methods to enable secure PBEM play.
@@ -224,16 +225,17 @@ public class PBEMGui implements Serializable {
         dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
         text = new JLabel("Enter new PBEM password, noble " + Util.getFactionName(f_idx));
         text.setForeground(C.COLOR_GOLD);
-        text.setFont(Gui.getWindowSize().font_default);
+        text.setFont(Gui.getWindowSize().font_large);
         JLabel text2 = new JLabel("Confirm password");
         text2.setForeground(C.COLOR_GOLD);
-        text2.setFont(Gui.getWindowSize().font_default);
+        text2.setFont(Gui.getWindowSize().font_large);
         System.out.println("Font size: " + text2.getFont().getSize());
         pwf1 = new JPasswordField(10);
         pwf2 = new JPasswordField(10);
 
         char[] pw = null;
         JButton button = new JButton("OK");
+        button.setFont(Gui.getWindowSize().font_large);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.addActionListener(new ActionListener() {
 
@@ -287,9 +289,13 @@ public class PBEMGui implements Serializable {
         dialog.getContentPane().add(text2);
         dialog.getContentPane().add(pwf2);
         dialog.getContentPane().add(button);
+        
         dialog.pack();
+        UtilG.setDialogLocation(dialog, gui);
         dialog.setVisible(true);
     }
+
+
 
     /**
      * Ask and test password and provide a button to initiate password
@@ -312,17 +318,21 @@ public class PBEMGui implements Serializable {
             revoke_info_str = "Setting " + Util.getFactionName(pbem.revoked_player) + " to computer control";
         }
         JLabel text_revoke_info = new JLabel("Password revocation of " + Util.getFactionName(pbem.revoked_player));
+        text_revoke_info.setFont(Gui.getWindowSize().font_large);
         JLabel text_revoke_info2 = new JLabel(revoke_info_str);
+        text_revoke_info2.setFont(Gui.getWindowSize().font_large);
         text = new JLabel("Enter password, noble " + Util.getFactionName(f_idx));
         text.setForeground(C.COLOR_GOLD);
-        text.setFont(Gui.getWindowSize().font_default);
+        text.setFont(Gui.getWindowSize().font_large);
         pwf1 = new JPasswordField(10);
         tries = 0;
         passwd_ok = PASSWORD_FAIL;
         final Gui gui_ref = gui;
         final Game game_ref = game;
         JLabel text_revoke = new JLabel("Initiate Password Revocation Sequence");
+        text_revoke.setFont(Gui.getWindowSize().font_large);
         JButton revoke_button = new JButton("Password Revocation");
+        revoke_button.setFont(Gui.getWindowSize().font_large);
         revoke_button.addActionListener(new ActionListener() {
 
             @Override
@@ -397,6 +407,7 @@ public class PBEMGui implements Serializable {
         }
 //        dialog.add(button);
         dialog.pack();
+        UtilG.setDialogLocation(dialog, gui);
         dialog.setVisible(true);
 
         return passwd_ok;
@@ -534,7 +545,7 @@ public class PBEMGui implements Serializable {
         dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
         JLabel text = new JLabel("Select action for password revocation");
         text.setForeground(C.COLOR_GOLD);
-        text.setFont(Gui.getWindowSize().font_default);
+        text.setFont(Gui.getWindowSize().font_large);
 //        int faction = -1;
 
 //        List<JRadioButton> buttons = new ArrayList<>();
@@ -589,6 +600,7 @@ public class PBEMGui implements Serializable {
         dialog.getContentPane().add(panel);
 //        dialog.add(button);
         dialog.pack();
+        UtilG.setDialogLocation(dialog, gui);
         dialog.setVisible(true);
 
     }

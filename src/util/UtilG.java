@@ -5,7 +5,10 @@
 package util;
 
 import gui.BuildCityPanel;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.image.WritableRaster;
+import javax.swing.JDialog;
 
 /**
  *
@@ -227,6 +230,12 @@ public class UtilG {
         p[1] = (-b - d) / (2 * a);
 
         return p;
+    }
+
+    public static void setDialogLocation(JDialog dialog, Component component) {
+        Dimension d_size = dialog.getSize();
+        Dimension c_size = component.getSize();
+        dialog.setLocation((c_size.width - d_size.width) / 2, (c_size.height - d_size.height) / 2);
     }
 
 }

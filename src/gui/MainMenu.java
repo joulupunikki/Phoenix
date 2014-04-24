@@ -49,7 +49,7 @@ public class MainMenu extends JPanel {
 
     public void setUpButtons() {
         pbem = new JButton("PBEM Off");
-        pbem.setFont(ws.font_default);
+        pbem.setFont(ws.font_large);
         pbem.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
         this.add(pbem);
         pbem.setBounds(ws.mm_pbem_x, ws.mm_pbem_y,
@@ -155,7 +155,7 @@ public class MainMenu extends JPanel {
 
         play.setBackground(Color.BLACK);
         play.setForeground(C.COLOR_GOLD);
-
+        play.setFont(ws.font_large);
         this.add(play);
         play.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
                 ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
@@ -227,17 +227,19 @@ public class MainMenu extends JPanel {
             name.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7,
                     ws.mm_sn_w, ws.sb_h);
             name.setHorizontalAlignment(SwingConstants.CENTER);
+            name.setFont(ws.font_large);
             this.add(name);
             name2 = new JLabel("Phoenix remake/patch " + C.S_VERSION);
             name2.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7 + ws.sb_h,
                     ws.mm_sn_w, ws.sb_h);
             name2.setHorizontalAlignment(SwingConstants.CENTER);
+            name2.setFont(ws.font_large);
             this.add(name2);
         }
 
         public void setUpStartNew() {
             start_new = new JButton("Start New");
-            start_new.setFont(ws.font_default);
+            start_new.setFont(ws.font_large);
             start_new.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
             this.add(start_new);
             start_new.setBounds(ws.mm_sn_x, ws.mm_sn_y,
@@ -252,7 +254,7 @@ public class MainMenu extends JPanel {
 
         public void setUpLoadSaved() {
             load_game = new JButton("Load Saved Game");
-            load_game.setFont(ws.font_default);
+            load_game.setFont(ws.font_large);
             load_game.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
             this.add(load_game);
             load_game.setBounds(ws.mm_sn_x, ws.mm_sn_y + ws.sb_h * 5 / 2,
@@ -267,7 +269,7 @@ public class MainMenu extends JPanel {
 
         public void setUpQuit() {
             quit_game = new JButton("Quit Game");
-            quit_game.setFont(ws.font_default);
+            quit_game.setFont(ws.font_large);
             quit_game.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
             this.add(quit_game);
             quit_game.setBounds(ws.mm_sn_x, ws.mm_sn_y + 2 * ws.sb_h * 5 / 2,
