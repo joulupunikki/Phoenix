@@ -40,6 +40,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.swing.BorderFactory;
@@ -61,7 +63,6 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
 import state.MM1;
-import state.MM3;
 import state.SU;
 import state.State;
 import state.StateRef;
@@ -116,6 +117,7 @@ public class Gui extends JFrame {
     // build city panel
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
+    private XPlayerScreen x_player_screen;
     private PBEMGui pbem_gui;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
@@ -214,7 +216,16 @@ public class Gui extends JFrame {
             } else {
 
                 ws = new WindowSize(false);
-                System.out.println("usage: java -jar Gui.jar 1|2 galaxy.gal");
+                System.out.println("usage: java -jar Phoenix.jar 1|2 GALAXY.GAL");
+                System.exit(0);
+            }
+
+            Pattern p = Pattern.compile(Pattern.quote(C.S_SEPAR));
+            String name = args[1].substring(4);
+            Matcher m = p.matcher(name);
+            if (!args[1].equals("GALAXY.GAL") && (!args[1].startsWith("GAL" + C.S_SEPAR)
+                    || m.find())) {
+                System.out.println("usage: java -jar Phoenix.jar 1|2 GALAXY.GAL|GAL\"file.separator\"file_name");
                 System.exit(0);
             }
 
@@ -226,10 +237,10 @@ public class Gui extends JFrame {
             ws = new WindowSize(false);
         } else {
             ws = new WindowSize(false);
-            System.out.println("usage: java -jar Gui.jar 1|2 galaxy.gal");
+            System.out.println("usage: java -jar Phoenix.jar 1|2 galaxy.gal");
             System.exit(0);
         }
-        // set fonts after game has been initialized
+        // set fonts after WindowSize has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_large);
         UIManager.put("Button.font", ws.font_large);
         UIManager.put("Label.font", ws.font_large);
@@ -453,11 +464,16 @@ public class Gui extends JFrame {
         combat_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
 
+        x_player_screen = new XPlayerScreen(this);
+        x_player_screen.setLayout(null);
+        x_player_screen.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
         main_windows = new JPanel(new CardLayout());
 
         main_windows.add(main_menu1, C.S_MAIN_MENU1);
         main_windows.add(main_menu, C.S_MAIN_MENU);
-        
+        main_windows.add(x_player_screen, C.S_X_PLAYER_SCREEN);
         main_windows.add(planet_window, C.S_PLANET_MAP);
         main_windows.add(space_window, C.S_STAR_MAP);
         main_windows.add(unit_info_window, C.S_UNIT_INFO);
@@ -1329,6 +1345,7 @@ public class Gui extends JFrame {
 
             loadsave_dialog.setVisible(true);
 
+            SU.setWindow(C.S_X_PLAYER_SCREEN);
             setGameReferences();
             game.setPath(null);
             game.setJumpPath(null);

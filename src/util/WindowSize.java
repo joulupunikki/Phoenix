@@ -688,6 +688,8 @@ public class WindowSize {
             mm_sn_w *= 2;
             mm_sn_y *= 2;
             mm_sn_x *= 2;
+
+            font_large_size *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

@@ -348,6 +348,7 @@ public class C {
     public static final String S_MAIN_MENU = "main menu";
     public static final String S_MAIN_MENU1 = "main menu1";
     public static final String S_COMBAT_WINDOW = "combat window";
+    public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_UNIT_DAT = "DAT/UNIT.DAT";
     public static final String S_EFSUNIT_BIN = "BIN/EFSUNIT.BIN";
     public static final String S_STRBUILD_DAT = "DAT/STRBUILD.DAT";

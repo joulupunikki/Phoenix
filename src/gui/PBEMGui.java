@@ -8,6 +8,7 @@ package gui;
 import game.Game;
 import game.PBEM;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,6 +18,7 @@ import java.nio.ByteOrder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,6 +26,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import util.C;
 import util.Util;
@@ -39,8 +42,6 @@ public class PBEMGui implements Serializable {
     public static final int PASSWORD_FAIL = 0;
     public static final int PASSWORD_OK = 1;
     public static final int PASSWORD_REVOKE = 2;
-
-
 
     private JDialog dialog;
     private JLabel text;
@@ -223,16 +224,19 @@ public class PBEMGui implements Serializable {
         dialog = new JDialog(gui, null, true);
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
-        text = new JLabel("Enter new PBEM password, noble " + Util.getFactionName(f_idx));
+        text = new JLabel("Enter new PBEM password, noble " + Util.getFactionName(f_idx) + ":");
+        text.setAlignmentX(Component.CENTER_ALIGNMENT);
         text.setForeground(C.COLOR_GOLD);
         text.setFont(Gui.getWindowSize().font_large);
-        JLabel text2 = new JLabel("Confirm password");
+        JLabel text2 = new JLabel("Confirm password:");
+        text2.setAlignmentX(Component.RIGHT_ALIGNMENT);
         text2.setForeground(C.COLOR_GOLD);
         text2.setFont(Gui.getWindowSize().font_large);
         System.out.println("Font size: " + text2.getFont().getSize());
         pwf1 = new JPasswordField(10);
+        pwf1.setAlignmentX(Component.CENTER_ALIGNMENT);
         pwf2 = new JPasswordField(10);
-
+        pwf2.setAlignmentX(Component.CENTER_ALIGNMENT);
         char[] pw = null;
         JButton button = new JButton("OK");
         button.setFont(Gui.getWindowSize().font_large);
@@ -289,13 +293,11 @@ public class PBEMGui implements Serializable {
         dialog.getContentPane().add(text2);
         dialog.getContentPane().add(pwf2);
         dialog.getContentPane().add(button);
-        
+
         dialog.pack();
         UtilG.setDialogLocation(dialog, gui);
         dialog.setVisible(true);
     }
-
-
 
     /**
      * Ask and test password and provide a button to initiate password
@@ -321,7 +323,7 @@ public class PBEMGui implements Serializable {
         text_revoke_info.setFont(Gui.getWindowSize().font_large);
         JLabel text_revoke_info2 = new JLabel(revoke_info_str);
         text_revoke_info2.setFont(Gui.getWindowSize().font_large);
-        text = new JLabel("Enter password, noble " + Util.getFactionName(f_idx));
+        text = new JLabel("Enter password, noble " + Util.getFactionName(f_idx) + ":");
         text.setForeground(C.COLOR_GOLD);
         text.setFont(Gui.getWindowSize().font_large);
         pwf1 = new JPasswordField(10);
@@ -394,6 +396,14 @@ public class PBEMGui implements Serializable {
                 dialog.dispose(); //To change body of generated methods, choose Tools | Templates.
             }
         });
+
+        text_revoke_info.setAlignmentX(Component.CENTER_ALIGNMENT);
+        text_revoke_info2.setAlignmentX(Component.CENTER_ALIGNMENT);
+        text.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pwf1.setAlignmentX(Component.CENTER_ALIGNMENT);
+        button.setAlignmentX(Component.CENTER_ALIGNMENT);
+        text_revoke.setAlignmentX(Component.CENTER_ALIGNMENT);
+        revoke_button.setAlignmentX(Component.CENTER_ALIGNMENT);
         if (pbem.password_revocation) {
             dialog.getContentPane().add(text_revoke_info);
             dialog.getContentPane().add(text_revoke_info2);
@@ -544,6 +554,7 @@ public class PBEMGui implements Serializable {
         dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         dialog.setLayout(new BoxLayout(dialog.getContentPane(), BoxLayout.Y_AXIS));
         JLabel text = new JLabel("Select action for password revocation");
+        text.setAlignmentX(Component.CENTER_ALIGNMENT);
         text.setForeground(C.COLOR_GOLD);
         text.setFont(Gui.getWindowSize().font_large);
 //        int faction = -1;
@@ -594,8 +605,11 @@ public class PBEMGui implements Serializable {
         });
 
         JPanel panel = new JPanel();
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+//        panel.add(Box.createRigidArea(new Dimension(25, 0)));
         panel.add(zero_passwd_button);
+        panel.add(Box.createRigidArea(new Dimension(10, 0)));
         panel.add(comp_control_button);
         dialog.getContentPane().add(panel);
 //        dialog.add(button);
