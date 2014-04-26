@@ -162,7 +162,7 @@ public class CombatWindow extends JPanel {
                 int dx = (int) (((0.15 + j * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_x);
                 int dy = (int) (((0.15 + i * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_y);
 
-                if (e.health > 0 && !e.routed) {
+                if (e.health > 0) { // && !e.routed) {
                     Util.drawUnitDetails(g, game, e, dx, dy);
                 }
 
@@ -230,7 +230,7 @@ public class CombatWindow extends JPanel {
                 int dx = (int) (((0.15 + j * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_x2);
                 int dy = (int) (((0.15 + i * 1.15) * ws.unit_icon_size) + ws.combat_window_stack_display_y);
 
-                if (e.health > 0 && !e.routed) {
+                if (e.health > 0) { // && !e.routed) {
                     Util.drawUnitDetails(g, game, e, dx, dy);
                 }
 
