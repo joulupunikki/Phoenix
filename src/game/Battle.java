@@ -671,12 +671,62 @@ public class Battle implements Serializable {
 
     }
 
+    public void setCombatStacks(List<Unit> stack_a, List<Unit> stack_b) {
+        combat_stack_a = stack_a;
+        combat_stack_b = stack_b;
+    }
+
+    /**
+     * Record combat pre-conditions for combat report.
+     *
+     * @param report combat report object to write data to
+     */
+    public void combatReportPre(CombatReport report) {
+        for (Unit unit : combat_stack_a) {
+            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.type, unit.t_lvl, 0, 0, game);
+            copy.health = unit.health;
+            copy.in_space = unit.in_space;
+            report.attacker.add(copy);
+        }
+        for (Unit unit : combat_stack_b) {
+            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.type, unit.t_lvl, 0, 0, game);
+            copy.health = unit.health;
+            copy.in_space = unit.in_space;
+            report.defender.add(copy);
+        }
+    }
+
+    /**
+     * Record combat post-conditions for combat report.
+     *
+     * @param report combat report object to write data to
+     */
+    public void combatReportPost(CombatReport report) {
+        int idx = 0;
+        for (Unit unit : combat_stack_a) {
+            report.atk_post_health[idx] = unit.health;
+            report.atk_rout[idx] = unit.routed;
+            idx++;
+        }
+        idx = 0;
+        for (Unit unit : combat_stack_b) {
+            report.def_post_health[idx] = unit.health;
+            report.def_rout[idx] = unit.routed;
+            idx++;
+        }
+
+    }
+
     public void resolveGroundBattleFight() {
-//        System.out.println("combat_stack_a = " + combat_stack_a);
-//        System.out.println("combat_stack_b = " + combat_stack_b);
+        CombatReport report = new CombatReport(combat_stack_a.size(), combat_stack_b.size());
+        //record combat report combat preconditions combatReportPre()
+        combatReportPre(report);
         doCombat(combat_stack_a, combat_stack_b);
         assignDamage(combat_stack_a, combat_stack_b);
-
+        //record combat report combat postconditions, send message combatReportPost()
+        combatReportPost(report);
+        game.getFaction(combat_stack_b.get(0).owner).addMessage(new Message("",
+                C.Msg.COMBAT_REPORT, game.getYear(), report));
     }
 
     public void resolveGroundBattleFinalize() {

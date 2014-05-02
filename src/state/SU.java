@@ -466,6 +466,11 @@ public class SU extends State {
         game.setSpaceMapOrigin(smo);
     }
 
+    public static void showCombatReplay() {
+        setWindow(C.S_COMBAT_WINDOW);
+        gui.setCurrentState(CR1.get());
+    }
+
     public static void showCombatWindow() {
         setWindow(C.S_COMBAT_WINDOW);
         saveMainGameState();
@@ -476,6 +481,12 @@ public class SU extends State {
         setWindow(C.S_UNIT_INFO);
         saveMainGameState();
         gui.setCurrentState(UIW1.get());
+    }
+
+    public static void showMessagesWindow() {
+        setWindow(C.S_MESSAGES);
+        saveMainGameState();
+        gui.setCurrentState(MsgsW.get());
     }
 
     public static void restoreMainWindow() {
@@ -493,6 +504,9 @@ public class SU extends State {
             case C.S_STAR_MAP:
                 gui.setMenus(true);
                 break;
+            case C.S_COMBAT_WINDOW:
+                gui.getCombatWindow().initWindow();
+                gui.setMenus(false);
             default:
                 gui.setMenus(false);
                 break;

@@ -29,11 +29,14 @@ public class GlobeMap extends JPanel {
     private Game game;
     private WindowSize ws;
     private int yard;
+    // false for combat window version, true otherwise
+    private boolean map_type;
 
-    public GlobeMap(Gui gui, Game game, WindowSize ws) {
+    public GlobeMap(Gui gui, Game game, WindowSize ws, boolean map_type) {
         this.gui = gui;
         this.game = game;
         this.ws = ws;
+        this.map_type = map_type;
     }
 
     public void setGame(Game game) {
@@ -50,7 +53,9 @@ public class GlobeMap extends JPanel {
     public void renderGlobeMap(Graphics g) {
         yard = ws.globe_map_width / C.PLANET_MAP_WIDTH;
         renderMapItems(g);
-        drawWindowArea(g);
+        if (map_type) {
+            drawWindowArea(g);
+        }
     }
 
     public void drawWindowArea(Graphics g) {
@@ -68,8 +73,18 @@ public class GlobeMap extends JPanel {
         byte[][] pallette = gui.getPallette();
         int[][] ter_color = gui.getResources().getTerColor();
         int[] color_scaler = gui.getResources().getColorScaler();
-        Hex[][] map_array = game.getPlanetGrid(game.getCurrentPlanetNr()).getMapArray();
-        Planet planet = game.getPlanet(game.getCurrentPlanetNr());
+        int p_idx = -1;
+        Unit replay_unit = null;
+        if (map_type) {
+            p_idx = game.getCurrentPlanetNr();
+        } else {
+            replay_unit = game.getCombatStack("b").get(0);
+            System.out.println("replay_unit.in_space = " + replay_unit.in_space);
+//            System.exit(0);
+            p_idx = replay_unit.p_idx;
+        }
+        Hex[][] map_array = game.getPlanetGrid(p_idx).getMapArray();
+        Planet planet = game.getPlanet(p_idx);
         int tile_set = planet.tile_set_type;
         int color = 0;
         for (int i = 0; i < map_array.length; i++) {
@@ -78,13 +93,22 @@ public class GlobeMap extends JPanel {
                 List<Unit> stack = map_array[i][j].getStack();
                 boolean spotted = map_array[i][j].isSpotted(game.getTurn());
 //                Structure struct = map_array[i][j].getStructure();
-                if (!stack.isEmpty() && spotted) {
-                    Point p = game.getSelectedPoint();
-                    if (p != null && p.x == i && p.y == j && !gui.getAnimationBlink()) {
-                        g.setColor(Color.WHITE);
+                if ((map_type && !stack.isEmpty() && spotted) || (!map_type && !replay_unit.in_space
+                        && replay_unit.x == i && replay_unit.y == j)) {
+                    if (map_type) {
+                        Point p = game.getSelectedPoint();
+                        if (p != null && p.x == i && p.y == j && !gui.getAnimationBlink()) {
+                            g.setColor(Color.WHITE);
+                        } else {
+                            Unit unit = stack.get(0);
+                            g.setColor(Util.getColor(pallette, Util.getOwnerColor(unit.owner)));
+                        }
                     } else {
-                        Unit unit = stack.get(0);
-                        g.setColor(Util.getColor(pallette, Util.getOwnerColor(unit.owner)));
+                        if (!gui.getAnimationBlink()) {
+                            g.setColor(Color.WHITE);
+                        } else {
+                            g.setColor(Util.getColor(pallette, Util.getOwnerColor(replay_unit.owner)));
+                        }
                     }
                 } else if (terrain[C.OCEAN]) {
 //                    g.setColor(Color.BLUE);

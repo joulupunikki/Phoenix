@@ -6,12 +6,12 @@
 package gui;
 
 import galaxyreader.JumpGate;
+import galaxyreader.Planet;
 import game.Game;
 import game.Square;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.image.IndexColorModel;
 import java.util.List;
 import javax.swing.JPanel;
 import util.C;
@@ -28,11 +28,14 @@ public class GalacticMap extends JPanel {
     private Game game;
     private WindowSize ws;
     private int yard;
+    // false for combat window version, true otherwise
+    private boolean map_type;
 
-    public GalacticMap(Gui gui, Game game, WindowSize ws) {
+    public GalacticMap(Gui gui, Game game, WindowSize ws, boolean map_type) {
         this.gui = gui;
         this.game = game;
         this.ws = ws;
+        this.map_type = map_type;
     }
 
     public void setGame(Game game) {
@@ -51,7 +54,9 @@ public class GalacticMap extends JPanel {
         drawBackground(g);
         drawJumpRoutes(g);
         drawPlanets(g);
-        drawWindowArea(g);
+        if (map_type) {
+            drawWindowArea(g);
+        }        
     }
 
     public void drawJumpRoutes(Graphics g) {
@@ -93,17 +98,30 @@ public class GalacticMap extends JPanel {
         Point p = game.getSelectedPoint();
         Point p1 = null;
         Point q = null;
-        if (p != null) {
-            p1 = new Point(p);
-            int faction = game.getSelectedFaction();
-            q = game.convertSpaceUnit(p1, faction);
+        if (map_type) {
+            if (p != null) {
+                p1 = new Point(p);
+                int faction = game.getSelectedFaction();
+                q = game.convertSpaceUnit(p1, faction);
+            }
+        } else {
+            System.out.println("stack b: " + game.getCombatStack("b"));
+            int p_idx = game.getCombatStack("b").get(0).p_idx;
+            Planet planet = game.getPlanet(p_idx);
+            q = new Point(planet.x, planet.y);
         }
         g.setColor(Color.WHITE);
         for (int i = 0; i < C.STAR_MAP_HEIGHT; i++) {
             for (int j = 0; j < C.STAR_MAP_WIDTH; j++) {
                 if (galaxy_grid[j][i].planet != null) {
-                    if (p == null || q.x != j || q.y != i || !gui.getAnimationBlink()) {
-                        g.fillRect(j * yard, i * yard, yard, yard);
+                    if (map_type) {
+                        if (p == null || q.x != j || q.y != i || !gui.getAnimationBlink()) {
+                            g.fillRect(j * yard, i * yard, yard, yard);
+                        }
+                    } else {
+                        if (q.x != j || q.y != i || !gui.getAnimationBlink()) {
+                            g.fillRect(j * yard, i * yard, yard, yard);
+                        }
                     }
                 }
 

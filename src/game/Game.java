@@ -264,6 +264,10 @@ public class Game implements Serializable {
 //        return rv;
     }
 
+    public Battle getBattle() {
+        return battle;
+    }
+
 //    public void chooseOffence(List<Unit> attacker, List<Unit> attacker_offence, int i) {
 //        for (Unit unit : attacker) {
 //            switch (i) {
@@ -1146,6 +1150,7 @@ public class Game implements Serializable {
     }
 
     public void endTurn() {
+        factions[turn].deleteOldMessages();
         advanceTurn();
         while (!human_ctrl[turn]) {
             advanceTurn();
@@ -1162,7 +1167,7 @@ public class Game implements Serializable {
 
         economy.updateEconomy(turn);    //RSW
 
-        factions[turn].deleteOldMessages(year);
+//        factions[turn].deleteOldMessages(year);
         setFactionCities();
         doResearch();
         buildUnits();

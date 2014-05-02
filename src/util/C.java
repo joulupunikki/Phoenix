@@ -141,7 +141,8 @@ public class C {
 
         CITY_FULL,
         FAMINE,
-        CANNOT_PRODUCE
+        CANNOT_PRODUCE,
+        COMBAT_REPORT
     }
 
     // movement types
@@ -331,6 +332,15 @@ public class C {
     public static final int THE_SPY = 12;
     public static final int NEUTRAL = 13;
 
+//    //combat report array identifiers
+//    public static final int CR_OWNER = 0;
+//    public static final int CR_PREV_OWNER = 1;
+//    public static final int CR_TYPE = 2;
+//    public static final int CR_T_LVL = 3;
+//    public static final int CR_HEALTH_BEGIN = 4;
+//    public static final int CR_HEALTH_END = 5;
+//    public static final int CR_ROUTED = 6;
+
     //research & technologies
     public static final int TECH0 = 0;
     public static final int TECH1 = 1;
@@ -349,6 +359,7 @@ public class C {
     public static final String S_MAIN_MENU1 = "main menu1";
     public static final String S_COMBAT_WINDOW = "combat window";
     public static final String S_X_PLAYER_SCREEN = "x player screen";
+    public static final String S_MESSAGES = "messages window";
     public static final String S_UNIT_DAT = "DAT/UNIT.DAT";
     public static final String S_EFSUNIT_BIN = "BIN/EFSUNIT.BIN";
     public static final String S_STRBUILD_DAT = "DAT/STRBUILD.DAT";
@@ -374,7 +385,9 @@ public class C {
     public static final String S_TRANSPORT = "transport";
     public static final String S_LOG_FILE = "phoenixlog.txt";
 
+    public static final Color COLOR_GOLD_BRIGHT = new Color(232, 224, 100);
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
+    public static final Color COLOR_GOLD_DARK = new Color(164, 116, 40);
     public static final Color COLOR_MANOWITZ_TEXT = new Color(92, 44, 16);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);

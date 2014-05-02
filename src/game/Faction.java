@@ -126,17 +126,21 @@ public class Faction implements Serializable {
         return messages;
     }
 
-    public void deleteOldMessages(int year) {
-        ListIterator<Message> iter = messages.listIterator();
-        Message m = null;
-        while (iter.hasNext()) {
-            m = iter.next();
-            if (year > m.year) {
-                iter.remove();
-            }
-        }
-
+    public void deleteOldMessages() {
+        messages.clear();
     }
+
+//    public void deleteOldMessages(int year) {
+//        ListIterator<Message> iter = messages.listIterator();
+//        Message m = null;
+//        while (iter.hasNext()) {
+//            m = iter.next();
+//            if (year > m.getYear()) {
+//                iter.remove();
+//            }
+//        }
+//
+//    }
 
     public static Faction[] createFactions(Game game) {
         Faction[] factions = new Faction[C.NR_FACTIONS];

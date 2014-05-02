@@ -864,6 +864,17 @@ public class Util {
 
     }
 
+    public static void writeSubRect(int[] pixel_data, int[] picture,
+            WritableRaster wr, WindowSize ws, int x, int y, int dx, int dy, int height, int width) {
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                writeRectPixel(x + j, y + i, (dy + i) * (width + 2 * dy) + dx + j,
+                        pixel_data, picture, wr, ws);
+            }
+        }
+    }
+
     public static void writeRect(int[] pixel_data, int[] picture,
             WritableRaster wr, WindowSize ws, int x, int y, int height, int width) {
 

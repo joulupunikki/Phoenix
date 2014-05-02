@@ -355,6 +355,30 @@ public class WindowSize {
     public Font font_large;
     public int font_large_size = 11;
 
+    // messages window message table
+    public int mwmt_w = 300;
+    public int mwmt_h = 400;
+    public int mwmt_x = 50;
+    public int mwmt_y = 50;
+
+    // combat window gal minimap
+    public int cw_gm_w = galactic_map_width;
+    public int cw_gm_h = galactic_map_height;
+    public int cw_gm_x = main_window_width / 2 - cw_gm_w / 2;
+    public int cw_gm_y = main_window_height * 6 / 19;
+
+    // combat window global minimap
+    public int cw_glm_w = globe_map_width;
+    public int cw_glm_h = globe_map_height;
+    public int cw_glm_x = main_window_width / 2 - cw_glm_w / 2;
+    public int cw_glm_y = main_window_height * 11 / 19;
+
+    // combat window planet name
+    public int cw_pn_w = cw_glm_w * 7 / 3;
+    public int cw_pn_h = 15;
+    public int cw_pn_x = main_window_width / 2 - cw_pn_w / 2;
+    public int cw_pn_y = cw_glm_y - 5 - cw_pn_h;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -690,6 +714,26 @@ public class WindowSize {
             mm_sn_x *= 2;
 
             font_large_size *= 2;
+
+            mwmt_w *= 2;
+            mwmt_h *= 2;
+            mwmt_x *= 2;
+            mwmt_y *= 2;
+
+            cw_gm_w *= 2;
+            cw_gm_h *= 2;
+            cw_gm_x *= 2;
+            cw_gm_y *= 2;
+
+            cw_glm_w *= 2;
+            cw_glm_h *= 2;
+            cw_glm_x *= 2;
+            cw_glm_y *= 2;
+
+            cw_pn_w *= 2;
+            cw_pn_h *= 2;
+            cw_pn_x *= 2;
+            cw_pn_y *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

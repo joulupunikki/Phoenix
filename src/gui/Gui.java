@@ -94,8 +94,10 @@ public class Gui extends JFrame {
     private ButtonIcon launch_button_disabled;
     //holds the starmap background and components    
     private SpaceWindow space_window;
-    private GalacticMap galactic_map;
-    private GlobeMap globe_map;
+    private GalacticMap galactic_map;           // gal minimap on space window
+    private GalacticMap galactic_map_cw;        // gal minimap on combat window
+    private GlobeMap globe_map;                 // global minimap on planet window
+    private GlobeMap globe_map_cw;              // global minimap on combat window
     //holds the unit info window/stack window
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
@@ -114,6 +116,8 @@ public class Gui extends JFrame {
     // resource info panel
     private ResourcePanel resource_panel;
     private JDialog resource_window;
+    // for reading messages
+    private Messages messages_window;
     // build city panel
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
@@ -133,6 +137,8 @@ public class Gui extends JFrame {
     private JMenuItem menu_research;
     private JMenuItem menu_build_city;
     private JPopupMenu stack_menu;
+    private JMenu messages_menu;
+    private JMenuItem menu_read_messages;
     private JMenu archives_menu;
     private JMenuItem menu_vol1;
     private JMenuItem menu_vol2;
@@ -309,6 +315,7 @@ public class Gui extends JFrame {
 
         menubar.add(file_menu);
         setUpOrdersMenu();
+        setUpMessagesMenu();
         setUpArchivesMenu();
         if (C.WIZARD_MODE) {
             setUpWizardModeMenu();
@@ -419,26 +426,7 @@ public class Gui extends JFrame {
             }
         });
 
-        galactic_map = new GalacticMap(this, game, ws);
-        space_window.add(galactic_map);
-        galactic_map.setBounds(ws.galactic_map_x_pos, ws.galactic_map_y_pos,
-                ws.galactic_map_width, ws.galactic_map_height);
-        galactic_map.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                state.clickOnGalacticMap(e);
-            }
-        });
-
-        globe_map = new GlobeMap(this, game, ws);
-        planet_window.add(globe_map);
-        globe_map.setBounds(ws.globe_map_x_pos, ws.globe_map_y_pos,
-                ws.globe_map_width, ws.globe_map_height);
-        globe_map.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                state.clickOnGlobeMap(e);
-            }
-        });
-
+        
         /*
          * create unit info window/stack window
          */
@@ -464,15 +452,23 @@ public class Gui extends JFrame {
         combat_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
 
+        setUpMiniMaps();
+
         x_player_screen = new XPlayerScreen(this);
         x_player_screen.setLayout(null);
         x_player_screen.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
+        messages_window = new Messages(this);
+        messages_window.setLayout(null);
+        messages_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
 
         main_windows = new JPanel(new CardLayout());
 
         main_windows.add(main_menu1, C.S_MAIN_MENU1);
         main_windows.add(main_menu, C.S_MAIN_MENU);
+        main_windows.add(messages_window, C.S_MESSAGES);
         main_windows.add(x_player_screen, C.S_X_PLAYER_SCREEN);
         main_windows.add(planet_window, C.S_PLANET_MAP);
         main_windows.add(space_window, C.S_STAR_MAP);
@@ -702,6 +698,21 @@ public class Gui extends JFrame {
         menubar.add(archives_menu);
     }
 
+    public void setUpMessagesMenu() {
+        messages_menu = new JMenu("Messages");
+        menu_read_messages = new JMenuItem("Read Messages");
+        menu_read_messages.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_read_messages.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                messages_window.addMessageData();
+
+                SU.showMessagesWindow();
+            }
+        });
+        messages_menu.add(menu_read_messages);
+        menubar.add(messages_menu);
+    }
+
     public void hideTechDBWindow() {
         tech_db_window.setVisible(false);
     }
@@ -901,6 +912,38 @@ public class Gui extends JFrame {
         setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
                 this.getY() + ws.manowitz_window_y_offset,
                 ws.manowitz_window_w, ws.manowitz_window_h);
+    }
+
+    public void setUpMiniMaps() {
+        galactic_map = new GalacticMap(this, game, ws, true);
+        space_window.add(galactic_map);
+        galactic_map.setBounds(ws.galactic_map_x_pos, ws.galactic_map_y_pos,
+                ws.galactic_map_width, ws.galactic_map_height);
+        galactic_map.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                state.clickOnGalacticMap(e);
+            }
+        });
+
+        globe_map = new GlobeMap(this, game, ws, true);
+        planet_window.add(globe_map);
+        globe_map.setBounds(ws.globe_map_x_pos, ws.globe_map_y_pos,
+                ws.globe_map_width, ws.globe_map_height);
+        globe_map.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                state.clickOnGlobeMap(e);
+            }
+        });
+
+        galactic_map_cw = new GalacticMap(this, game, ws, false);
+        combat_window.add(galactic_map_cw);
+        galactic_map_cw.setBounds(ws.cw_gm_x, ws.cw_gm_y,
+                ws.cw_gm_w, ws.cw_gm_h);
+
+        globe_map_cw = new GlobeMap(this, game, ws, false);
+        combat_window.add(globe_map_cw);
+        globe_map_cw.setBounds(ws.cw_glm_x, ws.cw_glm_y,
+                ws.cw_glm_w, ws.cw_glm_h);
     }
 
     public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
@@ -1593,12 +1636,15 @@ public class Gui extends JFrame {
         combat_window.setGame(game);
         galactic_map.setGame(game);
         globe_map.setGame(game);
+        galactic_map_cw.setGame(game);
+        globe_map_cw.setGame(game);
         build_panel.setGame(game);
         tech_panel.setGame(game);
         tech_db_panel.setGame(game);
         manowitz_panel.setGame(game);
         resource_panel.setGame(game);
         build_city_panel.setGame(game);
+        messages_window.setGame(game);
         pbem_gui.setPBEMRef(game);
         State.setGameRef(game);
         Comp.setGame(game);
@@ -1930,6 +1976,10 @@ public class Gui extends JFrame {
         return pallette;
     }
 
+    public Messages getMessages() {
+        return messages_window;
+    }
+
     public JPanel getMainWindows() {
         return main_windows;
     }
@@ -1944,6 +1994,10 @@ public class Gui extends JFrame {
 
     public JPanel getSpaceWindow() {
         return space_window;
+    }
+
+    public CombatWindow getCombatWindow() {
+        return combat_window;
     }
 
     public void setCurrentState(State s) {

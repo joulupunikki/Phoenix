@@ -4,9 +4,9 @@
  */
 package util;
 
-import gui.BuildCityPanel;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.WritableRaster;
 import javax.swing.JDialog;
 
@@ -238,4 +238,12 @@ public class UtilG {
         dialog.setLocation((c_size.width - d_size.width) / 2, (c_size.height - d_size.height) / 2);
     }
 
+    public static void drawFrameRect(Graphics g, int x, int y, int w, int h) {
+        g.setColor(C.COLOR_GOLD_DARK);
+        g.drawLine(x - 1, y + h, x + w, y + h);
+        g.drawLine(x + w, y - 1, x + w, y + h);
+        g.setColor(C.COLOR_GOLD_BRIGHT);
+        g.drawLine(x - 1, y - 1, x + w, y - 1);
+        g.drawLine(x - 1, y - 1, x - 1, y + h);
+    }
 }

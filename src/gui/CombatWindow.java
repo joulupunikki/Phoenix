@@ -18,11 +18,14 @@ import java.util.ListIterator;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import state.CW1;
 import state.CW2;
 import util.C;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -42,6 +45,7 @@ public class CombatWindow extends JPanel {
 // 
     private JCheckBox[] hc;
     private JButton fight;
+    private JLabel planet_name;
 
     public CombatWindow(Gui gui) {
         this.gui = gui;
@@ -63,6 +67,13 @@ public class CombatWindow extends JPanel {
 
     }
 
+    public void initWindow() {
+        int p_idx = game.getBattle().getCombatStack("b").get(0).p_idx;
+        String name = game.getPlanet(p_idx).name;
+        System.out.println("name = " + name);
+        planet_name.setText(name);
+    }
+
     public void setUpWindow() {
         fight = new JButton("Do Combat");
         fight.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
@@ -80,9 +91,35 @@ public class CombatWindow extends JPanel {
                 gui.getCurrentState().pressFightButton();
             }
         });
+
+        planet_name = new JLabel();
+        planet_name.setBounds(ws.cw_pn_x, ws.cw_pn_y, ws.cw_pn_w, ws.cw_pn_h);
+//        planet_name.setBounds(10, 10, 100, 15);
+        planet_name.setHorizontalAlignment(SwingConstants.CENTER);
+        this.add(planet_name);
+
     }
 
     public void renderCombatWindow(Graphics g) {
+        drawUnits(g);
+        drawFrameRect(g);
+    }
+
+    /**
+     * Draw golden frames around window items.
+     *
+     * @param g
+     */
+    public void drawFrameRect(Graphics g) {
+        UtilG.drawFrameRect(g, ws.cw_gm_x, ws.cw_gm_y, ws.cw_gm_w, ws.cw_gm_h);
+        UtilG.drawFrameRect(g, ws.cw_glm_x, ws.cw_glm_y, ws.cw_glm_w, ws.cw_glm_h);
+        UtilG.drawFrameRect(g, ws.combat_window_stack_display_x, ws.combat_window_stack_display_y,
+                ws.combat_window_stack_display_w, ws.combat_window_stack_display_h);
+        UtilG.drawFrameRect(g, ws.combat_window_stack_display_x2, ws.combat_window_stack_display_y,
+                ws.combat_window_stack_display_w, ws.combat_window_stack_display_h);
+    }
+
+    public void drawUnits(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
         BufferedImage bi = Util.loadImage("pcx/bg0.pcx", ws.is_double, pallette, 640, 480);
@@ -123,6 +160,11 @@ public class CombatWindow extends JPanel {
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr_att_u, color);
                 Util.drawUnitIconEdges(wr_att_u, ws);
+//                if (e.health <= 0) {
+//                    Util.writeSubRect(pixel_data, skull, wr_att_u, ws, 0, 0, 3, 3, C.SKULL_SIDE - 6, C.SKULL_SIDE - 6);
+//                } else if (e.routed) {
+//                    Util.writeSubRect(pixel_data, flag, wr_att_u, ws, 0, 0, 3, 3, C.SKULL_SIDE - 6, C.SKULL_SIDE - 6);
+//                }
                 Util.writeUnit(pixel_data, e.type, unit_icons, wr_att_u, ws);
 
                 int dx = (int) ((0.15 + j * 1.15) * ws.unit_icon_size);
@@ -130,7 +172,6 @@ public class CombatWindow extends JPanel {
                 wr_att.setRect(dx, dy, wr_att_u);
 
 //                Util.drawUnitDetails(g, game, e, dx, dy);
-
                 dx -= ws.skull_offset;
                 dy -= ws.skull_offset;
                 if (ws.is_double) {
@@ -192,6 +233,11 @@ public class CombatWindow extends JPanel {
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr_att_u, color);
                 Util.drawUnitIconEdges(wr_att_u, ws);
+//                if (e.health <= 0) {
+//                    Util.writeSubRect(pixel_data, skull, wr_att_u, ws, 0, 0, 3, 3, C.SKULL_SIDE - 6, C.SKULL_SIDE - 6);
+//                } else if (e.routed) {
+//                    Util.writeSubRect(pixel_data, flag, wr_att_u, ws, 0, 0, 3, 3, C.SKULL_SIDE - 6, C.SKULL_SIDE - 6);
+//                }
                 Util.writeUnit(pixel_data, e.type, unit_icons, wr_att_u, ws);
 
                 int dx = (int) ((0.15 + j * 1.15) * ws.unit_icon_size);
