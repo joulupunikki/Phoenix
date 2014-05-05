@@ -379,6 +379,10 @@ public class WindowSize {
     public int cw_pn_x = main_window_width / 2 - cw_pn_w / 2;
     public int cw_pn_y = cw_glm_y - 5 - cw_pn_h;
 
+    // messages window view replays
+    public int mw_vr_w = 125;
+    public int mw_vr_x = fw_eb_x - mw_vr_w + fw_eb_w;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -734,6 +738,9 @@ public class WindowSize {
             cw_pn_h *= 2;
             cw_pn_x *= 2;
             cw_pn_y *= 2;
+
+            mw_vr_w *= 2;
+            mw_vr_x *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

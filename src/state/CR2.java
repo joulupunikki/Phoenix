@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package state;
 
+import javax.swing.JTable;
 import util.C;
 
 /**
@@ -24,9 +24,24 @@ public class CR2 extends State {
         return instance;
     }
 
-    public void pressFightButton() {
+    public void pressExitButton() {
         CR1.updateStacks();
+        gui.getCombatWindow().toggleButtons(false, true);
+        gui.getCombatWindow().setFightText("Do Combat");
         SU.setWindow(C.S_MESSAGES);
         gui.setCurrentState(MsgsW.get());
+
     }
+
+    public void pressFightButton() {
+        CR1.updateStacks();
+        JTable messages = gui.getMessages().getMessageTable();
+        int row = gui.getMessages().findNextReplay(-2);
+        gui.getMessages().setReplay(row);
+        gui.getCombatWindow().toggleButtons(false, true);
+        gui.getCombatWindow().setFightText("Do Combat");
+        gui.getCombatWindow().repaint();
+        gui.setCurrentState(CR1.get());
+    }
+
 }

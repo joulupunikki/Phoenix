@@ -130,23 +130,7 @@ public class SU extends State {
         return visible;
     }
 
-    public static void clickOnPlanetMapButton3(Point p) {
-        int map_point_x = p.x;
-        int map_point_y = p.y;
-
-        Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y);
-        List<Unit> stack = hex.getStack();
-
-        if (!stack.isEmpty()) {
-
-            if (isSpotted(stack)) {
-                game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
-                stack.get(0).selected = true;
-                gui.setCurrentState(PW2.get());
-            }
-        }
-
-        //if destination selected gui.setCurrentState(PW3.get());
+    public static void setPlanetMapOrigin(int map_point_x, int map_point_y) {
         int map_origin_x = map_point_x - C.PLANET_MAP_ORIGIN_X_OFFSET;
         int map_origin_y = map_point_y - C.PLANET_MAP_ORIGIN_Y_OFFSET;
 
@@ -170,12 +154,79 @@ public class SU extends State {
         gui.getPlanetWindow().repaint();
 
         System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
+    }
+
+    public static void clickOnPlanetMapButton3(Point p) {
+        int map_point_x = p.x;
+        int map_point_y = p.y;
+
+        Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(map_point_x, map_point_y);
+        List<Unit> stack = hex.getStack();
+
+        if (!stack.isEmpty()) {
+
+            if (isSpotted(stack)) {
+                game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
+                stack.get(0).selected = true;
+                gui.setCurrentState(PW2.get());
+            }
+        }
+
+        //if destination selected gui.setCurrentState(PW3.get());
+        setPlanetMapOrigin(map_point_x, map_point_y);
+//        int map_origin_x = map_point_x - C.PLANET_MAP_ORIGIN_X_OFFSET;
+//        int map_origin_y = map_point_y - C.PLANET_MAP_ORIGIN_Y_OFFSET;
+//
+//        // roll-over x at x = 44
+//        if (map_origin_x < 0) {
+//            map_origin_x = C.PLANET_MAP_WIDTH + map_origin_x;
+//        } else if (map_origin_x > 43) {
+//            map_origin_x = map_origin_x - C.PLANET_MAP_WIDTH;
+//        }
+//
+//        // limit y to between 0 and (32 - 10)
+//        if (map_origin_y < 0) {
+//            map_origin_y = 0;
+//        } else if (map_origin_y > 32 - 10) {
+//            map_origin_y = 32 - 10;
+//        }
+//
+//        game.setMapOrigin(new Point(map_origin_x, map_origin_y));
+//
+//        //draw new map location
+//        gui.getPlanetWindow().repaint();
+//
+//        System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
 
         Structure city = hex.getStructure();
         if (stack.isEmpty() && city != null && city.owner == game.getTurn()) {
             gui.showCityDialog(game.getCurrentPlanetNr(), city);
         }
 
+    }
+
+    public static void setSpaceMapOrigin(int x, int y) {
+        int space_map_x_origin_offset = ws.space_map_width / (2 * ws.space_map_square_width);
+        int space_map_y_origin_offset = ws.space_map_height / (2 * ws.space_map_square_height);
+
+        x -= space_map_x_origin_offset;
+        y -= space_map_y_origin_offset;
+
+        if (x < 0) {
+            x = 0;
+        } else if (C.STAR_MAP_WIDTH - 15 < x) {
+            x = C.STAR_MAP_WIDTH - 15;
+        }
+        
+        if (y < 0) {
+            y = 0;
+        } else if (C.STAR_MAP_HEIGHT - 13 < y) {
+            y = C.STAR_MAP_HEIGHT - 13;
+        }
+
+        game.setSpaceMapOrigin(new Point(x, y));
+
+        gui.getSpaceWindow().repaint();
     }
 
     public static Point getSpaceMapClickPoint(MouseEvent e) {
@@ -234,28 +285,28 @@ public class SU extends State {
         }
 
         System.out.println("(x, y): " + x + ", " + y);
-
-        int space_map_x_origin_offset = ws.space_map_width / (2 * ws.space_map_square_width);
-        int space_map_y_origin_offset = ws.space_map_height / (2 * ws.space_map_square_height);
-
-        x -= space_map_x_origin_offset;
-        y -= space_map_y_origin_offset;
-
-        if (x < 0) {
-            x = 0;
-        } else if (C.STAR_MAP_WIDTH - 15 < x) {
-            x = C.STAR_MAP_WIDTH - 15;
-        }
-
-        if (y < 0) {
-            y = 0;
-        } else if (C.STAR_MAP_HEIGHT - 13 < y) {
-            y = C.STAR_MAP_HEIGHT - 13;
-        }
-
-        game.setSpaceMapOrigin(new Point(x, y));
-
-        gui.getSpaceWindow().repaint();
+        setSpaceMapOrigin(x, y);
+//        int space_map_x_origin_offset = ws.space_map_width / (2 * ws.space_map_square_width);
+//        int space_map_y_origin_offset = ws.space_map_height / (2 * ws.space_map_square_height);
+//
+//        x -= space_map_x_origin_offset;
+//        y -= space_map_y_origin_offset;
+//
+//        if (x < 0) {
+//            x = 0;
+//        } else if (C.STAR_MAP_WIDTH - 15 < x) {
+//            x = C.STAR_MAP_WIDTH - 15;
+//        }
+//
+//        if (y < 0) {
+//            y = 0;
+//        } else if (C.STAR_MAP_HEIGHT - 13 < y) {
+//            y = C.STAR_MAP_HEIGHT - 13;
+//        }
+//
+//        game.setSpaceMapOrigin(new Point(x, y));
+//
+//        gui.getSpaceWindow().repaint();
 
     }
 

@@ -180,6 +180,7 @@ public class Gui extends JFrame {
     private boolean loadsave_win_up;
     private JDialog loadsave_dialog;
     private CityDialog city_dialog;
+    private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
         // set swing component default colors
@@ -1388,6 +1389,10 @@ public class Gui extends JFrame {
 
             loadsave_dialog.setVisible(true);
 
+            if (!load_succesfull) {
+                return;
+            }
+
             SU.setWindow(C.S_X_PLAYER_SCREEN);
             setGameReferences();
             game.setPath(null);
@@ -1523,11 +1528,12 @@ public class Gui extends JFrame {
 //            } catch (Exception e) {
 //                ;
 //            }
-
+            load_succesfull = true; // assume true
             try (FileInputStream in = new FileInputStream(load_name);
                     GZIPInputStream gis = new GZIPInputStream(in);
                     ObjectInputStream s = new ObjectInputStream(gis)) {
-                game = (Game) s.readObject();
+                Game tmp = (Game) s.readObject();
+                game = tmp;
                 System.out.println("after read object");
 //                space_map.setGame(game);
 //                planet_map.setGame(game);
@@ -1548,6 +1554,7 @@ public class Gui extends JFrame {
 //                Comp.setGame(game);
 
             } catch (Throwable ex) {
+                load_succesfull = false;
                 Util.logEx(null, ex, "Load game failed");
                 showInfoWindow("Load failed");
             }

@@ -1234,6 +1234,9 @@ public class Game implements Serializable {
         test:
         for (int i = 0; i < neighbors.length && !found; i++) {
             hex = neighbors[i];
+            if (hex == null) {
+                continue;
+            }
             Structure city_h = hex.getStructure();
             if (city_h != null) {
                 if (city_h.owner != turn) {

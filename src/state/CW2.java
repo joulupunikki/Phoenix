@@ -32,6 +32,7 @@ public class CW2 extends State {
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
         main_game_state = null;
+        gui.getCombatWindow().setFightText("Do Combat");
         if (game.getSelectedStack().isEmpty()) {
             game.setSelectedPointFaction(null, -1, null, null);
             if (gui.getCurrentState() instanceof PW) {

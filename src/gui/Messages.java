@@ -5,6 +5,9 @@
  */
 package gui;
 
+import galaxyreader.Planet;
+import galaxyreader.Structure;
+import galaxyreader.Unit;
 import game.CombatReport;
 import game.Game;
 import game.Message;
@@ -30,7 +33,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+import state.PW1;
 import state.SU;
+import state.SW1;
 import util.C;
 import util.Util;
 import util.WindowSize;
@@ -46,7 +51,8 @@ public class Messages extends JPanel {
     private Game game;
     private JTable message_table;
     private JButton exit;
-    private static Object[] message_table_header = {"Message", "Year"};
+    private JButton view_replays;
+    private static Object[] message_table_header = {"Message", "Location"};
     private CombatReport current_cmbt_report;
 
     public Messages(Gui gui) {
@@ -70,10 +76,35 @@ public class Messages extends JPanel {
                 gui.getCurrentState().pressExitButton();
             }
         });
+        view_replays = new JButton("View Combat Replays");
+        view_replays.setFont(ws.font_default);
+        view_replays.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(view_replays);
+        view_replays.setBounds(ws.mw_vr_x, ws.fw_eb_y - 5 - ws.fw_eb_h,
+                ws.mw_vr_w, ws.fw_eb_h);
+        view_replays.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int next_replay = findNextReplay(-1);
+                if (next_replay > -1) {
+                    setReplay(next_replay);
+                    SU.showCombatReplay();
+                }
+            }
+        });
+
+    }
+
+    public JTable getMessageTable() {
+        return message_table;
     }
 
     public CombatReport getCombatReport() {
         return current_cmbt_report;
+    }
+
+    public void setCombatReport(CombatReport cr) {
+        current_cmbt_report = cr;
     }
 
     public void setGame(Game game) {
@@ -95,6 +126,37 @@ public class Messages extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
     }
 
+    /**
+     * Return row of next combat replay or -1 of no more replays. If row > -2
+     * start search form row + 1.
+     *
+     * @return
+     */
+    public int findNextReplay(int row) {
+        if (row == -2) {
+            row = message_table.getSelectedRow();
+        }
+        int next_replay = -1;
+        for (int i = row + 1; i < message_table.getRowCount(); i++) {
+            C.Msg message = (C.Msg) message_table.getValueAt(i, 0);
+            if (message == C.Msg.COMBAT_REPORT) {
+                next_replay = i;
+                break;
+            }
+
+        }
+        return next_replay;
+    }
+
+    public void setReplay(int row) {
+        Message msg = (Message) message_table.getValueAt(row, 1);
+        CombatReport report = (CombatReport) msg.getSource();
+        game.getBattle().setCombatStacks(report.attacker, report.defender);
+        System.out.println("combat stacks set");
+        current_cmbt_report = report;
+        message_table.setRowSelectionInterval(row, row);
+    }
+
     public void addMessageTable() {
         message_table = new JTable();
         message_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -114,33 +176,7 @@ public class Messages extends JPanel {
 //        queue_table.setDefaultRenderer(Integer.class, new QueueTableRenderer());
         message_table.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                JTable table = (JTable) e.getSource();
-                Point p = e.getPoint();
-                int row = table.rowAtPoint(p);
-                if (row == -1) {
-                    return;
-                }
-                if (e.getClickCount() == 1) {
-                    System.out.println("Single clicked row " + row);
-                }
-                if (e.getClickCount() == 2) {
-                    System.out.println("Double clicked row " + row);
-                    C.Msg msg_type = (C.Msg) message_table.getValueAt(row, 0);
-                    Message msg = (Message) message_table.getValueAt(row, 1);
-                    switch (msg_type) {
-                        case COMBAT_REPORT:
-
-                            CombatReport report = (CombatReport) msg.getSource();
-                            game.getBattle().setCombatStacks(report.attacker, report.defender);
-                            System.out.println("combat stacks set");
-                            current_cmbt_report = report;
-                            SU.showCombatReplay();
-                            break;
-                        default:
-                            break;
-//                            throw new AssertionError();
-                    }
-                }
+                gui.getCurrentState().clickOnWindow(e);
             }
         });
     }
@@ -210,7 +246,24 @@ public class Messages extends JPanel {
 
             String val = "";
             if (value instanceof Message) {
+                Message message = (Message) value;
+                Object source = message.getSource();
+                if (source instanceof Planet) {
 
+                    val = ((Planet) source).name;
+                } else if (source instanceof Structure) {
+                    Structure city = (Structure) source;
+                    val = game.getPlanet(city.p_idx).name + "(" + city.x + ","
+                            + city.y + ")";
+                } else if (source instanceof CombatReport) {
+                    CombatReport report = (CombatReport) source;
+                    Unit unit = report.defender.get(0);
+                    val = game.getPlanet(unit.p_idx).name;
+                    if (!unit.in_space) {
+                        val += " (" + unit.x + ","
+                                + unit.y + ")";
+                    }
+                }
             } else {
                 C.Msg msg = (C.Msg) value;
                 switch (msg) {
@@ -230,8 +283,13 @@ public class Messages extends JPanel {
                         throw new AssertionError();
                 }
             }
-            setBackground(c_b);
-            setForeground(c_f);
+            if (isSelected) {
+                setBackground(c_f);
+                setForeground(c_b);
+            } else {
+                setBackground(c_b);
+                setForeground(c_f);
+            }
             setFont(ws.font_default);
             setText(val);
 

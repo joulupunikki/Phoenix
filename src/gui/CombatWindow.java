@@ -45,6 +45,7 @@ public class CombatWindow extends JPanel {
 // 
     private JCheckBox[] hc;
     private JButton fight;
+    private JButton exit;
     private JLabel planet_name;
 
     public CombatWindow(Gui gui) {
@@ -74,6 +75,22 @@ public class CombatWindow extends JPanel {
         planet_name.setText(name);
     }
 
+    public void toggleButtons(boolean exit_visible, boolean fight_enabled) {
+        if (exit_visible) {
+            this.add(exit);
+        } else {
+            this.remove(exit);
+        }
+        fight.setEnabled(fight_enabled);
+
+    }
+
+    public void setFightText(String text) {
+
+        fight.setText(text);
+
+    }
+
     public void setUpWindow() {
         fight = new JButton("Do Combat");
         fight.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
@@ -89,6 +106,22 @@ public class CombatWindow extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gui.getCurrentState().pressFightButton();
+            }
+        });
+
+        exit = new JButton("Exit");
+        exit.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
+
+        exit.setBackground(Color.BLACK);
+        exit.setForeground(C.COLOR_GOLD);
+
+//        this.add(fight);
+        exit.setBounds(ws.fw_eb_x, ws.fw_eb_y, ws.fw_eb_w, ws.fw_eb_h);
+        exit.setEnabled(true);
+        exit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressExitButton();
             }
         });
 

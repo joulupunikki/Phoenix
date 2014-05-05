@@ -21,6 +21,7 @@ public class CW1 extends State {
 
     public void pressFightButton() {
         game.resolveGroundBattleFight();
+        gui.getCombatWindow().setFightText("Combat Done");
         gui.setCurrentState(CW2.get());
     }
 

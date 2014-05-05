@@ -29,10 +29,19 @@ public class CR1 extends State {
         updateStacks();
         // not needed, Battle already holds the references
 //        game.getBattle().setCombatStacks(report.attacker, report.defender);
-        gui.getMessages().repaint();
+        if (gui.getMessages().findNextReplay(-2) == -1) {
+            gui.getCombatWindow().toggleButtons(true, false);
+        } else {
+            gui.getCombatWindow().toggleButtons(true, true);
+        }
+        gui.getCombatWindow().setFightText("Next Replay");
+        gui.getCombatWindow().repaint();
         gui.setCurrentState(CR2.get());
     }
 
+    /**
+     * Swaps combat report unit stats between pre and post combat states.
+     */
     public static void updateStacks() {
         CombatReport report = gui.getMessages().getCombatReport();
         List<Unit> stack = report.attacker;
