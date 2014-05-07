@@ -18,12 +18,14 @@ public class Message implements Serializable {
     private C.Msg type;
     private int year;
     private Object source;
+    private boolean read;
 
     public Message(String msg_txt, C.Msg type, int year, Object source) {
         this.msg_txt = msg_txt;
         this.type = type;
         this.year = year;
         this.source = source;
+        this.read = false;
     }
 
     /**
@@ -52,6 +54,20 @@ public class Message implements Serializable {
      */
     public Object getSource() {
         return source;
+    }
+
+    /**
+     * @return the read
+     */
+    public boolean isRead() {
+        return read;
+    }
+
+    /**
+     * @param read the read to set
+     */
+    public void setRead(boolean read) {
+        this.read = read;
     }
 
 }

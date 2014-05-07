@@ -150,6 +150,7 @@ public class Messages extends JPanel {
 
     public void setReplay(int row) {
         Message msg = (Message) message_table.getValueAt(row, 1);
+        msg.setRead(true);
         CombatReport report = (CombatReport) msg.getSource();
         game.getBattle().setCombatStacks(report.attacker, report.defender);
         System.out.println("combat stacks set");
@@ -243,7 +244,10 @@ public class Messages extends JPanel {
                 int row, int column) {
             Color c_b = Color.BLACK;
             Color c_f = C.COLOR_GOLD;
-
+            Message ms = (Message) table.getValueAt(row, 1);
+            if (ms.isRead()) {
+                c_f = Color.LIGHT_GRAY;
+            }
             String val = "";
             if (value instanceof Message) {
                 Message message = (Message) value;

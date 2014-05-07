@@ -427,7 +427,6 @@ public class Gui extends JFrame {
             }
         });
 
-        
         /*
          * create unit info window/stack window
          */
@@ -1926,6 +1925,23 @@ public class Gui extends JFrame {
         return animation_blink;
     }
 
+    public void setDefaultUncaughtExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(Thread t, Throwable e) {
+                Util.logEx(t, e);
+                showInfoWindow("Uncaught exception has occurred and details have"
+                        + " been written to phoenixlog.txt. This indicates a bug."
+                        + " Please email a short description of where you were in"
+                        + " the game and what you were doing and contents of"
+                        + " phoenixlog.txt to joulupunikki@gmail.com and put \"PHOENIX BUG\""
+                        + " in the subject line. You may continue playing the game"
+                        + " but the game is possibly in an inconsistent state.");
+            }
+        });
+    }
+
     public void setStateReferences() {
         State.setReferences(this, game, ws);
     }
@@ -2025,7 +2041,9 @@ public class Gui extends JFrame {
     private static void createAndShowGUI() {
         Gui gui = new Gui();
         gui.setStateReferences();
+        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
+//        throw new AssertionError(); // for testing exception handler
     }
 
     /**

@@ -27,6 +27,7 @@ public class CR2 extends State {
     public void pressExitButton() {
         CR1.updateStacks();
         gui.getCombatWindow().toggleButtons(false, true);
+        gui.getMessages().getMessageTable().clearSelection();
         gui.getCombatWindow().setFightText("Do Combat");
         SU.setWindow(C.S_MESSAGES);
         gui.setCurrentState(MsgsW.get());

@@ -54,6 +54,7 @@ public class MsgsW extends State {
             System.out.println("Double clicked row " + row);
             C.Msg msg_type = (C.Msg) message_table.getValueAt(row, 0);
             Message msg = (Message) message_table.getValueAt(row, 1);
+            msg.setRead(true);
             if (col == 0) {
                 switch (msg_type) {
                     case COMBAT_REPORT:
