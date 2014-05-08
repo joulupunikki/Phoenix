@@ -747,15 +747,13 @@ public class PlanetMap extends JPanel {
                         List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
                         if (stack != null && Util.stackSize(stack) > 0) {
                             Unit e = null;
+                            List<Unit> spotted = new LinkedList<>();
                             for (Unit unit : stack) {
-                                if (unit.selected) {
-                                    e = unit;
-                                    break;
+                                if (unit.spotted[game.getTurn()]) {
+                                    spotted.add(unit);
                                 }
                             }
-                            if (e == null) {
-                                e = stack.get(0);
-                            }
+                            e = spotted.get(0);
                             Util.fillRaster(wr, Util.getOwnerColor(e.owner));
                             Util.drawUnitIconEdges(wr, ws);
                             Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
@@ -763,7 +761,7 @@ public class PlanetMap extends JPanel {
                             Graphics2D g2d = (Graphics2D) g;
 
                             g2d.drawImage(bi, null, dx, dy);
-                            Util.writeUnitCount(g2d, ws, Util.stackSize(stack), dx, dy);
+                            Util.writeUnitCount(g2d, ws, Util.stackSize(spotted), dx, dy);
 
                         }
                     }

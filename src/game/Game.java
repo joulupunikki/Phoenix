@@ -1544,10 +1544,8 @@ public class Game implements Serializable {
                 selected.add(unit);
             }
         }
-        for (Unit unit : stack2) {
-            unit.selected = false;
+        Util.unSelectAll(stack2);
 
-        }
         boolean own_units = true;
         if (!stack2.isEmpty() && selected.get(0).owner != stack2.get(0).owner) {
             own_units = false;
@@ -1582,10 +1580,7 @@ public class Game implements Serializable {
                 selected.add(unit);
             }
         }
-        for (Unit unit : stack2) {
-            unit.selected = false;
-
-        }
+        Util.unSelectAll(stack2);
 
         if (Util.stackSize(selected) + Util.stackSize(stack2) <= 20) {
             for (Unit unit : selected) {
@@ -1618,9 +1613,7 @@ public class Game implements Serializable {
 //        System.out.println("faction = " + faction);
         Planet planet = planets.get(getCurrentPlanetNr());
         List<Unit> target_stack = planet.space_stacks[faction];
-        for (Unit unit : target_stack) {
-            unit.selected = false;
-        }
+        Util.unSelectAll(target_stack);
 
         if (Util.stackSize(selected) + Util.stackSize(target_stack) <= 20) {
             subMovePointsSpace(selected);
@@ -1656,10 +1649,7 @@ public class Game implements Serializable {
                 selected.add(unit);
             }
         }
-        for (Unit unit : stack2) {
-            unit.selected = false;
-
-        }
+        Util.unSelectAll(stack2);
 
         if (Util.stackSize(selected) + Util.stackSize(stack2) <= 20) {
             subMovePointsSpace(selected);

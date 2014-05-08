@@ -1981,4 +1981,10 @@ public class Util {
         return c;
     }
 
+    public static void unSelectAll(List<Unit> stack) {
+        for (Unit unit : xS(stack)) {
+            unit.selected = false;
+        }
+    }
+
 }

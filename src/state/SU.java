@@ -167,7 +167,20 @@ public class SU extends State {
 
             if (isSpotted(stack)) {
                 game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
-                stack.get(0).selected = true;
+//                stack.get(0).selected = true;
+                List<Unit> spotted = new LinkedList<>();
+                boolean selected = false;
+                for (Unit unit : stack) {
+                    if (unit.spotted[game.getTurn()]) {
+                        spotted.add(unit);
+                        if (unit.selected) {
+                            selected = true;
+                        }
+                    }
+                }
+                if (!selected) {
+                    selectUnit(spotted.get(0), true);
+                }
                 gui.setCurrentState(PW2.get());
             }
         }
