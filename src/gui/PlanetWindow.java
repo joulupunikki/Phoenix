@@ -287,6 +287,7 @@ public class PlanetWindow extends JPanel {
                                 enable_launch = true;
                             } else {
                                 enable_launch = false;
+                                break;
                             }
                         }
                     }

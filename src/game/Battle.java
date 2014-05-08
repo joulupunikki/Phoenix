@@ -401,6 +401,11 @@ public class Battle implements Serializable {
         Hex hex = neighbours[r_pos];
         hex.getStack().add(unit);
         stack_b.remove(unit);
+        // unspot and respot
+        List<Unit> stack = new LinkedList<>();
+        stack.add(unit);
+        game.unSpot(stack);
+        game.getHexProc().spotProc(hex, stack);
         game.setUnitCoords(false, current_planet, hex.getX(), hex.getY(), unit);
         if (it.hasNext()) {
             return it.next();
@@ -717,10 +722,22 @@ public class Battle implements Serializable {
 
     }
 
+    public void spotAllUnits() {
+        int fact_a = combat_stack_a.get(0).owner;
+        int fact_b = combat_stack_b.get(0).owner;
+        for (Unit unit : combat_stack_a) {
+            unit.spotted[fact_b] = true;
+        }
+        for (Unit unit : combat_stack_b) {
+            unit.spotted[fact_a] = true;
+        }
+    }
+
     public void resolveGroundBattleFight() {
         CombatReport report = new CombatReport(combat_stack_a.size(), combat_stack_b.size());
         //record combat report combat preconditions combatReportPre()
         combatReportPre(report);
+        spotAllUnits();
         doCombat(combat_stack_a, combat_stack_b);
         assignDamage(combat_stack_a, combat_stack_b);
         //record combat report combat postconditions, send message combatReportPost()

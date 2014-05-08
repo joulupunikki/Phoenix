@@ -1067,6 +1067,7 @@ public class Game implements Serializable {
         Unit u = iter.next();
         while (u != null) {
             changeOwnerOfUnit(turn, u);
+            u.spotted[turn] = true;
             u = iter.next();
         }
     }
@@ -1492,7 +1493,7 @@ public class Game implements Serializable {
     public void unSpot(List<Unit> stack) {
         for (Unit unit : stack) {
             for (int i = 0; i < unit.spotted.length; i++) {
-                if (i != getTurn()) {
+                if (i != unit.owner) {
                     unit.spotted[i] = false;
                 }
             }
