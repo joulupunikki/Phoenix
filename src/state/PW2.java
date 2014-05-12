@@ -74,6 +74,9 @@ public class PW2 extends PW {
         if (stack.get(0).owner != game.getTurn()) {
             return;
         }
+        if (SU.disembarkNavalCargo(p) || SU.embarkNavalCargo(p)) {
+            return;
+        }
         SU.findPath(p);
         if (game.getPath() != null) {
             gui.setCurrentState(PW3.get());

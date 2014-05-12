@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import util.C;
@@ -230,7 +231,7 @@ public class SU extends State {
         } else if (C.STAR_MAP_WIDTH - 15 < x) {
             x = C.STAR_MAP_WIDTH - 15;
         }
-        
+
         if (y < 0) {
             y = 0;
         } else if (C.STAR_MAP_HEIGHT - 13 < y) {
@@ -1143,4 +1144,218 @@ public class SU extends State {
         }
     }
 
+
+    /**
+     * Embark cargo to naval cargo carriers.
+     *
+     * @param p
+     * @return true iff normal movement calculations should not be done
+     * afterwards
+     */
+    public static boolean embarkNavalCargo(Point p) {
+        // test for target hex adjacency and origin hex not ocean and target ocean
+        Point q = game.getSelectedPoint();
+        if (p.equals(q)) {
+            return false;
+        }
+        Hex origin_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), q.x, q.y);
+        if (origin_hex.getTerrain(C.OCEAN)) {
+            return false;
+        }
+        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1);
+        Hex target_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), p.x, p.y);
+        if (!adjacent.contains(target_hex)) {
+            return false;
+        }
+        if (!target_hex.getTerrain(C.OCEAN)) {
+            return false;
+        }
+        // if cargo ships in target stack, capacity is tested later
+        List<Unit> target_stack = target_hex.getStack();
+        int capacity = 0;
+        boolean is_carrier = false;
+        for (Unit unit : target_stack) {
+            if (unit.move_type == C.MoveType.NAVAL && unit.type_data.cargo > 0) {
+                capacity += unit.type_data.cargo - unit.cargo_list.size();
+                is_carrier = true;
+            }
+        }
+        if (!is_carrier) {
+            return false;
+        }
+        // if all units can be cargo and have at least 1 move left
+        List<Unit> origin_stack = origin_hex.getStack();
+        List<Unit> selected = new LinkedList<>();
+        for (Unit unit : origin_stack) {
+            if (unit.selected) {
+                selected.add(unit);
+            }
+        }
+        boolean can_b_cargo = true;
+        boolean move_left = true;
+        boolean all_ocean_going = true;
+        for (Unit unit : selected) {
+            if (unit.type_data.can_b_cargo == 0) {
+                can_b_cargo = false;
+            }
+            if (unit.move_points < 1) {
+                move_left = false;
+            }
+            if (target_hex.getMoveCost(unit.move_type.ordinal()) == 0) {
+                all_ocean_going = false;
+            }
+        }
+
+        if (all_ocean_going) {
+            Object[] options = {"O.K.", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(gui,
+                    "Do you want to load cargo?",
+                    "",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    options,
+                    options[1]);
+            if (choice == JOptionPane.NO_OPTION) {
+                return false;
+            }
+        }
+        // capacity was calculated earlier but tested here for capacity > 0
+        if (capacity == 0) {
+            gui.showInfoWindow("Ships fully loaded");
+            return true;
+        }
+
+        if (!can_b_cargo) {
+            gui.showInfoWindow("Non cargo units in stack");
+            return true;
+        }
+        if (!move_left) {
+            return true;
+        }
+        // if too many units
+        if (selected.size() > capacity) {
+            gui.showInfoWindow("Too many units to fit on transport");
+            return true;
+        }
+        // if stack size > 20
+        if (selected.size() + Util.stackSize(target_stack) > C.STACK_SIZE) {
+            gui.showInfoWindow("Too many units in the destination area.");
+            return true;
+        }
+        // embark units and remove from origin stack
+        ListIterator<Unit> cargo_it = selected.listIterator();
+        ListIterator<Unit> carrier_it = target_stack.listIterator();
+        Unit carrier = carrier_it.next();
+        Unit cargo = null;
+        while (true) {
+            if (cargo == null) {
+                if (cargo_it.hasNext()) {
+                    cargo = cargo_it.next();
+                } else {
+                    break;
+                }
+            }
+            if (carrier.type_data.cargo > 0 && carrier.type_data.cargo - carrier.cargo_list.size() > 0) {
+                carrier.embark(cargo);
+                cargo.move_points = 0;
+                cargo = null;
+            } else {
+                carrier = carrier_it.next();
+            }
+        }
+        origin_hex.minusStack(selected);
+        if (origin_hex.getStack().isEmpty()) {
+            game.setSelectedPoint(null, -1);
+            gui.setCurrentState(PW1.get());
+        }
+        return true;
+    }
+
+
+    /**
+     * Unload cargo from naval transport.
+     *
+     * @param p
+     * @return true iff normal movement calculations should not be done
+     * afterwards
+     */
+    public static boolean disembarkNavalCargo(Point p) {
+        // test that target hex is not ocean
+        Hex target_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), p.x, p.y);
+        if (target_hex.getTerrain(C.OCEAN)) {
+            return false;
+        }
+        // test for target hex adjacency
+        Point q = game.getSelectedPoint();
+        if (p.equals(q)) {
+            return false;
+        }
+        Hex origin_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), q.x, q.y);
+        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1);
+        if (!adjacent.contains(target_hex)) {
+            return false;
+        }
+        // are embarked units on a naval carrier
+        List<Unit> stack = game.getSelectedStack();
+        List<Unit> selected = new LinkedList<>();
+        for (Unit unit : stack) {
+            if (unit.selected) {
+                selected.add(unit);
+            }
+        }
+        boolean is_embarked = false;
+        for (Unit unit : selected) {
+            if (unit.move_type == C.MoveType.NAVAL && unit.cargo_list.size() > 0) {
+                is_embarked = true;
+                break;
+            }
+        }
+        if (!is_embarked) {
+            return false;
+        }
+        // ask for action
+        Object[] options = {"O.K.", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(gui,
+                "Do you want to unload cargo?",
+                "",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                options,
+                options[1]);
+        if (choice == JOptionPane.NO_OPTION) {
+            return false;
+        }
+        // check for stack size
+        int nr_disembarked = 0;
+        for (Unit unit : selected) {
+            if (unit.move_type == C.MoveType.NAVAL) {
+                for (Unit unit1 : unit.cargo_list) {
+                    nr_disembarked++;
+                }
+            }
+        }
+        List<Unit> target_stack = target_hex.getStack();
+        if (nr_disembarked + Util.stackSize(target_stack) > C.STACK_SIZE) {
+            gui.showInfoWindow("Too many units in the destination area.");
+            return true;
+        }
+        //disembark units
+        List<Unit> disembarked = new LinkedList<>();
+        for (Unit unit : selected) {
+            if (unit.move_type == C.MoveType.NAVAL) {
+                List<Unit> tmp = new LinkedList<>();
+                for (Unit unit1 : unit.cargo_list) {
+                    tmp.add(unit1);
+                }
+                for (Unit unit1 : tmp) {
+                    unit.disembark(unit1);
+                    disembarked.add(unit1);
+                }
+            }
+        }
+        target_hex.addStack(disembarked);
+        return true;
+    }
 }

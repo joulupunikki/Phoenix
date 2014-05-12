@@ -51,7 +51,6 @@ public class PW3 extends PW {
 //            SU.clickOnStackDisplay(e);
 //        }
 //    }
-
 //        public void clickOnStackDisplay(MouseEvent e) {
 //        if (e.getButton() == MouseEvent.BUTTON1) {
 //            SU.clickOnStackDisplayButton1(e);
@@ -66,6 +65,9 @@ public class PW3 extends PW {
     }
 
     public void clickOnPlanetMapButton1(Point p) {
+        if (SU.disembarkNavalCargo(p) || SU.embarkNavalCargo(p)) {
+            return;
+        }
         LinkedList<Hex> path = game.getPath();
         if (p.x == path.getLast().getX() && p.y == path.getLast().getY()) {
 

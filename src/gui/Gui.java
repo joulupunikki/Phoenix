@@ -2041,7 +2041,7 @@ public class Gui extends JFrame {
     private static void createAndShowGUI() {
         Gui gui = new Gui();
         gui.setStateReferences();
-        gui.setDefaultUncaughtExceptionHandler();
+//        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
 //        throw new AssertionError(); // for testing exception handler
     }
