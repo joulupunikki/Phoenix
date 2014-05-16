@@ -76,7 +76,8 @@ public class UnitInfoWindow extends JPanel {
         exit_button.setBackground(Color.BLACK);
         exit_button.setForeground(C.COLOR_GOLD);
         exit_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y, 40, 15);
+        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y, 
+                ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
         exit_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
