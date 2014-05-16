@@ -1,7 +1,7 @@
 Phoenix
 =======
 
-Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. 
+Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
 Contributing
 ============
@@ -37,6 +37,22 @@ Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS director
 
 Changes
 =======
+
+New in version 0.10.0
+--------------------------
+City capture with planetside units implemented.
+
+City building by engineers implemented. Road building not yet possible.
+
+PBEM with mandatory security implemented. Includes passwords and datafile integrity checking. Password revocation feature also included. If at least three factions are human controlled then at the start of a players turn, instead of entering the password, password revocation sequence of the current player may be initiated by pressing the "password revocation" button. Dialog will be then displayed querying the revocation action which may be either password zeroing or setting faction to computer control. After that the revocation sequence is initiated by saving the game. The revocation sequence is like a full year of pbem game except that instead of playing their turn each human player other than the one who is the target of the revocation will be asked for their password to confirm the revocation. When the last player gives their consent by giving their password the sequence completes and the password of the target player will be zeroed and thus when the target player's turn comes he will be asked for a new password. Or if computer control was selected as revocation action the target player's faction will be permanently set to computer control. PBEM game resumes normally from this point onwards.
+
+Messages partially implemented. Selecting "messages"->"read messages" from menubar will bring up messages window. Messages accumulated since the end of your previous turn will be listed in a table. Double click on the "message" column to show message details. Read messages are displayed in light gray color. Currently only combat reports are viewable. The "location" column will show the planet (and possibly coordinates on planet) where the message originates. Click on the "location" column to goto the message origin.
+
+When units are at shoreline, loading and unloading of cargo at ocean shores works more or less as in original EFS. You can currently load air units as normal cargo.
+
+Cargo transfer dialog implemented. In stack window/unit info window drag and drop cargo pods onto each other to join them and to empty slots to split them.
+
+Galaxy name parameter for command line must be either GALAXY.GAL or GAL\<galaxyname> so you can have a GAL directory containing galaxy files.
 
 New in version 0.9.1
 --------------------
