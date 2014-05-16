@@ -502,14 +502,15 @@ public class Resources implements Serializable {
 
     /**
      * Adjusts the amount of resource in a cargo pod. Only to be called by
-     * addResourcesToHex and takeResourcesFromPod. Assumes that caller has
-     * already checked adjustment is legal (i.e. result is in range 0 to 999).
+     * addResourcesToHex and takeResourcesFromPod (made public to enable calling
+     * from CargoPanel.) Assumes that caller has already checked adjustment is
+     * legal (i.e. result is in range 0 to 999).
      *
      * @param unit A cargo pod
      * @param amount Amount to be added; may be negative for a decrease.
      *
      */
-    private void adjustPodResources(Unit unit, int amount) {
+    public void adjustPodResources(Unit unit, int amount) {
 
         unit.amount += amount;
 

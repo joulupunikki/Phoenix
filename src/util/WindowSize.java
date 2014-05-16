@@ -383,6 +383,27 @@ public class WindowSize {
     public int mw_vr_w = 125;
     public int mw_vr_x = fw_eb_x - mw_vr_w + fw_eb_w;
 
+    // cargo panel win
+    public int cpw_w = 198;
+    public int cpw_h = 329 - 150;
+    public int cpw_x = (main_window_width - cpw_w) / 2;
+    public int cpw_y = (main_window_height - cpw_h) / 2;
+
+    // cargo panel title
+    public int cp_t_x = 28;
+    public int cp_t_y = 18;
+    public int cp_t_w = (cpw_w - cp_t_x) / 2;
+    public int cp_t_h = 15;
+
+    // cargo panel buttons
+    public int cp_b_y_gap = 30;
+    public int cp_b_w = 351 - 248;
+
+    // cargo panel slider
+    public int cp_s_x = 158;
+    public int cp_s_w = 15;
+    public int cp_s_h = 100;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -741,6 +762,23 @@ public class WindowSize {
 
             mw_vr_w *= 2;
             mw_vr_x *= 2;
+
+            cpw_w *= 2;
+            cpw_h *= 2;
+            cpw_x *= 2;
+            cpw_y *= 2;
+
+            cp_b_y_gap *= 2;
+            cp_b_w *= 2;
+
+            cp_t_x *= 2;
+            cp_t_y *= 2;
+            cp_t_w *= 2;
+            cp_t_h *= 2;
+
+            cp_s_x *= 2;
+            cp_s_w *= 2;
+            cp_s_h *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

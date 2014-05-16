@@ -73,7 +73,7 @@ public class C {
 
     public static final int PROD_CITIES = 7;    // RSW
     public static final int RES_TYPES = 13;    // RSW
-
+    public static final int MAX_CARGO = 999;
     public static final int TILE_SETS = 5;
     public static final int STACK_SIZE = 20;
     public static final int STACK_WINDOW_UNITS_X = 5;

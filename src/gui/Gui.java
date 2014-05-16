@@ -180,6 +180,7 @@ public class Gui extends JFrame {
     private boolean loadsave_win_up;
     private JDialog loadsave_dialog;
     private CityDialog city_dialog;
+    private CargoPanel.Win cargo_win;
     private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
@@ -205,6 +206,8 @@ public class Gui extends JFrame {
         UIManager.put("TextArea.background", Color.BLACK);
         UIManager.put("TextArea.foreground", C.COLOR_GOLD);
         UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
+        UIManager.put("TextField.background", Color.BLACK);
+        UIManager.put("TextField.foreground", C.COLOR_GOLD);        
         UIManager.put("Label.foreground", C.COLOR_GOLD);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -251,6 +254,7 @@ public class Gui extends JFrame {
         UIManager.put("OptionPane.messageFont", ws.font_large);
         UIManager.put("Button.font", ws.font_large);
         UIManager.put("Label.font", ws.font_large);
+        UIManager.put("TextField.font", ws.font_large);
         // set up PBEM
         pbem_gui = new PBEMGui(game);
         pbem_gui.getDATAHashes();
@@ -353,6 +357,7 @@ public class Gui extends JFrame {
         setUpManowitzWindow();
         setUpResourceWindow();
         setUpBuildCityWindow();
+        cargo_win = CargoPanel.getCargoWin(this);
         /*
          * create planet map display
          */
@@ -713,6 +718,18 @@ public class Gui extends JFrame {
         menubar.add(messages_menu);
     }
 
+    public void showCargoWin(boolean show) {
+        if (show) {
+            setDialogSize(cargo_win, ws.cpw_x, ws.cpw_y, ws.cpw_w, ws.cpw_h);
+
+        }
+        cargo_win.setVisible(show);
+    }
+    
+    public void initCargoWin(Unit u_from, Unit u_to, List<Unit> stack) {
+        cargo_win.init(u_from, u_to, stack);
+    }
+
     public void hideTechDBWindow() {
         tech_db_window.setVisible(false);
     }
@@ -906,7 +923,7 @@ public class Gui extends JFrame {
         manowitz_window.add(manowitz_panel);
         manowitz_panel.setBounds(0, 0,
                 ws.manowitz_window_w, ws.manowitz_window_h);
-        manowitz_window.add(manowitz_panel);
+//        manowitz_window.add(manowitz_panel);
         manowitz_window.pack();
 //        manowitz_window.setSize(ws.manowitz_window_w, ws.manowitz_window_h);
         setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
@@ -954,7 +971,7 @@ public class Gui extends JFrame {
         int h_dec_thickness = insets.top + insets.bottom;
         System.out.println("w_dec_thickness = " + w_dec_thickness);
         System.out.println("h_dec_thickness = " + h_dec_thickness);
-        dialog.setBounds(x, y, w + w_dec_thickness, h + h_dec_thickness);
+        dialog.setBounds(this.getX() + x, this.getY() + y, w + w_dec_thickness, h + h_dec_thickness);
     }
 
 //    public int getXOffset() {
@@ -1136,6 +1153,10 @@ public class Gui extends JFrame {
             city_panel.setForeground(Color.DARK_GRAY);
             this.add(city_panel);
 //        dialog.setVisible(true);
+        }
+
+        public void setGame(Game game) {
+            this.game = game;
         }
 
         /**
@@ -1652,6 +1673,8 @@ public class Gui extends JFrame {
         build_city_panel.setGame(game);
         messages_window.setGame(game);
         pbem_gui.setPBEMRef(game);
+        city_dialog.setGame(game);
+        cargo_win.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

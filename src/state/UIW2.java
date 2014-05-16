@@ -31,7 +31,7 @@ public class UIW2 extends State {
 
     public void dragOnWindow(MouseEvent e) {
         Point p = e.getPoint();
-        System.out.println("p = " + p);
+//        System.out.println("p = " + p);
         gui.setDragPoint(p);
         gui.getMainWindows().repaint();
     }
@@ -75,9 +75,12 @@ public class UIW2 extends State {
                                     || drag_unit.move_type == C.MoveType.SPACE))
                                     && (u.type_data.cargo == 0 || u.cargo_list.size() >= u.type_data.cargo)) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
+                                zeroDragUnit();
+                                return;
                             } else if (faction == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
-
+                                zeroDragUnit();
+                                return;
                             } else {
                                 Unit carrier = drag_unit.carrier;
                                 carrier.disembark(drag_unit);
@@ -111,11 +114,16 @@ public class UIW2 extends State {
                                 JOptionPane.showMessageDialog(gui, "That unit cannot be loaded onto a transport.", null, JOptionPane.PLAIN_MESSAGE);
                             }
                         }
+                        if (drag_unit.type == C.CARGO_UNIT_TYPE && u.type == C.CARGO_UNIT_TYPE
+                                && drag_unit.res_relic == u.res_relic) {
+                            gui.initCargoWin(drag_unit, u, stack);
+                            gui.showCargoWin(true);
+                        }
                     }
-
-                    gui.setDragUnit(null, null);
-                    gui.setCurrentState(UIW1.get());
-                    gui.getMainWindows().repaint();
+                    zeroDragUnit();
+//                    gui.setDragUnit(null, null);
+//                    gui.setCurrentState(UIW1.get());
+//                    gui.getMainWindows().repaint();
                     return;
                 }
 
@@ -139,6 +147,9 @@ public class UIW2 extends State {
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE)) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
+                            } else if (faction == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
+                                JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
+
                             } else {
                                 Unit carrier = drag_unit.carrier;
                                 carrier.disembark(drag_unit);
@@ -147,10 +158,14 @@ public class UIW2 extends State {
                                 System.out.println("carrier = " + carrier);
 
                             }
+                        } else if (drag_unit.type == C.CARGO_UNIT_TYPE) {
+                            gui.initCargoWin(drag_unit, null, stack);
+                            gui.showCargoWin(true);
                         }
-                        gui.setDragUnit(null, null);
-                        gui.setCurrentState(UIW1.get());
-                        gui.getMainWindows().repaint();
+                        zeroDragUnit();
+//                        gui.setDragUnit(null, null);
+//                        gui.setCurrentState(UIW1.get());
+//                        gui.getMainWindows().repaint();
                         return;
                     }
                 } else {
@@ -164,7 +179,13 @@ public class UIW2 extends State {
             }
 
         }
+        zeroDragUnit();
+//        gui.setDragUnit(null, null);
+//        gui.setCurrentState(UIW1.get());
+//        gui.getMainWindows().repaint();
+    }
 
+    private void zeroDragUnit() {
         gui.setDragUnit(null, null);
         gui.setCurrentState(UIW1.get());
         gui.getMainWindows().repaint();
