@@ -1268,6 +1268,8 @@ public class SU extends State {
         if (origin_hex.getStack().isEmpty()) {
             game.setSelectedPoint(null, -1);
             gui.setCurrentState(PW1.get());
+        } else {
+            origin_hex.getStack().get(0).selected = true;
         }
         return true;
     }
