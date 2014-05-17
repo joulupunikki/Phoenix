@@ -322,7 +322,7 @@ public class Gui extends JFrame {
         setUpOrdersMenu();
         setUpMessagesMenu();
         setUpArchivesMenu();
-        if (C.WIZARD_MODE) {
+        if (game.getEfs_ini().wizard_mode) {
             setUpWizardModeMenu();
         }
         this.setJMenuBar(menubar);

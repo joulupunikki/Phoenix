@@ -16,7 +16,7 @@ import javax.swing.border.Border;
 public class C {
 
     // wizard mode menu on/off
-    public static final boolean WIZARD_MODE = true;
+//    public static final boolean WIZARD_MODE = true;
     public static final int DEBUG_PRINT = 0;
     public static final int NORTH = 0;
     public static final int NORTHEAST = 1;

@@ -95,6 +95,7 @@ public class EfsIni implements Serializable {
     // Phoenix game options
     public int lab_points = -1;
     public int lab_cost = -1;
+    public boolean wizard_mode = false;
 
     public EfsIni(Properties efs_ini, Properties phoenix_ini) {
         starting_credits = Integer.parseInt((efs_ini.getProperty("starting_credits")).trim());
@@ -108,7 +109,7 @@ public class EfsIni implements Serializable {
         //phoenix.ini values
         lab_points = Integer.parseInt((phoenix_ini.getProperty("lab_points")).trim());
         lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());
-
+        wizard_mode = Boolean.parseBoolean((phoenix_ini.getProperty("wizard_mode")).trim());
         pbem = new PBEM();
     }
 
