@@ -404,6 +404,51 @@ public class WindowSize {
     public int cp_s_w = 15;
     public int cp_s_h = 100;
 
+    // stack window left stats panel
+    public int sw_lsp_x = 133;
+    public int sw_lsp_y = 117;
+    public int sw_lsp_w = 74;
+    public int sw_lsp_h = 45;
+
+    // stack window right stats panel
+    public int sw_rsp_x = 214;
+
+    // stack window attack panel
+    public int sw_ap_x = 304;
+    public int sw_ap_w = 130;
+    public int sw_ap_h = 45;
+
+    // build panel left stats panel
+    public int bp_lsp_x = 9;
+
+    // build panel right stats panel
+    public int bp_rsp_x = 90;
+
+    // build panel attack stats panel
+    public int bp_asp_x = 180;
+    public int bp_asp_w = 130;
+    public int bp_asp_h = 45;
+
+    // unit stats statistics
+    public int us_s_name_x1 = 0;
+    public int us_s_name_x2 = 36;
+    public int us_s_name_y1 = 0;
+    public int us_s_name_y2 = 10;
+    public int us_s_name_w = us_s_name_x2 - us_s_name_x1 + 1;
+    public int us_s_name_h = us_s_name_y2 - us_s_name_y1 + 1;
+    public int us_s_value_x1 = 37;
+    public int us_s_value_x2 = 73;
+
+    // unit stats attack
+    public int us_a_name_x1 = 0;
+    public int us_a_name_x2 = 64;
+    public int us_a_name_y1 = 0;
+    public int us_a_name_y2 = 10;
+    public int us_a_name_w = us_a_name_x2 - us_a_name_x1 + 1;
+    public int us_a_name_h = us_a_name_y2 - us_a_name_y1 + 1;
+    public int us_a_value_x1 = 65;
+    public int us_a_value_x2 = 129;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -779,6 +824,44 @@ public class WindowSize {
             cp_s_x *= 2;
             cp_s_w *= 2;
             cp_s_h *= 2;
+
+            sw_lsp_x *= 2;
+            sw_lsp_y *= 2;
+            sw_lsp_w *= 2;
+            sw_lsp_h *= 2;
+
+            sw_rsp_x *= 2;
+
+            sw_ap_x *= 2;
+            sw_ap_w *= 2;
+            sw_ap_h *= 2;
+
+            bp_lsp_x *= 2;
+
+            bp_rsp_x *= 2;
+
+            bp_asp_x *= 2;
+            bp_asp_w *= 2;
+            bp_asp_h *= 2;
+
+            us_s_name_x1 *= 2;
+            us_s_name_x2 *= 2;
+            us_s_name_y1 *= 2;
+            us_s_name_y2 *= 2;
+            us_s_name_w *= 2;
+            us_s_name_h *= 2;
+            us_s_value_x1 *= 2;
+            us_s_value_x2 *= 2;
+
+            us_a_name_x1 *= 2;
+            us_a_name_x2 *= 2;
+            us_a_name_y1 *= 2;
+            us_a_name_y2 *= 2;
+            us_a_name_w *= 2;
+            us_a_name_h *= 2;
+            us_a_value_x1 *= 2;
+            us_a_value_x2 *= 2;
+
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

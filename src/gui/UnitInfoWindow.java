@@ -46,6 +46,10 @@ public class UnitInfoWindow extends JPanel {
     JTextField camo_name;
     JTextField camo_stat;
 
+    UnitStats.Left left_stats;
+    UnitStats.Right right_stats;
+    UnitStats.Attack attack_stats;
+    
     JTextField attack1_stat;
     JTextField attack1_type;
     JTextField attack2_type;
@@ -76,7 +80,7 @@ public class UnitInfoWindow extends JPanel {
         exit_button.setBackground(Color.BLACK);
         exit_button.setForeground(C.COLOR_GOLD);
         exit_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y, 
+        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
                 ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
         exit_button.addActionListener(new ActionListener() {
             @Override
@@ -130,260 +134,37 @@ public class UnitInfoWindow extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
     }
 
-    public void setAttkStat(int field_no, String type, int acc, int str) {
-        switch (field_no) {
-            case 0:
-                attack1_type.setText(type);
-                attack1_stat.setText("" + acc + "/" + str);
-                break;
-
-            case 1:
-                attack2_type.setText(type);
-                attack2_stat.setText("" + acc + "/" + str);
-                break;
-            case 2:
-                attack3_type.setText(type);
-                attack3_stat.setText("" + acc + "/" + str);
-                break;
-            case 3:
-                attack4_type.setText(type);
-                attack4_stat.setText("" + acc + "/" + str);
-                break;
-            default:
-                throw new AssertionError();
-        }
-    }
-
     public void setStats() {
         Unit u = gui.getInfo_unit();
 
-        spot_stat.setText("");
-        camo_stat.setText("");
-
-        attack1_type.setText("");
-        attack1_stat.setText("");
-
-        attack2_type.setText("");
-        attack2_stat.setText("");
-
-        attack3_type.setText("");
-        attack3_stat.setText("");
-
-        attack4_type.setText("");
-        attack4_stat.setText("");
+        left_stats.setValues(null);
+        right_stats.setValues(null);
+        attack_stats.setValues(null);
 
         if (u == null) {
             return;
         }
 
-        spot_stat.setText("" + u.type_data.spot);
-        camo_stat.setText("" + u.type_data.camo);
-
-        int field_no = 0;
-        if (u.type_data.water_str > 0) {
-            setAttkStat(field_no++, "Water", u.type_data.water_acc, u.type_data.water_str);
-        }
-        if (u.type_data.indirect_str > 0) {
-            setAttkStat(field_no++, "Indirect", u.type_data.indirect_acc, u.type_data.indirect_str);
-        }
-        if (u.type_data.air_str > 0) {
-            setAttkStat(field_no++, "Air", u.type_data.air_acc, u.type_data.air_str);
-        }
-        if (u.type_data.direct_str > 0) {
-            setAttkStat(field_no++, "Direct", u.type_data.direct_acc, u.type_data.direct_str);
-        }
-        if (u.type_data.close_str > 0) {
-            setAttkStat(field_no++, "Close", u.type_data.close_acc, u.type_data.close_str);
-        }
-        if (u.type_data.psy_str > 0) {
-            setAttkStat(field_no++, "Psych", u.type_data.psy_acc, u.type_data.psy_str);
-        }
-        if (u.type_data.ranged_sp_str > 0) {
-            setAttkStat(field_no++, "Ranged Sp", u.type_data.ranged_sp_acc, u.type_data.ranged_sp_str);
-        }
-        if (u.type_data.direct_sp_str > 0) {
-            setAttkStat(field_no++, "Direct Sp", u.type_data.direct_sp_acc, u.type_data.direct_sp_str);
-        }
-        if (u.type_data.close_sp_str > 0) {
-            setAttkStat(field_no++, "Close Sp", u.type_data.close_sp_acc, u.type_data.close_sp_str);
-        }
+        left_stats.setValues(u.type_data);
+        right_stats.setValues(u.type_data);
+        attack_stats.setValues(u.type_data);
 
     }
 
-//    public void drawText(Graphics g) {
-//        JTextField attack4_type;
-//        attack4_type = new JTextField("Indirect");
-//
-//        this.add(attack4_type);
-//        attack4_type.setBounds(ws.unit_info_attack_type_x, ws.unit_info_attack_type_y + ws.unit_info_attack_type_h,
-//                ws.unit_info_attack_type_w, ws.unit_info_attack_type_h);
-//        attack4_type.setBackground(Color.BLACK);
-//        attack4_type.setForeground(C.COLOR_GOLD);
-//        attack4_type.setEditable(false);
-//        attack4_type.setHorizontalAlignment(JTextField.LEFT);
-//        attack4_type.setBorder(null);
-//        attack4_type.setFont(ws.font_default);
-//
-//        JTextField attack4_stat;
-//        attack4_stat = new JTextField("8/90");
-//
-//        this.add(attack4_stat);
-//        attack4_stat.setBounds(ws.unit_info_attack_stat_x, ws.unit_info_attack_stat_y + ws.unit_info_attack_stat_h,
-//                ws.unit_info_attack_stat_w, ws.unit_info_attack_stat_h);
-//        attack4_stat.setBackground(Color.BLACK);
-//        attack4_stat.setForeground(C.COLOR_GOLD);
-//        attack4_stat.setEditable(false);
-//        attack4_stat.setHorizontalAlignment(JTextField.RIGHT);
-//        attack4_stat.setBorder(null);
-//        attack4_stat.setFont(ws.font_default);
-//
-//
-//    }
     public void setUpStatDisplay() {
 
-        spot_name = new JTextField("Spot");
+        left_stats = new UnitStats.Left(gui);
+        left_stats.setBounds(ws.sw_lsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
+        this.add(left_stats);
 
-        this.add(spot_name);
-        spot_name.setBounds(ws.unit_info_left_stat_x, ws.unit_info_left_stat_y + 2 * ws.unit_info_left_stat_h,
-                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
-        spot_name.setBackground(Color.BLACK);
-        spot_name.setForeground(C.COLOR_GOLD);
-        spot_name.setEditable(false);
-        spot_name.setHorizontalAlignment(JTextField.LEFT);
-        spot_name.setBorder(null);
-        spot_name.setFont(ws.font_default);
+        right_stats = new UnitStats.Right(gui);
+        right_stats.setBounds(ws.sw_rsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
+        this.add(right_stats);
+        
+        attack_stats = new UnitStats.Attack(gui);
+        attack_stats.setBounds(ws.sw_ap_x, ws.sw_lsp_y, ws.sw_ap_w, ws.sw_ap_h);
+        this.add(attack_stats);        
 
-        spot_stat = new JTextField("");
-
-        this.add(spot_stat);
-        spot_stat.setBounds(ws.unit_info_left_stat_x2, ws.unit_info_left_stat_y + 2 * ws.unit_info_left_stat_h,
-                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
-        spot_stat.setBackground(Color.BLACK);
-        spot_stat.setForeground(C.COLOR_GOLD);
-        spot_stat.setEditable(false);
-        spot_stat.setHorizontalAlignment(JTextField.RIGHT);
-        spot_stat.setBorder(null);
-        spot_stat.setFont(ws.font_default);
-
-        camo_name = new JTextField("Camo");
-
-        this.add(camo_name);
-        camo_name.setBounds(ws.unit_info_left_stat_x, ws.unit_info_left_stat_y + 3 * ws.unit_info_left_stat_h,
-                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
-        camo_name.setBackground(Color.BLACK);
-        camo_name.setForeground(C.COLOR_GOLD);
-        camo_name.setEditable(false);
-        camo_name.setHorizontalAlignment(JTextField.LEFT);
-        camo_name.setBorder(null);
-        camo_name.setFont(ws.font_default);
-
-        camo_stat = new JTextField("");
-
-        this.add(camo_stat);
-        camo_stat.setBounds(ws.unit_info_left_stat_x2, ws.unit_info_left_stat_y + 3 * ws.unit_info_left_stat_h,
-                ws.unit_info_left_stat_w, ws.unit_info_left_stat_h);
-        camo_stat.setBackground(Color.BLACK);
-        camo_stat.setForeground(C.COLOR_GOLD);
-        camo_stat.setEditable(false);
-        camo_stat.setHorizontalAlignment(JTextField.RIGHT);
-        camo_stat.setBorder(null);
-        camo_stat.setFont(ws.font_default);
-
-        attack1_type = new JTextField("Indirect");
-
-        this.add(attack1_type);
-        attack1_type.setBounds(ws.unit_info_attack_type_x, ws.unit_info_attack_type_y,
-                ws.unit_info_attack_type_w, ws.unit_info_attack_type_h);
-        attack1_type.setBackground(Color.BLACK);
-        attack1_type.setForeground(C.COLOR_GOLD);
-        attack1_type.setEditable(false);
-        attack1_type.setHorizontalAlignment(JTextField.LEFT);
-        attack1_type.setBorder(null);
-        attack1_type.setFont(ws.font_default);
-
-        attack1_stat = new JTextField("8/90");
-
-        this.add(attack1_stat);
-        attack1_stat.setBounds(ws.unit_info_attack_stat_x, ws.unit_info_attack_stat_y,
-                ws.unit_info_attack_stat_w, ws.unit_info_attack_stat_h);
-        attack1_stat.setBackground(Color.BLACK);
-        attack1_stat.setForeground(C.COLOR_GOLD);
-        attack1_stat.setEditable(false);
-        attack1_stat.setHorizontalAlignment(JTextField.RIGHT);
-        attack1_stat.setBorder(null);
-        attack1_stat.setFont(ws.font_default);
-
-        attack2_type = new JTextField("Indirect");
-
-        this.add(attack2_type);
-        attack2_type.setBounds(ws.unit_info_attack_type_x, ws.unit_info_attack_type_y + ws.unit_info_attack_type_h,
-                ws.unit_info_attack_type_w, ws.unit_info_attack_type_h);
-        attack2_type.setBackground(Color.BLACK);
-        attack2_type.setForeground(C.COLOR_GOLD);
-        attack2_type.setEditable(false);
-        attack2_type.setHorizontalAlignment(JTextField.LEFT);
-        attack2_type.setBorder(null);
-        attack2_type.setFont(ws.font_default);
-
-        attack2_stat = new JTextField("8/90");
-
-        this.add(attack2_stat);
-        attack2_stat.setBounds(ws.unit_info_attack_stat_x, ws.unit_info_attack_stat_y + ws.unit_info_attack_stat_h,
-                ws.unit_info_attack_stat_w, ws.unit_info_attack_stat_h);
-        attack2_stat.setBackground(Color.BLACK);
-        attack2_stat.setForeground(C.COLOR_GOLD);
-        attack2_stat.setEditable(false);
-        attack2_stat.setHorizontalAlignment(JTextField.RIGHT);
-        attack2_stat.setBorder(null);
-        attack2_stat.setFont(ws.font_default);
-
-        attack3_type = new JTextField("Indirect");
-
-        this.add(attack3_type);
-        attack3_type.setBounds(ws.unit_info_attack_type_x, ws.unit_info_attack_type_y + 2 * ws.unit_info_attack_type_h,
-                ws.unit_info_attack_type_w, ws.unit_info_attack_type_h);
-        attack3_type.setBackground(Color.BLACK);
-        attack3_type.setForeground(C.COLOR_GOLD);
-        attack3_type.setEditable(false);
-        attack3_type.setHorizontalAlignment(JTextField.LEFT);
-        attack3_type.setBorder(null);
-        attack3_type.setFont(ws.font_default);
-
-        attack3_stat = new JTextField("8/90");
-
-        this.add(attack3_stat);
-        attack3_stat.setBounds(ws.unit_info_attack_stat_x, ws.unit_info_attack_stat_y + 2 * ws.unit_info_attack_stat_h,
-                ws.unit_info_attack_stat_w, ws.unit_info_attack_stat_h);
-        attack3_stat.setBackground(Color.BLACK);
-        attack3_stat.setForeground(C.COLOR_GOLD);
-        attack3_stat.setEditable(false);
-        attack3_stat.setHorizontalAlignment(JTextField.RIGHT);
-        attack3_stat.setBorder(null);
-        attack3_stat.setFont(ws.font_default);
-
-        attack4_type = new JTextField("Indirect");
-
-        this.add(attack4_type);
-        attack4_type.setBounds(ws.unit_info_attack_type_x, ws.unit_info_attack_type_y + 3 * ws.unit_info_attack_type_h,
-                ws.unit_info_attack_type_w, ws.unit_info_attack_type_h);
-        attack4_type.setBackground(Color.BLACK);
-        attack4_type.setForeground(C.COLOR_GOLD);
-        attack4_type.setEditable(false);
-        attack4_type.setHorizontalAlignment(JTextField.LEFT);
-        attack4_type.setBorder(null);
-        attack4_type.setFont(ws.font_default);
-
-        attack4_stat = new JTextField("8/90");
-
-        this.add(attack4_stat);
-        attack4_stat.setBounds(ws.unit_info_attack_stat_x, ws.unit_info_attack_stat_y + 3 * ws.unit_info_attack_stat_h,
-                ws.unit_info_attack_stat_w, ws.unit_info_attack_stat_h);
-        attack4_stat.setBackground(Color.BLACK);
-        attack4_stat.setForeground(C.COLOR_GOLD);
-        attack4_stat.setEditable(false);
-        attack4_stat.setHorizontalAlignment(JTextField.RIGHT);
-        attack4_stat.setBorder(null);
-        attack4_stat.setFont(ws.font_default);
     }
 
     public void drawUnits(Graphics g) {

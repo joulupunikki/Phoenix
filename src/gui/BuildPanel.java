@@ -75,6 +75,9 @@ public class BuildPanel extends JPanel {
 //    private Object[][] city_table_data;
 //    private Object[][] build_table_data;
     private int input_unit_nr = -1;
+    private UnitStats.Left left_stats;
+    private UnitStats.Right right_stats;
+    private UnitStats.Attack attack_stats;
 
     public BuildPanel(Gui gui) {
         this.gui = gui;
@@ -83,6 +86,7 @@ public class BuildPanel extends JPanel {
         addLists();
         setUpButtons();
         setUpResDisplay();
+        setUpStatsDisplay(gui);
 //        List<Planet> planets = game.getPlanets();
         setUpCoordinateListener(); // for testing positions on panel
     }
@@ -96,6 +100,20 @@ public class BuildPanel extends JPanel {
                 System.out.println("build panel (x,y): " + p.x + ", " + p.y);
             }
         });
+    }
+
+    public void setUpStatsDisplay(Gui gui) {
+        left_stats = new UnitStats.Left(gui);
+        left_stats.setBounds(ws.bp_lsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
+        this.add(left_stats);
+
+        right_stats = new UnitStats.Right(gui);
+        right_stats.setBounds(ws.bp_rsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
+        this.add(right_stats);
+        
+                attack_stats = new UnitStats.Attack(gui);
+        attack_stats.setBounds(ws.bp_asp_x, ws.sw_lsp_y, ws.sw_ap_w, ws.sw_ap_h);
+        this.add(attack_stats);
     }
 
     public void setUpResDisplay() {
@@ -154,6 +172,9 @@ public class BuildPanel extends JPanel {
     }
 
     public void zeroResources() {
+        left_stats.setValues(null);
+        right_stats.setValues(null);
+        attack_stats.setValues(null);
         for (JTextField tf : res_display) {
             tf.setText("");
         }
@@ -278,6 +299,10 @@ public class BuildPanel extends JPanel {
                         input_unit_nr = -1;
                     }
                     drawResAmounts(unit);
+                    UnitType ut = game.getUnitTypes()[unit[0]][unit[1]];
+                    left_stats.setValues(ut);
+                    right_stats.setValues(ut);
+                    attack_stats.setValues(ut);
                     repaint();
                 }
                 if (e.getClickCount() == 2) {
@@ -585,7 +610,6 @@ public class BuildPanel extends JPanel {
 //        }
 //        Object tmp = build_table.getValueAt(row, 0);
 //    }
-
     public void setPlanets() {
         boolean[] planets = new boolean[game.getPlanets().size()];
         for (int i = 0; i < planets.length; i++) {
