@@ -38,13 +38,15 @@ Due to the large size of the uncompressed save files (10MB) and the fact that ja
 2.1: Binary distribution
 ------------------------
 Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. (If you do not see
-these files then you probably have got a source distribution package. See "Getting Phoenix, Binary distribution" above to get the executable version.) To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
+all of these files then you probably have got a source distribution or raw database package. See "Getting Phoenix, Binary distribution" above to get the executable version.) To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
 `C:\Program Files\Java\jdk1.7.0` you would type `"C:\Program Files\Java\jdk1.7.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
 
 2.2: Source distribution
 ------------------------
+(If you do not see all of the files mentioned here then you probably have got a binary distribution or raw database package. See "Getting Phoenix, Source distribution" above to get the buildable source version.)
+
 Unzip the package then go to the `etc` directory and copy the contents to your EFS directory where `EFS.EXE` resides.
 
 Then go to the `src` directory,
