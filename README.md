@@ -30,7 +30,7 @@ Build yourself from provided sources, instructions below at "Installing and runn
 2: Installing and running
 =========================
 
-Phoenix.jar intended to replace EFS.EXE. Place into your EFS directory where EFS.EXE resides. Java 7 (or higher) jdk or jre is needed to run Phoenix.jar.
+The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 7 (or higher) jdk or jre is needed to run Phoenix.jar.
 
 Important note:
 Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
@@ -62,6 +62,10 @@ This is a repository for development. The development versions may not receive e
 
 3: Changes
 ==========
+
+New in version 0.10.2
+---------------------
+A bit of rewording in documentation. See version 0.10.1 below for details of documentation/packaging fixes.
 
 New in version 0.10.1
 ---------------------
