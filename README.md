@@ -3,12 +3,28 @@ Phoenix
 
 Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
+If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues). If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all mods is critically important.
+
+News
+====
+
+Contributing policy change as of 28.04.2015
+
 Contributing
 ============
 
-Currently contributing is not possible as pull requests will not be accepted. Sorry. It's not that I don't value cooperation (and some people have actually provided code) but I am a lousy project manager and will rather spend my time coding than integrating. Also, since we are using original EFS data files some knowledge of EFS internals is usually required.
+This section used to officially discourage all contribution. It's not that I don't value cooperation (and some people have actually provided code) but I considered myself a lousy project manager (still do) and will rather spend my time coding than integrating. But as a project, Phoenix has advanced far more than I wagered when I started. 
+
+I thought the project is probably going to be abandoned before any running code is produced. So far (as of 28.04.2015) it has taken 2,5 years of real time to get here. If Phoenix is to reach a stage of playability equaling EFS1.4 and I work at the same pace and at the same mentality it may take 2,5 to 5 years to finish at minimum. I would rather it didn't take so long. Thus, the policy of no contributions will be at least temporarily suspended.
+
+Mostly this will depend on my ability as a project manager. I find myself bad at managing teams of people. Thus, contribution process will be as loosely integrated as possible, without compromising ultimate project integrity. This will hopefully be achieved by trying to identify sub projects which require maximally independent implementation.
+
+Potential "collaborative tasks" or simply "tasks" are defined as issues. A list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). From simple implementation POV (assuming maximally independent tasks), task assignment is not necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly. Now, I can't force anyone to enlist. But, do not fail to enlist because you think you may not produce any useful results and that you will be embarassed for publicly admitting that, implicitly or explicitly.  
+
+Also, since we are using original EFS data files some knowledge of EFS internals is usually required.
 
 However, if you absolutely must hack the source, get the raw database version which contains NetBeans configuration data. It is strongly suggested that you use [NetBeans](https://netbeans.org/) to view and modify the sources.
+
 
 1: Getting Phoenix
 ==================
