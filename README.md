@@ -13,6 +13,9 @@ Contributing policy change as of 28.04.2015
 Contributing
 ============
 
+##### Requirements for code contributions
+[NetBeans](https://netbeans.org/) has been used to program Phoenix. For code to qualify as a merge, the sure way is to use NetBeans. And, among other things, with NetBeans the production of jars for testing is just a press of a button.  Also for large projects an [IDE](http://en.wikipedia.org/wiki/Integrated_development_environment) could be considered mandatory, without it you are at a major disadvantage, and for Java the premier free IDEs are NetBeans and Eclipse. Some tasks, however, produce code that should not modify existing methods or functionality much, or can be or are totally independent projects. For such tasks, using NetBeans is not strictly necessary (if you pick the task "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) as your task, you may even use languages other than Java and the best free IDE may be something else.)
+
 ##### A bit of history
 This section used to officially discourage all contribution. It's not that I don't value cooperation (and some people have actually provided code) but I considered myself a lousy project manager (still do) and will rather spend my time coding than integrating. But as a project, Phoenix has advanced far more than I wagered when I started. 
 
@@ -23,14 +26,12 @@ Mostly this will depend on my ability as a project manager. I find myself bad at
 ##### Defined tasks and being assigned
 Potential sub projects or simply "tasks" are defined as issues. A list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). Read the issue of the task that you think you can do and post your intentions to "Task assignment thread" [#12](https://github.com/joulupunikki/Phoenix/issues/12). From simple implementation POV (assuming maximally independent tasks), task assignment may not be strictly necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly.
 
-Note that for code that is to be included verbatim in Phoenix core codebase, the proper formatting is enforced automatically on save by using [NetBeans](https://netbeans.org/) to view and modify the sources. So, for code to qualify as a merge, the sure way is to use NetBeans. 
-
 ##### Don't worry about possible failure
 Now, I can't force anyone to enlist. But, do not fail to enlist because you think that you may not produce any useful results and that you will be embarassed later for having to publicly admit that, implicitly or explicitly. When I considered setting up camp at GitHub and thus releasing Phoenix source to the public I worried about what people would say about the quality of the code (consider [this](https://github.com/joulupunikki/Phoenix/blob/8818c5a6d78e52681a4b04499706b10599798d92/src/gui/Gui.java#L221) brilliant 30 line display of craftmanship)(of course, that should not be taken as a style suggestion) but I have had nothing but positive responses to Phoenix, even from those who have certainly taken a deeper look at the code. If you enlist, and then fail to produce anything beyond "Sorry, I failed :(" then consider that at maximum, all that was wasted was your time and effort, and even then that was probably a learning experience. You weren't paid and the only administrative effort is removing @yourusername from the task in [#4](https://github.com/joulupunikki/Phoenix/issues/4).
 
 Consider these words of famous physicist Freeman Dyson: [You can't possibly get a good technology going without an enormous number of failures. It's a universal rule.](http://en.wikipedia.org/wiki/Freeman_Dyson#The_role_of_failure)
 
-For those who are thinking of coding, tasks "Automated testing (class Robot)" [#5](https://github.com/joulupunikki/Phoenix/issues/5), "Automated test generation" [#6](https://github.com/joulupunikki/Phoenix/issues/6), "Unit window animations" [#7](https://github.com/joulupunikki/Phoenix/issues/7) and "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) should provide tasks with simple or no necessary administrative Phoenix code integration. The tasks that require no coding obviously require no code integration and as such cannot have negative impact on Phoenix code.
+For those who are thinking of coding, tasks "Automated testing" [#5](https://github.com/joulupunikki/Phoenix/issues/5), "Automated test generation" [#6](https://github.com/joulupunikki/Phoenix/issues/6), "Unit window animations" [#7](https://github.com/joulupunikki/Phoenix/issues/7) and "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) should provide tasks with simple or no necessary administrative Phoenix code integration. The tasks that require no coding obviously require no code integration and as such cannot have negative impact on Phoenix code.
 
 1: Getting Phoenix
 ==================
