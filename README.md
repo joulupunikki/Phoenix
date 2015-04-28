@@ -13,18 +13,24 @@ Contributing policy change as of 28.04.2015
 Contributing
 ============
 
+##### A bit of history
 This section used to officially discourage all contribution. It's not that I don't value cooperation (and some people have actually provided code) but I considered myself a lousy project manager (still do) and will rather spend my time coding than integrating. But as a project, Phoenix has advanced far more than I wagered when I started. 
 
-I thought the project is probably going to be abandoned before any running code is produced. So far (as of 28.04.2015) it has taken 2,5 years of real time to get here. If Phoenix is to reach a stage of playability equaling EFS1.4 and I work at the same pace and at the same mentality it may take 2,5 to 5 years to finish at minimum. I would rather it didn't take so long. Thus, the policy of no contributions will be at least temporarily suspended.
+I thought the project is probably going to be abandoned before any running code is produced. So far (as of 28.04.2015) it has taken 2,5 years of real time to get here. If Phoenix is to reach a stage of playability equaling (and hopefully beyond!) EFS1.4 and I work at the same pace and at the same mentality it may take 2,5 to 5 years to finish at minimum. I would rather it didn't take so long. Thus, the policy of no contributions will be at least temporarily suspended.
 
 Mostly this will depend on my ability as a project manager. I find myself bad at managing teams of people. Thus, contribution process will be as loosely integrated as possible, without compromising ultimate project integrity. This will hopefully be achieved by trying to identify sub projects which require maximally independent implementation.
 
-Potential "collaborative tasks" or simply "tasks" are defined as issues. A list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). From simple implementation POV (assuming maximally independent tasks), task assignment is not necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly. Now, I can't force anyone to enlist. But, do not fail to enlist because you think you may not produce any useful results and that you will be embarassed for publicly admitting that, implicitly or explicitly.  
+##### Defined tasks and being assigned
+Potential sub projects or simply "tasks" are defined as issues. A list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). Read the issue of the task that you think you can do and post your intentions to "Task assignment thread" [#12](https://github.com/joulupunikki/Phoenix/issues/12). From simple implementation POV (assuming maximally independent tasks), task assignment may not be strictly necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly.
 
-Also, since we are using original EFS data files some knowledge of EFS internals is usually required.
+Note that for code that is to be included verbatim in Phoenix core codebase, the proper formatting is enforced automatically on save by using [NetBeans](https://netbeans.org/) to view and modify the sources. So, for code to qualify as a merge, the sure way is to use NetBeans. 
 
-However, if you absolutely must hack the source, get the raw database version which contains NetBeans configuration data. It is strongly suggested that you use [NetBeans](https://netbeans.org/) to view and modify the sources.
+##### Don't worry about possible failure
+Now, I can't force anyone to enlist. But, do not fail to enlist because you think that you may not produce any useful results and that you will be embarassed later for having to publicly admit that, implicitly or explicitly. When I considered setting up camp at GitHub and thus releasing Phoenix source to the public I worried about what people would say about the quality of the code (consider [this](https://github.com/joulupunikki/Phoenix/blob/8818c5a6d78e52681a4b04499706b10599798d92/src/gui/Gui.java#L221) brilliant 30 line display of craftmanship)(of course, that should not be taken as a style suggestion) but I have had nothing but positive responses to Phoenix, even from those who have certainly taken a deeper look at the code. If you enlist, and then fail to produce anything beyond "Sorry, I failed :(" then consider that at maximum, all that was wasted was your time and effort, and even then that was probably a learning experience. You weren't paid and the only administrative effort is removing @yourusername from the task in [#4](https://github.com/joulupunikki/Phoenix/issues/4).
 
+Consider these words of famous physicist Freeman Dyson: [You can't possibly get a good technology going without an enormous number of failures. It's a universal rule.](http://en.wikipedia.org/wiki/Freeman_Dyson#The_role_of_failure)
+
+For those who are thinking of coding, tasks "Automated testing (class Robot)" [#5](https://github.com/joulupunikki/Phoenix/issues/5), "Automated test generation" [#6](https://github.com/joulupunikki/Phoenix/issues/6), "Unit window animations" [#7](https://github.com/joulupunikki/Phoenix/issues/7) and "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) should provide tasks with simple or no necessary administrative Phoenix code integration. The tasks that require no coding obviously require no code integration and as such cannot have negative impact on Phoenix code.
 
 1: Getting Phoenix
 ==================
