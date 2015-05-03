@@ -1,0 +1,1 @@
+java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL

@@ -1,3 +1,9 @@
+# netbeans dirs
 dist/
 build/
 nbproject/private/
+# releases
+releases/releases/
+releases/include/src/*list.txt
+# backup files
+**/*~
