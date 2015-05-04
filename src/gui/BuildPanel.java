@@ -51,6 +51,7 @@ import javax.swing.table.TableModel;
 import state.PW1;
 import util.C;
 import util.Comp;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -646,8 +647,7 @@ public class BuildPanel extends JPanel {
         g.setColor(new Color(33, 33, 33));
         g.fillRect(0, 0, ws.planet_map_width, ws.planet_map_height);
         byte[][] pallette = gui.getPallette();
-        String file = "PCX" + System.getProperty("file.separator") + "UNITBG2.PCX";
-        BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 504, 209);
+        BufferedImage bi = Util.loadImage(FN.S_UNITBG2_PCX, ws.is_double, pallette, 504, 209);
         drawResourceIcons(bi.getRaster());
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

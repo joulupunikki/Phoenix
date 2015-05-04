@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Properties;
+import util.FN;
 import util.Util;
 
 /**
@@ -121,13 +122,12 @@ public class EfsIni implements Serializable {
 
     public static Properties readPhoenixIni() {
         Properties phoenix_ini = new Properties();
-        String file_name = "PHOENIX/PHOENIX.INI";
 
-        try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(FN.S_PHOENIX_INI))) {
             phoenix_ini.load(in);
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, -1);
+            Util.logFFErrorAndExit(FN.S_PHOENIX_INI, -1);
         }
 
         return phoenix_ini;
@@ -135,17 +135,15 @@ public class EfsIni implements Serializable {
 
     public static Properties readEFSINI() {
         Properties efs_ini = new Properties();
-        String file_name = "DAT/EFS.INI";
-        String tmp_file = "EFS.INI.TMP";
-        convertToProperties(file_name, tmp_file);
+        convertToProperties(FN.S_EFS_INI, FN.S_EFS_INI_TMP);
 
-        try (BufferedReader in = new BufferedReader(new FileReader(tmp_file))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(FN.S_EFS_INI_TMP))) {
             efs_ini.load(in);
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, -1);
+            Util.logFFErrorAndExit(FN.S_EFS_INI, -1);
         }
-        File remove = new File(tmp_file);
+        File remove = new File(FN.S_EFS_INI_TMP);
         remove.delete();
 //        System.out.println("Properties:");
 //        Set<String> test_set = efs_ini.stringPropertyNames();

@@ -30,6 +30,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import state.PW1;
 import util.C;
+import util.FN;
 import util.Util;
 import util.Util.HexIter;
 import util.UtilG;
@@ -176,8 +177,7 @@ public class BuildCityPanel extends JPanel {
         }
 
         byte[][] pallette = gui.getPallette();
-        String file = "PCX" + C.S_SEPAR + "BG0.PCX";
-        bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
+        bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
 
         // get number of buildable cities
         buildables_nr = 0;

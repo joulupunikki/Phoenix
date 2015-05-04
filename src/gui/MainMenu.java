@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -98,7 +99,7 @@ public class MainMenu extends JPanel {
     public void renderMainMenu(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage("pcx/cathed3.pcx", ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
@@ -206,7 +207,7 @@ public class MainMenu extends JPanel {
         public void renderMainMenu(Graphics g) {
 
             byte[][] pallette = gui.getPallette();
-            BufferedImage bi = Util.loadImage("pcx/cathed3.pcx", ws.is_double, pallette, 640, 480);
+            BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);

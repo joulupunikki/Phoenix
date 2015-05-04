@@ -37,6 +37,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -99,7 +100,7 @@ public class TechPanel extends JPanel {
         super.paintComponent(g);
 
         byte[][] pallette = gui.getPallette();
-        String file = "PCX" + System.getProperty("file.separator") + "BG0.PCX";
+        String file = FN.S_BG0_PCX;
         BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 640, ws.tech_window_h);
 
         Graphics2D g2d = (Graphics2D) g;

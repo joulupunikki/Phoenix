@@ -29,11 +29,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
 import javax.swing.JTextArea;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -88,9 +86,8 @@ public class Manowitz extends JPanel {
         game = gui.getGame();
 
         // Manowitz has unique pallette
-        String file = "MANOWITZ" + System.getProperty("file.separator") + "BOOK5H.PCX";
-        File file_obj = new File(file);
-        pallette = Util.getPalletteFromPCX(file, (int) file_obj.length());
+        File file_obj = new File(FN.S_BOOK5H_PCX);
+        pallette = Util.getPalletteFromPCX(FN.S_BOOK5H_PCX, (int) file_obj.length());
         color_index = new IndexColorModel(8, 256, pallette[2], pallette[1], pallette[0], 256);
 
         addLeftPage();
@@ -107,14 +104,9 @@ public class Manowitz extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        String file = "MANOWITZ" + System.getProperty("file.separator") + "BOOK5H.PCX";
-
-        BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
-
+        BufferedImage bi = Util.loadImage(FN.S_BOOK5H_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
-
     }
 
 //    public void setUpPosSliders() {
@@ -149,13 +141,12 @@ public class Manowitz extends JPanel {
     public void setUpCloseButton() {
 
 //        JButton close;
-        String file = "MANOWITZ" + C.S_SEPAR + "CLOSE.BIN";
-        ButtonIcon close_enabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, 0, color_index, ws);
+        ButtonIcon close_enabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, FN.S_CLOSE_BIN, 0, color_index, ws);
 
         int file_offset = 3;
-        ButtonIcon close_disabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, file_offset, color_index, ws);
+        ButtonIcon close_disabled = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, FN.S_CLOSE_BIN, file_offset, color_index, ws);
         file_offset = 2;
-        ButtonIcon close_pressed = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, file, file_offset, color_index, ws);
+        ButtonIcon close_pressed = new ButtonIcon(ws.manowitz_close_w, ws.manowitz_close_h, FN.S_CLOSE_BIN, file_offset, color_index, ws);
 
         close = new JButton();
         close.setBorder(null);
@@ -177,13 +168,12 @@ public class Manowitz extends JPanel {
     public void setUpNextButton() {
 
 //        JButton next;
-        String file = "MANOWITZ" + C.S_SEPAR + "NEXT.BIN";
-        ButtonIcon next_enabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, 0, color_index, ws);
+        ButtonIcon next_enabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, FN.S_NEXT_BIN, 0, color_index, ws);
 
         int file_offset = 3;
-        ButtonIcon next_disabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, file_offset, color_index, ws);
+        ButtonIcon next_disabled = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, FN.S_NEXT_BIN, file_offset, color_index, ws);
         file_offset = 2;
-        ButtonIcon next_pressed = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, file, file_offset, color_index, ws);
+        ButtonIcon next_pressed = new ButtonIcon(ws.manowitz_next_w, ws.manowitz_next_h, FN.S_NEXT_BIN, file_offset, color_index, ws);
 
         next = new JButton();
         next.setBorder(null);
@@ -205,13 +195,12 @@ public class Manowitz extends JPanel {
     public void setUpPrevButton() {
 
 //        JButton prev;
-        String file = "MANOWITZ" + C.S_SEPAR + "PREV.BIN";
-        ButtonIcon previous_enabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, 0, color_index, ws);
+        ButtonIcon previous_enabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, FN.S_PREV_BIN, 0, color_index, ws);
 
         int file_offset = 3;
-        ButtonIcon previous_disabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, file_offset, color_index, ws);
+        ButtonIcon previous_disabled = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, FN.S_PREV_BIN, file_offset, color_index, ws);
         file_offset = 2;
-        ButtonIcon previous_pressed = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, file, file_offset, color_index, ws);
+        ButtonIcon previous_pressed = new ButtonIcon(ws.manowitz_prev_w, ws.manowitz_prev_h, FN.S_PREV_BIN, file_offset, color_index, ws);
 
         prev = new JButton();
         prev.setBorder(null);
@@ -232,13 +221,12 @@ public class Manowitz extends JPanel {
 
     public void setUpContentsButton() {
 
-        String file = "MANOWITZ" + C.S_SEPAR + "CONTENTS.BIN";
-        ButtonIcon contents_enabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, 0, color_index, ws);
+        ButtonIcon contents_enabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, FN.S_CONTENTS_BIN, 0, color_index, ws);
 
         int file_offset = 3;
-        ButtonIcon contents_disabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, file_offset, color_index, ws);
+        ButtonIcon contents_disabled = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, FN.S_CONTENTS_BIN, file_offset, color_index, ws);
         file_offset = 2;
-        ButtonIcon contents_pressed = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, file, file_offset, color_index, ws);
+        ButtonIcon contents_pressed = new ButtonIcon(ws.manowitz_contents_w, ws.manowitz_contents_h, FN.S_CONTENTS_BIN, file_offset, color_index, ws);
 
         contents = new JButton();
         contents.setBorder(null);
@@ -431,8 +419,7 @@ public class Manowitz extends JPanel {
         if (vol != -1) {
             this.volume = vol;
         }
-        String file_name = "MANOWITZ" + System.getProperty("file.separator")
-                + "VOLUME" + volume + ".TXT";
+        String file_name = FN.S_VOLUME + volume + FN.S__TXT;
         String text = Util.readText(file_name);
 
         // parse contents into lines of chapter names
@@ -471,8 +458,7 @@ public class Manowitz extends JPanel {
 
         this.volume = vol;
 
-        String file_name = "MANOWITZ" + System.getProperty("file.separator")
-                + "VOLUME" + volume + ".TXT";
+        String file_name = FN.S_VOLUME + volume + FN.S__TXT;
         String text = Util.readText(file_name);
 
         // parse contents into lines of chapter names

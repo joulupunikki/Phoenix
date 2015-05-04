@@ -16,7 +16,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -33,10 +32,9 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-import state.PW1;
 import state.SU;
-import state.SW1;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -120,8 +118,7 @@ public class Messages extends JPanel {
 
     public void renderMessages(Graphics g) {
         byte[][] pallette = gui.getPallette();
-        String file = "PCX" + C.S_SEPAR + "BG0.PCX";
-        BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

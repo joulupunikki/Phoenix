@@ -1022,8 +1022,8 @@ public class Util {
         // load first portrait image data
         long startTime = System.nanoTime();
 
-        Path path1 = FileSystems.getDefault().getPath("PCX/PLNPLAT3.PCX");
-        Path path2 = FileSystems.getDefault().getPath("efspallette.hex");
+        Path path1 = FileSystems.getDefault().getPath(FN.S_PLNPLAT3_PCX);
+        Path path2 = FileSystems.getDefault().getPath(FN.S_EFS_PAL); // TODO this may not work
 
         try (FileChannel fc1 = (FileChannel.open(path1));
                 FileChannel fc2 = (FileChannel.open(path2))) {
@@ -1462,7 +1462,7 @@ public class Util {
 //            System.out.println("Time: " + estimatedTime);
 
         } catch (IOException e) {
-            System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
             System.out.println("Failed to read " + file_name);
             System.exit(1);
         }

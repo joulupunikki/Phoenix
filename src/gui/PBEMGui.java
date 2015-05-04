@@ -26,9 +26,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import util.C;
+import util.FN;
 import util.Util;
 import util.UtilG;
 
@@ -135,19 +135,19 @@ public class PBEMGui implements Serializable {
             System.out.println("file = " + file.getName());
             pbem.checksums.put(file.getName(), getHash(file, "DAT"));
         }
-        File file = new File("PHOENIX" + C.S_SEPAR + "PHOENIX.INI");
+        File file = new File(FN.S_PHOENIX_INI);
         pbem.checksums.put(file.getName(), getHash(file, "PHOENIX"));
         String[] main_args = Gui.getMainArgs();
         String galaxy_name;
         String dir = null;
         if (main_args.length == 2) {
             galaxy_name = main_args[1];
-            if (galaxy_name.startsWith("GAL/") || galaxy_name.startsWith("GAL\\")) {
+            if (galaxy_name.startsWith(FN.S_GAL + C.S_SEPAR)) {
                 galaxy_name = galaxy_name.substring(4, galaxy_name.length());
-                dir = "GAL";
+                dir = FN.S_GAL;
             }
         } else {
-            galaxy_name = "GALAXY.GAL";
+            galaxy_name = FN.S_GALAXY_GAL;
         }
         file = new File(galaxy_name);
         pbem.checksums.put(file.getName(), getHash(file, dir));
@@ -181,10 +181,10 @@ public class PBEMGui implements Serializable {
         for (String key : pbem.checksums.keySet()) {
             String file_name;
             String dir = null;
-            if (key.startsWith("GAL/") || key.startsWith("GAL\\")) {
+            if (key.startsWith(FN.S_GAL + C.S_SEPAR)) {
                 file_name = key.substring(4, key.length());
-                dir = "GAL";
-            } else if (key.equals("GALAXY.GAL")) {
+                dir = FN.S_GAL;
+            } else if (key.equals(FN.S_GALAXY_GAL)) {
                 file_name = key;
                 dir = null;
             } else if (key.equals("PHOENIX.INI")) {

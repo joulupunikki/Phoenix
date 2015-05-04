@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -82,9 +83,9 @@ public class PlanetWindow extends JPanel {
 
     public void setUpButtons() {
         IndexColorModel color_index = gui.getICM();
-        ButtonIcon end_turn_default = new ButtonIcon(ws.end_turn_button_w, ws.end_turn_button_h, "bin/efsbut16.bin", 0, color_index, ws);
+        ButtonIcon end_turn_default = new ButtonIcon(ws.end_turn_button_w, ws.end_turn_button_h, FN.S_EFSBUT_BIN[16], 0, color_index, ws);
         int file_offset = 2;
-        ButtonIcon end_turn_pressed = new ButtonIcon(ws.end_turn_button_w, ws.end_turn_button_h, "bin/efsbut16.bin", file_offset, color_index, ws);
+        ButtonIcon end_turn_pressed = new ButtonIcon(ws.end_turn_button_w, ws.end_turn_button_h, FN.S_EFSBUT_BIN[16], file_offset, color_index, ws);
         end_turn = new JButton();
         end_turn.setBorder(null);
         end_turn.setIcon(end_turn_default);
@@ -101,9 +102,9 @@ public class PlanetWindow extends JPanel {
             }
         });
 
-        ButtonIcon next_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, "bin/efsbut10.bin", 0, color_index, ws);
+        ButtonIcon next_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, FN.S_EFSBUT_BIN[10], 0, color_index, ws);
         file_offset = 2;
-        ButtonIcon next_stack_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, "bin/efsbut10.bin", file_offset, color_index, ws);
+        ButtonIcon next_stack_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, FN.S_EFSBUT_BIN[10], file_offset, color_index, ws);
         next_stack = new JButton();
         next_stack.setBorder(null);
         next_stack.setIcon(next_stack_default);
@@ -124,7 +125,7 @@ public class PlanetWindow extends JPanel {
 
         ButtonIcon build_disabled = new ButtonIcon(ws.build_button_w, ws.build_button_h, null, 0, color_index, ws);
 //        file_offset = 2;
-//        ButtonIcon build_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, "bin/efsbut10.bin", file_offset, color_index, ws);
+//        ButtonIcon build_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, FN.S_EFSBUT_BIN[10], file_offset, color_index, ws);
         build = new JButton("Build");
         build.setFont(ws.font_default);
         build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
@@ -146,7 +147,7 @@ public class PlanetWindow extends JPanel {
 
     public void setUpSkipStack() {
         IndexColorModel color_index = gui.getICM();
-        String file_name = "bin/efsbut9.bin";
+        String file_name = FN.S_EFSBUT_BIN[9];
         ButtonIcon skip_stack_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, 0, color_index, ws);
         int file_offset = 2;
         ButtonIcon skip_stack_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, file_offset, color_index, ws);
@@ -250,7 +251,7 @@ public class PlanetWindow extends JPanel {
     public void renderPlanetWindow(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage("pcx/plnplat3.pcx", ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_PLNPLAT3_PCX, ws.is_double, pallette, 640, 480);
         drawResourceIcons(bi.getRaster());
 
         Graphics2D g2d = (Graphics2D) g;

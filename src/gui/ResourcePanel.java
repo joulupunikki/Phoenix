@@ -6,8 +6,6 @@
 package gui;
 
 import game.Game;
-import game.Resources;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -21,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -47,7 +46,7 @@ public class ResourcePanel extends JPanel {
         game = gui.getGame();
 
         byte[][] pallette = gui.getPallette();
-        String file = "PCX" + System.getProperty("file.separator") + "BG0.PCX";
+        String file = FN.S_BG0_PCX;
         BufferedImage tmp = Util.loadImage(file, ws.is_double, pallette, 640, 480);
         bi = tmp.getSubimage(0, 0, ws.rw_width, ws.rw_height);
 

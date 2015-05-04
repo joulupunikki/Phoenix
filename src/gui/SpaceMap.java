@@ -20,6 +20,7 @@ import java.nio.ByteOrder;
 import java.util.List;
 import javax.swing.JPanel;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -160,7 +161,7 @@ public class SpaceMap extends JPanel {
         g.fillRect(0, 0, ws.space_map_width, ws.space_map_height);
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadStarFld2("pcx/starfld2.pcx", ws.is_double, pallette, 480, 416);
+        BufferedImage bi = Util.loadStarFld2(FN.S_STARFLD2_PCX, ws.is_double, pallette, 480, 416);
 
         g2d.drawImage(bi, null, ws.starfld2_x_pos, ws.starfld2_y_pos);
 
@@ -428,7 +429,7 @@ public class SpaceMap extends JPanel {
 
         planet_images = new int[C.EFSPLAN_BIN_LENGTH][C.EFSPLAN_BIN_P_SIZE];
         for (int i = 0; i < planet_images.length; i++) {
-            planet_images[i] = Util.readImageData("bin/efsplan.bin",
+            planet_images[i] = Util.readImageData(FN.S_EFSPLAN_BIN,
                     i * C.EFSPLAN_BIN_P_SIZE,
                     C.EFSPLAN_BIN_P_SIZE, ByteOrder.BIG_ENDIAN);
 

@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import state.CW1;
 import state.CW2;
 import util.C;
+import util.FN;
 import util.Util;
 import util.UtilG;
 import util.WindowSize;
@@ -155,7 +156,7 @@ public class CombatWindow extends JPanel {
     public void drawUnits(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage("pcx/bg0.pcx", ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
@@ -172,8 +173,8 @@ public class CombatWindow extends JPanel {
         int[] pixel_data = new int[1];
         int[][] unit_icons = Gui.getUnitIcons();
 
-        int[] skull = Util.loadSquare("bin/skull.bin", 0, C.SKULL_SIDE * C.SKULL_SIDE);
-        int[] flag = Util.loadSquare("bin/flag.bin", 0, C.SKULL_SIDE * C.SKULL_SIDE);
+        int[] skull = Util.loadSquare(FN.S_SKULL_BIN, 0, C.SKULL_SIDE * C.SKULL_SIDE);
+        int[] flag = Util.loadSquare(FN.S_FLAG_BIN, 0, C.SKULL_SIDE * C.SKULL_SIDE);
         List<Unit> attacker = game.getCombatStack("a");
         ListIterator<Unit> it = attacker.listIterator();
 

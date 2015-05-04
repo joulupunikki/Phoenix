@@ -8,7 +8,6 @@ import galaxyreader.Unit;
 import game.Game;
 import game.Square;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -18,7 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -27,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import state.State;
 import util.C;
+import util.FN;
 import util.StackIterator;
 import util.Util;
 import util.WindowSize;
@@ -128,7 +127,7 @@ public class UnitInfoWindow extends JPanel {
     public void drawBackground(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage("pcx/unitinfo.pcx", ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

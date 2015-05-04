@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -38,7 +39,7 @@ public class XPlayerScreen extends JPanel {
     public void renderPanel(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage("pcx/cathed3.pcx", ws.is_double, pallette, 640, 480);
+        BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

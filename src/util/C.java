@@ -351,7 +351,7 @@ public class C {
     public static final int TECH_MAINT = 100;
 
     public static final String S_VERSION = "V0.10.0";
-    public static final String S_SEPAR = System.getProperty("file.separator");
+    // TODO move filename definitions to util.FN
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
     public static final String S_UNIT_INFO = "unit info";
@@ -360,6 +360,8 @@ public class C {
     public static final String S_COMBAT_WINDOW = "combat window";
     public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_MESSAGES = "messages window";
+
+    public static final String S_SEPAR = System.getProperty("file.separator");    
     public static final String S_UNIT_DAT = "DAT/UNIT.DAT";
     public static final String S_EFSUNIT_BIN = "BIN/EFSUNIT.BIN";
     public static final String S_STRBUILD_DAT = "DAT/STRBUILD.DAT";
@@ -378,12 +380,12 @@ public class C {
 
     public static final String S_TECH_DAT = "DAT/TECH.DAT";
     public static final String S_CARGO_BIN = "BIN" + S_SEPAR + "CARGO.BIN";
+    public static final String S_LOG_FILE = "phoenixlog.txt";
 
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
     public static final String S_TRANSPORT = "transport";
-    public static final String S_LOG_FILE = "phoenixlog.txt";
 
     public static final Color COLOR_GOLD_BRIGHT = new Color(232, 224, 100);
     public static final Color COLOR_GOLD = new Color(255, 215, 0);

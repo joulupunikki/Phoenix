@@ -69,6 +69,7 @@ import state.StateRef;
 import state.WS;
 import util.C;
 import util.Comp;
+import util.FN;
 import util.StackIterator;
 import util.Util;
 import util.WindowSize;
@@ -213,7 +214,7 @@ public class Gui extends JFrame {
 
         String[] args = Gui.args;
 
-        pallette = Util.loadPallette("EFS.PAL");
+        pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
 
         unit_icons = Util.loadSquares(C.S_EFSUNIT_BIN, 92, 32 * 32);
@@ -233,16 +234,16 @@ public class Gui extends JFrame {
             Pattern p = Pattern.compile(Pattern.quote(C.S_SEPAR));
             String name = args[1].substring(4);
             Matcher m = p.matcher(name);
-            if (!args[1].equals("GALAXY.GAL") && (!args[1].startsWith("GAL" + C.S_SEPAR)
+            if (!args[1].equals(FN.S_GALAXY_GAL) && (!args[1].startsWith(FN.S_GAL + C.S_SEPAR)
                     || m.find())) {
-                System.out.println("usage: java -jar Phoenix.jar 1|2 GALAXY.GAL|GAL\"file.separator\"file_name");
+                System.out.println("usage: java -jar Phoenix.jar 1|2 " + FN.S_GALAXY_GAL + "|" + FN.S_GAL + "\"file.separator\"file_name");
                 System.exit(0);
             }
 
             game = new Game(args[1], 14);
             game.init(resources);
         } else if (args.length == 0) {
-            game = new Game("GALAXY.GAL", 14);
+            game = new Game(FN.S_GALAXY_GAL, 14);
             game.init(resources);
             ws = new WindowSize(false);
         } else {
@@ -1390,7 +1391,7 @@ public class Gui extends JFrame {
         // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
         String path_name = System.getProperty("user.dir")
-                + System.getProperty("file.separator") + "SAV";
+                + System.getProperty("file.separator") + FN.S_SAV;
         chooser.setCurrentDirectory(new File(path_name));
         int returnVal = chooser.showOpenDialog(this);
         System.out.println("path_name = " + path_name);
@@ -1495,7 +1496,7 @@ public class Gui extends JFrame {
 //                "JPG & GIF Images", "jpg", "gif");
 //        chooser.setFileFilter(filter);
         String path_name = System.getProperty("user.dir")
-                + System.getProperty("file.separator") + "SAV";
+                + System.getProperty("file.separator") + FN.S_SAV;
         chooser.setCurrentDirectory(new File(path_name));
 
         int returnVal = chooser.showSaveDialog(this);
@@ -1631,7 +1632,7 @@ public class Gui extends JFrame {
             game = new Game(args[1], 14);
             game.init(resources);
         } else {
-            game = new Game("GALAXY.GAL", 14);
+            game = new Game(FN.S_GALAXY_GAL, 14);
             game.init(resources);
         }
         setGameReferences();
@@ -1787,7 +1788,7 @@ public class Gui extends JFrame {
 
         BufferedImage bi = new BufferedImage(wt, ht, BufferedImage.TYPE_BYTE_INDEXED, color_index);
         WritableRaster wr = bi.getRaster();
-        int[] cursor_img = Util.loadSquare("MOUSE.MSK", 0, 32 * 32);
+        int[] cursor_img = Util.loadSquare(FN.S_MOUSE_MSK, 0, 32 * 32);
         if (ws.is_double) {
             cursor_img = Util.scale2XImage(cursor_img, 32 * 32, 32);
         }
@@ -1830,12 +1831,12 @@ public class Gui extends JFrame {
 
     public void setUpLaunchButton() {
 
-        launch_button_enabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, "bin/efsbut3.bin", 0, color_index, ws);
+        launch_button_enabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, FN.S_EFSBUT_BIN[3], 0, color_index, ws);
 
         int file_offset = 3;
-        launch_button_disabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, "bin/efsbut3.bin", file_offset, color_index, ws);
+        launch_button_disabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, FN.S_EFSBUT_BIN[3], file_offset, color_index, ws);
         file_offset = 2;
-        ButtonIcon launch_button_pressed = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, "bin/efsbut3.bin", file_offset, color_index, ws);
+        ButtonIcon launch_button_pressed = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, FN.S_EFSBUT_BIN[3], file_offset, color_index, ws);
 
         launch_button = new JButton();
         launch_button.setBorder(null);
@@ -1856,12 +1857,12 @@ public class Gui extends JFrame {
 
     public void setUpSpaceButton() {
 
-        ButtonIcon space_button_enabled = new ButtonIcon(ws.space_button_width, ws.space_button_height, "bin/efsbut2.bin", 0, color_index, ws);
+        ButtonIcon space_button_enabled = new ButtonIcon(ws.space_button_width, ws.space_button_height, FN.S_EFSBUT_BIN[2], 0, color_index, ws);
 
 //        int file_offset = 3;
-//        launch_button_disabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, "bin/efsbut2.bin", file_offset, color_index, ws);
+//        launch_button_disabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, FN.S_EFSBUT_BIN[2], file_offset, color_index, ws);
         int file_offset = 2;
-        ButtonIcon space_button_pressed = new ButtonIcon(ws.space_button_width, ws.space_button_height, "bin/efsbut2.bin", file_offset, color_index, ws);
+        ButtonIcon space_button_pressed = new ButtonIcon(ws.space_button_width, ws.space_button_height, FN.S_EFSBUT_BIN[2], file_offset, color_index, ws);
 
         space_button = new JButton();
         space_button.setBorder(null);
@@ -1985,7 +1986,7 @@ public class Gui extends JFrame {
     public static void loadHexTiles() {
         hex_tiles = new int[C.TILE_SETS][][];
         for (int i = 0; i < C.TILE_SETS; i++) {
-            hex_tiles[i] = Util.loadHexTiles("bin/efstile" + i + ".bin", 134);
+            hex_tiles[i] = Util.loadHexTiles(FN.S_EFSTILE + i + FN.S__BIN, 134);
 
         }
     }
@@ -1993,7 +1994,7 @@ public class Gui extends JFrame {
     public static void loadStructureTiles() {
         structures = new int[C.TILE_SETS][][];
         for (int i = 0; i < C.TILE_SETS; i++) {
-            structures[i] = Util.loadHexTiles("bin/struct" + i + ".bin", 32);
+            structures[i] = Util.loadHexTiles(FN.S_STRUCT + i + FN.S__BIN, 32);
 
         }
     }
