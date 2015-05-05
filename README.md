@@ -3,23 +3,30 @@ Phoenix
 
 Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
-If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues). If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all mods is critically important.
+If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read "New in version 0.9.1" below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
 
 News
 ====
 
-Contributing policy change as of 28.04.2015
+Contributing policy change to "Definitely maybe for predefined tasks" as of 28.apr.2015
+
+Required java version for precompiled release binaries moved from java 7 to java 8 as of 5.may.2015
 
 Contributing
 ============
 
+##### Policy
+"Definitely maybe for predefined tasks." (Tasks which require no programming also available, see below.)
+
 ##### Requirements for code contributions
-[NetBeans](https://netbeans.org/) has been used to program Phoenix. For code to qualify as a merge, the sure way is to use NetBeans. And, among other things, with NetBeans the production of jars for testing is just a press of a button.  Also for large projects an [IDE](http://en.wikipedia.org/wiki/Integrated_development_environment) could be considered mandatory, without it you are at a major disadvantage, and for Java the premier free IDEs are NetBeans and Eclipse. Some tasks, however, produce code that should not modify existing methods or functionality much, or can be or are totally independent projects. For such tasks, using NetBeans is not strictly necessary (if you pick the task "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) as your task, you may even use languages other than Java and the best free IDE may be something else.)
+[NetBeans](https://netbeans.org/) has been used to program Phoenix. For code to qualify as a merge, the sure way is to use NetBeans. And, among other things, with NetBeans the production of jars for testing is just a press of a button.  Also for large projects an [IDE](http://en.wikipedia.org/wiki/Integrated_development_environment) could be considered mandatory, without it you are at a major disadvantage, and for Java the premier free IDEs are NetBeans and Eclipse. With regards to the choice of IDE, NetBeans was somewhat arbitrary, it was just the one I knew most about. But that is the tool of choice and it is important to have interoperable tools.
+
+Some tasks, however, produce code that should not modify existing methods or functionality much, or can be or are totally independent projects. For such tasks, using NetBeans is not strictly necessary (if you pick the task "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) as your task, you may even use languages other than Java and the IDE of choice may be something else.)
 
 ##### A bit of history
 This section used to officially discourage all contribution. It's not that I don't value cooperation (and some people have actually provided code) but I considered myself a lousy project manager (still do) and will rather spend my time coding than integrating. But as a project, Phoenix has advanced far more than I wagered when I started. 
 
-I thought the project is probably going to be abandoned before any running code is produced. So far (as of 28.04.2015) it has taken 2,5 years of real time to get here. If Phoenix is to reach a stage of playability equaling (and hopefully beyond!) EFS1.4 and I work at the same pace and at the same mentality it may take 2,5 to 5 years to finish at minimum. I would rather it didn't take so long. Thus, the policy of no contributions will be at least temporarily suspended.
+I thought the project is probably going to be abandoned before any running code is produced. So far (as of 28.04.2015) it has taken 2,5 years of real time to get here (actually, code reading the various graphics formats was written in spring 2010.) If Phoenix is to reach a stage of playability equaling (and hopefully above and beyond) that of EFS1.4 and I work at the same pace and with the same mentality it may take 2,5 to 5 years to finish at minimum. I would rather it didn't take so long. Thus, the policy of no contributions will be at least temporarily suspended.
 
 Mostly this will depend on my ability as a project manager. I find myself bad at managing teams of people. Thus, contribution process will be as loosely integrated as possible, without compromising ultimate project integrity. This will hopefully be achieved by trying to identify sub projects which require maximally independent implementation.
 
@@ -53,7 +60,7 @@ Build yourself from provided sources, instructions below at "Installing and runn
 2: Installing and running
 =========================
 
-The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 7 (or higher) jdk or jre is needed to run Phoenix.jar.
+The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar (so far, no java 8 features are used so compiling to java 7 compliance is possible. This may change in the future and everyone is encouraged to move to java 8 if possible.)
 
 Important note:
 Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
