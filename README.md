@@ -42,7 +42,7 @@ For those who are thinking of coding, tasks "Automated testing" [#5](https://git
 
 ##### Main repository contract
 
-Notice: the following "repository contract" is not a guarantee or warranty. "Contract" is to be considered a software engeering term, not a legal term.
+Notice: the following "repository contract" is not a guarantee or warranty. "Contract" is to be considered a software engineering term, not a legal term.
 
 In the main [Phoenix](https://github.com/joulupunikki/Phoenix) repository the default branch is master. As per git default configuration this is the branch which will be shown when the [Phoenix](https://github.com/joulupunikki/Phoenix) link is clicked. The master branch SHALL contain all the releases, excluding orange "Pre-releases", and is intended to be kept at production quality at all times. A master branch HEAD which does not compile or run is considered a critical bug and should be reported as an [issue](https://github.com/joulupunikki/Phoenix/issues) (presently, I only have access to Ubuntu 1404 and Windows 7 so in the event that errors concern BSD/OSX or something else I am not in the position to make specific attemtps to fix bugs in those cases.) Initial feature development and/or testing SHALL not be done on the master branch. The master branch SHALL not be rebased, amended or its history otherwise altered unless critical issues such as serious errors or copyright violations are revealed or the proper authorities (eg. GitHub administrators) issue directives.
 
