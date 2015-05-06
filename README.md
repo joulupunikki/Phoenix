@@ -40,6 +40,10 @@ Consider these words of famous physicist Freeman Dyson: [You can't possibly get 
 
 For those who are thinking of coding, tasks "Automated testing" [#5](https://github.com/joulupunikki/Phoenix/issues/5), "Automated test generation" [#6](https://github.com/joulupunikki/Phoenix/issues/6), "Unit window animations" [#7](https://github.com/joulupunikki/Phoenix/issues/7) and "Random galaxy generator" [#8](https://github.com/joulupunikki/Phoenix/issues/8) should provide tasks with simple or no necessary administrative Phoenix code integration. The tasks that require no coding obviously require no code integration and as such cannot have negative impact on Phoenix code.
 
+##### Main repository contract
+
+In the main [Phoenix](https://github.com/joulupunikki/Phoenix) repository the default branch is master. As per git default configuration this is the branch which will be shown when the [Phoenix](https://github.com/joulupunikki/Phoenix) link is clicked. The master branch SHALL contain all the releases and is intended to be kept at production quality at all times. A master branch HEAD which does not compile or run is considered a critical bug and should be reported as such. Initial feature development and/or testing SHALL not be done on the master branch. The master branch SHALL not be rebased, amended or its history otherwise altered unless critical issues such as serious errors or copyright violations are revealed or the proper authorities (eg. GitHub administrators) issue directives.
+
 1: Getting Phoenix
 ==================
 
