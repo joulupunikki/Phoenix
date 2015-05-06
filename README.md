@@ -3,20 +3,31 @@ Phoenix
 
 Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
-If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read "New in version 0.9.1" below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
+If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix/README.md#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
+
+TOC
+===
+
+* [News](https://github.com/joulupunikki/Phoenix#news)
+* [Contributing](https://github.com/joulupunikki/Phoenix#contributing)
+* [1: Getting Phoenix](https://github.com/joulupunikki/Phoenix#1-getting-phoenix)
+* [2: Installing and running](https://github.com/joulupunikki/Phoenix#2-installing-and-running)
+* [3: Changes](https://github.com/joulupunikki/Phoenix#3-changes)
 
 News
 ====
 
-Contributing policy change to "Definitely maybe for predefined tasks" as of 28.apr.2015
+Contributing policy change to "Yes for predefined tasks" as of 28 apr 2015
 
-Required java version for precompiled release binaries moved from java 7 to java 8 as of 5.may.2015
+Required java version for precompiled release binaries changed from java 7 to java 8 as of 5 may 2015
 
 Contributing
 ============
 
 ##### Policy
-"Definitely maybe for predefined tasks." (Tasks which require no programming also available, see below.)
+"Yes for predefined tasks." (Tasks which require no programming also available, see below.)
+
+Important note: to maximize the chances that Phoenix stays afloat legally, the Phoenix distribution SHALL NOT contain any copyrighted material beyond that which is necessary to reproduce "EFS.EXE" functionality (such as faction names, some static GUI texts and the GUI layout specifications.) Instead, all material SHALL be read from the separately user installed EFS1.4 (and mod) files. As a rule of thumb, if it is not in "EFS.EXE" it must be excluded from the Phoenix distribution. This rule includes the project [wiki](https://github.com/joulupunikki/Phoenix/wiki) (and actually everything published by the person behind the [joulupunikki](https://github.com/joulupunikki) username.)
 
 ##### Requirements for code contributions
 [NetBeans](https://netbeans.org/) has been used to program Phoenix. For code to qualify as a merge, the sure way is to use NetBeans. And, among other things, with NetBeans the production of jars for testing is just a press of a button.  Also for large projects an [IDE](http://en.wikipedia.org/wiki/Integrated_development_environment) could be considered mandatory, without it you are at a major disadvantage, and for Java the premier free IDEs are NetBeans and Eclipse. With regards to the choice of IDE, NetBeans was somewhat arbitrary, it was just the one I knew most about. But that is the tool of choice and it is important to have interoperable tools.
@@ -31,7 +42,7 @@ I thought the project is probably going to be abandoned before any running code 
 Mostly this will depend on my ability as a project manager. I find myself bad at managing teams of people. Thus, contribution process will be as loosely integrated as possible, without compromising ultimate project integrity. This will hopefully be achieved by trying to identify sub projects which require maximally independent implementation.
 
 ##### Defined tasks and being assigned
-Potential sub projects or simply "tasks" are defined as issues. A list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). Read the issue of the task that you think you can do and post your intentions to "Task assignment thread" [#12](https://github.com/joulupunikki/Phoenix/issues/12). From simple implementation POV (assuming maximally independent tasks), task assignment may not be strictly necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly.
+Potential sub projects or simply "tasks" are defined as issues. A preliminary list of tasks is found in issue [#4](https://github.com/joulupunikki/Phoenix/issues/4). All contributable tasks can be found by selecting [issues with the contributable label](https://github.com/joulupunikki/Phoenix/issues?q=is%3Aopen+is%3Aissue+label%3Acontributable) Read the issue of the task that you think you can do and post your intentions to "Task assignment thread" [#12](https://github.com/joulupunikki/Phoenix/issues/12). From simple implementation POV (assuming maximally independent tasks), task assignment may not be strictly necessary. From project POV, task assignment ensures no duplicate, useful, work is produced needlessly.
 
 ##### Don't worry about possible failure
 Now, I can't force anyone to enlist. But, do not fail to enlist because you think that you may not produce any useful results and that you will be embarassed later for having to publicly admit that, implicitly or explicitly. When I considered setting up camp at GitHub and thus releasing Phoenix source to the public I worried about what people would say about the quality of the code (consider [this](https://github.com/joulupunikki/Phoenix/blob/8818c5a6d78e52681a4b04499706b10599798d92/src/gui/Gui.java#L221) brilliant 30 line display of craftmanship)(of course, that should not be taken as a style suggestion) but I have had nothing but positive responses to Phoenix, even from those who have certainly taken a deeper look at the code. If you enlist, and then fail to produce anything beyond "Sorry, I failed :(" then consider that at maximum, all that was wasted was your time and effort, and even then that was probably a learning experience. You weren't paid and the only administrative effort is removing @yourusername from the task in [#4](https://github.com/joulupunikki/Phoenix/issues/4).
@@ -46,9 +57,7 @@ Notice: the following "repository contract" is not a guarantee or warranty. "Con
 
 In the main [Phoenix](https://github.com/joulupunikki/Phoenix) repository the default branch is master. As per git default configuration this is the branch which will be shown when the [Phoenix](https://github.com/joulupunikki/Phoenix) link is clicked. The master branch SHALL contain all the releases, excluding orange "Pre-releases", and is intended to be kept at production quality at all times. A master branch HEAD which does not compile or run is considered a critical bug and should be reported as an [issue](https://github.com/joulupunikki/Phoenix/issues) (presently, I only have access to Ubuntu 1404 and Windows 7 so in the event that errors concern BSD/OSX or something else I am not in the position to make specific attemtps to fix bugs in those cases.) Initial feature development and/or testing SHALL not be done on the master branch. The master branch SHALL not be rebased, amended or its history otherwise altered unless critical issues such as serious errors or copyright violations are revealed or the proper authorities (eg. GitHub administrators) issue directives.
 
-Other branches are to be considered experimental and the stability of their history is not conserved as rigidly as that of the master branch. Especially, a branch named "test_release" will be used before releases for testing purposes and should be considered entirely transient. Tags from "test_release" may appear in [releases](https://github.com/joulupunikki/Phoenix/releases) as temprorary test releases with the orange "Pre-release" labels. These test releases are for internal testing purposes only.
-
-
+For other branches the history is not necessarily conserved as rigidly as that of the master branch. Especially, a branch named "test_release" will be used before releases for testing purposes and should be considered entirely temporary. Tags from "test_release" may appear in [releases](https://github.com/joulupunikki/Phoenix/releases) as transient test releases with the orange "Pre-release" labels. These test releases are for internal testing purposes only.
 
 1: Getting Phoenix
 ==================
@@ -81,7 +90,7 @@ Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` direct
 all of these files then you probably have got a source distribution or raw database package. See "Getting Phoenix, Binary distribution" above to get the executable version.) To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
-`C:\Program Files\Java\jdk1.7.0` you would type `"C:\Program Files\Java\jdk1.7.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
+`C:\Program Files\Java\jdk1.8.0` you would type `"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
 
 2.2: Source distribution
 ------------------------
