@@ -3,6 +3,7 @@
 # release.sh
 # script to build releases of Phoenix
 #
+OUTPUT_DIR="target"
 if [ "x$1" = "x" ]; then
     echo "Error: need version number as first argument."
     exit
@@ -21,14 +22,14 @@ TMP_DIR=$(mktemp --tmpdir -d phoenix_build.XXXXXXXXXX)
 # clean & build
 CUR_DIR=$(pwd)
 cd ..
-ant clean jar
+mvn clean package
 cd $CUR_DIR
 #copy "executable"
-cp ../dist/Phoenix.jar $TMP_DIR
+cp ../${OUTPUT_DIR}/Phoenix.jar $TMP_DIR
 # sources list for M$Win batch compile
 find ../src/ -name "*.java" | cut -d '/' -f 3- | tr '/' '\' > include/src/srclist.txt
 # class list for M$Win batch compile
-find ../build/classes/ -name "*.class" | cut -d '/' -f 4- | tr '/' '\' > include/src/classlist.txt
+find ../${OUTPUT_DIR}/classes/ -name "*.class" | cut -d '/' -f 4- | tr '/' '\' > include/src/classlist.txt
 #copy includes
 cp -r include/* $TMP_DIR
 #copy etc
