@@ -59,7 +59,11 @@ Notice: the following "repository contract" is not a guarantee or warranty. "Con
 
 In the main [Phoenix](https://github.com/joulupunikki/Phoenix) repository the default branch is master. As per git default configuration this is the branch which will be shown when the [Phoenix](https://github.com/joulupunikki/Phoenix) link is clicked. The master branch SHALL contain all the releases, excluding orange "Pre-releases", and is intended to be kept at production quality at all times. A master branch HEAD which does not compile or run is considered a critical bug and should be reported as an [issue](https://github.com/joulupunikki/Phoenix/issues) (presently, I only have access to Ubuntu 1404 and Windows 7 so in the hopefully rare event that errors concern BSD/OSX or something else I am not in the position to make specific attempts to fix bugs in those cases.) Initial feature development and/or testing SHALL not be done on the master branch. The master branch SHALL not be rebased, amended or its history otherwise altered unless critical issues such as serious errors or copyright violations are revealed or the proper authorities (eg. GitHub administrators) issue directives.
 
-For other branches the history is not necessarily conserved as rigidly as that of the master branch. Especially, a branch named "test_release" will be used before releases for testing purposes and should be considered entirely temporary. Tags from "test_release" may appear in [releases](https://github.com/joulupunikki/Phoenix/releases) as transient test releases with the orange "Pre-release" labels. These test releases are for internal testing purposes only.
+For other branches the history is not necessarily conserved as rigidly as that of the master branch. Especially, a branch named "test_release" may be used before releases for testing purposes and should be considered entirely temporary. Tags from "test_release" may appear in [releases](https://github.com/joulupunikki/Phoenix/releases) as transient test releases with the orange "Pre-release" labels. These test releases are for internal testing purposes only.
+
+##### Workflow
+
+GitHub Fork & Pull (on the other side of the fence, [they have](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) a tutorial on Fork & Pull.)
 
 1: Getting Phoenix
 ==================
