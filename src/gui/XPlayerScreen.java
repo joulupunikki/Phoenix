@@ -21,6 +21,10 @@ import util.WindowSize;
  */
 public class XPlayerScreen extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private WindowSize ws;
 

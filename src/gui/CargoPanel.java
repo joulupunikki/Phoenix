@@ -32,6 +32,10 @@ import util.WindowSize;
  */
 public class CargoPanel extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private WindowSize ws;
@@ -225,6 +229,10 @@ public class CargoPanel extends JPanel {
 
     public static class Win extends JDialog {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         CargoPanel cargo_panel;
 
         public Win(Gui gui, CargoPanel cargo_panel) {

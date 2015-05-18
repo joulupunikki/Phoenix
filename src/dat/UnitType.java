@@ -20,6 +20,10 @@ import util.Util;
  */
 public class UnitType implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public int index;
     public int t_lvl;
     public String name;

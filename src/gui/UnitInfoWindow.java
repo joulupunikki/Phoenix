@@ -36,6 +36,10 @@ import util.WindowSize;
  */
 public class UnitInfoWindow extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     Gui gui;
     Game game;
     WindowSize ws;

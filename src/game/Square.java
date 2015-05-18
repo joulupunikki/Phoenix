@@ -15,6 +15,10 @@ import java.util.List;
  */
 public class Square implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public Planet planet;
     public int stack_owner;
 //    public List<Unit>[] stacks;

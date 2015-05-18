@@ -18,6 +18,10 @@ import util.Util;
  */
 public class Prod implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public ResPair[] need = new ResPair[3];   // Up to 3 resources (type + amount) which the city needs
     public ResPair make;                      // One resource (type + amount) which the city makes
 

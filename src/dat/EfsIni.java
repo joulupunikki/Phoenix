@@ -25,7 +25,11 @@ import util.Util;
  */
 public class EfsIni implements Serializable {
 
-////     [Options]
+/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    ////     [Options]
 //    public int video_on = 0;
 //    public int grid = 0;
 //    public int sound = 0;

@@ -17,6 +17,10 @@ import util.C;
  */
 public class Hex implements Comparable<Hex>, Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Hex[] neighbours;
     private boolean[] terrain = new boolean[12];
     private boolean[] visible = new boolean[14];

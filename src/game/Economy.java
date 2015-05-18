@@ -27,6 +27,10 @@ import util.Util;
  */
 public class Economy implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Game game;
     private EfsIni efs_ini;
     private List<Planet> planets;

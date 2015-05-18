@@ -44,6 +44,10 @@ import util.WindowSize;
  */
 public class Messages extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private WindowSize ws;
     private Game game;
@@ -213,7 +217,12 @@ public class Messages extends JPanel {
 
     class MessageTableModel extends DefaultTableModel {
 
-//        public BuildTableModel(Object[][] data) {
+/**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        //        public BuildTableModel(Object[][] data) {
 //            Object[] column_names = {"Unit", "Turns Left"};
 //            BuildTableModel(data, column_names);
 //        }
@@ -230,6 +239,11 @@ public class Messages extends JPanel {
 
     public class MessageTableRenderer extends JLabel
             implements TableCellRenderer {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
 
         public MessageTableRenderer() {
             setOpaque(true);

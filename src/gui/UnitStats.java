@@ -23,6 +23,10 @@ public class UnitStats {
 
     public static class Left extends JPanel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private Gui gui;
         private WindowSize ws;
         private JLabel armor_name;
@@ -89,6 +93,10 @@ public class UnitStats {
 
     public static class Right extends JPanel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private Gui gui;
         private WindowSize ws;
         private JLabel mvpts_name;
@@ -155,6 +163,10 @@ public class UnitStats {
 
     public static class Attack extends JPanel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private Gui gui;
         private WindowSize ws;
         private JLabel attack1_type;

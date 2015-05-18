@@ -19,6 +19,10 @@ import util.Util;
  */
 public class StrBuild implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public String name;
     public int water;
     public int land;

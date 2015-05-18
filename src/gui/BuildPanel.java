@@ -61,6 +61,10 @@ import util.WindowSize;
  */
 public class BuildPanel extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private WindowSize ws;
@@ -686,6 +690,11 @@ public class BuildPanel extends JPanel {
     class CustomRendererInt extends JLabel
             implements ListCellRenderer {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public CustomRendererInt() {
             setOpaque(true);
             setHorizontalAlignment(CENTER);
@@ -729,6 +738,11 @@ public class BuildPanel extends JPanel {
     class CustomRendererStruct extends JLabel
             implements ListCellRenderer {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public CustomRendererStruct() {
             setOpaque(true);
             setHorizontalAlignment(CENTER);
@@ -768,6 +782,11 @@ public class BuildPanel extends JPanel {
     public class CityTableRenderer extends JLabel
             implements TableCellRenderer {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
         public CityTableRenderer() {
             setOpaque(true);
         }
@@ -803,6 +822,11 @@ public class BuildPanel extends JPanel {
 
     public class BuildTableRenderer extends JLabel
             implements TableCellRenderer {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
 
         public BuildTableRenderer() {
             setOpaque(true);
@@ -868,6 +892,11 @@ public class BuildPanel extends JPanel {
 
     public class QueueTableRenderer extends JLabel
             implements TableCellRenderer {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
 
         public QueueTableRenderer() {
             setOpaque(true);
@@ -956,6 +985,10 @@ public class BuildPanel extends JPanel {
 //    }
     class QueueTableModel extends AbstractTableModel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private String[] columnNames = {"Unit", "Turns"};
         private Object[][] data;
 
@@ -996,7 +1029,12 @@ public class BuildPanel extends JPanel {
 
     class CityTableModel extends DefaultTableModel {
 
-//        public BuildTableModel(Object[][] data) {
+/**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        //        public BuildTableModel(Object[][] data) {
 //            Object[] column_names = {"Unit", "Turns Left"};
 //            BuildTableModel(data, column_names);
 //        }
@@ -1013,7 +1051,12 @@ public class BuildPanel extends JPanel {
 
     class BuildTableModel extends DefaultTableModel {
 
-//        public BuildTableModel(Object[][] data) {
+/**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        //        public BuildTableModel(Object[][] data) {
 //            Object[] column_names = {"Unit", "Turns Left"};
 //            BuildTableModel(data, column_names);
 //        }

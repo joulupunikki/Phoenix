@@ -17,6 +17,10 @@ import util.C;
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class Research implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     //owned techs
     public boolean[] techs;
     //points researched in each tech

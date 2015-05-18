@@ -16,6 +16,10 @@ import java.io.Serializable;
  */
 public class GameResources implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private double[][][] unit_spot;
     private Tech[] techs;
 

@@ -21,6 +21,10 @@ import util.Util;
  */
 public class Resources implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     // Game data
     private Game game;
     private EfsIni efs_ini;

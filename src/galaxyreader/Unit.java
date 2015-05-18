@@ -23,6 +23,10 @@ import util.C;
  */
 public class Unit implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public int p_idx; // short  
     public int x; // short     
     public int y; //short       

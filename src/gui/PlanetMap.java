@@ -32,6 +32,10 @@ import util.WindowSize;
  */
 public class PlanetMap extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     // pointer to GUI
     private Gui gui;
     private Game game;

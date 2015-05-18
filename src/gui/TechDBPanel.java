@@ -46,6 +46,10 @@ import util.WindowSize;
  */
 public class TechDBPanel extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private WindowSize ws;
@@ -319,7 +323,12 @@ public class TechDBPanel extends JPanel {
 
     class TechDBTableModel extends DefaultTableModel {
 
-//        public BuildTableModel(Object[][] data) {
+/**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
+
+        //        public BuildTableModel(Object[][] data) {
 //            Object[] column_names = {"Unit", "Turns Left"};
 //            BuildTableModel(data, column_names);
 //        }
@@ -336,6 +345,11 @@ public class TechDBPanel extends JPanel {
 
     public class TechDBTableRenderer extends JLabel
             implements TableCellRenderer {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
 
         public TechDBTableRenderer() {
             setOpaque(true);

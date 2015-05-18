@@ -20,6 +20,11 @@ import util.Util;
 public class Harvest implements Serializable {
 
     /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * Gets harvest data from one one row of harvest file, from line passed to
      * it
      */

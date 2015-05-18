@@ -37,6 +37,10 @@ import util.Util.HexIter;
  */
 public class Game implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     //coordinates of currently selected hex/square/stack  
     private Point selected_point;
     //faction of selected space stack

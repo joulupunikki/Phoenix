@@ -11,6 +11,10 @@ import util.C;
  */
 public class ResPair implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public int resource_type;
     public int resource_amount;
 

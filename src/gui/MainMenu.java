@@ -31,6 +31,10 @@ import util.WindowSize;
 public class MainMenu extends JPanel {
     // pointer to GUI
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private WindowSize ws;
@@ -179,6 +183,10 @@ public class MainMenu extends JPanel {
      */
     public static class W1 extends JPanel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private Gui gui;
         private Game game;
         private WindowSize ws;

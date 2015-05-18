@@ -17,6 +17,10 @@ import util.C;
  */
 public class GalaxyGrid implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Square[][] galaxy_grid;
 
     public GalaxyGrid(Galaxy galaxy) {

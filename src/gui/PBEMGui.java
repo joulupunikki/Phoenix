@@ -39,6 +39,10 @@ import util.UtilG;
  */
 public class PBEMGui implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     public static final int PASSWORD_FAIL = 0;
     public static final int PASSWORD_OK = 1;
     public static final int PASSWORD_REVOKE = 2;

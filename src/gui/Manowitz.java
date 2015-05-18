@@ -41,6 +41,10 @@ import util.WindowSize;
  */
 public class Manowitz extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private WindowSize ws;

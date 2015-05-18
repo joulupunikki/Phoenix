@@ -21,6 +21,10 @@ import util.C;
  */
 public class Galaxy implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     int version;
     int[][] map_tiles;
     int planet_count; //short

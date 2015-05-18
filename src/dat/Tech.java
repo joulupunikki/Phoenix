@@ -21,6 +21,10 @@ import util.Util;
  */
 public class Tech implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     // tech name
     public String name;
     // tech index

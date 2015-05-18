@@ -80,6 +80,10 @@ import util.WindowSize;
  */
 public class Gui extends JFrame {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_WINDOW_WIDTH = 640;
     private static final int DEFAULT_WINDOW_HEIGHT = 480;
     private static String[] args;
@@ -1133,6 +1137,10 @@ public class Gui extends JFrame {
 
     private class CityDialog extends JDialog {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         private int planet;
         private Structure city;
         private CityPanel city_panel;
@@ -1270,6 +1278,10 @@ public class Gui extends JFrame {
 
     private class CityPanel extends JPanel {
 
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 1L;
         JTextField city_name_display;
         JButton build;
         JButton exit;

@@ -30,6 +30,10 @@ import util.WindowSize;
  */
 public class SpaceMap extends JPanel {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private Gui gui;
     private Game game;
     private int[][] planet_images;

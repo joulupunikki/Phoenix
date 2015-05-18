@@ -39,6 +39,10 @@ public class CombatWindow extends JPanel {
      * and open the template in the editor.
      */
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     // pointer to GUI
     private Gui gui;
     private Game game;

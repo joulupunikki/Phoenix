@@ -16,6 +16,10 @@ import util.C;
  */
 public class PBEM implements Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     // true iff game is pbem false otherwise
     public boolean pbem = false;
     // true iff end_turn button has been pressed to save game
