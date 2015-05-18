@@ -31,6 +31,8 @@ Contributing
 
 *Important note*: to maximize the chances that Phoenix stays afloat legally, the Phoenix distribution SHALL NOT contain any copyrighted material beyond that which is necessary to reproduce "EFS.EXE" functionality (such as faction names, some static GUI texts and the GUI layout specifications. But NOT the values of variables in "DAT" directory.) Instead, all material SHALL be read from the separately user installed EFS1.4 (and mod) files. As a rule of thumb, if it is not in "EFS.EXE" it must be excluded from the Phoenix distribution. This rule includes the project [wiki](https://github.com/joulupunikki/Phoenix/wiki) (and actually everything published by the legal entity distributing Phoenix.)
 
+Another note: this is my first time officially administering a project publicly, so expect things not necessarily working as expected out of the box.
+
 ##### Project format and development tools
 Before v0.11 all Phoenix code has so far been Java 7 compatible and [NetBeans](https://netbeans.org/) alone has been the IDE of choice. This is now changing, at least partially. The core Phoenix code will likely stay purely Java, but if convenient, certain functionality could be implemented with other languages and/or even be independent side projects. All such solutions must however be distributable in formats compatible with the major Java platforms (at least BSD/OSX, Linux and Windows.)
 
