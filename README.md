@@ -21,13 +21,15 @@ Contributing policy change to "Yes for predefined tasks" as of 28 apr 2015
 
 Required java version for precompiled release binaries changed from java 7 to java 8 as of 5 may 2015
 
+Project format changed from native NetBeans to Apache Maven as of 18 may 2015
+
 Contributing
 ============
 
 ##### Policy
 "Yes for predefined tasks." (Tasks which require no programming also available, see below.)
 
-*Important note*: to maximize the chances that Phoenix stays afloat legally, the Phoenix distribution SHALL NOT contain any copyrighted material beyond that which is necessary to reproduce "EFS.EXE" functionality (such as faction names, some static GUI texts and the GUI layout specifications. But NOT the values of options in "DAT/EFS.INI".) Instead, all material SHALL be read from the separately user installed EFS1.4 (and mod) files. As a rule of thumb, if it is not in "EFS.EXE" it must be excluded from the Phoenix distribution. This rule includes the project [wiki](https://github.com/joulupunikki/Phoenix/wiki) (and actually everything published by the person distributing Phoenix.)
+*Important note*: to maximize the chances that Phoenix stays afloat legally, the Phoenix distribution SHALL NOT contain any copyrighted material beyond that which is necessary to reproduce "EFS.EXE" functionality (such as faction names, some static GUI texts and the GUI layout specifications. But NOT the values of variables in "DAT" directory.) Instead, all material SHALL be read from the separately user installed EFS1.4 (and mod) files. As a rule of thumb, if it is not in "EFS.EXE" it must be excluded from the Phoenix distribution. This rule includes the project [wiki](https://github.com/joulupunikki/Phoenix/wiki) (and actually everything published by the legal entity distributing Phoenix.)
 
 ##### Project format and development tools
 Before v0.11 all Phoenix code has so far been Java 7 compatible and [NetBeans](https://netbeans.org/) alone has been the IDE of choice. This is now changing, at least partially. The core Phoenix code will likely stay purely Java, but if convenient, certain functionality could be implemented with other languages and/or even be independent side projects. All such solutions must however be distributable in formats compatible with the major Java platforms (at least BSD/OSX, Linux and Windows.)
@@ -66,6 +68,8 @@ For other branches the history is not necessarily conserved as rigidly as that o
 ##### Workflow
 
 GitHub Fork & Pull (on the other side of the fence, [they have](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) a tutorial on Fork & Pull.)
+
+The file [README_DEV.md](https://github.com/joulupunikki/Phoenix/blob/master/README_DEV.md) contains info on tools needed and necessary configuration to compile Phoenix.
 
 1: Getting Phoenix
 ==================
