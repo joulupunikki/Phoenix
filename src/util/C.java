@@ -5,6 +5,9 @@
 package util;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
 import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
@@ -350,7 +353,6 @@ public class C {
     public static final int TECH_CH = 6;
     public static final int TECH_MAINT = 100;
 
-    public static final String S_VERSION = "V0.10.0";
     // TODO move filename definitions to util.FN
     public static final String S_PLANET_MAP = "planet map";
     public static final String S_STAR_MAP = "star map";
@@ -381,6 +383,7 @@ public class C {
     public static final String S_TECH_DAT = "DAT/TECH.DAT";
     public static final String S_CARGO_BIN = "BIN" + S_SEPAR + "CARGO.BIN";
     public static final String S_LOG_FILE = "phoenixlog.txt";
+    public static final String S_STATIC_INI = "static.ini";
 
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
@@ -407,6 +410,19 @@ public class C {
     public static final int STARTING_FIREBIRDS = 4500;
 
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
+
+    public static final String S_VERSION = setVersion();
+
+    private static String setVersion() {
+        Properties props = new Properties();
+        URL url = ClassLoader.getSystemResource(S_STATIC_INI);
+        try {
+            props.load(url.openStream());
+        } catch (IOException ex) {
+            Util.logEx(null, ex, "Failed to read " + S_STATIC_INI);
+        }
+        return props.getProperty("phoenix.version");
+    }
 
     /**
      * Prints out the constants which determine unit, structure and planet

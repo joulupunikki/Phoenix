@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.joulupunikki</groupId>
     <artifactId>Phoenix</artifactId>
-    <version>0.11-alpha</version>
+    <version>0.11.0</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,6 +42,12 @@
     <build>
         <sourceDirectory>src</sourceDirectory>
         <finalName>${project.artifactId}</finalName>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
