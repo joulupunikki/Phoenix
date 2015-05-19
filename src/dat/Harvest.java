@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -101,10 +102,10 @@ public class Harvest implements Serializable {
 
         ResPair[][][][] harvest_table = new ResPair[4][][][];
 
-        harvest_table[C.FARM_HARVESTING] = getOneCity(C.S_FARM_DAT, game);
-        harvest_table[C.WELL_HARVESTING] = getOneCity(C.S_WELL_DAT, game);
-        harvest_table[C.MINE_HARVESTING] = getOneCity(C.S_MINE_DAT, game);
-        harvest_table[C.ARBORIUM_HARVESTING] = getOneCity(C.S_ARBORIUM_DAT, game);
+        harvest_table[C.FARM_HARVESTING] = getOneCity(FN.S_FARM_DAT, game);
+        harvest_table[C.WELL_HARVESTING] = getOneCity(FN.S_WELL_DAT, game);
+        harvest_table[C.MINE_HARVESTING] = getOneCity(FN.S_MINE_DAT, game);
+        harvest_table[C.ARBORIUM_HARVESTING] = getOneCity(FN.S_ARBORIUM_DAT, game);
 
         return harvest_table;
     }

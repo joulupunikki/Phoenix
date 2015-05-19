@@ -221,7 +221,7 @@ public class Gui extends JFrame {
         pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
 
-        unit_icons = Util.loadSquares(C.S_EFSUNIT_BIN, 92, 32 * 32);
+        unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
         resources = new Resource(this);
         if (args.length == 2) {
             if (Integer.parseInt(args[0]) == 1) {
@@ -235,10 +235,10 @@ public class Gui extends JFrame {
                 System.exit(0);
             }
 
-            Pattern p = Pattern.compile(Pattern.quote(C.S_SEPAR));
+            Pattern p = Pattern.compile(Pattern.quote(FN.F_S));
             String name = args[1].substring(4);
             Matcher m = p.matcher(name);
-            if (!args[1].equals(FN.S_GALAXY_GAL) && (!args[1].startsWith(FN.S_GAL + C.S_SEPAR)
+            if (!args[1].equals(FN.S_GALAXY_GAL) && (!args[1].startsWith(FN.S_GAL + FN.F_S)
                     || m.find())) {
                 System.out.println("usage: java -jar Phoenix.jar 1|2 " + FN.S_GALAXY_GAL + "|" + FN.S_GAL + "\"file.separator\"file_name");
                 System.exit(0);

@@ -4,6 +4,7 @@ import game.Game;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import util.C;
+import util.FN;
 
 /**
  * @author RSW A ResPair is a resource type and amount, representing an amount
@@ -64,7 +65,7 @@ public class ResPair implements Serializable {
             }
         }
         if (!found) {
-            throw new Exception("\"" + resource_name + "\" is not a resource type defined in " + C.S_RES_DAT);
+            throw new Exception("\"" + resource_name + "\" is not a resource type defined in " + FN.S_RES_DAT);
         }
 
         return resource_type;

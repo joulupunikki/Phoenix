@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -59,7 +60,7 @@ public class TerrCost {
 
     public static double[][][] readTerrCost() {
 
-        String file_name = C.S_TERRCOST_DAT;
+        String file_name = FN.S_TERRCOST_DAT;
         double[][][] terr_cost = new double[C.TERR_COST_HEX][C.TERR_COST_PLANET][];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {

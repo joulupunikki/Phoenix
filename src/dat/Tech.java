@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -68,7 +69,7 @@ public class Tech implements Serializable {
 
     public static Tech[] readTech() {
 
-        String file_name = C.S_TECH_DAT;
+        String file_name = FN.S_TECH_DAT;
         LinkedList<Tech> tech_list = new LinkedList<>();
         Tech[] techs;
 //        int[][] ter_color = new int[C.TER_COLOR_HEX][];

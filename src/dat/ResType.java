@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -84,7 +85,7 @@ public class ResType implements Serializable {
 
         String s = "";
 
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_RES_DAT))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(FN.S_RES_DAT))) {
 
             s = Util.cleanLine(in);    // Skip opening brace
             if (!s.startsWith("{")) {
@@ -103,7 +104,7 @@ public class ResType implements Serializable {
 
         } catch (Exception e) {
             System.out.println("Exception: " + e.getMessage());
-            System.out.println("Error reading file: " + C.S_RES_DAT);
+            System.out.println("Error reading file: " + FN.S_RES_DAT);
             System.out.println("Last line read: " + s);
 
             System.exit(1);

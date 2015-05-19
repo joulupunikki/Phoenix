@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import phoenix.Phoenix;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -61,7 +62,7 @@ public class UnitSpot {
 
     public static double[][][] readUnitSpot() {
 
-        String file_name = C.S_UNITSPOT_DAT;
+        String file_name = FN.S_UNITSPOT_DAT;
         double[][][] unit_spot = new double[C.UNIT_SPOT_HEX][C.UNIT_SPOT_PLANET][];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {

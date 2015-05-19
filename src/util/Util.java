@@ -1671,7 +1671,7 @@ public class Util {
 
     public static void logFileFormatError(String file, int line, String log_msg) {
         try (
-                FileWriter log_stream = new FileWriter(C.S_LOG_FILE, true);
+                FileWriter log_stream = new FileWriter(FN.S_LOG_FILE, true);
                 PrintWriter log = new PrintWriter(log_stream)) {
             Date date = new Date();
             log.println("***** Begin Log Entry " + date.toString() + " *****");
@@ -1703,7 +1703,7 @@ public class Util {
     }
 
     public static void logEx(Thread t, Throwable e, String log_msg) {
-        try (final FileWriter log_stream = new FileWriter(C.S_LOG_FILE, true);
+        try (final FileWriter log_stream = new FileWriter(FN.S_LOG_FILE, true);
                 final PrintWriter log = new PrintWriter(log_stream)) {
             Date date = new Date();
             log.println("***** Begin Stack Trace " + date.toString() + " *****");

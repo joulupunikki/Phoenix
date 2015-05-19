@@ -238,7 +238,7 @@ public class MainMenu extends JPanel {
             name.setHorizontalAlignment(SwingConstants.CENTER);
             name.setFont(ws.font_large);
             this.add(name);
-            name2 = new JLabel("Phoenix remake/patch " + C.S_VERSION);
+            name2 = new JLabel("Phoenix remake/patch " + FN.S_VERSION);
             name2.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7 + ws.sb_h,
                     ws.mm_sn_w, ws.sb_h);
             name2.setHorizontalAlignment(SwingConstants.CENTER);

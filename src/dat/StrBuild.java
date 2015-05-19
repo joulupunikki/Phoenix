@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -74,12 +75,12 @@ public class StrBuild implements Serializable {
 
     public static StrBuild[] readStrBuildDat() {
 
-        String file_name = C.S_STRBUILD_DAT;
+        String file_name = FN.S_STRBUILD_DAT;
         StrBuild[] str_build = new StrBuild[C.STRBUILD];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             Util.debugPrint("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-            Util.debugPrint(C.S_STRBUILD_DAT);
+            Util.debugPrint(FN.S_STRBUILD_DAT);
             String s = in.readLine();
             line_nr++;
 //            System.exit(0);

@@ -124,7 +124,7 @@ public class PBEMGui implements Serializable {
         if (dir == null) {
             file_name = file.getName();
         } else {
-            file_name = dir + C.S_SEPAR + file.getName();
+            file_name = dir + FN.F_S + file.getName();
         }
         // count on file length fitting into an int
         byte[] data = Util.readFile(file_name, (int) file.length(), ByteOrder.BIG_ENDIAN);
@@ -146,7 +146,7 @@ public class PBEMGui implements Serializable {
         String dir = null;
         if (main_args.length == 2) {
             galaxy_name = main_args[1];
-            if (galaxy_name.startsWith(FN.S_GAL + C.S_SEPAR)) {
+            if (galaxy_name.startsWith(FN.S_GAL + FN.F_S)) {
                 galaxy_name = galaxy_name.substring(4, galaxy_name.length());
                 dir = FN.S_GAL;
             }
@@ -185,7 +185,7 @@ public class PBEMGui implements Serializable {
         for (String key : pbem.checksums.keySet()) {
             String file_name;
             String dir = null;
-            if (key.startsWith(FN.S_GAL + C.S_SEPAR)) {
+            if (key.startsWith(FN.S_GAL + FN.F_S)) {
                 file_name = key.substring(4, key.length());
                 dir = FN.S_GAL;
             } else if (key.equals(FN.S_GALAXY_GAL)) {
@@ -202,7 +202,7 @@ public class PBEMGui implements Serializable {
             if (dir == null) {
                 file_path = file_name;
             } else {
-                file_path = dir + C.S_SEPAR + file_name;
+                file_path = dir + FN.F_S + file_name;
             }
             File file = new File(file_path);
             byte[] hash = getHash(file, dir);

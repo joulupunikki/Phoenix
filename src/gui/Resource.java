@@ -11,6 +11,7 @@ import dat.UnitSpot;
 import java.awt.Color;
 import java.util.Properties;
 import util.C;
+import util.FN;
 import util.Util;
 import util.UtilG;
 
@@ -36,7 +37,7 @@ public class Resource {
         ter_color = TerColor.readTerColor();
         efs_ini = EfsIni.readEFSINI();
         phoenix_ini = EfsIni.readPhoenixIni();
-        res_icons = Util.loadSquares(C.S_CARGO_BIN, C.RES_TYPES,
+        res_icons = Util.loadSquares(FN.S_CARGO_BIN, C.RES_TYPES,
                 C.CARGO_WIDTH * C.CARGO_HEIGHT);
     }
 

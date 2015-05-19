@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -46,7 +47,7 @@ public class Damage {
 
         int[][] damage_dat = new int[C.DAMAGE_DAT_Y][];
 
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_DAMAGE_DAT))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(FN.S_DAMAGE_DAT))) {
             String s = in.readLine();
 
 //            System.exit(0);
@@ -94,7 +95,7 @@ public class Damage {
         } catch (Exception e) {
             e.printStackTrace(System.out);
             System.out.println("Exception: " + e.getMessage());
-            System.out.println("Failed to read " + C.S_DAMAGE_DAT);
+            System.out.println("Failed to read " + FN.S_DAMAGE_DAT);
             System.exit(1);
         }
 

@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
 import util.C.MoveType;
+import util.FN;
 import util.Util;
 
 /**
@@ -289,7 +290,7 @@ public class UnitType implements Serializable {
 
     public static UnitType[][] readUnitDat() {
 
-        String file_name = C.S_UNIT_DAT;
+        String file_name = FN.S_UNIT_DAT;
         UnitType[][] unit_types = new UnitType[C.UNIT_TYPES][C.UNIT_T_LVLS];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {

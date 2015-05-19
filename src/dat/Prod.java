@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -100,7 +101,7 @@ public class Prod implements Serializable {
 
         s = "";
 
-        try (BufferedReader in = new BufferedReader(new FileReader(C.S_PROD_DAT))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(FN.S_PROD_DAT))) {
 
             for (int city_type = 0; city_type < C.PROD_CITIES; city_type++) {    // For each city type
 
@@ -109,7 +110,7 @@ public class Prod implements Serializable {
 
         } catch (Exception e) {
 //            e.printStackTrace(System.out);
-            System.out.println("Error reading file: " + C.S_PROD_DAT);
+            System.out.println("Error reading file: " + FN.S_PROD_DAT);
             if (e.getMessage() != null) {
                 System.out.println("Exception: " + e.getMessage());
             } else {

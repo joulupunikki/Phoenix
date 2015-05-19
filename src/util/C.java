@@ -363,27 +363,6 @@ public class C {
     public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_MESSAGES = "messages window";
 
-    public static final String S_SEPAR = System.getProperty("file.separator");    
-    public static final String S_UNIT_DAT = "DAT/UNIT.DAT";
-    public static final String S_EFSUNIT_BIN = "BIN/EFSUNIT.BIN";
-    public static final String S_STRBUILD_DAT = "DAT/STRBUILD.DAT";
-    public static final String S_TERRCOST_DAT = "DAT/TERRCOST.DAT";
-    public static final String S_UNITSPOT_DAT = "DAT/UNITSPOT.DAT";
-    public static final String S_DAMAGE_DAT = "DAT/DAMAGE.DAT";
-    public static final String S_TARGET_DAT = "DAT/TARGET.DAT";
-    public static final String S_TERCOLOR_DAT = "DAT/TERCOLOR.DAT";
-    public static final String S_FARM_DAT = "DAT/FARM.DAT";    // RSW
-    public static final String S_ARBORIUM_DAT = "DAT/ARBORIUM.DAT";
-    public static final String S_MINE_DAT = "DAT/MINE.DAT";
-    public static final String S_WELL_DAT = "DAT/WELL.DAT";
-
-    public static final String S_PROD_DAT = "DAT/PROD.DAT";    // RSW
-    public static final String S_RES_DAT = "DAT/RES.DAT";    // RSW
-
-    public static final String S_TECH_DAT = "DAT/TECH.DAT";
-    public static final String S_CARGO_BIN = "BIN" + S_SEPAR + "CARGO.BIN";
-    public static final String S_LOG_FILE = "phoenixlog.txt";
-    public static final String S_STATIC_INI = "static.ini";
 
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
@@ -411,18 +390,7 @@ public class C {
 
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
 
-    public static final String S_VERSION = setVersion();
 
-    private static String setVersion() {
-        Properties props = new Properties();
-        URL url = ClassLoader.getSystemResource(S_STATIC_INI);
-        try {
-            props.load(url.openStream());
-        } catch (IOException ex) {
-            Util.logEx(null, ex, "Failed to read " + S_STATIC_INI);
-        }
-        return props.getProperty("phoenix.version");
-    }
 
     /**
      * Prints out the constants which determine unit, structure and planet

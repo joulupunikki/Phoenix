@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -53,7 +54,7 @@ public class TerColor {
 
     public static int[][] readTerColor() {
 
-        String file_name = C.S_TERCOLOR_DAT;
+        String file_name = FN.S_TERCOLOR_DAT;
         int[][] ter_color = new int[C.TER_COLOR_HEX][];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {

@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -54,7 +55,7 @@ public class Target {
 
     public static int[][] readTargetDat() {
 
-        String file_name = C.S_TARGET_DAT;
+        String file_name = FN.S_TARGET_DAT;
         int[][] target_dat = new int[C.TARGET_DAT_Y][];
         int line_nr = 0;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {

@@ -7,6 +7,7 @@ package phoenix;
 import gui.Gui;
 import java.io.File;
 import util.C;
+import util.FN;
 import util.Util;
 
 /**
@@ -20,8 +21,8 @@ public class Phoenix {
      */
     public static void main(String[] args) {
 
-        File log_file = new File(C.S_LOG_FILE);
-        File old_log = new File(C.S_LOG_FILE + ".1");
+        File log_file = new File(FN.S_LOG_FILE);
+        File old_log = new File(FN.S_LOG_FILE + ".1");
         if (old_log.exists()) {
             old_log.delete();
         }
