@@ -3,7 +3,7 @@ Phoenix
 
 Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
-If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix/README.md#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
+If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix/#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
 
 TOC
 ===
@@ -158,9 +158,11 @@ New in version 0.9.1
 --------------------
 Notice: this is a quick bugfix release. To browse the new features in the 0.9 series please see New in version 0.9.0 below.
 
-There is a bug in Hyperion 1.4g which prevents Phoenix from loading DAT/UNITSPOT.DAT. In UNITSPOT.DAT line 67 reads `     "desert"  "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"` when it should be `     "desert"  "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"` ie there is a dot between the Trd and Air columns which makes Phoenix choke. Correct this and Hyperion should start.
+There is a bug(*) in Hyperion 1.4g which prevents Phoenix from loading DAT/UNITSPOT.DAT. In UNITSPOT.DAT line 67 reads `     "desert"  "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"` when it should be `     "desert"  "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"` ie there is a dot between the Trd and Air columns which makes Phoenix choke. Correct this and Hyperion should start.
 
 Also in Hyperion 1.4g remember to replace UNIT.DAT with UNIT3.DAT to enable building of advanced units. This must be done before a game is started since Phoenix loads datafiles only once during program start.
+
+(*) Technically, this is a feature, not a bug, since it works with EFS1.4 "EFS.EXE".
 
 New in version 0.9.0
 --------------------
