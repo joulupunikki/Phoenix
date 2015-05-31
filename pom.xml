@@ -58,7 +58,7 @@
                         <configuration>
                             <target>
                                 <echo>Copying configuration files</echo>
-                                <copy todir="${perDeveloper.efsDirectory}">
+                                <copy todir="${perDeveloper.efsDirectory}" overwrite="true">
                                     <fileset dir="etc">
                                         <include name="PHOENIX/*"/>
                                     </fileset>

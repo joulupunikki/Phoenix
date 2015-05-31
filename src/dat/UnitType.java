@@ -85,6 +85,14 @@ public class UnitType implements Serializable {
     public int rank;
     public int rop;
 
+    /**
+     * FIXME With no knowledge of the characters accepted by "EFS.EXE", new
+     * mods might use some symbols digested by "EFS.EXE" but which cause
+     * Phoenix the hiccups.
+     * @param s
+     * @param index
+     * @param t_lvl
+     */
     public UnitType(String s, int index, int t_lvl) {
 
         this.index = index;
@@ -92,14 +100,14 @@ public class UnitType implements Serializable {
         /*
          * accepts alphanum, -, ' and .
          */
-        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z ,\\(\\)\\[\\]\\!\\*\\-'\\.]+\"");
+        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z ,\\(\\)\\[\\]\\!\\*\\-'\\.\\&]+\"");
 
         Matcher m = unit_type.matcher(s);
 
         //skip "name"
         m.find();
         m.find();
-
+        System.out.println(s);
         name = s.substring(m.start() + 1, m.end() - 1);
         Util.debugPrint("Name: " + name);
         System.out.println("name = " + name);
@@ -166,7 +174,7 @@ public class UnitType implements Serializable {
         cargo = processIntVal(stats, m);
 
         can_b_cargo = processIntVal(stats, m);
-        System.out.println("can_b_cargo = " + can_b_cargo);
+        //System.out.println("can_b_cargo = " + can_b_cargo);
         non_combat = processIntVal(stats, m);
         crd_trn = processIntVal(stats, m);
         cred = processIntVal(stats, m);
@@ -302,16 +310,17 @@ public class UnitType implements Serializable {
             int index = -1;
             int t_lvl = -1;
 
-            Pattern mark_begin = Pattern.compile("^\\{[0-9]+");
-            Pattern mark_end = Pattern.compile("^\\}");
-            Pattern comment = Pattern.compile("^//");
-            Pattern reserved = Pattern.compile("Reserved");
+            Pattern mark_begin = Pattern.compile("^" + C.WS + "\\{" + C.WS + "[0-9]+");
+            Pattern mark_end = Pattern.compile("^" + C.WS + "\\}");
+            Pattern comment = Pattern.compile("^" + C.WS + "(//|$)");
+            //Pattern empty = Pattern.compile("^" + C.WS + "$");
+            //Pattern reserved = Pattern.compile("Reserved");
 
             while (s != null) {
 
                 Matcher matcher = comment.matcher(s);
 
-                //if not comment
+                //if not comment or empty
                 if (!(matcher.find())) {
 
                     //if between { and }

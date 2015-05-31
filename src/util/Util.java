@@ -52,9 +52,35 @@ public class Util {
         }
     }
 
-    public static void processIntVals(String s, int[] vals, String file_name, int line_nr, int nr_values) {
-        int start = 0;
+    public static void testHexIter(Game game, int planet) {
+        HexIter iter = Util.getHexIter(game, planet);
+        Hex hex = iter.next();
+        while (hex != null) {
+            System.out.println("planet, x, y = " + planet + " ," + hex.getX() + " ," + hex.getY());
+            hex = iter.next();
+        }
+    }
 
+    /**
+     * Returns a hex iterator for planet;
+     *
+     * @param game
+     * @param planet
+     * @return
+     */
+    public static HexIter getHexIter(Game game, int planet) {
+        return new HexIter(game, planet);
+    }
+
+    /**
+     *
+     * @param s the value of s
+     * @param vals the value of vals
+     * @param file_name the value of file_name
+     * @param line_nr the value of line_nr
+     */
+    public static void processIntVals(String s, int[] vals, String file_name, int line_nr) {
+        int start = 0;
         final int SPACE = 1;
         final int NUM = 2;
         final int FAIL = 999;
@@ -63,14 +89,10 @@ public class Util {
         boolean loop = true;
         int state = SPACE;
         while (loop) {
-
             switch (state) {
                 case SPACE:
-                    System.out.println("SPACE");
                     if (s.charAt(index) == ' ') {
-
                     } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-
                         start = index;
                         state = NUM;
                     } else {
@@ -78,10 +100,8 @@ public class Util {
                     }
                     break;
                 case NUM:
-                    System.out.println("NUM");
                     if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-
-                    } else if (counter == nr_values - 1) {
+                    } else if (counter == vals.length - 1) {
                         if (s.charAt(index) == '"') {
                             vals[counter++] = Integer.parseInt(s.substring(start, index));
                             loop = false;
@@ -102,30 +122,9 @@ public class Util {
                     break;
                 default:
                     throw new AssertionError();
-
             }
             index++;
         }
-    }
-
-    public static void testHexIter(Game game, int planet) {
-        HexIter iter = Util.getHexIter(game, planet);
-        Hex hex = iter.next();
-        while (hex != null) {
-            System.out.println("planet, x, y = " + planet + " ," + hex.getX() + " ," + hex.getY());
-            hex = iter.next();
-        }
-    }
-
-    /**
-     * Returns a hex iterator for planet;
-     *
-     * @param game
-     * @param planet
-     * @return
-     */
-    public static HexIter getHexIter(Game game, int planet) {
-        return new HexIter(game, planet);
     }
 
     /**
@@ -1696,7 +1695,7 @@ public class Util {
     }
 
     public static void testFFErrorAndExit(boolean found, String file, int line) {
-        System.out.println("found = " + found);
+        //System.out.println("found = " + found);
         if (!found) {
             logFFErrorAndExit(file, line);
         }

@@ -54,8 +54,8 @@ public class Tech implements Serializable {
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);
         //
         String s_stats = s.substring(m.start() + 1, m.end());
-        System.out.println("Here");
-        Util.processIntVals(s_stats, ret_val.stats, file_name, line_nr, 7);
+        //System.out.println("Here");
+        Util.processIntVals(s_stats, ret_val.stats, file_name, line_nr);
 
         //skip "extra"
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);

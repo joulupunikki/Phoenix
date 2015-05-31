@@ -4,7 +4,6 @@
  */
 package dat;
 
-import static dat.TerColor.processIntVals;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Serializable;
@@ -57,7 +56,7 @@ public class StrBuild implements Serializable {
         String values = s.substring(m.start() + 1, m.end());
         System.out.println("values = " + values);
         int[] int_vals = new int[12];
-        processIntVals(values, int_vals, file_name, line_nr);
+        Util.processIntVals(values, int_vals, file_name, line_nr);
         water = int_vals[0];
         land = int_vals[1];
         road = int_vals[2];

@@ -4,13 +4,13 @@
  */
 package game;
 
-import dat.EfsIni;
 import dat.Damage;
+import dat.EfsIni;
+import dat.ResType;
 import dat.StrBuild;
 import dat.Target;
 import dat.TerrCost;
 import dat.UnitType;
-import dat.ResType;
 import galaxyreader.Galaxy;
 import galaxyreader.JumpGate;
 import galaxyreader.Planet;
@@ -1201,7 +1201,7 @@ public class Game implements Serializable {
             Unit unit = null;
             if (!city.on_hold_no_res) {
                 if (city.turns_left == 1) {
-                    System.out.println("Here");
+                    //System.out.println("Here");
                     int[] u_t = city.build_queue.getFirst();
                     C.MoveType move = unit_types[u_t[0]][u_t[1]].move_type;
                     Hex hex = findRoom(city, move);
@@ -1367,7 +1367,7 @@ public class Game implements Serializable {
 
     public void setMoveType() {
         for (Unit e : units) {
-            e.move_type = unit_types[e.type][e.t_lvl].move_type;
+                e.move_type = unit_types[e.type][e.t_lvl].move_type;
         }
     }
 

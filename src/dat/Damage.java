@@ -34,7 +34,7 @@ public class Damage {
         m = damages.matcher(line);
         m.find();
 
-        System.out.println("getCosts");
+        //System.out.println("getCosts");
         for (int i = 0; i < C.DAMAGE_DAT_X; i++) {
             ret_val[i] = UnitType.processIntVal(line, m);
         }

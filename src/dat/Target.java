@@ -44,7 +44,7 @@ public class Target {
         m = targets.matcher(line);
         m.find();
 
-        System.out.println("getCosts");
+        //System.out.println("getCosts");
         for (int i = 0; i < C.TARGET_DAT_X; i++) {
             ret_val[i] = UnitType.processIntVal(line, m);
         }

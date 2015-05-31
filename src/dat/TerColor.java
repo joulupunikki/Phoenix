@@ -47,7 +47,7 @@ public class TerColor {
 //            ret_val[i] = processDoubleVal(costs, m, file_name, line_nr);
 //        }
 
-        processIntVals(colors, ret_val, file_name, line_nr);
+        Util.processIntVals(colors, ret_val, file_name, line_nr);
         return ret_val;
 
     }
@@ -123,61 +123,6 @@ public class TerColor {
 
     }
 
-    public static void processIntVals(String s, int[] vals, String file_name, int line_nr) {
-        int start = 0;
-
-        final int SPACE = 1;
-        final int NUM = 2;
-        final int FAIL = 999;
-        int index = 0;
-        int counter = 0;
-        boolean loop = true;
-        int state = SPACE;
-        while (loop) {
-
-            switch (state) {
-                case SPACE:
-                    System.out.println("SPACE");
-                    if (s.charAt(index) == ' ') {
-
-                    } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-
-                        start = index;
-                        state = NUM;
-                    } else {
-                        state = FAIL;
-                    }
-                    break;
-                case NUM:
-                    System.out.println("NUM");
-                    if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-
-                    } else if (counter == vals.length - 1) {
-                        if (s.charAt(index) == '"') {
-                            vals[counter++] = Integer.parseInt(s.substring(start, index));
-                            loop = false;
-                        } else {
-                            state = FAIL;
-                        }
-                    } else {
-                        if (s.charAt(index) == ' ') {
-                            vals[counter++] = Integer.parseInt(s.substring(start, index));
-                            state = SPACE;
-                        } else {
-                            state = FAIL;
-                        }
-                    }
-                    break;
-                case FAIL:
-                    Util.logFFErrorAndExit(file_name, line_nr);
-                    break;
-                default:
-                    throw new AssertionError();
-
-            }
-            index++;
-        }
-    }
 
     public static void print(int[][] array) {
         for (int i = 0; i < array.length; i++) {
