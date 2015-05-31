@@ -23,6 +23,8 @@ Required java version for precompiled release binaries changed from java 7 to ja
 
 Project format changed from native NetBeans to Apache Maven as of 18 may 2015
 
+End user distribution changed to single unified zip file as of 19 may 2015
+
 Contributing
 ============
 
@@ -71,24 +73,22 @@ For other branches the history is not necessarily conserved as rigidly as that o
 
 GitHub Fork & Pull (on the other side of the fence, [they have](https://www.atlassian.com/git/tutorials/comparing-workflows/forking-workflow) a tutorial on Fork & Pull.)
 
+So [fork](https://help.github.com/articles/fork-a-repo/) the official Phoenix repository, clone your fork, create a development branch on your clone, develop on that branch, push that branch to your public fork and [open](https://help.github.com/articles/using-pull-requests/) a pull request against the master branch of the official Phoenix repository from your development branch in your public fork repository.
+
 The file [README_DEV.md](https://github.com/joulupunikki/Phoenix/blob/master/README_DEV.md) contains info on tools needed and necessary configuration to compile Phoenix.
 
 1: Getting Phoenix
 ==================
 
-If you just want to take a look at where Phoenix is try the "Binary distribution" below. If you are suspicious of precompiled binaries provided by strangers on the Internet, try the "Source distribution" below. The "Raw database" gets you a snapshot of the bare source code and/or git database; some Java knowledge is required to build and run with this, especially on Windows.
+If you just want to take a look at where Phoenix is get the latest release zip. If you are thinking of contributing code make a fork and clone that fork.
 
-1.1: Binary distribution
-------------------------
-People who just want to try Phoenix should get the binary distribution package named `Phoenix_X.YY.Z.zip`, where X.YY.Z are version numbers, downloadable at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases) on GitHub.
+1.1: Release zip
+----------------
+People who just want to try Phoenix should get the latest release distribution package named `Phoenix_XX.YY.ZZ.zip`, where XX.YY.ZZ are version numbers, downloadable at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases) on GitHub. This zip file contains a precompiled jar and and also buildable release sources for those who are suspicious of running random binaries found on the Internet.
 
-1.2: Source distribution
-------------------------
-Build yourself from provided sources, instructions below at "Installing and running, Source distribution". The package is named `Phoenix_src_X.YY.Z.zip`, where X.YY.Z are version numbers, and is downloadable at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases) on GitHub.
-
-1.3: Raw database
------------------
-(Note: does not contain explicit build or startup files for Windows; Phoenix is buildable and runnable but will require some familiarity with building beyond what can be found in this document.) Command line with git: `git clone https://github.com/joulupunikki/Phoenix.git`. Packages labeled "Source code" at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases). Or any of the standard methods on GitHub.
+1.2: Project files for developers
+---------------------------------
+See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above.
 
 2: Installing and running
 =========================
@@ -96,35 +96,45 @@ Build yourself from provided sources, instructions below at "Installing and runn
 The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar (so far, no java 8 features are used so compiling to java 7 compliance is possible. This may change in the future and everyone is encouraged to move to java 8 if possible.)
 
 Important note:
-Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
+Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` or `phoenix.sh` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
 
-2.1: Binary distribution
-------------------------
-Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. (If you do not see
-all of these files then you probably have got a source distribution or raw database package. See "Getting Phoenix, Binary distribution" above to get the executable version.) To start double click on the `Phoenix.bat` or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
+2.1: Precompiled release distribution
+-------------------------------------
+Copy `Phoenix.jar`,`Phoenix.bat`,`phoenix.sh` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. Execute `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
 `C:\Program Files\Java\jdk1.8.0` you would type `"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
 
-2.2: Source distribution
-------------------------
-(If you do not see all of the files mentioned here then you probably have got a binary distribution or raw database package. See "Getting Phoenix, Source distribution" above to get the buildable source version.)
+2.2: Building release distribution from sources 
+-----------------------------------------------
 
-Unzip the package then go to the `etc` directory and copy the contents to your EFS directory where `EFS.EXE` resides.
+Unzip the package then go to the `src` directory,
+* on Windows execute `build.bat`.
+* on BSD/Linux/OSX execute `build.sh`.
 
-Then go to the `src` directory,
-- on Windows click on `build.bat` to build `Phoenix.jar` or type `javac phoenix\Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt @classes.list`
+Go up to the root archive directory and follow instructions for [Precompiled release distribution](https://github.com/joulupunikki/Phoenix#22-source-distribution) above.
 
-- on Linux/Unix type `javac phoenix/Phoenix.java` followed by `jar cfm Phoenix.jar manifest.txt */*.class`. 
+2.3: Repository clone
+---------------------
+In the official Phoenix repository, for the master branch it should always hold that 
+* it is buildable and runnable (if not, this is a [critical](https://github.com/joulupunikki/Phoenix/labels/critical) [bug](https://github.com/joulupunikki/Phoenix/labels/bug)) 
+* all the features should be complete (if not, this is a [bug](https://github.com/joulupunikki/Phoenix/labels/bug))
+* new features may or may NOT be documented prior to an official release
 
-Copy `Phoenix.jar`,`Phoenix.bat` and `Phoenix1280x1024.bat` to your EFS directory where `EFS.EXE` resides. To run the game follow the instructions for the binary distribution.
-
-2.3: Raw database
------------------
-This is a repository for development. The development versions may not receive explicit notice, documentation or releases. Also does not contain explicit build and startup files. Users just looking to see where Phoenix is currently are encouraged to try out "Binary distribution" or "Source distribution" sections in "Getting Phoenix" header above.
+See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above and [README_DEV.md](https://github.com/joulupunikki/Phoenix/blob/master/README_DEV.md) for more instructions.
 
 3: Changes
 ==========
+
+New in version 0.11.0
+---------------------
+Note: this is a meta release with no new game functionality.
+
+Convert project from native NetBeans to Apache Maven. Define contributable tasks as issues. Change contribution policy to "Yes for predefined tasks."
+
+New in version 0.10.3
+---------------------
+Bugfix portability problems. Automate release building. Not released officially, integrated into 0.11.0.
 
 New in version 0.10.2
 ---------------------
