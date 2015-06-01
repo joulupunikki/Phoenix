@@ -3,7 +3,7 @@ Phoenix
 
 Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
-If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix/#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
+If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
 
 TOC
 ===
@@ -84,7 +84,7 @@ If you just want to take a look at where Phoenix is get the latest release zip. 
 
 1.1: Release zip
 ----------------
-People who just want to try Phoenix should get the latest release distribution package named `Phoenix_XX.YY.ZZ.zip`, where XX.YY.ZZ are version numbers, downloadable at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases) on GitHub. This zip file contains a precompiled jar and and also buildable release sources for those who are suspicious of running random binaries found on the Internet.
+People who just want to try Phoenix should get the latest release distribution package named `Phoenix_XX.YY.ZZ.zip`, where XX.YY.ZZ are version numbers, downloadable at [Phoenix releases](https://github.com/joulupunikki/Phoenix/releases) on GitHub. This zip file contains a precompiled jar and also buildable release sources for those who are suspicious of running random binaries found on the Internet.
 
 1.2: Project files for developers
 ---------------------------------
