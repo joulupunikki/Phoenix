@@ -372,6 +372,7 @@ public class C {
     public static final Color COLOR_GOLD_BRIGHT = new Color(232, 224, 100);
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_GOLD_DARK = new Color(164, 116, 40);
+    public static final Color COLOR_RED_DARK = new Color(52, 4, 0);
     public static final Color COLOR_MANOWITZ_TEXT = new Color(92, 44, 16);
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);

@@ -237,12 +237,18 @@ public class MainMenu extends JPanel {
                     ws.mm_sn_w, ws.sb_h);
             name.setHorizontalAlignment(SwingConstants.CENTER);
             name.setFont(ws.font_large);
+            name.setOpaque(true);
+            name.setBackground(C.COLOR_RED_DARK);
+            name.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
             this.add(name);
             name2 = new JLabel("Phoenix remake/patch " + FN.S_VERSION);
             name2.setBounds(ws.mm_sn_x, ws.mm_sn_y * 3 / 7 + ws.sb_h,
                     ws.mm_sn_w, ws.sb_h);
             name2.setHorizontalAlignment(SwingConstants.CENTER);
             name2.setFont(ws.font_large);
+            name2.setOpaque(true);
+            name2.setBackground(C.COLOR_RED_DARK);
+            name2.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
             this.add(name2);
         }
 

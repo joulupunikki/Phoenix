@@ -322,25 +322,7 @@ public class PlanetMap extends JPanel {
                             dy *= 2;
                         }
 
-//                        for (int k = 0; k < name.length(); k++) {
-//                            String t = name.substring(k, k + 1);
-//                            g.setFont(ws.font_structure_name_bg);
-//                            g.setColor(Color.BLACK);
-//                            g.drawString(t, dx + k * (ws.font_structure_name_size - ws.font_structure_name_gap), dy);
-//                                                        
-//                            g.setColor(Util.getColor(pallette, Util.getOwnerColor(city.owner)));
-//                            g.setFont(ws.font_structure_name_fg);
-//                            g.drawString(t, dx + k * (ws.font_structure_name_size - ws.font_structure_name_gap), dy);
-//                        }
-                        g.setFont(ws.font_structure_name_fg);
-                        g.setColor(Color.BLACK);
-                        g.drawString(name, dx + ws.font_structure_name_gap, dy);
-                        g.drawString(name, dx - ws.font_structure_name_gap, dy);
-                        g.drawString(name, dx, dy - ws.font_structure_name_gap);
-                        g.drawString(name, dx, dy + ws.font_structure_name_gap);
-                        g.setColor(Util.getColor(pallette, Util.getOwnerColor(city.owner)));
-                        g.setFont(ws.font_structure_name_fg);
-                        g.drawString(name, dx, dy);
+                        drawOutlinedText(g, name, dx, dy, city);
                     }
 
                     Structure resource = game.getPlanetGrid(current_planet).getHex(i, j).getResource();
@@ -355,15 +337,7 @@ public class PlanetMap extends JPanel {
                             dy *= 2;
                         }
 
-                        g.setFont(ws.font_structure_name_fg);
-                        g.setColor(Color.BLACK);
-                        g.drawString(name, dx + ws.font_structure_name_gap, dy);
-                        g.drawString(name, dx - ws.font_structure_name_gap, dy);
-                        g.drawString(name, dx, dy - ws.font_structure_name_gap);
-                        g.drawString(name, dx, dy + ws.font_structure_name_gap);
-                        g.setColor(Util.getColor(pallette, Util.getOwnerColor(resource.owner)));
-                        g.setFont(ws.font_structure_name_fg);
-                        g.drawString(name, dx, dy);
+                        drawOutlinedText(g, name, dx, dy, resource);
                     }
 
                 }
@@ -382,6 +356,18 @@ public class PlanetMap extends JPanel {
 
         }
 
+    }
+
+    private void drawOutlinedText(Graphics g, String name, int dx, int dy, Structure city) {
+        g.setFont(ws.font_structure_name_fg);
+        g.setColor(Color.BLACK);
+        g.drawString(name, dx + ws.font_structure_name_gap, dy);
+        g.drawString(name, dx - ws.font_structure_name_gap, dy);
+        g.drawString(name, dx, dy - ws.font_structure_name_gap);
+        g.drawString(name, dx, dy + ws.font_structure_name_gap);
+        g.setColor(Util.getColor(pallette, Util.getOwnerColor(city.owner)));
+        g.setFont(ws.font_structure_name_fg);
+        g.drawString(name, dx, dy);
     }
 
     public void drawPath(Graphics g) {
