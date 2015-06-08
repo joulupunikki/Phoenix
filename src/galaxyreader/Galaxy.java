@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import util.C;
+import util.Util;
 
 /**
  * Class representing a galaxy object. Contains a starmap, planets, jump gates,
@@ -197,8 +198,8 @@ public class Galaxy implements Serializable {
             galaxy = new Galaxy(fc);
 
         } catch (IOException e) {
-            System.err.println(e);
-            System.out.println(e);
+            e.printStackTrace();
+            Util.logFFErrorAndExit(filename, -1);
         }
 
         return galaxy;

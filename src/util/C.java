@@ -14,12 +14,20 @@ import javax.swing.border.Border;
 /**
  * A class containing constants used in project Phoenix classes.
  *
+ * The constants are grouped thus:
+ * 1. Various int and int[] finals
+ * 2. message types: public enum Msg; movement types: public enum MoveType
+ * 3. EFS structures, resources; harvesting; resource and unit production: 
+ *    final int and int[]
+ * 4. EFS terrain types; harvest terrain order: final int and int[]
+ * 5. Special unit type number; EFS faction numbers: final int
+ * 6. Research related: final int
+ * 7. Strings, Colors, miscellaneous: various finals
  * @author joulupunikki
  */
 public class C {
 
-    // wizard mode menu on/off
-//    public static final boolean WIZARD_MODE = true;
+// 1. Various int and int[] finals
     public static final int DEBUG_PRINT = 0;
     public static final int NORTH = 0;
     public static final int NORTHEAST = 1;
@@ -120,24 +128,6 @@ public class C {
     public static final int RANGED_SPACE = 6;
     public static final int DIRECT_SPACE = 7;
     public static final int CLOSE_SPACE = 8;
-
-    public enum PhasesGC {
-
-        WATER,
-        INDIRECT,
-        AIR,
-        DIRECT,
-        CLOSE,
-        PSYCH
-    }
-
-    public enum PhasesSC {
-
-        RANGED_SPACE,
-        DIRECT_SPACE,
-        CLOSE_SPACE,
-        PSYCH
-    }
 
     // message types
     public enum Msg {
@@ -362,8 +352,11 @@ public class C {
     public static final String S_COMBAT_WINDOW = "combat window";
     public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_MESSAGES = "messages window";
-
-
+    // command line options
+    public static final String OPT_DOUBLE_RES = "d";
+    public static final String OPT_NAMED_GALAXY = "g";
+    public static final String OPT_HELP = "h";
+    
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";

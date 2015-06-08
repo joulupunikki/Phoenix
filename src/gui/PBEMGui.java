@@ -27,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.WindowConstants;
+import org.apache.commons.cli.CommandLine;
 import util.C;
 import util.FN;
 import util.Util;
@@ -141,11 +142,11 @@ public class PBEMGui implements Serializable {
         }
         File file = new File(FN.S_PHOENIX_INI);
         pbem.checksums.put(file.getName(), getHash(file, "PHOENIX"));
-        String[] main_args = Gui.getMainArgs();
+        CommandLine main_args = Gui.getMainArgs();
         String galaxy_name;
         String dir = null;
-        if (main_args.length == 2) {
-            galaxy_name = main_args[1];
+        if (main_args.hasOption(C.OPT_NAMED_GALAXY)) {
+            galaxy_name = main_args.getOptionValue(C.OPT_NAMED_GALAXY);
             if (galaxy_name.startsWith(FN.S_GAL + FN.F_S)) {
                 galaxy_name = galaxy_name.substring(4, galaxy_name.length());
                 dir = FN.S_GAL;

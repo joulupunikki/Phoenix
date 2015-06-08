@@ -62,6 +62,7 @@ import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
+import org.apache.commons.cli.CommandLine;
 import state.MM1;
 import state.SU;
 import state.State;
@@ -86,7 +87,7 @@ public class Gui extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_WINDOW_WIDTH = 640;
     private static final int DEFAULT_WINDOW_HEIGHT = 480;
-    private static String[] args;
+    private static CommandLine args;
     //holds the space map
     private SpaceMap space_map;
     //holds the planet map
@@ -216,45 +217,28 @@ public class Gui extends JFrame {
         UIManager.put("Label.foreground", C.COLOR_GOLD);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        String[] args = Gui.args;
+        CommandLine args = Gui.args;
 
         pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
 
         unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
         resources = new Resource(this);
-        if (args.length == 2) {
-            if (Integer.parseInt(args[0]) == 1) {
-                ws = new WindowSize(false);
-            } else if (Integer.parseInt(args[0]) == 2) {
-                ws = new WindowSize(true);
-            } else {
-
-                ws = new WindowSize(false);
-                System.out.println("usage: java -jar Phoenix.jar 1|2 GALAXY.GAL");
-                System.exit(0);
-            }
-
-            Pattern p = Pattern.compile(Pattern.quote(FN.F_S));
-            String name = args[1].substring(4);
-            Matcher m = p.matcher(name);
-            if (!args[1].equals(FN.S_GALAXY_GAL) && (!args[1].startsWith(FN.S_GAL + FN.F_S)
-                    || m.find())) {
-                System.out.println("usage: java -jar Phoenix.jar 1|2 " + FN.S_GALAXY_GAL + "|" + FN.S_GAL + "\"file.separator\"file_name");
-                System.exit(0);
-            }
-
-            game = new Game(args[1], 14);
-            game.init(resources);
-        } else if (args.length == 0) {
-            game = new Game(FN.S_GALAXY_GAL, 14);
-            game.init(resources);
-            ws = new WindowSize(false);
+        // set resolution
+        if (args.hasOption(C.OPT_DOUBLE_RES)) {
+            ws = new WindowSize(true);
         } else {
             ws = new WindowSize(false);
-            System.out.println("usage: java -jar Phoenix.jar 1|2 galaxy.gal");
-            System.exit(0);
         }
+        // load galaxy
+        String galaxy_file_name = FN.S_GALAXY_GAL;
+        if (args.hasOption(C.OPT_NAMED_GALAXY)) {
+            galaxy_file_name = args.getOptionValue(C.OPT_NAMED_GALAXY);
+        }
+        Util.foundOrExit(galaxy_file_name);
+        game = new Game(galaxy_file_name, 14);
+        game.init(resources);
+
         // set fonts after WindowSize has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_large);
         UIManager.put("Button.font", ws.font_large);
@@ -572,7 +556,7 @@ public class Gui extends JFrame {
 
     }
 
-    public static String[] getMainArgs() {
+    public static CommandLine getMainArgs() {
         return args;
     }
 
@@ -1640,8 +1624,8 @@ public class Gui extends JFrame {
 
     public void toMainMenu() {
         setCurrentState(WS.get());
-        if (args.length == 2) {
-            game = new Game(args[1], 14);
+        if (args.hasOption(C.OPT_NAMED_GALAXY)) {
+            game = new Game(args.getOptionValue(C.OPT_NAMED_GALAXY), 14);
             game.init(resources);
         } else {
             game = new Game(FN.S_GALAXY_GAL, 14);
@@ -2082,19 +2066,7 @@ public class Gui extends JFrame {
 //        throw new AssertionError(); // for testing exception handler
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        Gui.args = args;
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    public static void execute(String[] args) {
+    public static void execute(CommandLine args) {
         Gui.args = args;
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {

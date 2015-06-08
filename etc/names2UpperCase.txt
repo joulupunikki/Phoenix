@@ -1,0 +1,3 @@
+# how to ensure file names are in CAPITALS
+# perl and unix
+perl -e 'for(@ARGV){rename$_,uc}' $(find TMP -name "*")

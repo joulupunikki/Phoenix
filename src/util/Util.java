@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1986,4 +1987,12 @@ public class Util {
         }
     }
 
+    public static void foundOrExit(String file_name) {
+        File file = new File(file_name);
+        if (!file.exists()) {
+            System.out.println("File not found: " + file_name);
+            System.exit(1);
+        }
+    }
+    
 }
