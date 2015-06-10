@@ -8,7 +8,18 @@ import gui.Gui;
 import java.awt.AWTEvent;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.Date;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -19,12 +30,17 @@ import util.FN;
 import util.Util;
 
 /**
- *
+ * Main entry point of Phoenix, clone/remake/patch/replacement of the EFS.EXE
+ * in the game Emperor of the Fading Suns.
+ * 
  * @author joulupunikki
  */
 public class Phoenix {
 
     /**
+     * Main entry point. Parse commandline options, roll logs, log all uncaught
+     * Throwables, log input events, start GUI.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -46,12 +62,46 @@ public class Phoenix {
                 Util.logEx(t, e);
             }
         });
-        // log mouse events
+        // log input events
+        String file_name = "input.log";
+        Path input_log_file = FileSystems.getDefault().getPath(file_name);
+        BufferedWriter event_log_buf = null;
+        try {
+            event_log_buf = Files.newBufferedWriter(input_log_file, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
+        } catch (IOException ex) {
+            System.out.println("Unable to open input event log file \"" + file_name + "\"");
+            System.exit(1);
+        }
+        final PrintWriter input_log_writer = new PrintWriter(event_log_buf, true);
+        input_log_writer.println("# input logging started at " + (new Date()).toString());
+        input_log_writer.println("# fields (mouse event): time(ms) eventID button/wheel screenX screenY");
+        input_log_writer.println("# fields (key event): time(ms) eventID keycode keychar");
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             public void eventDispatched(AWTEvent event) {
-                System.out.println(System.currentTimeMillis() + " eventDispatched: " + event);
+                if (event instanceof MouseWheelEvent) { // check this first since ME is super of MWE
+                    MouseWheelEvent me = (MouseWheelEvent) event;
+                    input_log_writer.println(System.currentTimeMillis() + " " + me.getID() + " " + me.getWheelRotation() + " " + me.getXOnScreen() + " " + me.getYOnScreen());
+                } else if (event instanceof MouseEvent) {
+                    MouseEvent me = (MouseEvent) event;
+                    input_log_writer.println(System.currentTimeMillis() + " " + me.getID() + " " + me.getButton() + " " + me.getXOnScreen() + " " + me.getYOnScreen());
+                } else if (event instanceof KeyEvent) {
+                    KeyEvent ke = (KeyEvent) event;
+                    String key_char = "" + ke.getKeyChar();
+                    if (ke.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
+                        key_char = "<enter>";
+                    }
+                    input_log_writer.println(System.currentTimeMillis() + " " + ke.getID() + " " + ke.getExtendedKeyCode() + " " + key_char);
+                }
+                //input_log_writer.println(event.toString());
             }
-        }, AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK);
+        }, AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                input_log_writer.println("# input logging stopped due to jvm shutdown at " + (new Date()).toString());
+                input_log_writer.close();
+            }
+        });
+        // start GUI
         Gui.execute(cli_opts);
     }
     
