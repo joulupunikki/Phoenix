@@ -46,16 +46,8 @@ public class Phoenix {
     public static void main(String[] args) {
         // parse options
         CommandLine cli_opts = parseCLI(args);
-        // roll logs
-        File log_file = new File(FN.S_LOG_FILE);
-        File old_log = new File(FN.S_LOG_FILE + ".1");
-        if (old_log.exists()) {
-            old_log.delete();
-        }
-        if (log_file.exists()) {
-            log_file.renameTo(old_log);
-        }
         // log all errors and exceptions
+        rollLogs(FN.S_LOG_FILE);
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
@@ -64,6 +56,7 @@ public class Phoenix {
         });
         // log input events
         String file_name = "input.log";
+        rollLogs(file_name);
         Path input_log_file = FileSystems.getDefault().getPath(file_name);
         BufferedWriter event_log_buf = null;
         try {
@@ -86,9 +79,15 @@ public class Phoenix {
                     input_log_writer.println(System.currentTimeMillis() + " " + me.getID() + " " + me.getButton() + " " + me.getXOnScreen() + " " + me.getYOnScreen());
                 } else if (event instanceof KeyEvent) {
                     KeyEvent ke = (KeyEvent) event;
-                    String key_char = "" + ke.getKeyChar();
-                    if (ke.getExtendedKeyCode() == KeyEvent.VK_ENTER) {
-                        key_char = "<enter>";
+                    int r = ke.getKeyCode();
+                    String key_char = "<non-unicode>";
+                    if (r <= KeyEvent.VK_ALT && r >= KeyEvent.VK_SHIFT) {
+                        key_char = "<alt/ctrl/shift>";
+                    } else {
+                        String tmp = Character.getName(ke.getKeyChar());
+                        if (tmp != null) {
+                            key_char = tmp.replace(' ', '_');
+                        }
                     }
                     input_log_writer.println(System.currentTimeMillis() + " " + ke.getID() + " " + ke.getExtendedKeyCode() + " " + key_char);
                 }
@@ -124,5 +123,23 @@ public class Phoenix {
             System.exit(0);
         }
         return ret_val;
+    }
+
+    private static void rollLogs(String name) {
+        // roll logs
+        final int MAX_BACKUP = 5;
+        for (int i = MAX_BACKUP; i > 0; i--) {
+            File log_file = new File(name + "." + (i - 1));
+            if (i == 1) {
+                log_file = new File(name);
+            }
+            File old_log = new File(name + "." + i);
+            if (old_log.exists()) {
+                old_log.delete();
+            }
+            if (log_file.exists()) {
+                log_file.renameTo(old_log);
+            }
+        }
     }
 }
