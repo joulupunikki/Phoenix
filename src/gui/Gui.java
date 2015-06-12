@@ -61,6 +61,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
 import org.apache.commons.cli.CommandLine;
+import phoenix.RobotTester;
 import state.MM1;
 import state.SU;
 import state.State;
@@ -1390,6 +1391,7 @@ public class Gui extends JFrame {
         int returnVal = chooser.showOpenDialog(this);
         System.out.println("path_name = " + path_name);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            RobotTester.setWaitState(true); // tell Robot tester we are unresposive
             String load_name = chooser.getCurrentDirectory().getAbsolutePath()
                     + System.getProperty("file.separator")
                     + chooser.getSelectedFile().getName();
@@ -1405,6 +1407,7 @@ public class Gui extends JFrame {
             loadsave_dialog.setVisible(true);
 
             if (!load_succesfull) {
+                RobotTester.setWaitState(false); // tell Robot tester we are online
                 return;
             }
 
@@ -1413,7 +1416,7 @@ public class Gui extends JFrame {
             game.setPath(null);
             game.setJumpPath(null);
             PBEM pbem = game.getEfs_ini().pbem;
-
+            RobotTester.setWaitState(false); // tell Robot tester we are online
             if (pbem.pbem) {
 
                 if (pbem.end_turn) {
@@ -1497,6 +1500,7 @@ public class Gui extends JFrame {
         System.out.println("path_name = " + path_name);
 //        System.exit(0);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
+            RobotTester.setWaitState(true); // tell Robot tester we are unresponsive
             final String save_name = chooser.getCurrentDirectory().getAbsolutePath()
                     + System.getProperty("file.separator")
                     + chooser.getSelectedFile().getName();
@@ -1516,6 +1520,7 @@ public class Gui extends JFrame {
                 toMainMenu();
             }
             this.setCursor(cursor);
+            RobotTester.setWaitState(false); // tell Robot tester we are online
         }
     }
 
@@ -1621,6 +1626,7 @@ public class Gui extends JFrame {
     }
 
     public void toMainMenu() {
+        RobotTester.setWaitState(true); // tell Robot tester we are unresponsive
         setCurrentState(WS.get());
         if (args.hasOption(C.OPT_NAMED_GALAXY)) {
             game = new Game(args.getOptionValue(C.OPT_NAMED_GALAXY), 14);
@@ -1634,6 +1640,7 @@ public class Gui extends JFrame {
         pbem_gui.getDATAHashes();
         SU.setWindow(C.S_MAIN_MENU1);
         setCurrentState(MM1.get());
+        RobotTester.setWaitState(false); // tell Robot tester we are online
     }
 
     /**
@@ -2062,6 +2069,12 @@ public class Gui extends JFrame {
 //        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
 //        throw new AssertionError(); // for testing exception handler
+        System.out.println("Phoenix ready.");
+        if (args.hasOption(C.OPT_ROBOT_TEST)) {
+            System.out.println("Starting Robot test. Please leave computer undisturbed until test is finished.");
+            RobotTester robo_test = new RobotTester(args.getOptionValue(C.OPT_ROBOT_TEST));
+            robo_test.start();
+        }
     }
 
     public static void execute(CommandLine args) {

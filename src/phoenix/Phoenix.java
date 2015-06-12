@@ -91,7 +91,20 @@ public class Phoenix {
                     }
                     input_log_writer.println(System.currentTimeMillis() + " " + ke.getID() + " " + ke.getExtendedKeyCode() + " " + key_char);
                 }
-                //input_log_writer.println(event.toString());
+                String tmp = event.toString();
+                int obj_idx = tmp.indexOf(" on ");
+                int space_idx = tmp.indexOf("[", obj_idx + 4);
+                String printout;
+                if (space_idx < 0) {
+                    printout = tmp.substring(obj_idx + 4);
+                } else {
+                    printout = tmp.substring(obj_idx + 4, tmp.indexOf("[", space_idx));
+                    obj_idx = tmp.indexOf(",text=");
+                    if (obj_idx > -1) {
+                        printout += tmp.substring(obj_idx + 5, tmp.indexOf("]", obj_idx + 5));
+                    }
+                }
+                input_log_writer.println("# " + printout);
             }
         }, AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -110,6 +123,7 @@ public class Phoenix {
         opts.addOption(C.OPT_DOUBLE_RES, "Double resolution (1280x960)");
         opts.addOption(C.OPT_NAMED_GALAXY, true, "Name of galaxy file");
         opts.addOption(C.OPT_HELP, "Print help");
+        opts.addOption(C.OPT_ROBOT_TEST, true, "(WARNING: EXPERTS ONLY) Run Robot test with file");
         HelpFormatter formatter = new HelpFormatter(); 
         DefaultParser parser = new DefaultParser();
         try {
