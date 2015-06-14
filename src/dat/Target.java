@@ -25,13 +25,13 @@ public class Target {
         Pattern name_pat = Pattern.compile("\"[0-9a-zA-Z ]+\"");
 
         Matcher m = name_pat.matcher(s);
-        System.out.println("s = " + s);
+        //System.out.println("s = " + s);
         //skip "name"
         m.find();
         m.find();
 
         String line = s.substring(m.start() + 1, m.end() - 1);
-        System.out.println("line = " + line);
+        //System.out.println("line = " + line);
 //        Pattern targets = Pattern.compile("\"[0-9 ]+\"");
 //        m = targets.matcher(s2);
 //        System.out.println("line = " + s2);

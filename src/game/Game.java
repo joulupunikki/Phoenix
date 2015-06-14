@@ -143,15 +143,12 @@ public class Game implements Serializable {
 
         battle = new Battle();
 
-        for (int i = 0; i < str_build.length; i++) {
-            System.out.println("str_build = " + str_build[i].name);
-        }
-
-        Damage.printDamage(damage);
-
-        Target.printTarget(target);
-
-        printMoveCost();
+//        for (int i = 0; i < str_build.length; i++) {
+//            System.out.println("str_build = " + str_build[i].name);
+//        }
+        //Damage.printDamage(damage);
+        //Target.printTarget(target);
+        //printMoveCost();
 
 //        endTurn();
 //        setMoveCosts();
@@ -1441,11 +1438,14 @@ public class Game implements Serializable {
                 }
                 if ((e.x % 2 == 0 && y >= 31) || (e.x % 2 == 1 && y >= 32) || y < 0) {
 
-                    System.out.println("Out of map structure number " + out_of_map_units++);
                     iterator.remove();
-                    System.out.println("Owner " + e.owner);
-                    System.out.println("Planet " + planets.get(e.p_idx).name);
-                    System.out.println("Hex(x,y): " + e.x + "," + y);
+                    out_of_map_units++;
+                    if (e.owner < 5) {
+                        System.out.print("Del struct " + out_of_map_units);
+                        System.out.print(" Owner " + e.owner);
+                        System.out.print(" Planet " + planets.get(e.p_idx).name);
+                        System.out.println(" Hex(x,y): " + e.x + "," + y);
+                    }
                 } else {
 //                    System.out.println("(x,y): " + e.x + "," + y);
                     if (e.type < 26) {
@@ -1457,7 +1457,9 @@ public class Game implements Serializable {
                 e.y = y;
             }
         }
-
+        if (out_of_map_units > 0) {
+            System.out.println("Out of map structures: " + out_of_map_units);
+        }
     }
 
     public void subMovePoints(List<Unit> selected) {

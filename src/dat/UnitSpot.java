@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import phoenix.Phoenix;
 import util.C;
 import util.FN;
 import util.Util;
@@ -68,7 +67,7 @@ public class UnitSpot {
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
             line_nr++;
-            System.out.println("s = " + s);
+            //System.out.println("s = " + s);
             //true if between { and } false if between } and {
             boolean read = false;
 

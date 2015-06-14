@@ -152,7 +152,7 @@ public class Battle implements Serializable {
 
     public int getAtkAcc(int atk_type, Unit atk) {
         int to_hit = 0;
-        System.out.println("attack_type " + atk_type);
+        //System.out.println("attack_type " + atk_type);
         switch (atk_type) {
             case C.WATER:
                 to_hit += atk.type_data.water_acc;
@@ -379,19 +379,19 @@ public class Battle implements Serializable {
                 }
 
             }
-            System.out.println("move_cost = " + move_cost);
+            //System.out.println("move_cost = " + move_cost);
 
             int stack_size = hex.getStack().size();
             if (move_cost == 0) {
                 skip = true;
-                System.out.println("move_cost");
+                //System.out.println("move_cost");
             } else if (stack_size >= 20) {
                 skip = true;
-                System.out.println("stack_size");
+                //System.out.println("stack_size");
             } else if (stack_size > 0) {
                 if (unit_b.owner != hex.getStack().get(0).owner) {
                     skip = true;
-                    System.out.println("owner");
+                    //System.out.println("owner");
                 }
             }
         }
@@ -552,7 +552,7 @@ public class Battle implements Serializable {
         Unit e = iterator.next();
         while (e != null) {
             e.routed = false;
-            System.out.println("e.routed = " + e.routed);
+            //System.out.println("e.routed = " + e.routed);
             e = iterator.next();
         }
 

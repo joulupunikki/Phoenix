@@ -54,7 +54,7 @@ public class StrBuild implements Serializable {
         m.find();
 
         String values = s.substring(m.start() + 1, m.end());
-        System.out.println("values = " + values);
+        //System.out.println("values = " + values);
         int[] int_vals = new int[12];
         Util.processIntVals(values, int_vals, file_name, line_nr);
         water = int_vals[0];

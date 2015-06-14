@@ -30,14 +30,14 @@ public class TerColor {
         //last one is a big string of five of integers
         Pattern colors_pattern = Pattern.compile("\"[0-9 ]+[0-9]+[0-9 ]+\"");
         String values = s.substring(m.end() + 1, s.length());
-        System.out.println(values);
+        //System.out.println(values);
         m = colors_pattern.matcher(values);
 //        System.out.println("s = " + s);
 
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);
 //        String costs = s.substring(m.start() + 1, m.end() - 1);
         String colors = values.substring(m.start() + 1, m.end());
-        System.out.println("colors = " + colors);
+        //System.out.println("colors = " + colors);
 //        costs_pattern = Pattern.compile("[0-9]+\\.[0-9]+");
 //
 //        m = costs_pattern.matcher(costs);
@@ -60,7 +60,7 @@ public class TerColor {
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
             line_nr++;
-            System.out.println("s = " + s);
+            //System.out.println("s = " + s);
             //true if between { and } false if between } and {
             boolean read = false;
 
@@ -71,7 +71,7 @@ public class TerColor {
             Pattern comment = Pattern.compile("^//");
 
             while (s != null) {
-                System.out.println("s = " + s);
+                //System.out.println("s = " + s);
                 Matcher matcher = comment.matcher(s);
 
                 //if not comment

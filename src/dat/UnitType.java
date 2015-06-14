@@ -107,10 +107,10 @@ public class UnitType implements Serializable {
         //skip "name"
         m.find();
         m.find();
-        System.out.println(s);
+        //System.out.println(s);
         name = s.substring(m.start() + 1, m.end() - 1);
         Util.debugPrint("Name: " + name);
-        System.out.println("name = " + name);
+        //System.out.println("name = " + name);
         m.find();
 
         plural = Integer.parseInt(s.substring(m.start() + 1, m.end() - 1));

@@ -165,10 +165,10 @@ public class EfsIni implements Serializable {
             String input = in.readLine();
 
             while (input != null) {
-                System.out.println("input = " + input);
+                //System.out.println("input = " + input);
                 if (!(input.equals("") || input.startsWith("["))) {
                     String output = processLine(input);
-                    System.out.println("output = " + output);
+                    //System.out.println("output = " + output);
                     out.println(output);
                 }
                 input = in.readLine();

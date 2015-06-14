@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import util.C;
 import util.FN;
 import util.Util;
 
@@ -77,7 +76,7 @@ public class Tech implements Serializable {
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
             String s = in.readLine();
             line_nr++;
-            System.out.println("s = " + s);
+            //System.out.println("s = " + s);
             //true if between { and } false if between } and {
             boolean read = false;
             int tech_idx = 0;
@@ -87,7 +86,7 @@ public class Tech implements Serializable {
             Pattern comment = Pattern.compile("^//");
 
             while (s != null) {
-                System.out.println("s = " + s);
+                //System.out.println("s = " + s);
                 Matcher matcher = comment.matcher(s);
 
                 //if not comment

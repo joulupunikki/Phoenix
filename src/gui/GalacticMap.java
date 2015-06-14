@@ -109,7 +109,7 @@ public class GalacticMap extends JPanel {
                 q = game.convertSpaceUnit(p1, faction);
             }
         } else {
-            System.out.println("stack b: " + game.getCombatStack("b"));
+            //System.out.println("stack b: " + game.getCombatStack("b"));
             int p_idx = game.getCombatStack("b").get(0).p_idx;
             Planet planet = game.getPlanet(p_idx);
             q = new Point(planet.x, planet.y);

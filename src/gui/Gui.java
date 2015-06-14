@@ -319,7 +319,7 @@ public class Gui extends JFrame {
         build_window.setLayout(null);
         build_window.setPreferredSize(new Dimension(ws.planet_map_width + 50,
                 ws.planet_map_height));
-        System.out.println("this.getX() = " + this.getX());
+        //System.out.println("this.getX() = " + this.getX());
         build_window.setBounds(this.getX() + ws.planet_map_x_offset,
                 this.getY() + ws.planet_map_y_offset,
                 ws.planet_map_width + 50, ws.planet_map_height);
@@ -810,7 +810,7 @@ public class Gui extends JFrame {
         tech_window.setLayout(null);
         tech_window.setPreferredSize(new Dimension(ws.tech_window_w,
                 ws.tech_window_h));
-        System.out.println("this.getX() = " + this.getX());
+        //System.out.println("this.getX() = " + this.getX());
         tech_window.setBounds(this.getX() + ws.tech_window_x_offset,
                 this.getY() + ws.tech_window_y_offset,
                 ws.tech_window_w, ws.tech_window_h);
@@ -847,7 +847,7 @@ public class Gui extends JFrame {
         tech_db_window.setLayout(null);
         tech_db_window.setPreferredSize(new Dimension(ws.tech_window_w,
                 ws.tech_window_h));
-        System.out.println("this.getX() = " + this.getX());
+        //System.out.println("this.getX() = " + this.getX());
         tech_db_window.setBounds(this.getX() + ws.tech_window_x_offset,
                 this.getY() + ws.tech_window_y_offset,
                 ws.tech_window_w, ws.tech_window_h);
@@ -957,8 +957,8 @@ public class Gui extends JFrame {
         Dimension d_window = dialog.getSize();
         int w_dec_thickness = insets.left + insets.right;
         int h_dec_thickness = insets.top + insets.bottom;
-        System.out.println("w_dec_thickness = " + w_dec_thickness);
-        System.out.println("h_dec_thickness = " + h_dec_thickness);
+        //System.out.println("w_dec_thickness = " + w_dec_thickness);
+        //System.out.println("h_dec_thickness = " + h_dec_thickness);
         dialog.setBounds(this.getX() + x, this.getY() + y, w + w_dec_thickness, h + h_dec_thickness);
     }
 
@@ -1359,9 +1359,9 @@ public class Gui extends JFrame {
         int p_height = this.getHeight();
 
         int width = p_width / 3;
-        System.out.println("width = " + width);
+        //System.out.println("width = " + width);
         int heigth = p_height / 5;
-        System.out.println("heigth = " + heigth);
+        //System.out.println("heigth = " + heigth);
         int x = (p_width - width) / 2;
         int y = (p_height - heigth) / 2;
         dialog.setBounds(x, y, width, heigth);
@@ -1389,14 +1389,14 @@ public class Gui extends JFrame {
                 + System.getProperty("file.separator") + FN.S_SAV;
         chooser.setCurrentDirectory(new File(path_name));
         int returnVal = chooser.showOpenDialog(this);
-        System.out.println("path_name = " + path_name);
+        //System.out.println("path_name = " + path_name);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             RobotTester.setWaitState(true); // tell Robot tester we are unresposive
             String load_name = chooser.getCurrentDirectory().getAbsolutePath()
                     + System.getProperty("file.separator")
                     + chooser.getSelectedFile().getName();
 
-            System.out.println("load_name = " + load_name);
+            //System.out.println("load_name = " + load_name);
 //            JDialog load_dialog = showProgressBar("Loading game");
 
             loadsave_dialog = showProgressBar("Loading game");
@@ -1475,7 +1475,7 @@ public class Gui extends JFrame {
                 SU.selectNextUnmovedUnit();
 
             } else {
-                System.out.println("selected stack");
+                //System.out.println("selected stack");
                 List<Unit> stack = game.getSelectedStack();
                 SU.centerMapOnUnit(stack.get(0));
             }
@@ -1497,7 +1497,7 @@ public class Gui extends JFrame {
         chooser.setCurrentDirectory(new File(path_name));
 
         int returnVal = chooser.showSaveDialog(this);
-        System.out.println("path_name = " + path_name);
+        //System.out.println("path_name = " + path_name);
 //        System.exit(0);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             RobotTester.setWaitState(true); // tell Robot tester we are unresponsive
@@ -1505,7 +1505,7 @@ public class Gui extends JFrame {
                     + System.getProperty("file.separator")
                     + chooser.getSelectedFile().getName();
 
-            System.out.println("save_name = " + save_name);
+            //System.out.println("save_name = " + save_name);
 //            FileOutputStream f;
 //            ObjectOutput s;
 
@@ -1554,7 +1554,7 @@ public class Gui extends JFrame {
                     ObjectInputStream s = new ObjectInputStream(gis)) {
                 Game tmp = (Game) s.readObject();
                 game = tmp;
-                System.out.println("after read object");
+                //System.out.println("after read object");
 //                space_map.setGame(game);
 //                planet_map.setGame(game);
 //                planet_window.setGame(game);
@@ -1611,7 +1611,7 @@ public class Gui extends JFrame {
 
                 s.writeObject(game);
                 s.flush();
-                System.out.println("after flush");
+                //System.out.println("after flush");
             } catch (Throwable ex) {
                 Util.logEx(null, ex, "Save game failed");
                 System.out.println(ex);
@@ -1699,14 +1699,14 @@ public class Gui extends JFrame {
             if (c != ' ' && c != '\n' && c != '\r') {
                 word += c;
             } else if (c == '\r') {
-                System.out.println("CR");
+                //System.out.println("CR");
             } else {
 
                 words.add(word);
-                System.out.println("word = " + word);
+                //System.out.println("word = " + word);
                 word = "" + c;
                 words.add(word);
-                System.out.println("word = " + word);
+                //System.out.println("word = " + word);
                 word = "";
             }
         }
@@ -1727,7 +1727,7 @@ public class Gui extends JFrame {
                     }
                 } else {
                     lines.add(line);
-                    System.out.println("line = " + line);
+                    //System.out.println("line = " + line);
                     line = "";
                     line += word;
                 }
@@ -1735,15 +1735,15 @@ public class Gui extends JFrame {
                 if (fm.stringWidth(line + word) <= width) {
                     line += word;
                     lines.add(line);
-                    System.out.println("line = " + line);
+                    //System.out.println("line = " + line);
                     line = "";
 
                 } else {
                     lines.add(line);
-                    System.out.println("line = " + line);
+                    //System.out.println("line = " + line);
                     line = word;
                     lines.add(line);
-                    System.out.println("line = " + line);
+                    //System.out.println("line = " + line);
                     line = "";
                 }
             }
@@ -2064,14 +2064,19 @@ public class Gui extends JFrame {
     }
 
     private static void createAndShowGUI() {
+        long gui_init_start = System.nanoTime();
         Gui gui = new Gui();
         gui.setStateReferences();
 //        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
 //        throw new AssertionError(); // for testing exception handler
+        double init_time = ((System.nanoTime() - gui_init_start)) / 1_000_000 / 1e3;
+        System.out.println("Gui + game init time = " + init_time + "s");
         System.out.println("Phoenix ready.");
         if (args.hasOption(C.OPT_ROBOT_TEST)) {
-            System.out.println("Starting Robot test. Please leave computer undisturbed until test is finished.");
+            System.out.println(""
+                    + "Starting Robot test. Please leave computer undisturbed until test is finished.\n"
+                    + "If Robot test terminates abnormally, OS may be left in unresponsive state.");
             RobotTester robo_test = new RobotTester(args.getOptionValue(C.OPT_ROBOT_TEST));
             robo_test.start();
         }

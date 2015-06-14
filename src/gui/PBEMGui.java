@@ -137,7 +137,7 @@ public class PBEMGui implements Serializable {
     public void getDATAHashes() {
         File[] dat_files = getDataFiles();
         for (File file : dat_files) {
-            System.out.println("file = " + file.getName());
+            //System.out.println("file = " + file.getName());
             pbem.checksums.put(file.getName(), getHash(file, "DAT"));
         }
         File file = new File(FN.S_PHOENIX_INI);

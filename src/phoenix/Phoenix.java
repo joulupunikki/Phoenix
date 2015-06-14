@@ -44,6 +44,7 @@ public class Phoenix {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println("Phoenix started.");
         // parse options
         CommandLine cli_opts = parseCLI(args);
         // log all errors and exceptions

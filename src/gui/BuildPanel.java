@@ -386,9 +386,9 @@ public class BuildPanel extends JPanel {
         DefaultListSelectionModel list_selection_model;
         list_selection_model = (DefaultListSelectionModel) planet_list.getSelectionModel();
         ListSelectionListener[] lsl_list = list_selection_model.getListSelectionListeners();
-        for (ListSelectionListener lsl : lsl_list) {
-            System.out.println("lsl = " + lsl);
-        }
+//        for (ListSelectionListener lsl : lsl_list) {
+//            System.out.println("lsl = " + lsl);
+//        }
         list_selection_model.addListSelectionListener(
                 new ListSelectionListener() {
                     public void valueChanged(ListSelectionEvent e) {

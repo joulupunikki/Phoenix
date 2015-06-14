@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
 import util.FN;
-import util.Util;
 
 /**
  *
@@ -24,11 +23,11 @@ public class Damage {
 
         Pattern damages = Pattern.compile("\"[0-9 ]+\"");
         Matcher m = damages.matcher(s);
-        System.out.println("s = " + s);
+        //System.out.println("s = " + s);
         m.find();
-        System.out.println("start: " + m.start() + " end: " + m.end());
+        //System.out.println("start: " + m.start() + " end: " + m.end());
         String line = s.substring(m.start() + 1, m.end() - 1);
-        System.out.println("costs = " + line);
+        //System.out.println("costs = " + line);
         damages = Pattern.compile("[0-9]+");
 
         m = damages.matcher(line);
@@ -94,7 +93,6 @@ public class Damage {
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
-            System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + FN.S_DAMAGE_DAT);
             System.exit(1);
         }
