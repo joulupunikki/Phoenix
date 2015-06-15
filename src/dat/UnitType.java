@@ -16,6 +16,8 @@ import util.FN;
 import util.Util;
 
 /**
+ * Reads in and stores static unit type data from UNIT.DAT (this breaks the
+ * naming convention of classes in package dat.)
  *
  * @author joulupunikki
  */
@@ -86,6 +88,8 @@ public class UnitType implements Serializable {
     public int rop;
 
     /**
+     * Parse and store a line from UNITTYPE.DAT
+     *
      * FIXME With no knowledge of the characters accepted by "EFS.EXE", new
      * mods might use some symbols digested by "EFS.EXE" but which cause
      * Phoenix the hiccups.
@@ -221,6 +225,13 @@ public class UnitType implements Serializable {
 
     }
 
+    /**
+     * Parse int value.
+     *
+     * @param s
+     * @param m
+     * @return
+     */
     public static int processIntVal(String s, Matcher m) {
 
         int ret_val = Integer.parseInt(s.substring(m.start(), m.end()));
@@ -230,6 +241,12 @@ public class UnitType implements Serializable {
         return ret_val;
     }
 
+    /**
+     * Convert movement type string to MoveType.
+     *
+     * @param s
+     * @return
+     */
     public MoveType processMoveType(String s) {
 
         Util.debugPrint("Move type: " + s);
@@ -283,6 +300,11 @@ public class UnitType implements Serializable {
         return move_type;
     }
 
+    /**
+     * For debugging purposes.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         UnitType[][] unit_types = readUnitDat();
 
@@ -296,6 +318,11 @@ public class UnitType implements Serializable {
         }
     }
 
+    /**
+     * Read and store data from UNITTYPE.DAT.
+     *
+     * @return
+     */
     public static UnitType[][] readUnitDat() {
 
         String file_name = FN.S_UNIT_DAT;
@@ -389,6 +416,12 @@ public class UnitType implements Serializable {
 //        
 //    }
 
+    /**
+     * Return true iff unit is capable of attacking.
+     *
+     * @param unit
+     * @return
+     */
     public static boolean isAttackCapable(Unit unit) {
         boolean r_v = false;
 

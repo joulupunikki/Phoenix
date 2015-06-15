@@ -38,8 +38,12 @@ import util.Util;
 public class Phoenix {
 
     /**
-     * Main entry point. Parse commandline options, roll logs, log all uncaught
-     * Throwables, log input events, start GUI.
+     * Main entry point of Phoenix.
+     * <p>
+     * parse commandline options <br>
+     * log all uncaught Throwables <br>
+     * log input events <br>
+     * start GUI (the Phoenix proper)
      *
      * @param args the command line arguments
      */

@@ -12,7 +12,6 @@ import java.nio.channels.FileChannel;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 import util.C;
 
 /**
@@ -365,6 +364,17 @@ public class Unit implements Serializable {
         System.out.println("unit owner:   " + owner);
         System.out.println("unit type:    " + type);
         System.out.println("unit t_lvl:   " + t_lvl);
+    }
+
+    /**
+     * Prints the unit object. A CSV record is produced of the Unit object's
+     * identifying statistics.
+     */
+    public void record() {
+        System.out.println(""
+                + p_idx + "," + x + "," + y + "," + loyalty + "," + owner + ","
+                + prev_owner + "," + type + "," + t_lvl + "," + move_points + ","
+                + res_relic + "," + amount + "," + health);
     }
 
     public static class CompMoveType implements Comparator<Unit> {

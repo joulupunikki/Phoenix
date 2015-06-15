@@ -14,6 +14,7 @@ import util.FN;
 import util.Util;
 
 /**
+ * Reads in and stores structure construction settings from STRUILD.DAT.
  *
  * @author joulupunikki
  */
@@ -37,6 +38,13 @@ public class StrBuild implements Serializable {
     public int tech;
     public int value;
 
+    /**
+     * Parses and stores a line of STRBUILD.DAT.
+     *
+     * @param s
+     * @param file_name
+     * @param line_nr
+     */
     public StrBuild(String s, String file_name, int line_nr) {
 
         Pattern name_pat = Pattern.compile("\"[0-9a-zA-Z ]+\"");
@@ -72,6 +80,11 @@ public class StrBuild implements Serializable {
 
     }
 
+    /**
+     * Read STRBUILD.DAT.
+     *
+     * @return StrBuild[] of structure static parameters.
+     */
     public static StrBuild[] readStrBuildDat() {
 
         String file_name = FN.S_STRBUILD_DAT;

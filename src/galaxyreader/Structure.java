@@ -11,7 +11,6 @@ import game.Message;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import util.C;
@@ -340,6 +339,17 @@ public class Structure implements Serializable {
         System.out.println("x:     " + x);
         System.out.println("y:     " + y);
         System.out.println("owner: " + owner);
+    }
+
+    /**
+     * Prints the Structure object. A CSV record is produced of the Structure
+     * object's identifying statistics.
+     */
+    public void record() {
+        System.out.println(""
+                + p_idx + "," + x + "," + y + "," + loyalty + "," + owner + ","
+                + prev_owner + "," + type + "," + health + "," + turns_starving
+                + "," + turns_left);
     }
 
     public static String getName(int structure_nr) {

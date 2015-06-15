@@ -14,11 +14,20 @@ import util.FN;
 import util.Util;
 
 /**
+ * Read in planetary minimap color data from TERCOLOR.DAT.
  *
  * @author joulupunikki
  */
 public class TerColor {
 
+    /**
+     * Parse a line of TERCOLOR.DAT data
+     *
+     * @param s
+     * @param file_name
+     * @param line_nr
+     * @return int[]
+     */
     public static int[] getCosts(String s, String file_name, int line_nr) {
 
         int[] ret_val = new int[C.TER_COLOR_PLANET];
@@ -52,6 +61,11 @@ public class TerColor {
 
     }
 
+    /**
+     * Read and parse TERCOLOR.DAT
+     *
+     * @return int[][]
+     */
     public static int[][] readTerColor() {
 
         String file_name = FN.S_TERCOLOR_DAT;
@@ -123,7 +137,11 @@ public class TerColor {
 
     }
 
-
+    /**
+     * For debugging purposes.
+     *
+     * @param array
+     */
     public static void print(int[][] array) {
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {

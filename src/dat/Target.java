@@ -13,11 +13,18 @@ import util.FN;
 import util.Util;
 
 /**
+ * Reads in targeting data from TARGET.DAT.
  *
  * @author joulupunikki
  */
 public class Target {
 
+    /**
+     * Parse and return a line of TARGET.DAT.
+     *
+     * @param s
+     * @return
+     */
     public static int[] getTarget(String s) {
 
         int[] ret_val = new int[C.TARGET_DAT_X];
@@ -53,6 +60,11 @@ public class Target {
 
     }
 
+    /**
+     * Read and parse TARGET.DAT.
+     *
+     * @return int[][]
+     */
     public static int[][] readTargetDat() {
 
         String file_name = FN.S_TARGET_DAT;
@@ -124,6 +136,11 @@ public class Target {
         return target_dat;
     }
 
+    /**
+     * Print target data, for debugging purposes.
+     *
+     * @param target
+     */
     public static void printTarget(int[][] target) {
         for (int i = 0; i < target.length; i++) {
             for (int j = 0; j < target[i].length; j++) {

@@ -11,11 +11,13 @@ import util.FN;
 import util.Util;
 
 /**
- * @author RSW Reads in PROD.DAT, which give data about secondary resource
- * production. For each type of secondary production city (e.g. chemicals) there
- * are up to 3 input resource types ("need") and one output resource type
- * ("make"). Unused needs slots are left null. For each resource type needed or
- * made, there is a type and amount.
+ * Reads in PROD.DAT, which give data about secondary resource production. For
+ * each type of secondary production city (e.g. chemicals) there are up to 3
+ * input resource types ("need") and one output resource type ("make"). Unused
+ * needs slots are left null. For each resource type needed or made, there is a
+ * type and amount.
+ *
+ * @author RSW
  */
 public class Prod implements Serializable {
 

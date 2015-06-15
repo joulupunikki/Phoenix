@@ -10,8 +10,9 @@ import util.FN;
 import util.Util;
 
 /**
+ * Reads in resource type data from files RES.DAT.
  *
- * @author RSW Reads in resource type data from files RES.DAT.
+ * @author RSW
  */
 public class ResType implements Serializable {
 
@@ -78,6 +79,7 @@ public class ResType implements Serializable {
 
     /**
      * Creates and returns resource types table, reading RES.DAT
+     * @return
      */
     public static ResType[] readResDat() {    // Creates and returns resource type table
 

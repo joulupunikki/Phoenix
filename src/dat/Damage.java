@@ -12,11 +12,18 @@ import util.C;
 import util.FN;
 
 /**
+ * Reads in attack damage table from DAMAGE.DAT.
  *
  * @author joulupunikki
  */
 public class Damage {
 
+    /**
+     * Parse a line of DAMAGE.DAT.
+     *
+     * @param s line.
+     * @return int[] of damage values.
+     */
     public static int[] getDamage(String s) {
 
         int[] ret_val = new int[C.DAMAGE_DAT_X];
@@ -42,6 +49,11 @@ public class Damage {
 
     }
 
+    /**
+     * Read DAMAGE.DAT.
+     *
+     * @return int[][] of damage values
+     */
     public static int[][] readDamageDat() {
 
         int[][] damage_dat = new int[C.DAMAGE_DAT_Y][];
@@ -100,6 +112,11 @@ public class Damage {
         return damage_dat;
     }
 
+    /**
+     * For debugging purposes.
+     *
+     * @param damages
+     */
     public static void printDamage(int[][] damages) {
         for (int i = 0; i < damages.length; i++) {
             for (int j = 0; j < damages[i].length; j++) {

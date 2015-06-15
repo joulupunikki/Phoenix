@@ -16,16 +16,18 @@ import util.FN;
 import util.Util;
 
 /**
- * Contains game parameters read from the EFS.INI file.
+ * Reads and stores game parameters from the EFS.INI and phoenix.ini files and
+ * creates and stores the PBEM object.
  *
  * Parameters read as java Properties object. As you need new parameters convert
  * them in the constructor from Properties to EfsIni members.
  *
  * @author RSW
+ * @author joulupunikki
  */
 public class EfsIni implements Serializable {
 
-/**
+    /**
      * 
      */
     private static final long serialVersionUID = 1L;
@@ -102,6 +104,13 @@ public class EfsIni implements Serializable {
     public int lab_cost = -1;
     public boolean wizard_mode = false;
 
+    /**
+     * Converts EFS.INI and phoenix.ini values from Properties to internal game
+     * representation, and stores them; also creates and stores PBEM object.
+     *
+     * @param efs_ini
+     * @param phoenix_ini
+     */
     public EfsIni(Properties efs_ini, Properties phoenix_ini) {
         starting_credits = Integer.parseInt((efs_ini.getProperty("starting_credits")).trim());
         default_tax_rate = Integer.parseInt((efs_ini.getProperty("default_tax_rate")).trim());
@@ -118,12 +127,24 @@ public class EfsIni implements Serializable {
         pbem = new PBEM();
     }
 
+    /**
+     * Convert Properties format EFS.INI and phoenix.ini to EfsIni object.
+     *
+     * @param efs_ini
+     * @param phoenix_ini
+     * @return
+     */
     public static EfsIni readEfsIni(Properties efs_ini, Properties phoenix_ini) {
         EfsIni ret_val = new EfsIni(efs_ini, phoenix_ini);
 
         return ret_val;
     }
 
+    /**
+     * Read phoenix.ini as a Properties object.
+     *
+     * @return Properties object
+     */
     public static Properties readPhoenixIni() {
         Properties phoenix_ini = new Properties();
 
@@ -137,6 +158,11 @@ public class EfsIni implements Serializable {
         return phoenix_ini;
     }
 
+    /**
+     * Read EFS.INI as a Properties object.
+     *
+     * @return Properties object
+     */
     public static Properties readEFSINI() {
         Properties efs_ini = new Properties();
         convertToProperties(FN.S_EFS_INI, FN.S_EFS_INI_TMP);
@@ -158,6 +184,12 @@ public class EfsIni implements Serializable {
         return efs_ini;
     }
 
+    /**
+     * Convert EFS.INI to properties readable format.
+     *
+     * @param file_name name of EFS.INI
+     * @param tmp_file name of tmp file
+     */
     public static void convertToProperties(String file_name, String tmp_file) {
         int line_nr = 1;
         try (BufferedReader in = new BufferedReader(new FileReader(file_name));
@@ -181,6 +213,12 @@ public class EfsIni implements Serializable {
         }
     }
 
+    /**
+     * Convert a EFS.INI line to Properties format.
+     *
+     * @param line to convert
+     * @return Properties format line
+     */
     public static String processLine(String line) {
         String s = "";
         boolean loop = true;

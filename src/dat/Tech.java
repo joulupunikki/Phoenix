@@ -15,7 +15,7 @@ import util.FN;
 import util.Util;
 
 /**
- * Loads and represents technologies
+ * Read in and store technology data from TECH.DAT.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
@@ -34,6 +34,15 @@ public class Tech implements Serializable {
     // tech short description
     public String extra;
 
+    /**
+     * Parse a line of TECH.DAT.
+     *
+     * @param s
+     * @param file_name
+     * @param line_nr
+     * @param tech_idx
+     * @return
+     */
     public static Tech getTech(String s, String file_name, int line_nr, int tech_idx) {
 
         Tech ret_val = new Tech();
@@ -66,6 +75,11 @@ public class Tech implements Serializable {
 
     }
 
+    /**
+     * Read and parse TECH.DAT.
+     *
+     * @return Tech[]
+     */
     public static Tech[] readTech() {
 
         String file_name = FN.S_TECH_DAT;
@@ -140,6 +154,11 @@ public class Tech implements Serializable {
 
     }
 
+    /**
+     * For debugging purposes.
+     *
+     * @param techs
+     */
     public static void print(Tech[] techs) {
         for (Tech tech : techs) {
             System.out.print("name " + tech.name + ", stats");

@@ -14,11 +14,20 @@ import util.FN;
 import util.Util;
 
 /**
+ * Read in terrain spotting modifier data from UNITSPOT.DAT.
  *
- * @author doa
+ * @author joulupunikki <joulupunikki@gmail.com>
  */
 public class UnitSpot {
 
+    /**
+     * Parse a line of UNITSPOT.DAT data.
+     *
+     * @param s
+     * @param file_name
+     * @param line_nr
+     * @return double[]
+     */
     public static double[] getCosts(String s, String file_name, int line_nr) {
 
         double[] ret_val = new double[C.UNIT_SPOT_MOVE];
@@ -50,6 +59,15 @@ public class UnitSpot {
 
     }
 
+    /**
+     * Parse a double value.
+     *
+     * @param s
+     * @param m
+     * @param file_name
+     * @param line_nr
+     * @return
+     */
     public static double processDoubleVal(String s, Matcher m, String file_name, int line_nr) {
         Util.testFFErrorAndExit(m.find(), file_name, line_nr);
 //        System.out.println("s = " + s);
@@ -59,6 +77,11 @@ public class UnitSpot {
         return ret_val;
     }
 
+    /**
+     * Read and parse UNITSPOT.DAT
+     *
+     * @return double[][][]
+     */
     public static double[][][] readUnitSpot() {
 
         String file_name = FN.S_UNITSPOT_DAT;
@@ -132,6 +155,14 @@ public class UnitSpot {
 
     }
 
+    /**
+     * Parse a line of UNITSPOT.DAT
+     *
+     * @param s
+     * @param vals
+     * @param file_name
+     * @param line_nr
+     */
     public static void processDoubleVals(String s, double[] vals, String file_name, int line_nr) {
         int start = 0;
         int state = 1;
@@ -194,6 +225,13 @@ public class UnitSpot {
         }
     }
 
+    /**
+     * Calculate final spotting.
+     *
+     * @param spotting
+     * @param range
+     * @return
+     */
     public static int finalSpotting(int spotting, int range) {
 
         int r_v;
@@ -216,6 +254,11 @@ public class UnitSpot {
         return r_v;
     }
 
+    /**
+     * For debugging purposes.
+     *
+     * @param data
+     */
     public static void printData(double[][][] data) {
 
         for (int i = 0; i < data.length; i++) {

@@ -13,11 +13,18 @@ import util.FN;
 import util.Util;
 
 /**
+ * Read and return TERRCOST.DAT data.
  *
  * @author joulupunikki
  */
 public class TerrCost {
 
+    /**
+     * Parse a line of TERRCOST.DAT data.
+     *
+     * @param s
+     * @return double[]
+     */
     public static double[] getCosts(String s) {
 
         double[] ret_val = new double[C.TERR_COST_MOVE];
@@ -48,6 +55,13 @@ public class TerrCost {
 
     }
 
+    /**
+     * Parse a double value.
+     *
+     * @param s
+     * @param m
+     * @return
+     */
     public static double processDoubleVal(String s, Matcher m) {
 
 //        System.out.println("s = " + s);
@@ -58,6 +72,11 @@ public class TerrCost {
         return ret_val;
     }
 
+    /**
+     * Read in terrain movement cost data from TERRCOST.DAT.
+     *
+     * @return double[][][]
+     */
     public static double[][][] readTerrCost() {
 
         String file_name = FN.S_TERRCOST_DAT;

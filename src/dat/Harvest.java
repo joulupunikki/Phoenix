@@ -11,12 +11,13 @@ import util.FN;
 import util.Util;
 
 /**
+ * Reads in harvesting data from FARM.DAT, ARBORIUM.DAT, MINE.DAT and WELL.DAT.
+ * The harvest table is 4-D: city-types (4) X terrain-types X planet-types X
+ * resource-types (up to 3) and each item in the table is a ResTypeAmount
+ * object, i.e. a resource type and amount. If there are less than 3 resource
+ * types, the unused slots are left null.
  *
- * @author RSW (based on TerrCost.java) Reads in harvesting data from FARM.DAT,
- * ARBORIUM.DAT, MINE.DAT and WELL.DAT. The harvest table is 4-D: city-types (4)
- * X terrain-types X planet-types X resource-types (up to 3) and each item in
- * the table is a ResTypeAmount object, i.e. a resource type and amount. If
- * there are less than 3 resource types, the unused slots are left null.
+ * @author RSW (based on TerrCost.java)
  */
 public class Harvest implements Serializable {
 

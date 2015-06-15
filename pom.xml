@@ -133,6 +133,13 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.5.2</version>
             </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <configuration>
+                    <overview>${basedir}/src/phoenix/overview.html</overview>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

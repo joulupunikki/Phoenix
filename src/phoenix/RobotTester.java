@@ -18,15 +18,20 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
 /**
- * WARNING: generates OS-level input events. Abnormal termination may lead to 
+ * WARNING: generates OS-level input events. Abnormal termination may lead to
  * non-standard event combinations which may cause OS to become unresponsive to
- * input. Also requires special privileges on some platforms to generate OS-level
- * events.
-  * 
+ * input. It is strongly suggested that these tests are NOT run on mission
+ * critical production environments as random input may result. It is best to
+ * run the tests on a special test environment (dedicated computer or a virtual
+ * machine) which will not suffer adverse effects from random input. While a
+ * test is running the test is sensitive to input and the test machine should
+ * run undisturbed.
+ * <p>
  * Thread subclass to generate keyboard/mouse input events to test high level
- * Phoenix functionality.
- * 
- * @author doa
+ * Phoenix functionality. Events are generated from an event log file which is
+ * generated during normal Phoenix/EFS operation/play.
+  *
+ * @author joulupunikki <joulupunikki@gmail.com>
  */
 public class RobotTester extends Thread {
 
@@ -38,6 +43,17 @@ public class RobotTester extends Thread {
     BufferedReader input_log_buf = null;
     int[] prev_event = {-1, -1, -1, -1, -1};
 
+    /**
+     * WARNING: generates OS-level input events. Abnormal termination may lead
+     * to non-standard event combinations which may cause OS to become
+     * unresponsive to input.
+     * <p>
+     * Create a RobotTester which reads mouse/keyboard input events from the log
+     * file file_name and generates OS level mouse/keyboard input events using a
+     * java Robot object.
+     *
+     * @param file_name
+     */
     public RobotTester(String file_name) {
         Path input_log_file = FileSystems.getDefault().getPath(file_name);
         boolean fail = true;
@@ -60,10 +76,24 @@ public class RobotTester extends Thread {
         }
     }
 
+    /**
+     * Tell RobotTester to wait (suspend event generation) or continue (resume
+     * event generation.) Used when Phoenix may be unresponsive for an arbitrary
+     * time, like when saving/loading/restarting.
+     *
+     * @param state true iff RobotTester must wait.
+     */
     public static void setWaitState(boolean state) {
         wait_for_program = state;
     }
-
+    /**
+     * WARNING: generates OS-level input events. Abnormal termination may lead
+     * to non-standard event combinations which may cause OS to become
+     * unresponsive to input.
+     * <p>
+     * Loop an input event log file through line by line, generating OS level
+     * input events, in an attempt to automatically recreate a previous
+     */
     public void run() {
 
         robot.setAutoDelay(AUTO_DELAY);
