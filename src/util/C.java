@@ -382,7 +382,32 @@ public class C {
 
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
 
+    /**
+     * Short print method for debugging, fixed message.
+     *
+     * @param s
+     */
+    public static void p() {
+        System.out.println("********DEBUG PRINT********");
+    }
 
+    /**
+     * Short print method for debugging, with String message.
+     *
+     * @param s
+     */
+    public static void p(String s) {
+        System.out.println(s);
+    }
+
+    /**
+     * Short print method for debugging, with int message.
+     *
+     * @param s
+     */
+    public static void p(int n) {
+        System.out.println(n + "DEBUG PRINT");
+    }
 
     /**
      * Prints out the constants which determine unit, structure and planet

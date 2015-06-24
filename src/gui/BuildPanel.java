@@ -142,7 +142,7 @@ public class BuildPanel extends JPanel {
     public void drawResAmounts(int[] unit) {
         int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
         int planet = (Integer) planet_list.getSelectedValue();
-        System.out.println("Planet name = " + game.getPlanet(planet).name);
+        //System.out.println("Planet name = " + game.getPlanet(planet).name);
         int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
         for (int i = 0; i < res_display.length; i++) {
             if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
@@ -245,10 +245,10 @@ public class BuildPanel extends JPanel {
                     return;
                 }
                 if (e.getClickCount() == 1) {
-                    System.out.println("Single clicked row " + row);
+                    //System.out.println("Single clicked row " + row);
                 }
                 if (e.getClickCount() == 2) {
-                    System.out.println("Double clicked row " + row);
+                    //System.out.println("Double clicked row " + row);
                     int selected_city = city_table.getSelectedRow();
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     city.removeFromQueue(row, game.getUnitTypes(), game);
@@ -295,7 +295,7 @@ public class BuildPanel extends JPanel {
                     return;
                 }
                 if (e.getClickCount() == 1) {
-                    System.out.println("Single clicked row " + row);
+                    //System.out.println("Single clicked row " + row);
                     int[] unit = (int[]) build_table.getValueAt(row, 0);
                     int input = game.getUnitTypes()[unit[0]][unit[1]].unit;
                     if (input > -1) {
@@ -311,9 +311,9 @@ public class BuildPanel extends JPanel {
                     repaint();
                 }
                 if (e.getClickCount() == 2) {
-                    System.out.println("Double clicked row " + row);
+                    //System.out.println("Double clicked row " + row);
                     int selected_city = city_table.getSelectedRow();
-                    System.out.println("selected_city = " + selected_city);
+                    //System.out.println("selected_city = " + selected_city);
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     int[] tmp = (int[]) build_table.getValueAt(row, 0);
                     int[] unit = {tmp[0], tmp[1]};
@@ -440,7 +440,7 @@ public class BuildPanel extends JPanel {
      * @param nr the value of nr
      */
     public void planetSelected(ListSelectionEvent e, int nr) {
-        System.out.println("planet_list selected value = " + planet_list.getSelectedValue());
+        //System.out.println("planet_list selected value = " + planet_list.getSelectedValue());
 
         int planet = -1;
         if (nr == -1) {
@@ -500,7 +500,7 @@ public class BuildPanel extends JPanel {
 
         zeroBuild();
         zeroQueue();
-        System.out.println("row height" + city_table.getRowHeight());
+        //System.out.println("row height" + city_table.getRowHeight());
     }
 
     public void setBuildData(ListSelectionEvent e, Structure city) {
@@ -583,8 +583,8 @@ public class BuildPanel extends JPanel {
                 build_table_header);
         queue_table.setModel(queue_model);
 
-        System.out.println("CellRend 0 " + queue_table.getCellRenderer(0, 0));
-        System.out.println("CellRend 1 " + queue_table.getCellRenderer(0, 1));
+        //System.out.println("CellRend 0 " + queue_table.getCellRenderer(0, 0));
+        //System.out.println("CellRend 1 " + queue_table.getCellRenderer(0, 1));
         TableColumn column = queue_table.getColumnModel().getColumn(0);
         column.setPreferredWidth(ws.queue_table_cell_0_width);
         column = queue_table.getColumnModel().getColumn(1);
@@ -868,7 +868,7 @@ public class BuildPanel extends JPanel {
             // are resources available
             int[] res_needed = game.getUnitTypes()[tmp[0]][tmp[1]].reqd_res;
             int planet = (Integer) planet_list.getSelectedValue();
-            System.out.println("Planet name = " + game.getPlanet(planet).name);
+            //System.out.println("Planet name = " + game.getPlanet(planet).name);
             int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
             for (int i = 0; i < res_display.length; i++) {
                 if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {

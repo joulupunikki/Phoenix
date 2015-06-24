@@ -61,6 +61,7 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
 import org.apache.commons.cli.CommandLine;
+import phoenix.Phoenix;
 import phoenix.RobotTester;
 import state.MM1;
 import state.SU;
@@ -86,6 +87,7 @@ public class Gui extends JFrame {
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_WINDOW_WIDTH = 640;
     private static final int DEFAULT_WINDOW_HEIGHT = 480;
+    private static Gui gui = null;
     private static CommandLine args;
     //holds the space map
     private SpaceMap space_map;
@@ -2064,21 +2066,20 @@ public class Gui extends JFrame {
     }
 
     private static void createAndShowGUI() {
-        long gui_init_start = System.nanoTime();
-        Gui gui = new Gui();
+        gui = new Gui();
         gui.setStateReferences();
 //        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
+        Phoenix.setGui(gui);
 //        throw new AssertionError(); // for testing exception handler
-        double init_time = ((System.nanoTime() - gui_init_start)) / 1_000_000 / 1e3;
-        System.out.println("Gui + game init time = " + init_time + "s");
+        double init_time = ((System.nanoTime() - Phoenix.start_time)) / 1_000_000 / 1e3;
+        System.out.println("Startup time = " + init_time + "s");
         System.out.println("Phoenix ready.");
         if (args.hasOption(C.OPT_ROBOT_TEST)) {
             System.out.println(""
                     + "Starting Robot test. Please leave computer undisturbed until test is finished.\n"
                     + "If Robot test terminates abnormally, OS may be left in unresponsive state.");
-            RobotTester robo_test = new RobotTester(args.getOptionValue(C.OPT_ROBOT_TEST));
-            robo_test.start();
+            RobotTester.startRobotTester(args.getOptionValue(C.OPT_ROBOT_TEST), gui.getX(), gui.getY());
         }
     }
 
@@ -2163,5 +2164,14 @@ public class Gui extends JFrame {
 
     public PBEMGui getPBEMGui() {
         return pbem_gui;
+    }
+
+    public static Point getOrigin() {
+        Point p = new Point();
+        if (gui != null) {
+            p = gui.getLocationOnScreen();
+            
+        }
+        return p;
     }
 }

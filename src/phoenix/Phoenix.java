@@ -6,6 +6,8 @@ package phoenix;
 
 import gui.Gui;
 import java.awt.AWTEvent;
+import java.awt.Container;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
@@ -20,6 +22,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
+import javax.swing.AbstractButton;
+import javax.swing.JMenu;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -37,6 +41,16 @@ import util.Util;
  */
 public class Phoenix {
 
+    public static final long start_time;
+    private static int event_number = 0;
+    //true iff a JMenu is open
+    private static boolean log_mouse_move = false;
+    private static String last_jmenu = null;
+    private static Gui gui = null;
+
+    static {
+        start_time = System.nanoTime();
+    }
     /**
      * Main entry point of Phoenix.
      * <p>
@@ -49,6 +63,13 @@ public class Phoenix {
      */
     public static void main(String[] args) {
         System.out.println("Phoenix started.");
+        System.out.println("OS: "
+                + System.getProperty("os.arch", "No arch info.") + " "
+                + System.getProperty("os.name", "No name info.") + " "
+                + System.getProperty("os.version", "No version info.") + "\n"
+                + "System: "
+                + "available cores " + Runtime.getRuntime().availableProcessors()
+        );
         // parse options
         CommandLine cli_opts = parseCLI(args);
         // log all errors and exceptions
@@ -56,6 +77,7 @@ public class Phoenix {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
+                System.out.println("Uncaught exception.");
                 Util.logEx(t, e);
             }
         });
@@ -72,46 +94,119 @@ public class Phoenix {
         }
         final PrintWriter input_log_writer = new PrintWriter(event_log_buf, true);
         input_log_writer.println("# input logging started at " + (new Date()).toString());
-        input_log_writer.println("# fields (mouse event): time(ms) eventID button/wheel screenX screenY");
-        input_log_writer.println("# fields (key event): time(ms) eventID keycode keychar");
+        input_log_writer.println("# fields (mouse event #7): nr time(ms) eventID button/wheel screenX screenY source[=text]");
+        input_log_writer.println("# fields (key event #6): nr time(ms) eventID keycode keychar source");
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
+            //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
+            private Point prev_xy = new Point(-1, -1);
             public void eventDispatched(AWTEvent event) {
+                int id = event.getID();
+                String details = "" + id;
                 if (event instanceof MouseWheelEvent) { // check this first since ME is super of MWE
+                    // Wheel Events seem to propagate beyond the original source
+                    // multiple dispatches confuse RobotTester so return here if
+                    // source container is not the first below mouse pointer
+                    Container co = (Container) event.getSource();
+                    if (co.getMousePosition(false) == null) {
+                        return;
+                    }
                     MouseWheelEvent me = (MouseWheelEvent) event;
-                    input_log_writer.println(System.currentTimeMillis() + " " + me.getID() + " " + me.getWheelRotation() + " " + me.getXOnScreen() + " " + me.getYOnScreen());
+                    details += " " + me.getWheelRotation() + " -1 "
+                            + getCoordinates(me);
                 } else if (event instanceof MouseEvent) {
                     MouseEvent me = (MouseEvent) event;
-                    input_log_writer.println(System.currentTimeMillis() + " " + me.getID() + " " + me.getButton() + " " + me.getXOnScreen() + " " + me.getYOnScreen());
+                    details += " " + me.getButton() + " " + me.getClickCount()
+                            + " " + getCoordinates(me);
                 } else if (event instanceof KeyEvent) {
                     KeyEvent ke = (KeyEvent) event;
-                    int r = ke.getKeyCode();
-                    String key_char = "<non-unicode>";
-                    if (r <= KeyEvent.VK_ALT && r >= KeyEvent.VK_SHIFT) {
-                        key_char = "<alt/ctrl/shift>";
-                    } else {
-                        String tmp = Character.getName(ke.getKeyChar());
-                        if (tmp != null) {
-                            key_char = tmp.replace(' ', '_');
-                        }
-                    }
-                    input_log_writer.println(System.currentTimeMillis() + " " + ke.getID() + " " + ke.getExtendedKeyCode() + " " + key_char);
-                }
-                String tmp = event.toString();
-                int obj_idx = tmp.indexOf(" on ");
-                int space_idx = tmp.indexOf("[", obj_idx + 4);
-                String printout;
-                if (space_idx < 0) {
-                    printout = tmp.substring(obj_idx + 4);
+                    details += " " + ke.getExtendedKeyCode() + " -1 -1 -1";
+//                    int r = ke.getKeyCode();
+//                    String key_char = "<non-unicode>";
+//                    if (r <= KeyEvent.VK_ALT && r >= KeyEvent.VK_SHIFT) {
+//                        key_char = "<alt/ctrl/shift>";
+//                    } else {
+//                        String tmp = Character.getName(ke.getKeyChar());
+//                        if (tmp != null) {
+//                            key_char = tmp.replace(' ', '_');
+//                        }
+//                    }
+//                    details += " " + ke.getExtendedKeyCode() + " " + key_char;
                 } else {
-                    printout = tmp.substring(obj_idx + 4, tmp.indexOf("[", space_idx));
-                    obj_idx = tmp.indexOf(",text=");
-                    if (obj_idx > -1) {
-                        printout += tmp.substring(obj_idx + 5, tmp.indexOf("]", obj_idx + 5));
-                    }
+                    return;
                 }
-                input_log_writer.println("# " + printout);
+                String event_src = "";
+                Object s = event.getSource();
+
+                event_src += s.getClass().getCanonicalName();
+                if (s instanceof AbstractButton) {
+                    event_src += "=" + ((AbstractButton) s).getText();
+                }
+                details = details + RobotTester.S_SOURCE_SEP + event_src;
+                //System.out.println("id: " + id);
+                switch (id) {
+                    // Mouse button/move events need special treatment
+                    // with respect to JMenus.
+                    case MouseEvent.MOUSE_DRAGGED:
+//                        C.p("DRAG MOUSE " + (gui.getJMenuBar().findComponentAt(((MouseEvent) event).getLocationOnScreen())));
+//                        C.p("DRAG MOUSE " + (((MouseEvent) event).getLocationOnScreen()));
+                        if (log_mouse_move) {
+                            logDispatched(details, event);
+                        }
+                    case MouseEvent.MOUSE_MOVED:
+                        // if a JMenu is open and mouse cursor moves to a different
+                        // JMenu, make note of the menu change
+                        if (log_mouse_move && event_src.startsWith("javax.swing.JMenu=") && !last_jmenu.equals(event_src)) {
+                            last_jmenu = event_src;
+                            logDispatched(details, event);
+                        }
+                        break;
+                    case MouseEvent.MOUSE_PRESSED:
+                        // if on a JMenu, toggle mouse move logging
+                        if (s instanceof JMenu) {
+                            log_mouse_move = !log_mouse_move;
+                            last_jmenu = event_src;
+                        } else {
+                            log_mouse_move = false;
+                        }
+                        logDispatched(details, event);
+                        break;
+                    case MouseEvent.MOUSE_RELEASED:
+                        // if not on a JMenu, disable mouse move logging
+                        if (!(s instanceof javax.swing.JMenu)) {
+                            log_mouse_move = false;
+                        }
+                        logDispatched(details, event);
+                        break;
+                    case MouseEvent.MOUSE_WHEEL:
+                        log_mouse_move = false;
+                    case KeyEvent.KEY_PRESSED:
+                    case KeyEvent.KEY_RELEASED:
+                        logDispatched(details, event);
+                        break;
+                    default:
+                        break;
+                }
             }
-        }, AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
+
+            private void logDispatched(String details, AWTEvent event) {
+                int number = ++event_number;
+                int time = (int) ((System.nanoTime() - start_time) / 1_000_000);
+                String logged = number + " " + time + " " + details;
+                RobotTester.dispatchedEvent(logged);
+                input_log_writer.println(logged);
+                //System.out.println("#D " + number + " " + event);
+            }
+
+            private String getCoordinates(MouseEvent me) {
+                Point p = Gui.getOrigin();
+                //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
+                if (me.getID() != MouseEvent.MOUSE_WHEEL) {
+                    prev_xy = me.getLocationOnScreen();
+                }
+                return ((prev_xy.x - p.x) + " "
+                        + (prev_xy.y - p.y));
+            }
+        }, AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 input_log_writer.println("# input logging stopped due to jvm shutdown at " + (new Date()).toString());
@@ -160,5 +255,9 @@ public class Phoenix {
                 log_file.renameTo(old_log);
             }
         }
+    }
+
+    public static void setGui(Gui g) {
+        gui = g;
     }
 }
