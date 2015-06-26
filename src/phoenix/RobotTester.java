@@ -5,6 +5,7 @@
  */
 package phoenix;
 
+import gui.Gui;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -17,6 +18,10 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.time.Instant;
+import java.util.Date;
+import java.util.LinkedList;
+import util.C;
 
 /**
  * WARNING: generates OS-level input events. Abnormal termination may lead to
@@ -37,9 +42,9 @@ import java.nio.file.Path;
  *
  * Mouse drag with open JMenu is raw, all events are logged and repeated. Thus,
  * with all the processing and Robot.autodelay(), the drag is slooooow. And the
- * log is clogged with drag events. This has to be done cause I could not find
- * a way to detect mouse pointer moving from an open JMenu to another JMenu
- * during a drag.
+ * log is clogged with drag events. This has to be done cause I could not find a
+ * way to detect mouse pointer moving from an open JMenu to another JMenu during
+ * a drag.
  *
  * "private synchronized void dispacthedEventD(String event)" is called from
  * event dispatch thread, which probably should not have to wait for user level
@@ -53,12 +58,21 @@ import java.nio.file.Path;
  */
 public class RobotTester extends Thread {
 
-    private static final int AUTO_DELAY = 40;
+    private static final int AUTO_DELAY;
+
+    static {
+        AUTO_DELAY = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_AUTO_DELAY, "40"));
+    }
     private static final int START_DELAY = 500;
     private static final int WAIT_DELAY = 200;
     private static final int MAX_CREATE_WAIT = 5000;
     private static final int MAX_XY_DEV = 1;
+    private static final int READ_AHEAD = 1;
+    private static final int D_CLICK_BUFFER = 300;
+    private static final int D_CLICK_THRESHOLD = 400;
+    private static final int D_CLICK_DIVISOR = D_CLICK_THRESHOLD / (D_CLICK_THRESHOLD - D_CLICK_BUFFER);
     static final String S_SOURCE_SEP = " #";
+    static final String S_SPACE = " ";
     static final int NUMBER_IDX = 0;
     static final int TIME_IDX = 1;
     static final int ID_IDX = 2;
@@ -79,9 +93,10 @@ public class RobotTester extends Thread {
     private long start_time;
     private int last_press_time;
     private int last_release_time;
+    private int d_click_buffer;
     private int d_click_max;
     private BufferedReader input_log_buf = null;
-    private int[] prev_event = {-1, -1, -1, -1, -1};
+    private int[] prev_event = {-1, -1, -1, -1, -1, -1, -1};
 
     private RobotTester() { // prevent creation of singleton
     }
@@ -158,6 +173,14 @@ public class RobotTester extends Thread {
         wait_for_program = state;
     }
 
+    public static boolean isRobotTest() {
+        boolean ret_val = false;
+        if (robot_tester != null) {
+            ret_val = true;
+        }
+        return ret_val;
+    }
+
     static void dispatchedEvent(String event) {
         if (robot_tester != null) {
             robot_tester.dispacthedEventD(event);
@@ -210,29 +233,85 @@ public class RobotTester extends Thread {
      * input events, in an attempt to automatically recreate a previous
      */
     public void run() {
-        d_click_max = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
-        System.out.println("Double click max interval: " + d_click_max + "ms");
+        setDClickMaxDelay();
         start_time = System.currentTimeMillis();
         robot.setAutoDelay(AUTO_DELAY);
         robot.setAutoWaitForIdle(true);
-        String str = null;
+        // event buffer: to ensure double clicks, read ahead one event
+        // to see if a double click is expected, and inform createEvent()
+        // if so; otherwise read behind one event (if any) and if previous event
+        // was a double click and current event is a single click inform
+        // createEvent()
+        LinkedList<String> buffer = new LinkedList<>();
         try {
-            for (str = input_log_buf.readLine(); str != null && !stop; str = input_log_buf.readLine()) {
-                if (!str.startsWith("#")) {
-                    createEvent(str);
-                } else {
-                    //System.out.println(str);
+            final int NEXT_EVENT_IDX = 1;
+            // states
+            final int FILL_BUFFER = 2; // <2 events buffered
+            final int BUFFER_FULL = 3; // >=2 events buffered
+            final int FINISHING = 4; // null event was read
+            //final int FINISHING2 = 5;
+            int state = FILL_BUFFER;
+            int click_count = 1;
+            while (!stop) {
+                click_count = 1;
+                assert (buffer.size() <= 3); // invariant
+                switch (state) {
+                    case FILL_BUFFER:
+                        buffer.addFirst(input_log_buf.readLine());
+                        if (buffer.getFirst() == null) {
+                            if (buffer.size() > 1) {
+                                state = FINISHING;
+                            } else {
+                                stop = true;
+                            }
+                        } else if (buffer.getFirst().startsWith("#")) {
+                            buffer.removeFirst();
+                        } else if (buffer.size() > READ_AHEAD) {
+                            state = BUFFER_FULL;
+                        }
+                        break;
+                    case BUFFER_FULL:
+                        String[] tokens = buffer.getFirst().split(S_SPACE, CLICK_COUNT_IDX + 2);
+                        if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) > 1) {
+                            System.out.println("2Click read ahead");
+                            click_count = 2;
+                        } else {
+                            if (buffer.size() > 2) {
+                                tokens = buffer.getLast().split(S_SPACE, CLICK_COUNT_IDX + 2);
+                                if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) > 1) {
+                                    tokens = buffer.get(1).split(S_SPACE, CLICK_COUNT_IDX + 2);
+                                    if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) == 1) {
+                                        System.out.println("2Click read behind");
+                                        click_count = -1;
+                                    }
+                                }
+                            }
+                        }
+                        if (buffer.size() > 2) {
+                            buffer.removeLast();
+                        }
+                        createEvent(buffer.get(NEXT_EVENT_IDX), click_count);
+                        state = FILL_BUFFER;
+                        break;
+                    case FINISHING:
+                        stop = true;
+//                        state = FINISHING2;
+                        createEvent(buffer.get(NEXT_EVENT_IDX), click_count);
+//                        break;
+//                    case FINISHING2:
+//                        stop = true;
+//                        createEvent(buffer.get(1), click_count);
+                        break;
+                    default:
+                        throw new AssertionError();
                 }
-//                if (stop) {
-//                    System.out.println("RobotTester stopped.");
-//                    return;
-//                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Test time : " + (System.currentTimeMillis() - start_time) + "ms\n"
+        long stop_time = System.currentTimeMillis();
+        System.out.println("Current time : " + Date.from(Instant.now()).toString()
+                + "\nTest time : " + (stop_time - start_time) + "ms\n"
                 + "Mouse/key press/release/wheel events created : " + created_count
         );
         System.out.println("RobotTester finished. You may resume input.");
@@ -301,7 +380,7 @@ public class RobotTester extends Thread {
     private boolean compEvents(String oldest, int[] d, String source) {
         boolean success = true;
         String[] tokens_all = oldest.split(S_SOURCE_SEP, 2); // split source name
-        String[] tokens = tokens_all[0].split(" ");
+        String[] tokens = tokens_all[0].split(S_SPACE);
 //        int count = tokens.length - 1;
 //        if (count == CLICK_COUNT_IDX + 1) {
 //            count--; // skip key name
@@ -335,7 +414,21 @@ public class RobotTester extends Thread {
         return success;
     }
 
-    private void setDelay(int time, int id, int clicks, int[] p) {
+    private void setDClickMaxDelay() {
+        d_click_max = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
+        System.out.println("Double click JVM max threshold: " + d_click_max + "ms");
+        if (d_click_max < D_CLICK_THRESHOLD) {
+            d_click_buffer = d_click_max / D_CLICK_DIVISOR;
+        } else {
+            d_click_buffer = d_click_max - D_CLICK_BUFFER;
+        }
+        d_click_buffer /= 2;
+        System.out.println("Double click autodelay max interval: " + d_click_buffer + "ms");
+        System.out.println("Robot autodelay: " + AUTO_DELAY + "ms");
+    }
+
+    private void setDelay(int time, int id, int double_click, int[] p) {
+
         // delay between events, - AUTO_DELAY
         int delay = p[TIME_IDX];
         if (delay > -1) { // -1 for first event
@@ -343,28 +436,27 @@ public class RobotTester extends Thread {
         } else {
             delay = START_DELAY;
         }
-        // ensure double clicks will be registered as such
-        if (clicks > 1) {
-            int max_delay;
-            if (d_click_max < 400) {
-                max_delay = d_click_max / 2;
-            } else {
-                max_delay = d_click_max - 200;
-            }
-            int current_time = (int) (System.currentTimeMillis() - start_time);
+        // ensure multi clicks will be registered as such
+        int current_time = (int) (System.currentTimeMillis() - start_time);
+        if (double_click > 1) {
             switch (id) {
                 case MouseEvent.MOUSE_PRESSED:
-                    delay = current_time - last_press_time - 2 * AUTO_DELAY;
+                    delay = current_time - last_press_time - AUTO_DELAY;
                     break;
                 case MouseEvent.MOUSE_RELEASED:
-                    delay = current_time - last_release_time - 2 * AUTO_DELAY;
+                    delay = current_time - last_release_time - AUTO_DELAY;
                     break;
                 default:
                     // should never arrive here ...
                     throw new AssertionError();
             }
-            if (delay > max_delay) {
-                delay = max_delay;
+            if (delay > d_click_buffer) {
+                delay = 2 * d_click_buffer - delay;
+            }
+        } else if (double_click == -1) { // ensure not too many multi clicks
+            delay = current_time - last_press_time;
+            if (delay <= d_click_max) {
+                delay = d_click_max + 1;
             }
         }
         // do delay if positive time
@@ -374,10 +466,10 @@ public class RobotTester extends Thread {
         }
     }
 
-    private void createEvent(String str) {
+    private void createEvent(String str, int double_click) {
 
         String[] tokens_all = str.split(S_SOURCE_SEP, 2); // split source name
-        String[] tokens = tokens_all[0].split(" ");
+        String[] tokens = tokens_all[0].split(S_SPACE);
         int loop = tokens.length;
         int[] d = new int[loop];
         int[] p = prev_event;
@@ -408,9 +500,10 @@ public class RobotTester extends Thread {
                     break;
             }
         }
-        setDelay(time, id, clicks, p);
+        setDelay(time, id, double_click, p);
         // implicit mouse motion
-        if (id != MouseEvent.MOUSE_DRAGGED && id != MouseEvent.MOUSE_MOVED) {
+        if (id != MouseEvent.MOUSE_DRAGGED && id != MouseEvent.MOUSE_MOVED
+                && (x != p[X_IDX] || y != p[Y_IDX])) {
             System.out.println("Move: " + x + "," + y);
             robot.mouseMove(x, y);
         }

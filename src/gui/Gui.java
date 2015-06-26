@@ -281,6 +281,13 @@ public class Gui extends JFrame {
         menu_exit.setForeground(C.COLOR_GOLD);
         menu_exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (RobotTester.isRobotTest()) {
+                    System.out.println("Phoenix: RobotTester detected, waiting for robot shutdown");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                    }
+                }
                 System.exit(0);
             }
         });

@@ -163,7 +163,7 @@ public class Structure implements Serializable {
      */
     public void tryToStartBuild(int[] unit_type, UnitType[][] unit_types, Game game) {
         int input = unit_types[unit_type[0]][unit_type[1]].unit;
-        System.out.println("input = " + input);
+        //System.out.println("input = " + input);
         boolean input_found = false;
         Unit input_unit = null;
         // need to use this.p_idx building city may not be on current planet

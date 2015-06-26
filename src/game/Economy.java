@@ -1,7 +1,6 @@
 package game;
 
 import dat.EfsIni;
-import dat.StrBuild;
 import dat.Harvest;
 import dat.Prod;
 import dat.ResPair;
@@ -9,13 +8,13 @@ import dat.ResType;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import gui.Gui;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
-import java.util.ArrayList;
-import java.util.Arrays;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -41,6 +40,7 @@ public class Economy implements Serializable {
     private ResPair[][][][] harvest_table;
     private Prod[] prod_table;
     private ResType[] res_types;
+    private boolean do_print = false;
 
     private int turn;    // = faction number. Obtained from game.turn each turn
 
@@ -62,6 +62,7 @@ public class Economy implements Serializable {
 //        testPrintProdTable();
 //        testPrintHarvestTable();
 //        testPrintResTypeTable();
+        this.do_print = Gui.getMainArgs().hasOption(C.OPT_ECONOMY_PRINT);
     }
 
     public ResType[] getResType() {
@@ -87,10 +88,11 @@ public class Economy implements Serializable {
     public void updateEconomy(int turn) {
 
         this.turn = turn;
-
-        System.out.println(" ");    // TESTING
-        System.out.println("Starting turn for FACTION " + turn);
-        System.out.println(" ");
+        if (do_print) {
+            System.out.println(" ");    // TESTING
+            System.out.println("Starting turn for FACTION " + turn);
+            System.out.println(" ");
+        }
 
         if (turn < C.NR_HOUSES) {    // Houses only for now
             collectResources();
@@ -103,12 +105,12 @@ public class Economy implements Serializable {
                 feedUnitsAndCities();
             }
         }
-
-        if (turn == 0) {
-            resources.printPodLists();    // TESTING
-            resources.verifyPodLists();    // TESTING
+        if (do_print) {
+            if (turn == 0) {
+                resources.printPodLists();    // TESTING
+                resources.verifyPodLists();    // TESTING
+            }
         }
-
     }
 
     /**
@@ -196,22 +198,24 @@ public class Economy implements Serializable {
 
             // Now consume the resources
             if (food_needed > 0) {
-
-                System.out.println("Faction " + turn + " on planet " + planet.name + " needs "
-                        + food_needed + " food for cities and units. " + food_available + " available.");
-                testPrintResources(planet.index);
-
+                if (do_print) {
+                    System.out.println("Faction " + turn + " on planet " + planet.name + " needs "
+                            + food_needed + " food for cities and units. " + food_available + " available.");
+                    testPrintResources(planet.index);
+                }
                 if (food_available > 0) {
                     int food_consumed = Math.min(food_needed, food_available);
                     resources.consumeOneResourceType(planet.index, turn, C.RES_FOOD, food_consumed);
                 }
-
-                testPrintResources(planet.index);
-
+                if (do_print) {
+                    testPrintResources(planet.index);
+                }
                 if (food_needed > food_available) {
                     String msg = "Famine on planet " + planet.name + "!";
                     game.getFaction(turn).addMessage(new Message(msg, C.Msg.FAMINE, game.getYear(), planet));
-                    System.out.println(msg);
+                    if (do_print) {
+                        System.out.println(msg);
+                    }
                 }
 
                 // Now delete dead units
@@ -457,9 +461,9 @@ public class Economy implements Serializable {
                 break;
             }
         }
-
-        testPrintResources(city.p_idx);    // TESTING
-
+        if (do_print) {
+            testPrintResources(city.p_idx);    // TESTING
+        }
         ResPair make = prod_table[production_type].make;
 
         if (enough_of_all) {
@@ -471,21 +475,24 @@ public class Economy implements Serializable {
                     break;
                 }
                 resources.consumeOneResourceType(city.p_idx, city.owner, need.resource_type, need.resource_amount);
-                System.out.println("City type " + game.getStrBuild(city.type).name + " consuming "
-                        + need.resource_amount + " " + game.getResTypes()[need.resource_type].name);
+                if (do_print) {
+                    System.out.println("City type " + game.getStrBuild(city.type).name + " consuming "
+                            + need.resource_amount + " " + game.getResTypes()[need.resource_type].name);
+                }
             }
 
             // Return the resources made
             resource_amounts[make.resource_type] = make.resource_amount;
-
-            System.out.println("City type " + game.getStrBuild(city.type).name + " producing "
-                    + make.resource_amount + " " + game.getResTypes()[make.resource_type].name);
+            if (do_print) {
+                System.out.println("City type " + game.getStrBuild(city.type).name + " producing "
+                        + make.resource_amount + " " + game.getResTypes()[make.resource_type].name);
+            }
         } else {
             String res_name = game.getResTypes()[make.resource_type].name;
             Planet planet = planets.get(city.p_idx);
             String msg = "You do not have all the required resources to produce " + res_name + " on planet " + planet.name;
             game.getFaction(turn).addMessage(new Message(msg, C.Msg.CANNOT_PRODUCE, game.getYear(), planet));
-            System.out.println(msg);
+            //System.out.println(msg);
         }
         return resource_amounts;
     }

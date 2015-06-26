@@ -62,6 +62,19 @@ public class Phoenix {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        // parse options
+        CommandLine cli_opts = parseCLI(args);
+        // wait if requested
+        if (cli_opts.hasOption(C.OPT_WAIT_BEFORE_START)) {
+            System.out.print("Press enter to start Phoenix");
+            try {
+                System.in.read();
+            } catch (IOException ex) {
+
+            }
+
+        }
         System.out.println("Phoenix started.");
         System.out.println("OS: "
                 + System.getProperty("os.arch", "No arch info.") + " "
@@ -70,8 +83,6 @@ public class Phoenix {
                 + "System: "
                 + "available cores " + Runtime.getRuntime().availableProcessors()
         );
-        // parse options
-        CommandLine cli_opts = parseCLI(args);
         // log all errors and exceptions
         rollLogs(FN.S_LOG_FILE);
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -94,8 +105,7 @@ public class Phoenix {
         }
         final PrintWriter input_log_writer = new PrintWriter(event_log_buf, true);
         input_log_writer.println("# input logging started at " + (new Date()).toString());
-        input_log_writer.println("# fields (mouse event #7): nr time(ms) eventID button/wheel screenX screenY source[=text]");
-        input_log_writer.println("# fields (key event #6): nr time(ms) eventID keycode keychar source");
+        input_log_writer.println("# fields (#8): nr time(ms) eventID button/wheel/key clicks screenX screenY source[=text]");
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
             private Point prev_xy = new Point(-1, -1);
@@ -223,8 +233,11 @@ public class Phoenix {
         opts.addOption(C.OPT_DOUBLE_RES, "Double resolution (1280x960)");
         opts.addOption(C.OPT_NAMED_GALAXY, true, "Name of galaxy file");
         opts.addOption(C.OPT_HELP, "Print help");
-        opts.addOption(C.OPT_ROBOT_TEST, true, "(WARNING: EXPERTS ONLY) Run Robot test with file");
-        HelpFormatter formatter = new HelpFormatter(); 
+        opts.addOption(null, C.OPT_ROBOT_TEST, true, "(WARNING: EXPERTS ONLY) Run Robot test with file");
+        opts.addOption(null, C.OPT_WAIT_BEFORE_START, false, "Wait for enter before initiliazing");
+        opts.addOption(null, C.OPT_ECONOMY_PRINT, false, "Printout economy details at start of turn");
+        opts.addOption(null, C.OPT_AUTO_DELAY, true, "Set Robot test auto delay in ms");
+        HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
         try {
             ret_val = parser.parse(opts, args);
