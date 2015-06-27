@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Date;
+import java.util.LinkedList;
 import javax.swing.AbstractButton;
 import javax.swing.JMenu;
 import org.apache.commons.cli.CommandLine;
@@ -43,10 +44,12 @@ public class Phoenix {
 
     public static final long start_time;
     private static int event_number = 0;
+    private static LinkedList<String> log_buffer  = new LinkedList<>();
     //true iff a JMenu is open
     private static boolean log_mouse_move = false;
     private static String last_jmenu = null;
     private static Gui gui = null;
+    private static PrintWriter input_log_writer;
 
     static {
         start_time = System.nanoTime();
@@ -103,7 +106,7 @@ public class Phoenix {
             System.out.println("Unable to open input event log file \"" + file_name + "\"");
             System.exit(1);
         }
-        final PrintWriter input_log_writer = new PrintWriter(event_log_buf, true);
+        input_log_writer = new PrintWriter(event_log_buf, true);
         input_log_writer.println("# input logging started at " + (new Date()).toString());
         input_log_writer.println("# fields (#8): nr time(ms) eventID button/wheel/key clicks screenX screenY source[=text]");
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
@@ -202,8 +205,15 @@ public class Phoenix {
                 int number = ++event_number;
                 int time = (int) ((System.nanoTime() - start_time) / 1_000_000);
                 String logged = number + " " + time + " " + details;
+                // logging delayed during 2click sequences
+                if (RobotTester.isDelayedLogging()) {
+                    log_buffer.addLast(logged);
+                } else {
+                    flushLogMessages();
+                    input_log_writer.println(logged);
+                }
                 RobotTester.dispatchedEvent(logged);
-                input_log_writer.println(logged);
+                
                 //System.out.println("#D " + number + " " + event);
             }
 
@@ -237,6 +247,7 @@ public class Phoenix {
         opts.addOption(null, C.OPT_WAIT_BEFORE_START, false, "Wait for enter before initiliazing");
         opts.addOption(null, C.OPT_ECONOMY_PRINT, false, "Printout economy details at start of turn");
         opts.addOption(null, C.OPT_AUTO_DELAY, true, "Set Robot test auto delay in ms");
+        opts.addOption(null, C.OPT_CLEAN_UP_2CLICK, false, "Delay IO and do gc() before 2click");
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
         try {
@@ -246,7 +257,8 @@ public class Phoenix {
             System.exit(0);
         }
         if (ret_val.hasOption(C.OPT_HELP)) {
-            formatter.printHelp("java -jar -Xss32m Phoenix\n       phoenix.sh\n       phoenix.bat", opts);
+            formatter.printHelp("java -jar -Xss32m Phoenix\n       phoenix.sh\n       phoenix.bat"
+                    + "\n\nLong options are for debugging", opts);
             System.exit(0);
         }
         return ret_val;
@@ -272,5 +284,12 @@ public class Phoenix {
 
     public static void setGui(Gui g) {
         gui = g;
+    }
+
+    static void flushLogMessages() {
+        for (String tmp : log_buffer) {
+            input_log_writer.println(tmp);
+        }
+        log_buffer.clear();
     }
 }

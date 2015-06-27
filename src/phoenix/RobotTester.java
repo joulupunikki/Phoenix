@@ -67,7 +67,7 @@ public class RobotTester extends Thread {
     private static final int WAIT_DELAY = 200;
     private static final int MAX_CREATE_WAIT = 5000;
     private static final int MAX_XY_DEV = 1;
-    private static final int READ_AHEAD = 1;
+    private static final int READ_AHEAD = 2;
     private static final int D_CLICK_BUFFER = 300;
     private static final int D_CLICK_THRESHOLD = 400;
     private static final int D_CLICK_DIVISOR = D_CLICK_THRESHOLD / (D_CLICK_THRESHOLD - D_CLICK_BUFFER);
@@ -84,6 +84,7 @@ public class RobotTester extends Thread {
     private static volatile boolean wait_for_program = false;
     private static String latest_event = null;
     private static volatile boolean stop = false;
+    private static volatile boolean delayed_logging = false;
     private Robot robot = null;
     private int dx = -1;
     private int dy = -1;
@@ -96,6 +97,7 @@ public class RobotTester extends Thread {
     private int d_click_buffer;
     private int d_click_max;
     private BufferedReader input_log_buf = null;
+    private LinkedList<String> log_buffer = new LinkedList<>();
     private int[] prev_event = {-1, -1, -1, -1, -1, -1, -1};
 
     private RobotTester() { // prevent creation of singleton
@@ -173,6 +175,17 @@ public class RobotTester extends Thread {
         wait_for_program = state;
     }
 
+    private void flushLogMessages() {
+        for (String tmp : log_buffer) {
+            System.out.println(tmp);
+        }
+        log_buffer.clear();
+    }
+
+    static boolean isDelayedLogging() {
+        return delayed_logging;
+    }
+
     public static boolean isRobotTest() {
         boolean ret_val = false;
         if (robot_tester != null) {
@@ -244,23 +257,26 @@ public class RobotTester extends Thread {
         // createEvent()
         LinkedList<String> buffer = new LinkedList<>();
         try {
-            final int NEXT_EVENT_IDX = 1;
+            final int NEXT_EVENT_IDX = 2;
+            final int MIN_BUFFER = READ_AHEAD + 1;
             // states
-            final int FILL_BUFFER = 2; // <2 events buffered
-            final int BUFFER_FULL = 3; // >=2 events buffered
+            final int FILL_BUFFER = 2; // <3 events buffered
+            final int BUFFER_FULL = 3; // >=3 events buffered
             final int FINISHING = 4; // null event was read
-            //final int FINISHING2 = 5;
+            final int FINISHING2 = 5;
             int state = FILL_BUFFER;
             int click_count = 1;
             while (!stop) {
                 click_count = 1;
-                assert (buffer.size() <= 3); // invariant
+                assert (buffer.size() <= 4); // invariant
                 switch (state) {
                     case FILL_BUFFER:
                         buffer.addFirst(input_log_buf.readLine());
                         if (buffer.getFirst() == null) {
-                            if (buffer.size() > 1) {
+                            if (buffer.size() > 2) {
                                 state = FINISHING;
+                            } else if (buffer.size() > 1) {
+                                state = FINISHING2;
                             } else {
                                 stop = true;
                             }
@@ -271,15 +287,21 @@ public class RobotTester extends Thread {
                         }
                         break;
                     case BUFFER_FULL:
-                        String[] tokens = buffer.getFirst().split(S_SPACE, CLICK_COUNT_IDX + 2);
+                        String[] tokens = buffer.get(1).split(S_SPACE, CLICK_COUNT_IDX + 2);
                         if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) > 1) {
-                            System.out.println("2Click read ahead");
+                            System.out.println("2Click read ahead 1");
                             click_count = 2;
                         } else {
-                            if (buffer.size() > 2) {
+                            tokens = buffer.getFirst().split(S_SPACE, CLICK_COUNT_IDX + 2);
+                            if (Gui.getMainArgs().hasOption(C.OPT_CLEAN_UP_2CLICK)
+                                    && Integer.parseInt(tokens[CLICK_COUNT_IDX]) > 1) {
+                                System.out.println("2Click read ahead 2");
+                                click_count = -2;
+
+                            } else if (buffer.size() > MIN_BUFFER) {
                                 tokens = buffer.getLast().split(S_SPACE, CLICK_COUNT_IDX + 2);
                                 if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) > 1) {
-                                    tokens = buffer.get(1).split(S_SPACE, CLICK_COUNT_IDX + 2);
+                                    tokens = buffer.get(NEXT_EVENT_IDX).split(S_SPACE, CLICK_COUNT_IDX + 2);
                                     if (Integer.parseInt(tokens[CLICK_COUNT_IDX]) == 1) {
                                         System.out.println("2Click read behind");
                                         click_count = -1;
@@ -287,20 +309,20 @@ public class RobotTester extends Thread {
                                 }
                             }
                         }
-                        if (buffer.size() > 2) {
+                        if (buffer.size() > MIN_BUFFER) {
                             buffer.removeLast();
                         }
                         createEvent(buffer.get(NEXT_EVENT_IDX), click_count);
                         state = FILL_BUFFER;
                         break;
                     case FINISHING:
-                        stop = true;
-//                        state = FINISHING2;
+                        //stop = true;
+                        state = FINISHING2;
                         createEvent(buffer.get(NEXT_EVENT_IDX), click_count);
-//                        break;
-//                    case FINISHING2:
-//                        stop = true;
-//                        createEvent(buffer.get(1), click_count);
+                        break;
+                    case FINISHING2:
+                        stop = true;
+                        createEvent(buffer.get(1), click_count);
                         break;
                     default:
                         throw new AssertionError();
@@ -309,6 +331,8 @@ public class RobotTester extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        flushLogMessages();
+        Phoenix.flushLogMessages();
         long stop_time = System.currentTimeMillis();
         System.out.println("Current time : " + Date.from(Instant.now()).toString()
                 + "\nTest time : " + (stop_time - start_time) + "ms\n"
@@ -414,6 +438,14 @@ public class RobotTester extends Thread {
         return success;
     }
 
+    private void delayedPrint(String msg) {
+        if (delayed_logging) {
+            log_buffer.addLast(msg);
+        } else {
+            System.out.println(msg);
+        }
+    }
+
     private void setDClickMaxDelay() {
         d_click_max = (Integer) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
         System.out.println("Double click JVM max threshold: " + d_click_max + "ms");
@@ -453,15 +485,26 @@ public class RobotTester extends Thread {
             if (delay > d_click_buffer) {
                 delay = 2 * d_click_buffer - delay;
             }
-        } else if (double_click == -1) { // ensure not too many multi clicks
+        } else if (double_click < 0) { // ensure not too many multi clicks
+            RobotTester.delayed_logging = false;
+            flushLogMessages();
+            if (double_click == -2) { // prepare for imminent double click
+                // so that future doubleclick event sequence will not be
+                // stretched in time by a sudden gc() or non-essential IO
+                // activity
+                System.out.println("Cleanup for 2Click.");
+                System.gc();
+                RobotTester.delayed_logging = true;
+                current_time = (int) (System.currentTimeMillis() - start_time);
+            }
             delay = current_time - last_press_time;
             if (delay <= d_click_max) {
                 delay = d_click_max + 1;
             }
-        }
+        } 
         // do delay if positive time
         if (delay > 0) {
-            System.out.println("Delay(ms): " + delay);
+            delayedPrint("Delay(ms): " + delay);
             robot.delay(delay);
         }
     }
@@ -533,7 +576,7 @@ public class RobotTester extends Thread {
                 robot.mouseWheel(button);
                 break;
             case MouseEvent.MOUSE_PRESSED:
-                System.out.println("#C " + created_count + " MousePress: " + button);
+                delayedPrint("#C " + created_count + " MousePress: " + button);
                 //to make sure possible double clicks will be reconstructed properly
                 last_press_time = (int) ((System.currentTimeMillis() - start_time));
                 //in case of abnormal termination
@@ -542,7 +585,7 @@ public class RobotTester extends Thread {
                 robot.mousePress(button);
                 break;
             case MouseEvent.MOUSE_RELEASED:
-                System.out.println("#C " + created_count + " MouseRelease: " + button);
+                delayedPrint("#C " + created_count + " MouseRelease: " + button);
                 // to make sure possible double clicks will be reconstructed properly
                 last_release_time = (int) ((System.currentTimeMillis() - start_time));
                 robot.mouseRelease(button);

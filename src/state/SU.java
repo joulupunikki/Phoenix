@@ -684,7 +684,7 @@ public class SU extends State {
                         } else {
 //                            u.selected = !u.selected;
                             selectUnit(u, !u.selected);
-                            System.out.println("u.selected = " + u.selected);
+                            //System.out.println("u.selected = " + u.selected);
 
                             boolean is_selected = false;
                             for (Unit unit : stack) {
@@ -845,7 +845,7 @@ public class SU extends State {
             Point smo = Util.resolveSpaceMapOrigin(new Point(planet.x, planet.y), ws);
             game.setSpaceMapOrigin(smo);
             gui.setCurrentState(SW2.get());
-            System.out.println("gui = " + gui);
+            //System.out.println("gui = " + gui);
         } else {
 
             JOptionPane.showMessageDialog(gui, "Too many units in target area.", null, JOptionPane.PLAIN_MESSAGE);
