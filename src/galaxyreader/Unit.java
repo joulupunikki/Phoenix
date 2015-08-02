@@ -6,6 +6,7 @@ package galaxyreader;
 
 import dat.UnitType;
 import game.Game;    // RSW
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
@@ -13,6 +14,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import util.C;
+import util.Util;
 
 /**
  * A class representing a unit object. Contains the units location, loyalty,
@@ -367,11 +369,11 @@ public class Unit implements Serializable {
     }
 
     /**
-     * Prints the unit object. A CSV record is produced of the Unit object's
-     * identifying statistics.
+     * Game state printout method, prints the unit object. A CSV record is
+     * produced of the Unit object's identifying statistics.
      */
-    public void record() {
-        System.out.println(""
+    public void record(File file) {
+        Util.printString(file, "  "
                 + p_idx + "," + x + "," + y + "," + loyalty + "," + owner + ","
                 + prev_owner + "," + type + "," + t_lvl + "," + move_points + ","
                 + res_relic + "," + amount + "," + health);

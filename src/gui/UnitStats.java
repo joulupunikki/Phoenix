@@ -6,7 +6,6 @@
 package gui;
 
 import dat.UnitType;
-import galaxyreader.Unit;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -235,7 +234,7 @@ public class UnitStats {
                     attack4_stat.setText("" + acc + "/" + str);
                     break;
                 default:
-                    throw new AssertionError();
+                    throw new AssertionError("Unit with over 4 attack types", null);
             }
         }
 

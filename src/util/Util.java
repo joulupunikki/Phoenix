@@ -40,12 +40,23 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.io.FileUtils;
 
 /**
  *
  * @author joulupunikki
  */
 public class Util {
+
+    public static void printString(File file, String s) {
+        try {
+            FileUtils.writeStringToFile(file, s + FN.L_S, true);
+        } catch (IOException ex) {
+            Util.logEx(null, ex, s);
+            ex.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     public static void debugPrint(String s) {
         if (C.DEBUG_PRINT == 1) {

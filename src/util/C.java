@@ -353,11 +353,13 @@ public class C {
     public static final String OPT_DOUBLE_RES = "d";
     public static final String OPT_NAMED_GALAXY = "g";
     public static final String OPT_HELP = "h";
+    // options mostly used for testing
     public static final String OPT_ROBOT_TEST = "robottest";
     public static final String OPT_WAIT_BEFORE_START = "wait";
     public static final String OPT_ECONOMY_PRINT = "printeconomy";
     public static final String OPT_AUTO_DELAY = "autodelay";
     public static final String OPT_CLEAN_UP_2CLICK = "cleanupb42click";
+    public static final String OPT_GAME_STATE_FILE = "gamestatefile";
     
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";

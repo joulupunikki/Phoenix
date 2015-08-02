@@ -287,7 +287,10 @@ public class Gui extends JFrame {
                         Thread.sleep(5000);
                     } catch (InterruptedException ex) {
                     }
+                    System.out.println("Phoenix: Exiting ...");
                 }
+
+                game.record(FN.S_GAME_STATE_RECORD_FILE);
                 System.exit(0);
             }
         });
@@ -2084,9 +2087,10 @@ public class Gui extends JFrame {
         System.out.println("Phoenix ready.");
         if (args.hasOption(C.OPT_ROBOT_TEST)) {
             System.out.println(""
-                    + "Starting Robot test. Please leave computer undisturbed until test is finished.\n"
-                    + "If Robot test terminates abnormally, OS may be left in unresponsive state.");
-            RobotTester.startRobotTester(args.getOptionValue(C.OPT_ROBOT_TEST), gui.getX(), gui.getY());
+                    + "Starting Robot test. Please leave test machine undisturbed until test is\n"
+                    + "finished. If Robot test terminates abnormally, test machine OS may be left\n"
+                    + "in unresponsive state.");
+            RobotTester.startRobotTester(args.getOptionValue(C.OPT_ROBOT_TEST), args.getOptionValue(C.OPT_GAME_STATE_FILE), gui, gui.getX(), gui.getY());
         }
     }
 

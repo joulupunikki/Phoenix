@@ -6,6 +6,7 @@ package game;
 
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -209,5 +210,19 @@ public class Hex implements Comparable<Hex>, Serializable {
      */
     public void setPrevious(Hex previous) {
         this.previous = previous;
+    }
+
+    /**
+     * Game state printout method, prints the contents of a hex. City and units
+     * in stack.
+     * @param file
+     */
+    public void record(File file) {
+        if (city != null) {
+            city.record(file);
+        }
+        for (Unit unit : stack) {
+            unit.record(file);
+        }
     }
 }

@@ -5,12 +5,15 @@
  */
 package game;
 
+import dat.Tech;
 import dat.UnitType;
 import galaxyreader.Structure;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import util.C;
+import util.Util;
 
 /**
  *
@@ -141,4 +144,22 @@ public class Research implements Serializable {
         return ret_val;
     }
 
+    /**
+     * Game state printout method, CSV records of research status of
+     * technologies are printed.
+     */
+    public void record(File file) {
+        Tech[] tech_list = game.getGameResources().getTech();
+        Util.printString(file, " #TECHS");
+        for (int i = 0; i < techs.length; i++) {
+            String s = "  " + tech_list[i].name;
+            if (techs[i]) {
+                s += ",1";
+            } else {
+                s += ",0";
+            }
+            s += "," + points[i];
+            Util.printString(file, s);
+        }
+    }
 }

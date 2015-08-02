@@ -5,6 +5,7 @@
 package game;
 
 import galaxyreader.Planet;
+import java.io.File;
 import java.io.Serializable;
 import util.C;
 
@@ -196,5 +197,17 @@ public class PlanetGrid implements Serializable {
 
         }
         return ret_val;
+    }
+
+    /**
+     * Game state printout method, prints the contents of a PlanetGrid. Objects
+     * in hexes.
+     */
+    public void record(File file) {
+        for (Hex[] map_array1 : map_array) {
+            for (Hex hex : map_array1) {
+                hex.record(file);
+            }
+        }
     }
 }

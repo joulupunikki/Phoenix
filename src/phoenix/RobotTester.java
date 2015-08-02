@@ -13,6 +13,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -21,7 +22,9 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 import java.util.LinkedList;
+import org.apache.commons.io.FileUtils;
 import util.C;
+import util.FN;
 
 /**
  * WARNING: generates OS-level input events. Abnormal termination may lead to
@@ -37,6 +40,17 @@ import util.C;
  * Phoenix functionality. Events are generated from an event log file which is
  * generated during normal Phoenix/EFS operation/play. This class is a
  * singleton, start with startRobotTester().
+ *
+ * Notes on running:
+ *
+ * If, on the test machine, some object has the focus when a Robot test is
+ * started then the first mouse click will be consumed by giving focus to the
+ * Phoenix window. Currently, this is not considered in RobotTester code and the
+ * Robot test will most likely report a failure on the first event in such
+ * cases.
+ *
+ * PROPOSED FIX: insert a dummy click on Phoenix window as first event in every
+ * Robot test, or otherwise ensure that Phoenix window has focus.
  *
  * Questionable Implementation Features:
  *
@@ -97,8 +111,11 @@ public class RobotTester extends Thread {
     private int d_click_buffer;
     private int d_click_max;
     private BufferedReader input_log_buf = null;
+    private File state_file = null;
     private LinkedList<String> log_buffer = new LinkedList<>();
     private int[] prev_event = {-1, -1, -1, -1, -1, -1, -1};
+
+    private Gui gui;
 
     private RobotTester() { // prevent creation of singleton
     }
@@ -117,12 +134,12 @@ public class RobotTester extends Thread {
      * @param x coordinate of Gui window.
      * @param y coordinate of Gui window.
      */
-    public static void startRobotTester(String file_name, int x, int y) {
+    public static void startRobotTester(String file_name, String state_file, Gui gui, int x, int y) {
         if (robot_tester != null) {
             System.out.println("May not restart RobotTester, it is a singleton.");
             System.exit(1);
         }
-        robot_tester = new RobotTester(file_name, x, y);
+        robot_tester = new RobotTester(file_name, state_file, gui, x, y);
         robot_tester.start();
     }
 
@@ -139,16 +156,60 @@ public class RobotTester extends Thread {
      * @param x coordinate of Gui window.
      * @param y coordinate of Gui window.
      */
-    private RobotTester(String file_name, int x, int y) {
+    private RobotTester(String file_name, String state_file, Gui gui, int x, int y) {
         this.dx = x;
         this.dy = y;
+        this.gui = gui;
         latest_event = null;
+        if (! init(file_name, state_file)) {
+            System.exit(1);
+        }
+//        Path input_log_file = FileSystems.getDefault().getPath(file_name);
+//        this.state_file = FileUtils.getFile(state_file);
+//        this.state_file.exists();
+//        boolean fail = true;
+//        try {
+//            this.robot = new Robot();
+//            input_log_buf = Files.newBufferedReader(input_log_file);
+//            fail = false;
+//        } catch (NoSuchFileException ex) {
+//            System.out.println("Input event log file \"" + file_name + "\" not found.");
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } catch (AWTException ex) {
+//            System.out.println(""
+//                    + "AWTException creating class Robot instance. Some platforms like X-Windows\n"
+//                    + "require special settings enabled to create Robots. Exiting.");
+//        } finally {
+//            if (fail) {
+//                System.exit(1);
+//            }
+//        }
+    }
+
+    /**
+     * Try to init RobotTester: determine state file if any, create Robot, open
+     * input log file; if successful return true, else print cause of failure
+     * and return false;
+     *
+     * @param file_name
+     * @param state_file
+     * @return
+     */
+    private boolean init(String file_name, String state_file) {
+        if (state_file != null) {
+            this.state_file = FileUtils.getFile(state_file);
+            if (!this.state_file.exists()) {
+                System.out.println("Game state record file \"" + state_file + "\" not found.");
+                return false;
+            }
+        }
         Path input_log_file = FileSystems.getDefault().getPath(file_name);
-        boolean fail = true;
+        boolean success = false;
         try {
             this.robot = new Robot();
             input_log_buf = Files.newBufferedReader(input_log_file);
-            fail = false;
+            success = true;
         } catch (NoSuchFileException ex) {
             System.out.println("Input event log file \"" + file_name + "\" not found.");
         } catch (IOException ex) {
@@ -157,13 +218,10 @@ public class RobotTester extends Thread {
             System.out.println(""
                     + "AWTException creating class Robot instance. Some platforms like X-Windows\n"
                     + "require special settings enabled to create Robots. Exiting.");
-        } finally {
-            if (fail) {
-                System.exit(1);
-            }
         }
+        return success;
     }
-
+    
     /**
      * Tell RobotTester to wait (suspend event generation) or continue (resume
      * event generation.) Used when Phoenix may be unresponsive for an arbitrary
@@ -245,9 +303,13 @@ public class RobotTester extends Thread {
      * Loop an input event log file through line by line, generating OS level
      * input events, in an attempt to automatically recreate a previous
      */
+    @Override
     public void run() {
         setDClickMaxDelay();
         start_time = System.currentTimeMillis();
+        boolean all_events_replayed = false;
+        boolean game_end_states_match = false;
+        boolean test_completed_succesfully = false;
         robot.setAutoDelay(AUTO_DELAY);
         robot.setAutoWaitForIdle(true);
         // event buffer: to ensure double clicks, read ahead one event
@@ -323,6 +385,7 @@ public class RobotTester extends Thread {
                     case FINISHING2:
                         stop = true;
                         createEvent(buffer.get(1), click_count);
+                        test_completed_succesfully = true;
                         break;
                     default:
                         throw new AssertionError();
@@ -338,7 +401,28 @@ public class RobotTester extends Thread {
                 + "\nTest time : " + (stop_time - start_time) + "ms\n"
                 + "Mouse/key press/release/wheel events created : " + created_count
         );
-        System.out.println("RobotTester finished. You may resume input.");
+        gui.getGame().record(FN.S_GAME_STATE_RECORD_FILE);
+        if (this.state_file != null) {
+            try {
+                long expect = FileUtils.checksumCRC32(this.state_file);
+                long result = FileUtils.checksumCRC32(FileUtils.getFile(FN.S_GAME_STATE_RECORD_FILE));
+                System.out.println("Expected end state  CRC32 = " + expect);
+                System.out.println("Resultant end state CRC32 = " + result);
+                if (expect != result) {
+                    test_completed_succesfully = false;
+                    System.out.println("------ Game end states do not match !!! ----");
+                }
+            } catch (IOException ex) {
+                test_completed_succesfully = false;
+                System.out.println("IOException when checking Game end states");
+            }
+        }
+        if (test_completed_succesfully) {
+            System.out.println("+++++++++++++++++ Robot Test success +++++++++++++++++++++++++++++++++");
+        } else {
+            System.out.println("----------------- Robot Test failure !!! -----------------------------");
+        }   
+        System.out.println("RobotTester finished. You may resume input on test machine.");
         System.exit(0);
     }
 

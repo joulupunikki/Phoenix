@@ -20,6 +20,7 @@ import java.util.Properties;
 public class FN {
 
     public static final String F_S = System.getProperty("file.separator");
+    public static final String L_S = System.getProperty("line.separator");
     public static final String S_GAL = "GAL";
     public static final String S_SAV = "SAV";
     public static final String S_BIN = "BIN";
@@ -74,6 +75,7 @@ public class FN {
     public static final String S_TERRCOST_DAT = "DAT" + F_S + "TERRCOST.DAT";
     public static final String S_LOG_FILE = "phoenixlog.txt";
     public static final String S_STATIC_INI = "static.ini";
+    public static final String S_GAME_STATE_RECORD_FILE = "phoenixstaterecord.txt";
     public static final String S_MINE_DAT = "DAT" + F_S + "MINE.DAT";
     public static final String S_TERCOLOR_DAT = "DAT" + F_S + "TERCOLOR.DAT";
 

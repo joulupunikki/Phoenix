@@ -1,20 +1,11 @@
 package game;
 
 import dat.EfsIni;
-import dat.StrBuild;
-import dat.UnitType;
-import galaxyreader.Planet;
-import galaxyreader.Structure;
-import galaxyreader.Unit;
+import java.io.File;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.ArrayList;
-import java.util.Arrays;    // DEBUG
 import util.C;
-import util.StackIterator;
 import util.Util;
 
 /**
@@ -32,6 +23,7 @@ public class Faction implements Serializable {
     private EfsIni efs_ini;
     private int turn;
 
+    private int number;
     private int firebirds;
     private int tax_rate;
     private int tithe_rate;
@@ -42,11 +34,12 @@ public class Faction implements Serializable {
 
     private Research research;
 
-    public Faction(Game game) {
+    public Faction(Game game, int number) {
 
         this.game = game;
         this.efs_ini = game.getEfs_ini();
 
+        this.number = number;
         firebirds = efs_ini.starting_credits;
         tax_rate = efs_ini.default_tax_rate;
         tithe_rate = efs_ini.default_tithe_rate;
@@ -149,10 +142,18 @@ public class Faction implements Serializable {
     public static Faction[] createFactions(Game game) {
         Faction[] factions = new Faction[C.NR_FACTIONS];
         for (int i = 0; i < factions.length; i++) {
-            factions[i] = new Faction(game);
+            factions[i] = new Faction(game, i);
 
         }
         return factions;
     }
 
+    /**
+     * Game state printout method, prints out faction information.
+     *
+     */
+    public void record(File file) {
+        Util.printString(file, " " + Util.getFactionName(number) + "," + number);
+        research.record(file);
+    }
 }

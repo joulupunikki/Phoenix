@@ -4,6 +4,7 @@
  */
 package game;
 
+import com.github.joulupunikki.math.random.XorShift1024Star;
 import dat.Damage;
 import dat.EfsIni;
 import dat.ResType;
@@ -18,6 +19,7 @@ import galaxyreader.Structure;
 import galaxyreader.Unit;
 import gui.Resource;
 import java.awt.Point;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,6 +28,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.random.RandomAdaptor;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -98,7 +102,7 @@ public class Game implements Serializable {
 
     public Game(String galaxy_file, int current_planet) {
 
-        random = new Random(1234567890L);
+        random = RandomAdaptor.createAdaptor(new XorShift1024Star(1L));
 
         // Read fixed data files
         unit_types = UnitType.readUnitDat();
@@ -163,7 +167,7 @@ public class Game implements Serializable {
         economy = new Economy(this, resources);
 
         for (int i = 0; i < C.NR_FACTIONS; i++) {
-            factions[i] = new Faction(this);
+            factions[i] = new Faction(this, i);
         }
     }
 
@@ -2439,6 +2443,25 @@ public class Game implements Serializable {
             } else {
                 return true;
             }
+        }
+    }
+
+    /**
+     * Game state printout method, prints identifying statistics of Game,
+     * Factions, Techs, Planets, Fleets, Cities, Stacks, Units.
+     * @param file_name
+     */
+    public void record(String file_name) {
+        File file = FileUtils.getFile(file_name);
+        FileUtils.deleteQuietly(file);
+        Util.printString(file, "Year," + year + ",Turn," + turn);
+        Util.printString(file, " #FACTIONS");
+        for (Faction faction : factions) {
+            faction.record(file);
+        }
+        Util.printString(file, " #PLANETS");
+        for (Planet planet : planets) {
+            planet.record(file);
         }
     }
 
