@@ -25,7 +25,7 @@ import util.Util;
 public class Structure implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public int p_idx;      //short
@@ -154,9 +154,9 @@ public class Structure implements Serializable {
 
     /**
      * Tries to start unit building. Will check for existence of input unit and
-     * resources, if these are not found will put queue on hold else will
-     * stash away input unit and subtract resources and start building (not put
-     * queue on hold).
+     * resources, if these are not found will put queue on hold else will stash
+     * away input unit and subtract resources and start building (not put queue
+     * on hold).
      *
      * @param unit_type
      * @param unit_types
@@ -344,7 +344,7 @@ public class Structure implements Serializable {
 
     /**
      * Game state printout method, prints the Structure object. A CSV record is
-     * produced of the Structure     * object's identifying statistics.
+     * produced of the Structure * object's identifying statistics.
      */
     public void record(File file) {
         Util.printString(file, "  "

@@ -27,7 +27,7 @@ import util.Util;
 public class Economy implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Game game;
@@ -376,8 +376,8 @@ public class Economy implements Serializable {
                     break;
                 }
                 resource_amounts[pair.resource_type] += pair.resource_amount;    // Accumulate the resource
-                }
             }
+        }
 
         // For cities close to map edge, up-rate pro-rata for imaginary hexes off the edge of the map
         for (int i = 0; i < resource_amounts.length; i++) {    // For each resource type

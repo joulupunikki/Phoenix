@@ -45,7 +45,7 @@ import util.WindowSize;
 public class Messages extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;
@@ -217,8 +217,8 @@ public class Messages extends JPanel {
 
     class MessageTableModel extends DefaultTableModel {
 
-/**
-         * 
+        /**
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -241,7 +241,7 @@ public class Messages extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

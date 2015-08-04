@@ -7,9 +7,9 @@ import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -22,7 +22,7 @@ import util.Util;
 public class Resources implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     // Game data

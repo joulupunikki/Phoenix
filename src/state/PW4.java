@@ -91,7 +91,6 @@ public class PW4 extends PW {
 //            gui.getPlanetWindow().repaint();
 //        }
 //    }
-
     public void stackMoveEvent() {
         gui.setStack_move_counter(gui.getStack_move_counter() + 1);
         if (gui.getStack_move_counter() >= 20) {

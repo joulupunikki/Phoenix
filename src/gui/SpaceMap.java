@@ -31,7 +31,7 @@ import util.WindowSize;
 public class SpaceMap extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

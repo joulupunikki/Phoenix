@@ -5,9 +5,7 @@
 package game;
 
 import galaxyreader.Planet;
-import galaxyreader.Unit;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  *
@@ -16,7 +14,7 @@ import java.util.List;
 public class Square implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public Planet planet;

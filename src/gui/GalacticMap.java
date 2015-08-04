@@ -25,7 +25,7 @@ import util.WindowSize;
 public class GalacticMap extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;
@@ -60,7 +60,7 @@ public class GalacticMap extends JPanel {
         drawPlanets(g);
         if (map_type) {
             drawWindowArea(g);
-        }        
+        }
     }
 
     public void drawJumpRoutes(Graphics g) {

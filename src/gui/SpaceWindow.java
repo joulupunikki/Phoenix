@@ -28,7 +28,7 @@ import util.WindowSize;
 public class SpaceWindow extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     // pointer to GUI

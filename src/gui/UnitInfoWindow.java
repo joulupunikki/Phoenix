@@ -37,7 +37,7 @@ import util.WindowSize;
 public class UnitInfoWindow extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     Gui gui;
@@ -52,7 +52,7 @@ public class UnitInfoWindow extends JPanel {
     UnitStats.Left left_stats;
     UnitStats.Right right_stats;
     UnitStats.Attack attack_stats;
-    
+
     JTextField attack1_stat;
     JTextField attack1_type;
     JTextField attack2_type;
@@ -163,10 +163,10 @@ public class UnitInfoWindow extends JPanel {
         right_stats = new UnitStats.Right(gui);
         right_stats.setBounds(ws.sw_rsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
         this.add(right_stats);
-        
+
         attack_stats = new UnitStats.Attack(gui);
         attack_stats.setBounds(ws.sw_ap_x, ws.sw_lsp_y, ws.sw_ap_w, ws.sw_ap_h);
-        this.add(attack_stats);        
+        this.add(attack_stats);
 
     }
 

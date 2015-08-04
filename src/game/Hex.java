@@ -19,7 +19,7 @@ import util.C;
 public class Hex implements Comparable<Hex>, Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Hex[] neighbours;
@@ -215,6 +215,7 @@ public class Hex implements Comparable<Hex>, Serializable {
     /**
      * Game state printout method, prints the contents of a hex. City and units
      * in stack.
+     *
      * @param file
      */
     public void record(File file) {

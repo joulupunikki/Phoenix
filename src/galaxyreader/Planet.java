@@ -23,7 +23,7 @@ import util.Util;
 public class Planet implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public int index; // original code

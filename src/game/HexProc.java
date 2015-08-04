@@ -23,7 +23,7 @@ import util.StackIterator;
 public class HexProc implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Game game;

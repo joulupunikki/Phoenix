@@ -43,7 +43,7 @@ import util.WindowSize;
 public class BuildCityPanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

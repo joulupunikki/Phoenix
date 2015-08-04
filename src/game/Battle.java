@@ -27,7 +27,7 @@ import util.Util;
 public class Battle implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private List<Unit> combat_stack_a;

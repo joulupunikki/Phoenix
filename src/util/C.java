@@ -11,15 +11,13 @@ import javax.swing.border.Border;
 /**
  * A class containing constants used in project Phoenix classes.
  *
- * The constants are grouped thus:
- * 1. Various int and int[] finals
- * 2. message types: public enum Msg; movement types: public enum MoveType
- * 3. EFS structures, resources; harvesting; resource and unit production: 
- *    final int and int[]
- * 4. EFS terrain types; harvest terrain order: final int and int[]
- * 5. Special unit type number; EFS faction numbers: final int
- * 6. Research related: final int
- * 7. Strings, Colors, miscellaneous: various finals
+ * The constants are grouped thus: 1. Various int and int[] finals 2. message
+ * types: public enum Msg; movement types: public enum MoveType 3. EFS
+ * structures, resources; harvesting; resource and unit production: final int
+ * and int[] 4. EFS terrain types; harvest terrain order: final int and int[] 5.
+ * Special unit type number; EFS faction numbers: final int 6. Research related:
+ * final int 7. Strings, Colors, miscellaneous: various finals
+ *
  * @author joulupunikki
  */
 public class C {
@@ -330,7 +328,6 @@ public class C {
 //    public static final int CR_HEALTH_BEGIN = 4;
 //    public static final int CR_HEALTH_END = 5;
 //    public static final int CR_ROUTED = 6;
-
     //research & technologies
     public static final int TECH0 = 0;
     public static final int TECH1 = 1;
@@ -360,7 +357,7 @@ public class C {
     public static final String OPT_AUTO_DELAY = "autodelay";
     public static final String OPT_CLEAN_UP_2CLICK = "cleanupb42click";
     public static final String OPT_GAME_STATE_FILE = "gamestatefile";
-    
+
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";

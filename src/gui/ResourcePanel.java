@@ -30,7 +30,7 @@ import util.WindowSize;
 public class ResourcePanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

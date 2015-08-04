@@ -5,13 +5,10 @@
 package state;
 
 import galaxyreader.Unit;
-import java.awt.CardLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
-import javax.swing.JPanel;
-import util.C;
 
 /**
  * Planet window stack selected no destination selected.
@@ -53,7 +50,6 @@ public class PW2 extends PW {
 //            SU.clickOnStackDisplay(e);
 //        }
 //    }
-
 //    public void clickOnStackDisplay(MouseEvent e) {
 //        if (e.getButton() == MouseEvent.BUTTON1) {
 //            SU.clickOnStackDisplayButton1(e);

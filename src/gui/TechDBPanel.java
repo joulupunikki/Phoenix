@@ -47,7 +47,7 @@ import util.WindowSize;
 public class TechDBPanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;
@@ -323,8 +323,8 @@ public class TechDBPanel extends JPanel {
 
     class TechDBTableModel extends DefaultTableModel {
 
-/**
-         * 
+        /**
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -347,7 +347,7 @@ public class TechDBPanel extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

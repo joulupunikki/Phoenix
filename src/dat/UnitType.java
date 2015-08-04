@@ -24,7 +24,7 @@ import util.Util;
 public class UnitType implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public int index;
@@ -90,9 +90,10 @@ public class UnitType implements Serializable {
     /**
      * Parse and store a line from UNITTYPE.DAT
      *
-     * FIXME With no knowledge of the characters accepted by "EFS.EXE", new
-     * mods might use some symbols digested by "EFS.EXE" but which cause
-     * Phoenix the hiccups.
+     * FIXME With no knowledge of the characters accepted by "EFS.EXE", new mods
+     * might use some symbols digested by "EFS.EXE" but which cause Phoenix the
+     * hiccups.
+     *
      * @param s
      * @param index
      * @param t_lvl

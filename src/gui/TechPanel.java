@@ -48,7 +48,7 @@ import util.WindowSize;
 public class TechPanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;
@@ -491,8 +491,8 @@ public class TechPanel extends JPanel {
 
     class TechTableModel extends DefaultTableModel {
 
-/**
-         * 
+        /**
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -515,7 +515,7 @@ public class TechPanel extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 

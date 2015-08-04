@@ -13,8 +13,8 @@ import javax.swing.SwingConstants;
 import util.WindowSize;
 
 /**
- * Holds unit stat displays for stack window and build panel. Divided into left panel, right
- * panel and attack panel.
+ * Holds unit stat displays for stack window and build panel. Divided into left
+ * panel, right panel and attack panel.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
@@ -23,7 +23,7 @@ public class UnitStats {
     public static class Left extends JPanel {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private Gui gui;
@@ -93,7 +93,7 @@ public class UnitStats {
     public static class Right extends JPanel {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private Gui gui;
@@ -163,7 +163,7 @@ public class UnitStats {
     public static class Attack extends JPanel {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private Gui gui;

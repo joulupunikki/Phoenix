@@ -28,7 +28,7 @@ import util.Util;
 public class EfsIni implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     ////     [Options]

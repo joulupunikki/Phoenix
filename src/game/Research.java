@@ -20,8 +20,9 @@ import util.Util;
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class Research implements Serializable {
+
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     //owned techs
@@ -93,6 +94,7 @@ public class Research implements Serializable {
             points_left = 0;
         }
     }
+
     /**
      * Update list of units which can be built in cities.
      *

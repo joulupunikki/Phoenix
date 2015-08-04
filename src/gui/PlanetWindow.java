@@ -34,7 +34,7 @@ import util.WindowSize;
 public class PlanetWindow extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     // pointer to GUI
@@ -59,6 +59,7 @@ public class PlanetWindow extends JPanel {
 //    long time;
 //    boolean start = true;
 //    JButton 
+
     public PlanetWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();

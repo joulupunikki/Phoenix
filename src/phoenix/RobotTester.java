@@ -161,7 +161,7 @@ public class RobotTester extends Thread {
         this.dy = y;
         this.gui = gui;
         latest_event = null;
-        if (! init(file_name, state_file)) {
+        if (!init(file_name, state_file)) {
             System.exit(1);
         }
 //        Path input_log_file = FileSystems.getDefault().getPath(file_name);
@@ -221,7 +221,7 @@ public class RobotTester extends Thread {
         }
         return success;
     }
-    
+
     /**
      * Tell RobotTester to wait (suspend event generation) or continue (resume
      * event generation.) Used when Phoenix may be unresponsive for an arbitrary
@@ -421,7 +421,7 @@ public class RobotTester extends Thread {
             System.out.println("+++++++++++++++++ Robot Test success +++++++++++++++++++++++++++++++++");
         } else {
             System.out.println("----------------- Robot Test failure !!! -----------------------------");
-        }   
+        }
         System.out.println("RobotTester finished. You may resume input on test machine.");
         System.exit(0);
     }
@@ -585,7 +585,7 @@ public class RobotTester extends Thread {
             if (delay <= d_click_max) {
                 delay = d_click_max + 1;
             }
-        } 
+        }
         // do delay if positive time
         if (delay > 0) {
             delayedPrint("Delay(ms): " + delay);

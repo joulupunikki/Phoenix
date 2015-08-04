@@ -6,7 +6,6 @@ package game;
 
 import galaxyreader.Galaxy;
 import galaxyreader.Planet;
-import galaxyreader.Unit;
 import java.io.Serializable;
 import java.util.List;
 import util.C;
@@ -18,7 +17,7 @@ import util.C;
 public class GalaxyGrid implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Square[][] galaxy_grid;

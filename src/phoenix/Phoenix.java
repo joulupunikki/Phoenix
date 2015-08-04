@@ -35,16 +35,16 @@ import util.FN;
 import util.Util;
 
 /**
- * Main entry point of Phoenix, clone/remake/patch/replacement of the EFS.EXE
- * in the game Emperor of the Fading Suns.
- * 
+ * Main entry point of Phoenix, clone/remake/patch/replacement of the EFS.EXE in
+ * the game Emperor of the Fading Suns.
+ *
  * @author joulupunikki
  */
 public class Phoenix {
 
     public static final long start_time;
     private static int event_number = 0;
-    private static LinkedList<String> log_buffer  = new LinkedList<>();
+    private static LinkedList<String> log_buffer = new LinkedList<>();
     //true iff a JMenu is open
     private static boolean log_mouse_move = false;
     private static String last_jmenu = null;
@@ -54,6 +54,7 @@ public class Phoenix {
     static {
         start_time = System.nanoTime();
     }
+
     /**
      * Main entry point of Phoenix.
      * <p>
@@ -112,6 +113,7 @@ public class Phoenix {
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
             private Point prev_xy = new Point(-1, -1);
+
             public void eventDispatched(AWTEvent event) {
                 int id = event.getID();
                 String details = "" + id;
@@ -213,7 +215,7 @@ public class Phoenix {
                     input_log_writer.println(logged);
                 }
                 RobotTester.dispatchedEvent(logged);
-                
+
                 //System.out.println("#D " + number + " " + event);
             }
 
@@ -236,7 +238,7 @@ public class Phoenix {
         // start GUI
         Gui.execute(cli_opts);
     }
-    
+
     private static CommandLine parseCLI(String[] args) {
         CommandLine ret_val = null;
         Options opts = new Options();

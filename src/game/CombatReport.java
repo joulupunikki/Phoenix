@@ -18,7 +18,7 @@ import java.util.List;
 public class CombatReport implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public List<Unit> attacker;

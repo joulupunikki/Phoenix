@@ -17,7 +17,7 @@ import util.Util;
 public class ResType implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public String name;
@@ -79,6 +79,7 @@ public class ResType implements Serializable {
 
     /**
      * Creates and returns resource types table, reading RES.DAT
+     *
      * @return
      */
     public static ResType[] readResDat() {    // Creates and returns resource type table

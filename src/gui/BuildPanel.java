@@ -62,7 +62,7 @@ import util.WindowSize;
 public class BuildPanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;
@@ -115,8 +115,8 @@ public class BuildPanel extends JPanel {
         right_stats = new UnitStats.Right(gui);
         right_stats.setBounds(ws.bp_rsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
         this.add(right_stats);
-        
-                attack_stats = new UnitStats.Attack(gui);
+
+        attack_stats = new UnitStats.Attack(gui);
         attack_stats.setBounds(ws.bp_asp_x, ws.sw_lsp_y, ws.sw_ap_w, ws.sw_ap_h);
         this.add(attack_stats);
     }
@@ -691,7 +691,7 @@ public class BuildPanel extends JPanel {
             implements ListCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -739,7 +739,7 @@ public class BuildPanel extends JPanel {
             implements ListCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -783,7 +783,7 @@ public class BuildPanel extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -824,7 +824,7 @@ public class BuildPanel extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -894,7 +894,7 @@ public class BuildPanel extends JPanel {
             implements TableCellRenderer {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -986,7 +986,7 @@ public class BuildPanel extends JPanel {
     class QueueTableModel extends AbstractTableModel {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private String[] columnNames = {"Unit", "Turns"};
@@ -1029,8 +1029,8 @@ public class BuildPanel extends JPanel {
 
     class CityTableModel extends DefaultTableModel {
 
-/**
-         * 
+        /**
+         *
          */
         private static final long serialVersionUID = 1L;
 
@@ -1051,8 +1051,8 @@ public class BuildPanel extends JPanel {
 
     class BuildTableModel extends DefaultTableModel {
 
-/**
-         * 
+        /**
+         *
          */
         private static final long serialVersionUID = 1L;
 

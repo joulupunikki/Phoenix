@@ -82,7 +82,7 @@ import util.WindowSize;
 public class Gui extends JFrame {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_WINDOW_WIDTH = 640;
@@ -214,7 +214,7 @@ public class Gui extends JFrame {
         UIManager.put("TextArea.foreground", C.COLOR_GOLD);
         UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
         UIManager.put("TextField.background", Color.BLACK);
-        UIManager.put("TextField.foreground", C.COLOR_GOLD);        
+        UIManager.put("TextField.foreground", C.COLOR_GOLD);
         UIManager.put("Label.foreground", C.COLOR_GOLD);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -725,7 +725,7 @@ public class Gui extends JFrame {
         }
         cargo_win.setVisible(show);
     }
-    
+
     public void initCargoWin(Unit u_from, Unit u_to, List<Unit> stack) {
         cargo_win.init(u_from, u_to, stack);
     }
@@ -1133,7 +1133,7 @@ public class Gui extends JFrame {
     private class CityDialog extends JDialog {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         private int planet;
@@ -1274,7 +1274,7 @@ public class Gui extends JFrame {
     private class CityPanel extends JPanel {
 
         /**
-         * 
+         *
          */
         private static final long serialVersionUID = 1L;
         JTextField city_name_display;
@@ -1410,7 +1410,6 @@ public class Gui extends JFrame {
 
             //System.out.println("load_name = " + load_name);
 //            JDialog load_dialog = showProgressBar("Loading game");
-
             loadsave_dialog = showProgressBar("Loading game");
 //            Cursor cursor = this.getCursor();
 //            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -1520,7 +1519,6 @@ public class Gui extends JFrame {
             //System.out.println("save_name = " + save_name);
 //            FileOutputStream f;
 //            ObjectOutput s;
-
             loadsave_dialog = showProgressBar("Saving game");
             Cursor cursor = this.getCursor();
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
@@ -2181,7 +2179,7 @@ public class Gui extends JFrame {
         Point p = new Point();
         if (gui != null) {
             p = gui.getLocationOnScreen();
-            
+
         }
         return p;
     }

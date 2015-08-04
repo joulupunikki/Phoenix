@@ -26,7 +26,7 @@ import util.WindowSize;
 public class GlobeMap extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

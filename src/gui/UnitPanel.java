@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 public class UnitPanel extends JPanel {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private static Gui gui;

@@ -28,7 +28,7 @@ import util.WindowSize;
 public class StackWindow extends JDialog {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private JPanel stack_panel;

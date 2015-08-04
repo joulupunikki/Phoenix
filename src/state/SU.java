@@ -1144,7 +1144,6 @@ public class SU extends State {
         }
     }
 
-
     /**
      * Embark cargo to naval cargo carriers.
      *
@@ -1273,7 +1272,6 @@ public class SU extends State {
         }
         return true;
     }
-
 
     /**
      * Unload cargo from naval transport.

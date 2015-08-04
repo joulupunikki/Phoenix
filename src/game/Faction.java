@@ -16,7 +16,7 @@ import util.Util;
 public class Faction implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     private Game game;
@@ -138,7 +138,6 @@ public class Faction implements Serializable {
 //        }
 //
 //    }
-
     public static Faction[] createFactions(Game game) {
         Faction[] factions = new Faction[C.NR_FACTIONS];
         for (int i = 0; i < factions.length; i++) {

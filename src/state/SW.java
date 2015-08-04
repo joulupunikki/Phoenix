@@ -36,7 +36,6 @@ public class SW extends MW {
 //
 //        SU.selectNextUnmovedUnit();
 //    }
-
     public void clickOnGalacticMap(MouseEvent e) {
 
         Point p = e.getPoint();

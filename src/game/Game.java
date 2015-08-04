@@ -42,7 +42,7 @@ import util.Util.HexIter;
 public class Game implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     //coordinates of currently selected hex/square/stack  
@@ -153,7 +153,6 @@ public class Game implements Serializable {
         //Damage.printDamage(damage);
         //Target.printTarget(target);
         //printMoveCost();
-
 //        endTurn();
 //        setMoveCosts();
     }
@@ -1368,7 +1367,7 @@ public class Game implements Serializable {
 
     public void setMoveType() {
         for (Unit e : units) {
-                e.move_type = unit_types[e.type][e.t_lvl].move_type;
+            e.move_type = unit_types[e.type][e.t_lvl].move_type;
         }
     }
 
@@ -2449,6 +2448,7 @@ public class Game implements Serializable {
     /**
      * Game state printout method, prints identifying statistics of Game,
      * Factions, Techs, Planets, Fleets, Cities, Stacks, Units.
+     *
      * @param file_name
      */
     public void record(String file_name) {

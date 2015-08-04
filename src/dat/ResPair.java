@@ -15,7 +15,7 @@ import util.FN;
 public class ResPair implements Serializable {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
     public int resource_type;
@@ -37,6 +37,7 @@ public class ResPair implements Serializable {
     /**
      * Get one pair (resource type and amount) from a DAT file. Used by Harvest
      * and Prod. Needs game to access the resource names.
+     *
      * @param s
      * @param m
      * @param game
@@ -65,6 +66,7 @@ public class ResPair implements Serializable {
     /**
      * Given a resource name (string), returns the corresponding resource type
      * number
+     *
      * @param resource_name
      * @param game
      * @return

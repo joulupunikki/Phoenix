@@ -62,7 +62,7 @@ public class MM3 extends State {
             if (game.getEfs_ini().pbem.pbem) {
                 gui.getPBEMGui().getPasswd(game.getTurn(), gui);
             }
-            
+
             SU.selectNextUnmovedUnit();
         } else {
             JOptionPane.showMessageDialog(gui, "Need to select at least one human player.", null, JOptionPane.PLAIN_MESSAGE);

@@ -38,7 +38,6 @@ public class PW extends MW {
 //        SU.selectNextUnmovedUnit();
 //
 //    }
-
     public void pressSpaceButton() {
         SU.pressSpaceButtonSU();
     }
