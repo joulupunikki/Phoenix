@@ -1,7 +1,7 @@
 Phoenix
 =======
 
-Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
+Java clone/remake/patch of the game [Emperor of the Fading Suns (EFS)](http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns). This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
 
 If you have a mod that works with EFS but not with Phoenix open an [issue](https://github.com/joulupunikki/Phoenix/issues) (if you have problems with Hyperion, read [New in version 0.9.1](https://github.com/joulupunikki/Phoenix#new-in-version-091) below first.) If you encounter a Java Exception or Error, or Phoenix won't start or crashes, open an issue. Being bug free is important, being crash free and supporting all EFS mods is critically important.
 

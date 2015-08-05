@@ -1,0 +1,31 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}Copyright (C) ${date?date?string("yyyy")} ${project.organization!user}.
+${licensePrefix}
+${licensePrefix} Disclaimer of Warranties and Limitation of Liability.
+${licensePrefix}
+${licensePrefix}    The creators and distributors offer this software as-is and
+${licensePrefix}    as-available, and make no representations or warranties of any
+${licensePrefix}    kind concerning this software, whether express, implied, statutory,
+${licensePrefix}    or other. This includes, without limitation, warranties of title,
+${licensePrefix}    merchantability, fitness for a particular purpose, non-infringement,
+${licensePrefix}    absence of latent or other defects, accuracy, or the presence or
+${licensePrefix}    absence of errors, whether or not known or discoverable.
+${licensePrefix}
+${licensePrefix}    To the extent possible, in no event will the creators or distributors
+${licensePrefix}    be liable on any legal theory (including, without limitation,
+${licensePrefix}    negligence) or otherwise for any direct, special, indirect,
+${licensePrefix}    incidental, consequential, punitive, exemplary, or other losses,
+${licensePrefix}    costs, expenses, or damages arising out of the use of this software,
+${licensePrefix}    even if the creators or distributors have been advised of the
+${licensePrefix}    possibility of such losses, costs, expenses, or damages.
+${licensePrefix}
+${licensePrefix}    The disclaimer of warranties and limitation of liability provided
+${licensePrefix}    above shall be interpreted in a manner that, to the extent possible,
+${licensePrefix}    most closely approximates an absolute disclaimer and waiver of
+${licensePrefix}    all liability.
+${licensePrefix}
+<#if licenseLast??>
+${licenseLast}
+</#if>
