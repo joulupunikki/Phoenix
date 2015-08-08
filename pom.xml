@@ -58,6 +58,7 @@
     </pluginRepositories>
     <build>
         <sourceDirectory>src</sourceDirectory>
+        <testSourceDirectory>tst</testSourceDirectory>
         <finalName>${project.artifactId}</finalName>
         <resources>
             <resource>

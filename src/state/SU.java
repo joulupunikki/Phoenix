@@ -937,43 +937,13 @@ public class SU extends State {
                 Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
                 stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
             }
-            List<Unit> selected = new LinkedList<>();
-            for (Unit unit : stack) {
-                if (unit.selected) {
-                    selected.add(unit);
-                }
+
+            // remove stack from unmoved
+            StackIterator si = new StackIterator(stack);
+            for (Unit u = si.next(); u != null; u = si.next()) {
+                unmoved_units.remove(u);
+//                System.out.println("Remove");
             }
-
-            boolean is_cargo_listing = false;
-            Iterator<Unit> iterator = selected.listIterator();
-            Iterator<Unit> cargo_it = null;
-
-            Unit e = iterator.next();
-            for (int i = 0; i < selected.size(); i++) {
-
-                unmoved_units.remove(e);
-                if (is_cargo_listing) {
-                    e = cargo_it.next();
-                    if (!cargo_it.hasNext()) {
-                        cargo_it = null;
-                        is_cargo_listing = false;
-                    }
-                } else if (e.cargo_list.isEmpty()) {
-                    if (iterator.hasNext()) {
-                        e = iterator.next();
-                    } else {
-                        break;
-                    }
-                } else {
-                    cargo_it = e.cargo_list.listIterator();
-                    e = cargo_it.next();
-                    if (cargo_it.hasNext()) {
-                        is_cargo_listing = true;
-                    }
-                }
-
-            }
-
         }
 
         if (unmoved_units.isEmpty()) {
@@ -982,81 +952,43 @@ public class SU extends State {
         }
 
         Unit unit = unmoved_units.get(0);
-        System.out.println("unit = " + unit);
+//        System.out.println("unit = " + unit);
         int x = unit.x;
-        System.out.println("x = " + x);
+//        System.out.println("x = " + x);
         int y = unit.y;
-        System.out.println("y = " + y);
+//        System.out.println("y = " + y);
         Point point = new Point(x, y);
         faction = -1;
         if (unit.in_space) {
-            System.out.println("unit.in_space = " + unit.in_space);
+//            System.out.println("unit.in_space = " + unit.in_space);
 //            point = game.resolveSpaceStack(new Point(x, y), unit.prev_owner);
             faction = unit.owner;
-            System.out.println("faction = " + faction);
+//            System.out.println("faction = " + faction);
         }
         game.setCurrentPlanetNr(unit.p_idx);
-        System.out.println("unit.p_idx = " + unit.p_idx);
+//        System.out.println("unit.p_idx = " + unit.p_idx);
         game.setSelectedPointFaction(point, faction, null, null);
         game.setSelectedPoint(point, faction);
         game.setSelectedFaction(faction);
         String name = game.getPlanet(unit.p_idx).name;
-        System.out.println("name = " + name);
+//        System.out.println("name = " + name);
 
         p = game.getSelectedPoint();
-        System.out.println("p = " + p);
+//        System.out.println("p = " + p);
         List<Unit> stack = null;
         if (faction == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
-            System.out.println("stack = " + stack);
+//            System.out.println("stack = " + stack);
         }
 
-        boolean is_cargo_listing = false;
-        Iterator<Unit> iterator = stack.listIterator();
-        Iterator<Unit> cargo_it = null;
-
-        Unit e = iterator.next();
-        for (int i = 0; i < stack.size(); i++) {
-            System.out.println("i = " + i);
-            e.selected = true;
-            System.out.println("e.owner = " + e.owner);
-            if (is_cargo_listing) {
-                e = cargo_it.next();
-                if (!cargo_it.hasNext()) {
-                    cargo_it = null;
-                    is_cargo_listing = false;
-                }
-            } else if (e.cargo_list.isEmpty()) {
-                if (iterator.hasNext()) {
-                    e = iterator.next();
-                } else {
-                    break;
-                }
-            } else {
-                cargo_it = e.cargo_list.listIterator();
-                e = cargo_it.next();
-                if (cargo_it.hasNext()) {
-                    is_cargo_listing = true;
-                }
-            }
-
+        StackIterator si = new StackIterator(stack);
+        for (Unit u = si.next(); u != null; u = si.next()) {
+            u.selected = true;
         }
 
-//        if (unit.in_space) {
-//            Point smo = Util.resolveSpaceMapOrigin(new Point(unit.x, unit.y), ws);
-//            game.setSpaceMapOrigin(smo);
-//            System.out.println(" Star map");
-//            SU.setWindow(C.S_STAR_MAP);
-//            gui.setCurrentState(SW2.get());
-//        } else {
-//            game.setMapOrigin(Util.resolvePlanetMapOrigin(new Point(unit.x - C.PLANET_MAP_ORIGIN_X_OFFSET,
-//                    unit.y - C.PLANET_MAP_ORIGIN_Y_OFFSET)));
-//            SU.setWindow(C.S_PLANET_MAP);
-//            gui.setCurrentState(PW2.get());
-//        }
         centerMapOnUnit(unit);
     }
 
@@ -1107,48 +1039,7 @@ public class SU extends State {
             e.selected = true;
             e = iterator.next();
         }
-//        boolean is_cargo_listing = false;
-//        Iterator<Unit> iterator = stack.listIterator();
-//        Iterator<Unit> cargo_it = null;
-//
-//        Unit e = iterator.next();
-//        for (int i = 0; i < C.STACK_SIZE; i++) {
-//            System.out.println("i = " + i);
-//            e.selected = true;
-//            if (is_cargo_listing) {
-//                e = cargo_it.next();
-//                if (!cargo_it.hasNext()) {
-//                    cargo_it = null;
-//                    is_cargo_listing = false;
-//                }
-//            } else if (e.cargo_list.isEmpty()) {
-//                if (iterator.hasNext()) {
-//                    e = iterator.next();
-//                } else {
-//                    break;
-//                }
-//            } else {
-//                cargo_it = e.cargo_list.listIterator();
-//                e = cargo_it.next();
-//                if (cargo_it.hasNext()) {
-//                    is_cargo_listing = true;
-//                }
-//            }
-//
-//        }
 
-//        if (unit.in_space) {
-//            Point smo = Util.resolveSpaceMapOrigin(new Point(unit.x, unit.y), ws);
-//            game.setSpaceMapOrigin(smo);
-//            System.out.println(" Star map");
-//            SU.setWindow(C.S_STAR_MAP);
-//            gui.setCurrentState(SW2.get());
-//        } else {
-//            game.setMapOrigin(Util.resolvePlanetMapOrigin(new Point(unit.x - C.PLANET_MAP_ORIGIN_X_OFFSET,
-//                    unit.y - C.PLANET_MAP_ORIGIN_Y_OFFSET)));
-//            SU.setWindow(C.S_PLANET_MAP);
-//            gui.setCurrentState(PW2.get());
-//        }
         centerMapOnUnit(unit);
     }
 

@@ -219,10 +219,6 @@ public class UnitInfoWindow extends JPanel {
             stack = tmp;
         }
 
-//        boolean is_cargo_listing = false;
-//        Iterator<Unit> iterator = stack.listIterator();
-//        Iterator<Unit> cargo_it = null;
-//        Unit e = iterator.next();
         StackIterator iterator = new StackIterator(stack);
         Unit e = iterator.next();
 
@@ -286,29 +282,6 @@ public class UnitInfoWindow extends JPanel {
                 if (e != null) {
                     e = iterator.next();
                 }
-//                if (e == null) {
-//                    return;
-//                }
-
-//                if (is_cargo_listing) {
-//                    e = cargo_it.next();
-//                    if (!cargo_it.hasNext()) {
-//                        cargo_it = null;
-//                        is_cargo_listing = false;
-//                    }
-//                } else if (e.cargo_list.isEmpty()) {
-//                    if (iterator.hasNext()) {
-//                        e = iterator.next();
-//                    } else {
-//                        return;
-//                    }
-//                } else {
-//                    cargo_it = e.cargo_list.listIterator();
-//                    e = cargo_it.next();
-//                    if (cargo_it.hasNext()) {
-//                        is_cargo_listing = true;
-//                    }
-//                }
             }
 
         }

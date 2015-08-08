@@ -39,11 +39,11 @@ import java.util.List;
  */
 public class StackIterator {
 
-    boolean start;
-    boolean is_cargo_listing;
-    Iterator<Unit> iterator;
-    Iterator<Unit> cargo_it;
-    Unit next;
+    private boolean start;
+    private boolean is_cargo_listing;
+    private Iterator<Unit> iterator;
+    private Iterator<Unit> cargo_it;
+    private Unit next;
 
     public StackIterator(List<Unit> stack) {
         is_cargo_listing = false;

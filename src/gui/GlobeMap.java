@@ -105,7 +105,7 @@ public class GlobeMap extends JPanel {
             p_idx = game.getCurrentPlanetNr();
         } else {
             replay_unit = game.getCombatStack("b").get(0);
-            System.out.println("replay_unit.in_space = " + replay_unit.in_space);
+//            System.out.println("replay_unit.in_space = " + replay_unit.in_space);
 //            System.exit(0);
             p_idx = replay_unit.p_idx;
         }

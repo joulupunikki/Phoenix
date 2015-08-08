@@ -432,6 +432,7 @@ public class RobotTester extends Thread {
                 System.out.println("Resultant end state CRC32 = " + result);
                 if (expect != result) {
                     test_completed_succesfully = false;
+                    System.out.println("State file: " + this.state_file.getName());
                     System.out.println("------ Game end states do not match !!! ----");
                 }
             } catch (IOException ex) {
@@ -439,13 +440,15 @@ public class RobotTester extends Thread {
                 System.out.println("IOException when checking Game end states");
             }
         }
+        int ret_val = 0;
         if (test_completed_succesfully) {
             System.out.println("+++++++++++++++++ Robot Test success +++++++++++++++++++++++++++++++++");
         } else {
             System.out.println("----------------- Robot Test failure !!! -----------------------------");
+            ret_val = 1;
         }
         System.out.println("RobotTester finished. You may resume input on test machine.");
-        System.exit(0);
+        System.exit(ret_val);
     }
 
     private void waitForProgram() {
