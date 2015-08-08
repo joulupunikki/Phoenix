@@ -52,6 +52,7 @@ public class UIW1 extends State {
         return instance;
     }
 
+    @Override
     public void pressExitButton() {
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);

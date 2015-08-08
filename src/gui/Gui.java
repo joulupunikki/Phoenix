@@ -153,6 +153,7 @@ public class Gui extends JFrame {
     private JDialog build_city_window;
     private XPlayerScreen x_player_screen;
     private PBEMGui pbem_gui;
+    private ByzantiumIIWindow byzantium_ii_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     private JMenuBar menubar;
@@ -179,7 +180,9 @@ public class Gui extends JFrame {
     private JMenuItem menu_all_tech;
     private JMenuItem menu_all_resources;
     private JMenuItem menu_randomize_rng;
-
+    private JMenu house_menu;
+    private JMenu diplomacy_menu;
+    private JMenuItem byzantium_ii_menu;
     private Resource resources;
     //stack display window
     private JDialog stack_window;
@@ -345,6 +348,9 @@ public class Gui extends JFrame {
         setUpOrdersMenu();
         setUpMessagesMenu();
         setUpArchivesMenu();
+        setUpHouseMenu();
+        setUpDiplomacyMenu();
+        setUpByzantiumIIMenu();
         if (game.getEfs_ini().wizard_mode) {
             setUpWizardModeMenu();
         }
@@ -492,6 +498,11 @@ public class Gui extends JFrame {
         messages_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
 
+        byzantium_ii_window = new ByzantiumIIWindow(this);
+        byzantium_ii_window.setLayout(null);
+        byzantium_ii_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
         main_windows = new JPanel(new CardLayout());
 
         main_windows.add(main_menu1, C.S_MAIN_MENU1);
@@ -502,6 +513,7 @@ public class Gui extends JFrame {
         main_windows.add(space_window, C.S_STAR_MAP);
         main_windows.add(unit_info_window, C.S_UNIT_INFO);
         main_windows.add(combat_window, C.S_COMBAT_WINDOW);
+        main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
 
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
         setMouseCursor();
@@ -724,6 +736,30 @@ public class Gui extends JFrame {
 //        archives_menu.addSeparator();
         archives_menu.add(menu_vol5);
         menubar.add(archives_menu);
+    }
+
+    public void setUpHouseMenu() {
+        house_menu = new JMenu("House");
+        house_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menubar.add(house_menu);
+    }
+
+    public void setUpDiplomacyMenu() {
+        diplomacy_menu = new JMenu("Diplomacy");
+        diplomacy_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menubar.add(diplomacy_menu);
+    }
+
+    public void setUpByzantiumIIMenu() {
+        byzantium_ii_menu = new JMenuItem("Byzantium II");
+        byzantium_ii_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        byzantium_ii_menu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SU.showByzantiumIIWindow();
+            }
+        });
+        menubar.add(byzantium_ii_menu);
     }
 
     public void setUpMessagesMenu() {
@@ -1710,6 +1746,7 @@ public class Gui extends JFrame {
         pbem_gui.setPBEMRef(game);
         city_dialog.setGame(game);
         cargo_win.setGame(game);
+        byzantium_ii_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

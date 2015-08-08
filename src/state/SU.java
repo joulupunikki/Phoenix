@@ -565,6 +565,12 @@ public class SU extends State {
         gui.setCurrentState(CW1.get());
     }
 
+    public static void showByzantiumIIWindow() {
+        setWindow(C.S_BYZANTIUM_II_WINDOW);
+        saveMainGameState();
+        gui.setCurrentState(ByzII.get());
+    }
+
     public static void showUnitInfoWindow() {
         setWindow(C.S_UNIT_INFO);
         saveMainGameState();
