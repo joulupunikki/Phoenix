@@ -774,7 +774,7 @@ public class PlanetMap extends JPanel {
                             Graphics2D g2d = (Graphics2D) g;
 
                             g2d.drawImage(bi, null, dx, dy);
-                            Util.writeUnitCount(g2d, ws, Util.stackSize(spotted), dx, dy);
+                            Util.writeUnitCount(g2d, ws, Util.stackSize(spotted), dx, dy, e.owner != e.prev_owner);
 
                         }
                     }
@@ -865,7 +865,7 @@ public class PlanetMap extends JPanel {
                                     Graphics2D g2d = (Graphics2D) g;
 
                                     g2d.drawImage(bi, null, dx, dy);
-                                    Util.writeUnitCount(g2d, ws, nr_spotted, dx, dy);
+                                    Util.writeUnitCount(g2d, ws, nr_spotted, dx, dy, e.owner != e.prev_owner);
                                 } else {
                                     g.setColor(Util.getColor(pallette, Util.getOwnerColor(e.owner)));
                                     Util.drawBlip(g, dx, dy, ws.blip_side);

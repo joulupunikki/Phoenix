@@ -56,7 +56,7 @@ public class Structure implements Serializable {
     public int y;     //short 
     public int type;       //short
     public int owner;      //short 
-    int prev_owner;  //short 
+    public int prev_owner;  //short
     int prod_ruin_type; //union short/short
     int prod_info;  //union short/short
     public int turns_left;  //short 
@@ -101,8 +101,8 @@ public class Structure implements Serializable {
 
         type = GalaxyReader.readShort(fc, count.getSet(2));
         owner = GalaxyReader.readShort(fc, count.getSet(2));
-        prev_owner = GalaxyReader.readShort(fc, count.getSet(2));
-
+        GalaxyReader.readShort(fc, count.getSet(2));
+        prev_owner = owner;
         prod_ruin_type = GalaxyReader.readShort(fc, count.getSet(2));
         prod_info = GalaxyReader.readShort(fc, count.getSet(2));
         turns_left = GalaxyReader.readShort(fc, count.getSet(2));
@@ -150,6 +150,7 @@ public class Structure implements Serializable {
 
     public Structure(int owner, int type, int p_idx, int x, int y, int health) {
         this.owner = owner;
+        this.prev_owner = owner;
         this.type = type;
         this.p_idx = p_idx;
         this.x = x;

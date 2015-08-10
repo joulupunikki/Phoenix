@@ -502,6 +502,11 @@ public class Gui extends JFrame {
         byzantium_ii_window.setLayout(null);
         byzantium_ii_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
+        byzantium_ii_window.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                state.clickOnByzantiumIIWindow(e);
+            }
+        });
 
         main_windows = new JPanel(new CardLayout());
 

@@ -27,6 +27,14 @@
  */
 package state;
 
+import galaxyreader.Structure;
+import galaxyreader.Unit;
+import game.Regency;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.util.List;
+import util.C;
+
 /**
  * Byzantium II Window
  *
@@ -45,9 +53,84 @@ public class ByzII extends State {
 
     @Override
     public void pressExitButton() {
+        game.initVisibilitySpot(false); // re-spot with ministry assets
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
         main_game_state = null;
+    }
+
+    @Override
+    public void clickOnByzantiumIIWindow(MouseEvent e) {
+        Point p = e.getPoint();
+        int pos = getPosition(p);
+        Regency r = game.getRegency();
+
+        switch (pos) {
+            case C.STIGMATA:
+            case C.THE_SPY:
+            case C.FLEET:
+//                if (game.getTurn() != game.getRegency().getRegency()) {
+//                    gui.showInfoWindow("Only the Regent may assign ministries.");
+//                    return;
+//                }
+                break;
+            default:
+                break;
+        }
+
+        switch (pos) {
+            case C.STIGMATA:
+                r.setGarrison(cycleMinistry(r.getGarrison()));
+                setAssets(pos, r.getGarrison());
+                break;
+            case C.THE_SPY:
+                r.setEye(cycleMinistry(r.getEye()));
+                setAssets(pos, r.getEye());
+                break;
+            case C.FLEET:
+                r.setFleet(cycleMinistry(r.getFleet()));
+                setAssets(pos, r.getFleet());
+                break;
+            default:
+                throw new AssertionError();
+        }
+    }
+
+    private int cycleMinistry(int value) {
+        value++;
+        if (value > C.HOUSE5) {
+            value = -1;
+        }
+        return value;
+    }
+
+    private void setAssets(int ministry, int faction) {
+        List<Unit> u = game.getUnits();
+        List<Structure> s = game.getStructures();
+        for (Unit u1 : u) {
+            if (u1.prev_owner == ministry) {
+                u1.owner = faction;
+            }
+        }
+        for (Structure s1 : s) {
+            if (s1.prev_owner == ministry) {
+                s1.owner = faction;
+            }
+        }
+    }
+    
+    private int getPosition(Point p) {
+        int pos = -1;
+        if (181 <= p.y && p.y <= 303) {
+            if (66 <= p.x && p.x <= 185) {
+                pos = C.STIGMATA;
+            } else if (261 <= p.x && p.x <= 380) {
+                pos = C.THE_SPY;
+            } else if (456 <= p.x && p.x <= 575) {
+                pos = C.FLEET;
+            }
+        }
+        return pos;
     }
 
 }

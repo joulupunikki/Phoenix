@@ -649,6 +649,7 @@ public class Util {
      * Draws movement points, health bar and tech level on unit icon.
      *
      * @param g
+     * @param game
      * @param e
      * @param x
      * @param y
@@ -667,12 +668,18 @@ public class Util {
         if (move > 99) {
             width = 3;
         }
-        g.setColor(Color.BLACK);
+        Color bg = Color.BLACK;
+        Color fg = Color.WHITE;
+        if (e.owner != e.prev_owner) { // ministry units on loan
+            bg = Color.WHITE;
+            fg = Color.BLACK;
+        }
+        g.setColor(bg);
         g.fillRect(x + side - (int) (ws.font_unit_icon_size * width * 0.6) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset,
                 (int) (ws.font_unit_icon_size * width * 0.6), (int) (ws.font_unit_icon_size * 0.9));
-        g.setColor(Color.WHITE);
+        g.setColor(fg);
         g.setFont(ws.font_unit_icon);
-        g.drawString("" + move, x + side - (int) (ws.font_unit_icon_size * width * 0.6) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset + (int) (ws.font_unit_icon_size * 0.9));
+        g.drawString("" + move, x + side - (int) (ws.font_unit_icon_size * width * 0.65) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset + (int) (ws.font_unit_icon_size * 0.9));
 
         int health = e.health;
         if (health > 66) {
@@ -687,10 +694,10 @@ public class Util {
 
         char tech_lvl = 'a';
 
-        g.setColor(Color.BLACK);
+        g.setColor(bg);
         g.fillRect(x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset - (int) (ws.font_unit_icon_size * 0.9),
                 (int) (ws.font_unit_icon_size * 0.6), (int) (ws.font_unit_icon_size * 0.9));
-        g.setColor(Color.WHITE);
+        g.setColor(fg);
         g.drawString("" + ((char) (tech_lvl + e.t_lvl)), x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset);
 
         if (e.carrier != null) {
@@ -794,13 +801,19 @@ public class Util {
         }
     }
 
-    public static void writeUnitCount(Graphics2D g2d, WindowSize ws, int count, int x, int y) {
+    public static void writeUnitCount(Graphics2D g2d, WindowSize ws, int count, int x, int y, boolean reverse) {
         int side = ws.unit_icon_size;
         int width = count > 9 ? 2 : 1;
-        g2d.setColor(Color.BLACK);
+        Color bg = Color.BLACK;
+        Color fg = Color.WHITE;
+        if (reverse) {
+            bg = Color.WHITE;
+            fg = Color.BLACK;
+        }
+        g2d.setColor(bg);
         g2d.fillRect(x + ws.font_unit_icon_offset, y + side - ws.font_unit_icon_size,
                 (int) (ws.font_unit_icon_size * width * 0.6), (int) (ws.font_unit_icon_size * 0.9));
-        g2d.setColor(Color.WHITE);
+        g2d.setColor(fg);
         g2d.setFont(ws.font_unit_icon);
         g2d.drawString("" + count, x + ws.font_unit_icon_offset, side + y - ws.font_unit_icon_offset);
     }

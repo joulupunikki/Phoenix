@@ -111,7 +111,7 @@ public class Unit implements Serializable {
         this.y = y;
         this.loyalty = 100;
         this.owner = owner;
-        this.prev_owner = 0;
+        this.prev_owner = owner;
         this.type = 0;
         this.t_lvl = 0;
 //        this.move_type = move_type;
@@ -184,7 +184,8 @@ public class Unit implements Serializable {
         health = GalaxyReader.readByte(fc, count.getSet(1));
         health_tmp = health;
         sect = GalaxyReader.readByte(fc, count.getSet(1));
-        prev_owner = GalaxyReader.readByte(fc, count.getSet(1));
+        GalaxyReader.readByte(fc, count.getSet(1));
+        prev_owner = owner;
         unit_no = GalaxyReader.readInt(fc, count.getSet(4));
         flags = GalaxyReader.readInt(fc, count.getSet(4));
         used_unit_type = GalaxyReader.readByte(fc, count.getSet(1));
@@ -299,7 +300,7 @@ public class Unit implements Serializable {
         experience = 0;    // Set all the rest to zero for now
         orders = 0;
         sect = 0;
-        prev_owner = 0;
+        prev_owner = owner;
         unit_no = 0;
         flags = 0;
         used_unit_type = 0;

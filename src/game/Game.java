@@ -104,6 +104,7 @@ public class Game implements Serializable {
     private List<Structure> structures;
 
     private Faction[] factions = new Faction[C.NR_FACTIONS];    // RSW
+    private Regency regency = new Regency();
     private List<Unit> unmoved_units;
     private List<Unit> cargo_pods;
     private List<Structure> faction_cities;
@@ -165,7 +166,7 @@ public class Game implements Serializable {
         setMoveType();
         setUnitTypeData();
         setJumpRoutes();
-        initVisibility();
+        initVisibilitySpot(true);
         setMaxSpotRange();
 
         battle = new Battle();
@@ -193,19 +194,17 @@ public class Game implements Serializable {
         }
     }
 
-    public void initVisibility() {
-        for (Planet planet : planets) {
-            Hex[][] planet_grid = planet.planet_grid.getMapArray();
-            for (int i = 0; i < planet_grid.length; i++) {
-                for (int j = 0; j < planet_grid[i].length; j++) {
-                    planet_grid[i][j].initVisibility();
-
+    public void initVisibilitySpot(boolean do_reset) {
+        if (do_reset) {
+            for (Planet planet : planets) {
+                Hex[][] planet_grid = planet.planet_grid.getMapArray();
+                for (int i = 0; i < planet_grid.length; i++) {
+                    for (int j = 0; j < planet_grid[i].length; j++) {
+                        planet_grid[i][j].initVisibility();
+                    }
                 }
-
             }
-
         }
-
 //        for (Structure structure : structures) {
 //            Hex hex = getPlanetGrid(structure.p_idx).getHex(structure.x, structure.y);
 //            hex_proc.hexProc(hex, 5, structure.owner, C.INIT_SPOT);
@@ -223,11 +222,12 @@ public class Game implements Serializable {
             List<Unit>[] stacks = planet.space_stacks;
             for (int i = 0; i < stacks.length; i++) {
                 if (!stacks[i].isEmpty()) {
-                    planet.spotted[i] = true;
+                    int owner = stacks[i].get(0).owner; // loaned ministry
+                    planet.spotted[owner] = true;
                     for (int j = 0; j < stacks.length; j++) {
                         List<Unit> stack = stacks[j];
                         for (Unit unit : stack) {
-                            unit.spotted[i] = true;
+                            unit.spotted[owner] = true;
                         }
 
                     }
@@ -1654,7 +1654,7 @@ public class Game implements Serializable {
             unSpot(selected);
             spotSpace(planet, selected, faction);
             setUnitCoords(true, planet.index, planet.x, planet.y, selected);
-            //need to set it like this :(
+            // which code-monkey did this ?
             setSelectedPointFaction(new Point(planet.x, planet.y), faction, null, null);
             setSelectedPoint(new Point(planet.x, planet.y), faction);
             setSelectedFaction(faction);
@@ -2488,4 +2488,7 @@ public class Game implements Serializable {
         }
     }
 
+    public Regency getRegency() {
+        return regency;
+    }
 }

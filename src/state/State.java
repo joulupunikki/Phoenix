@@ -84,6 +84,9 @@ public abstract class State {
     public void clickOnStackWindow() {
     }
 
+    public void clickOnByzantiumIIWindow(MouseEvent e) {
+    }
+
     public void pressExitButton() {
     }
 

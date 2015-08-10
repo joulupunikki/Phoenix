@@ -446,7 +446,7 @@ public class SpaceMap extends JPanel {
                         dip *= 2;
                     }
                     g2d.drawImage(bi, null, x, y + dip);
-                    Util.writeUnitCount(g2d, ws, nr_spotted, x, y + dip);
+                    Util.writeUnitCount(g2d, ws, nr_spotted, x, y + dip, e.owner != e.prev_owner);
                 }
             }
         }
