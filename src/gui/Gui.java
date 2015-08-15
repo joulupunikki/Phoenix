@@ -351,7 +351,7 @@ public class Gui extends JFrame {
         setUpHouseMenu();
         setUpDiplomacyMenu();
         setUpByzantiumIIMenu();
-        if (game.getEfs_ini().wizard_mode) {
+        if (args.hasOption("wizardmode")) { //game.getEfs_ini().wizard_mode) {
             setUpWizardModeMenu();
         }
         this.setJMenuBar(menubar);
