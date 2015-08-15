@@ -274,6 +274,7 @@ public class Phoenix {
         opts.addOption(null, C.OPT_AUTO_DELAY, true, "Set Robot test auto delay in ms");
         opts.addOption(null, C.OPT_CLEAN_UP_2CLICK, false, "Delay IO and do gc() before 2click");
         opts.addOption(null, C.OPT_GAME_STATE_FILE, true, "Game state record file to check against");
+        opts.addOption(null, C.OPT_MAX_DELAY, true, "Maximum event delay (in ms) during Robot testing");
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
         try {

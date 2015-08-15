@@ -95,9 +95,10 @@ import util.FN;
 public class RobotTester extends Thread {
 
     private static final int AUTO_DELAY;
-
+    private static final int MAX_DELAY;
     static {
         AUTO_DELAY = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_AUTO_DELAY, "40"));
+        MAX_DELAY = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_MAX_DELAY, "1000000"));
     }
     private static final int START_DELAY = 500;
     private static final int WAIT_DELAY = 200;
@@ -613,6 +614,9 @@ public class RobotTester extends Thread {
         }
         // do delay if positive time
         if (delay > 0) {
+            if (delay > MAX_DELAY) {
+                delay = MAX_DELAY;
+            }
             delayedPrint("Delay(ms): " + delay);
             robot.delay(delay);
         }
