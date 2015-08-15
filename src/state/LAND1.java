@@ -68,11 +68,11 @@ public class LAND1 extends State {
 
     public void clickOnPlanetMapButton1(Point p) {
         Point q = game.getSelectedPoint();
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         List<Unit> stack = null;
 
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-        stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
+        stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction.y];
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
             if (unit.selected) {
@@ -104,7 +104,12 @@ public class LAND1 extends State {
             return;
         }
 
-        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction) {
+        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.y) {
+            JOptionPane.showMessageDialog(gui, "Cannot merge loaned stacks.", null, JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+
+        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.x) {
             JOptionPane.showMessageDialog(gui, "Cannot land on another's units.", null, JOptionPane.PLAIN_MESSAGE);
             return;
         }

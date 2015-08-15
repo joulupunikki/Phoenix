@@ -197,11 +197,11 @@ public class PathFind {
                     }
 
                     Hex current_hex = hex_array[i][j];
-                    //if own city move_cost == 1 if enemy city move_cost = 0
+                    //if own city (and not loaned) move_cost == 1 if enemy city move_cost = 0
                     //except when destination hex
                     Structure struct = hex_array[i][j].getStructure();
                     if (struct != null) {
-                        if (struct.owner == faction || current_hex.equals(destination)) {
+                        if (struct.prev_owner == faction || ((struct.owner != faction) && current_hex.equals(destination))) {
                             move_cost = 1;
                         } else {
                             move_cost = 0;
@@ -212,11 +212,12 @@ public class PathFind {
                     // more than 20 own units move_cost = 0
                     List<Unit> stack = hex_array[i][j].getStack();
                     if (Util.stackSize(stack) > 0) {
-                        if (stack.get(0).owner != faction) {
-                            if (!current_hex.equals(destination)) {
+                        if (stack.get(0).prev_owner != faction) {
+                            if (stack.get(0).owner == faction || !current_hex.equals(destination)) {
                                 move_cost = 0;
                             }
                         } else if (Util.stackSize(stack) + stack_size > 20) {
+                            // FIXME ? with this, if movement stops due to unspotted units, we may end with |stack| > 20
                             if (!current_hex.equals(destination)) {
                                 move_cost = 0;
                             }
@@ -240,6 +241,16 @@ public class PathFind {
 
     }
 
+    /**
+     * Unused duplicate of setMoveCosts ?
+     *
+     * @param planet_grid
+     * @param terr_cost
+     * @param tile_set
+     * @param stack_size
+     * @param faction
+     * @param destination
+     */
     public static void setLandingCosts(PlanetGrid planet_grid, double[][][] terr_cost, int tile_set, int stack_size, int faction, Hex destination) {
 
 //        printMoveCost(terr_cost);

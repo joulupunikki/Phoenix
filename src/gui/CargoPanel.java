@@ -186,7 +186,7 @@ public class CargoPanel extends JPanel {
 
         if (u_to == null) {
             u_to = game.createUnitInHex(u_from.p_idx, u_from.x, u_from.y,
-                    u_from.owner, u_from.type, u_from.t_lvl,
+                    u_from.owner, u_from.prev_owner, u_from.type, u_from.t_lvl,
                     u_from.res_relic, 0);
             if (u_to == null) {
                 setNull();

@@ -293,7 +293,7 @@ public class Structure implements Serializable {
                         System.out.println("hex = " + hex);
                         if (hex != null) {
                             Unit unit = game.createUnitInHex(p_idx, hex.getX(),
-                                    hex.getY(), owner, upgraded.type, upgraded.t_lvl,
+                                    hex.getY(), owner, prev_owner, upgraded.type, upgraded.t_lvl,
                                     upgraded.res_relic, upgraded.amount);
                             unit.health = upgraded.health;
 //                            List<Unit> stack = hex.getStack();
@@ -322,7 +322,7 @@ public class Structure implements Serializable {
 
     public void returnResources(Game game, int[] unit) {
         int[] amount = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
-        game.getResources().addResourcesToHex(this.p_idx, this.x, this.y, this.owner, amount);
+        game.getResources().addResourcesToHex(this.p_idx, this.x, this.y, this.owner, this.prev_owner, amount);
     }
 
     /**
@@ -339,7 +339,7 @@ public class Structure implements Serializable {
 
 //            unit = new Unit(p_idx, x, y, owner);
             int[] u_type = build_queue.getFirst();
-            game.createUnitInHex(p_idx, hex.getX(), hex.getY(), owner, u_type[0], u_type[1], 0, 0);
+            game.createUnitInHex(p_idx, hex.getX(), hex.getY(), owner, prev_owner, u_type[0], u_type[1], 0, 0);
 //            unit.type = u_type[0];
 //            unit.t_lvl = u_type[1];
 //            unit.move_points = unit_types[u_type[0]][u_type[1]].move_pts;

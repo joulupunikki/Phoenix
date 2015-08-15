@@ -63,20 +63,20 @@ public class UIW2 extends State {
         System.out.println("e = " + e);
         Unit drag_unit = gui.getDragUnit();
         Point q = e.getPoint();
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         Point p = game.getSelectedPoint();
 
         List<Unit> stack = null;
         boolean[] terrain = null;
         int tile_set = -1;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
             terrain = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getTerrain();
             System.out.println("terrain = " + terrain[C.OCEAN]);
             tile_set = game.getPlanet(game.getCurrentPlanetNr()).tile_set_type;
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
         }
 
         boolean is_cargo_listing = false;
@@ -93,14 +93,14 @@ public class UIW2 extends State {
                         && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     if (!drag_unit.equals(u)) {
                         if (drag_unit.carrier != null) {
-                            if ((faction != -1 && !(drag_unit.move_type == C.MoveType.JUMP
+                            if ((faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE))
                                     && (u.type_data.cargo == 0 || u.cargo_list.size() >= u.type_data.cargo)) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
                                 zeroDragUnit();
                                 return;
-                            } else if (faction == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
+                            } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
                                 zeroDragUnit();
                                 return;
@@ -166,11 +166,11 @@ public class UIW2 extends State {
                         u = iterator.next();
                     } else {
                         if (drag_unit.carrier != null) {
-                            if (faction != -1 && !(drag_unit.move_type == C.MoveType.JUMP
+                            if (faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE)) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
-                            } else if (faction == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
+                            } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
                                 JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
 
                             } else {

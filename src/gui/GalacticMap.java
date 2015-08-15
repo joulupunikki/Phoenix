@@ -127,7 +127,7 @@ public class GalacticMap extends JPanel {
         if (map_type) {
             if (p != null) {
                 p1 = new Point(p);
-                int faction = game.getSelectedFaction();
+                int faction = game.getSelectedFaction().y;
                 q = game.convertSpaceUnit(p1, faction);
             }
         } else {

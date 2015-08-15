@@ -273,7 +273,7 @@ public class Economy implements Serializable {
 
                 if (city.type == i) {
                     resource_amounts = calculateActualProduction(city);
-                    resources.addResourcesToHex(city.p_idx, city.x, city.y, city.owner, resource_amounts);
+                    resources.addResourcesToHex(city.p_idx, city.x, city.y, city.owner, city.prev_owner, resource_amounts);
                 }
             }
         }

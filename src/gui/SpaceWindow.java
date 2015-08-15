@@ -198,7 +198,7 @@ public class SpaceWindow extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
 
         Point selected = game.getSelectedPoint();
-        int faction = game.getSelectedFaction();
+        int faction = game.getSelectedFaction().y;
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
         }

@@ -100,7 +100,7 @@ public class SW2 extends SW {
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
         Planet planet = galaxy_grid[sel.x][sel.y].parent_planet;
 
-        List<Unit> stack = planet.space_stacks[game.getSelectedFaction()];
+        List<Unit> stack = planet.space_stacks[game.getSelectedFaction().y];
         if (stack.get(0).owner != game.getTurn()) {
             return;
         }
@@ -126,7 +126,7 @@ public class SW2 extends SW {
         } else {
             Planet planet2 = galaxy_grid[x1][y1].parent_planet;
             int attacked_faction = galaxy_grid[x1][y1].stack_owner;
-            int faction = game.getSelectedFaction();
+            int faction = game.getSelectedFaction().y;
             if (planet2 == null || !planet.equals(planet2)
                     || !game.checkMoveLeftSpace(stack)) {
                 return;

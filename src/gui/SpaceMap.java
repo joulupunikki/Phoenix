@@ -412,7 +412,7 @@ public class SpaceMap extends JPanel {
             if (gui.getAnimationBlink()) {
                 return;
             } else {
-                owner = game.getSelectedFaction();
+                owner = game.getSelectedFaction().y;
             }
         } else if (owner >= C.LEAGUE) {
             factions = 3;

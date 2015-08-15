@@ -361,12 +361,14 @@ public class SU extends State {
         }
 
         List<Integer> stack_list = new LinkedList<>();
+        List<Integer> controller_list = new LinkedList<>();
         int factions = 3;
         for (int i = 0; i < factions; i++) {
             List<Unit> stack = galaxy_grid[x][y].parent_planet.space_stacks[owner + i];
             if (!stack.isEmpty()) {
                 if (isSpotted(stack)) {
                     stack_list.add(new Integer(owner + i));
+                    controller_list.add(stack.get(0).owner);
                 }
             }
         }
@@ -379,14 +381,17 @@ public class SU extends State {
 //            game.setSelectedPoint(new Point(x, y));
 //            game.setSelectedFaction(stack_list.get(0).intValue());
             game.setSelectedPointFaction(new Point(x, y), stack_list.get(0).intValue(), null, null);
+            game.setSelectedFaction(controller_list.get(0), stack_list.get(0));
         } else {
 
             Object[] options = new Object[size];
             int[] faction_nrs = new int[size];
+            int[] controller_nrs = new int[size];
             for (int i = 0; i < size; i++) {
                 int tmp = stack_list.get(i).intValue();
                 options[i] = Util.getFactionName(tmp);
                 faction_nrs[i] = tmp;
+                controller_nrs[i] = controller_list.get(0);
             }
 
             int j_options = -1;
@@ -435,28 +440,34 @@ public class SU extends State {
 //            dialog.pack();
 //            dialog.setVisible(true);
             int selected_faction = -1;
+            int controller = -1;
 
 //            int n = ((Integer) option_pane.getValue()).intValue();
             switch (n) {
                 case JOptionPane.YES_OPTION:
                     selected_faction = faction_nrs[0];
+                    controller = controller_nrs[0];
                     break;
                 case JOptionPane.NO_OPTION:
                     selected_faction = faction_nrs[1];
+                    controller = controller_nrs[1];
                     break;
                 case JOptionPane.CANCEL_OPTION:
                     selected_faction = faction_nrs[2];
+                    controller = controller_nrs[2];
                     break;
                 default:
                     selected_faction = faction_nrs[0];
+                    controller = controller_nrs[0];
                     break;
             }
 
 //            game.setSelectedPoint(new Point(x, y));
 //            game.setSelectedFaction(selected_faction);
             game.setSelectedPointFaction(new Point(x, y), selected_faction, null, null);
+            game.setSelectedFaction(controller, selected_faction);
         }
-        galaxy_grid[x][y].parent_planet.space_stacks[game.getSelectedFaction()].get(0).selected = true;
+        galaxy_grid[x][y].parent_planet.space_stacks[game.getSelectedFaction().y].get(0).selected = true;
 
         gui.setCurrentState(SW2.get());
 
@@ -464,7 +475,7 @@ public class SU extends State {
 
     public static void spaceToPlanet(Planet planet) {
         Point p = game.getSelectedPoint();
-        int faction = game.getSelectedFaction();
+        int faction = game.getSelectedFaction().y;
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
         List<Unit> stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
         boolean stp_capable = false;
@@ -679,13 +690,13 @@ public class SU extends State {
         int x = q.x;
         int y = q.y;
 
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         List<Unit> stack = null;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
         }
 
         boolean is_cargo_listing = false;
@@ -903,7 +914,7 @@ public class SU extends State {
             stack = game.getPlanetGrid(pod.p_idx).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            faction = pod.owner;
+            faction = pod.prev_owner;
             q = game.resolveSpaceStack(p, faction);
             stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
             System.out.println("q = " + q);
@@ -927,7 +938,7 @@ public class SU extends State {
 
     public static void pressNextStackButtonSU() {
         Point p = game.getSelectedPoint();
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         int current_planet = game.getCurrentPlanetNr();
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
@@ -937,11 +948,11 @@ public class SU extends State {
         }
         if (p != null) {
             List<Unit> stack = null;
-            if (faction == -1) {
+            if (faction.x == -1) {
                 stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
             } else {
                 Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-                stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+                stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
             }
 
             // remove stack from unmoved
@@ -964,29 +975,30 @@ public class SU extends State {
         int y = unit.y;
 //        System.out.println("y = " + y);
         Point point = new Point(x, y);
-        faction = -1;
+        faction = new Point(-1, -1);
         if (unit.in_space) {
 //            System.out.println("unit.in_space = " + unit.in_space);
 //            point = game.resolveSpaceStack(new Point(x, y), unit.prev_owner);
-            faction = unit.owner;
+            faction.x = unit.owner;
+            faction.y = unit.prev_owner;
 //            System.out.println("faction = " + faction);
         }
         game.setCurrentPlanetNr(unit.p_idx);
 //        System.out.println("unit.p_idx = " + unit.p_idx);
-        game.setSelectedPointFaction(point, faction, null, null);
-        game.setSelectedPoint(point, faction);
-        game.setSelectedFaction(faction);
+        game.setSelectedPointFaction(point, faction.x, null, null);
+        game.setSelectedPoint(point, faction.y);
+        game.setSelectedFaction(faction.x, faction.y);
         String name = game.getPlanet(unit.p_idx).name;
 //        System.out.println("name = " + name);
 
         p = game.getSelectedPoint();
 //        System.out.println("p = " + p);
         List<Unit> stack = null;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
 //            System.out.println("stack = " + stack);
         }
 
@@ -1012,29 +1024,30 @@ public class SU extends State {
         int y = unit.y;
         System.out.println("y = " + y);
         Point point = new Point(x, y);
-        int faction = -1;
+        Point faction = new Point(-1, -1);
         if (unit.in_space) {
             System.out.println("unit.in_space = " + unit.in_space);
 //            point = game.resolveSpaceStack(new Point(x, y), unit.prev_owner);
-            faction = unit.owner;
+            faction.x = unit.owner;
+            faction.y = unit.prev_owner;
             System.out.println("faction = " + faction);
         }
         game.setCurrentPlanetNr(unit.p_idx);
         System.out.println("unit.p_idx = " + unit.p_idx);
-        game.setSelectedPointFaction(point, faction, null, null);
-        game.setSelectedPoint(point, faction);
-        game.setSelectedFaction(faction);
+        game.setSelectedPointFaction(point, faction.x, null, null);
+        game.setSelectedPoint(point, faction.y);
+        game.setSelectedFaction(faction.x, faction.y);
         String name = game.getPlanet(unit.p_idx).name;
         System.out.println("name = " + name);
 
         Point p = game.getSelectedPoint();
         System.out.println("p = " + p);
         List<Unit> stack = null;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
             System.out.println("stack = " + stack);
         }
 

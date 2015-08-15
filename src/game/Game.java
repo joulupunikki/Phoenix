@@ -70,8 +70,8 @@ public class Game implements Serializable {
     private static final long serialVersionUID = 1L;
     //coordinates of currently selected hex/square/stack  
     private Point selected_point;
-    //faction of selected space stack
-    private int selected_faction;
+    //faction of selected space stack, x == owner, y == prev_owner
+    private Point selected_faction = new Point(-1, -1);
     // the upper left corner of the planet map
     private Point planet_map_origin;    // Not used? RSW
     private Point space_map_origin;    // Not used? RSW
@@ -1129,12 +1129,12 @@ public class Game implements Serializable {
         if (p == null) {
             return null;
         }
-        int faction = getSelectedFaction();
-        if (faction == -1) {
+        //int faction = getSelectedFaction().x;
+        if (selected_faction.x == -1) {
             stack = getPlanetGrid(getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[selected_faction.y];
             System.out.println("stack = " + stack);
         }
         return stack;
@@ -1604,8 +1604,8 @@ public class Game implements Serializable {
         int y1 = selected_point.y;
         Planet source = galaxy_map[x1][y1].parent_planet;
         Planet destination = galaxy_map[p.x][p.y].planet;
-        List<Unit> stack = source.space_stacks[selected_faction];
-        List<Unit> stack2 = destination.space_stacks[selected_faction];
+        List<Unit> stack = source.space_stacks[selected_faction.y];
+        List<Unit> stack2 = destination.space_stacks[selected_faction.y];
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
             if (unit.selected) {
@@ -1618,10 +1618,10 @@ public class Game implements Serializable {
             for (Unit unit : selected) {
                 unit.move_points = 0;
             }
-            destination.addStack(selected, selected_faction);
-            source.minusStack(selected, selected_faction);
+            destination.addStack(selected, selected_faction.y);
+            source.minusStack(selected, selected_faction.y);
             unSpot(selected);
-            spotSpace(destination, selected, selected_faction);
+            spotSpace(destination, selected, selected_faction.x);
             setUnitCoords(true, destination.index, p.x, p.y, selected);
             rv = true;
         }
@@ -1629,6 +1629,12 @@ public class Game implements Serializable {
         return rv;
     }
 
+    /**
+     * Launch units to space from Planet hex. Note that we can't use
+     * Game.selected_faction here since since a planetary stack is selected.
+     *
+     * @return
+     */
     public boolean launchStack() {
         boolean rv = false;
         Point q = getSelectedPoint();
@@ -1641,23 +1647,24 @@ public class Game implements Serializable {
                 selected.add(unit);
             }
         }
-        int faction = selected.get(0).owner;
+
+        Point selected_faction = new Point(selected.get(0).owner, selected.get(0).prev_owner);
 //        System.out.println("faction = " + faction);
         Planet planet = planets.get(getCurrentPlanetNr());
-        List<Unit> target_stack = planet.space_stacks[faction];
+        List<Unit> target_stack = planet.space_stacks[selected_faction.y];
         Util.unSelectAll(target_stack);
 
         if (Util.stackSize(selected) + Util.stackSize(target_stack) <= 20) {
             subMovePointsSpace(selected);
-            planet.addStack(selected, faction);
+            planet.addStack(selected, selected_faction.y);
             target_hex.minusStack(selected);
             unSpot(selected);
-            spotSpace(planet, selected, faction);
+            spotSpace(planet, selected, selected_faction.x);
             setUnitCoords(true, planet.index, planet.x, planet.y, selected);
             // which code-monkey did this ?
-            setSelectedPointFaction(new Point(planet.x, planet.y), faction, null, null);
-            setSelectedPoint(new Point(planet.x, planet.y), faction);
-            setSelectedFaction(faction);
+            setSelectedPointFaction(new Point(planet.x, planet.y), selected_faction.y, null, null);
+            setSelectedPoint(new Point(planet.x, planet.y), selected_faction.y);
+            //setSelectedFaction(selected.get(0).owner, faction);
 //            System.out.println("selected_point = " + selected_point);
 //            System.out.println("faction = " + faction);
             rv = true;
@@ -1665,13 +1672,19 @@ public class Game implements Serializable {
         return rv;
     }
 
+    /**
+     * Land a space stack, that is merge a space stack with a land stack.
+     *
+     * @param p
+     * @return
+     */
     public boolean landStack(Point p) {
         boolean rv = false;
         Square[][] galaxy_map = getGalaxyMap().getGalaxyGrid();
         int x1 = selected_point.x;
         int y1 = selected_point.y;
         Planet planet = galaxy_map[x1][y1].parent_planet;
-        List<Unit> stack = planet.space_stacks[selected_faction];
+        List<Unit> stack = planet.space_stacks[selected_faction.y];
 
         Hex target_hex = planet.planet_grid.getHex(p.x, p.y);
         List<Unit> stack2 = target_hex.getStack();
@@ -1686,7 +1699,7 @@ public class Game implements Serializable {
         if (Util.stackSize(selected) + Util.stackSize(stack2) <= 20) {
             subMovePointsSpace(selected);
             target_hex.addStack(selected);
-            planet.minusStack(selected, selected_faction);
+            planet.minusStack(selected, selected_faction.y);
             setUnitCoords(false, planet.index, p.x, p.y, selected);
             setSelectedPointFaction(p, -1, null, null);
             unSpot(selected);
@@ -2006,7 +2019,7 @@ public class Game implements Serializable {
     /**
      * @return the selected_faction
      */
-    public int getSelectedFaction() {
+    public Point getSelectedFaction() {
         return selected_faction;
     }
 
@@ -2014,7 +2027,16 @@ public class Game implements Serializable {
      * @param selected_faction the selected_faction to set
      */
     public void setSelectedFaction(int selected_faction) {
-        this.selected_faction = selected_faction;
+        setSelectedFaction(selected_faction, selected_faction);
+    }
+
+    /**
+     * @param selected_faction the selected_faction to set
+     * @param prev_owner the owner of the stack
+     */
+    public void setSelectedFaction(int selected_faction, int prev_owner) {
+        this.selected_faction.x = selected_faction;
+        this.selected_faction.y = prev_owner;
     }
 
     /**
@@ -2072,7 +2094,7 @@ public class Game implements Serializable {
         while (hex != null) {
             if (!hex.getTerrain(C.OCEAN) && hex.getStack().isEmpty() && hex.getStructure() == null) {
                 for (int i = 0; i < C.RES_TYPES; i++) {
-                    createUnitInHex(getCurrentPlanetNr(), hex.getX(), hex.getY(), getTurn(), C.CARGO_UNIT_TYPE, 0, i, 999);
+                    createUnitInHex(getCurrentPlanetNr(), hex.getX(), hex.getY(), getTurn(), getTurn(), C.CARGO_UNIT_TYPE, 0, i, 999);
                 }
                 break;
             }
@@ -2182,13 +2204,13 @@ public class Game implements Serializable {
      * @return New unit.
      *
      */
-    public Unit createUnitInHex(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount) {    //RSW
+    public Unit createUnitInHex(int p_idx, int x, int y, int owner, int prev_owner, int type, int t_lvl, int res_relic, int amount) {    //RSW
 
         Hex hex = getHexFromPXY(p_idx, x, y);
         List<Unit> stack = hex.getStack();
 
         if (Util.stackSize(stack) < 20) {    // If stack not full, create new unit
-            Unit unit = new Unit(p_idx, x, y, owner, type, t_lvl, res_relic, amount, this);
+            Unit unit = new Unit(p_idx, x, y, owner, prev_owner, type, t_lvl, res_relic, amount, this);
 
             units.add(unit);    // Add new unit to the general unit list
             hex.placeUnit(unit);    // Add new unit to the stack

@@ -74,18 +74,18 @@ public class UIW1 extends State {
 
     public void clickButton3(Point q) {
 
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         Point p = game.getSelectedPoint();
 //        int[][] unit_icons = Gui.getUnitIcons();
 //        BufferedImage bi = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
 //        WritableRaster wr = bi.getRaster();
 //        int[] pixel_data = new int[1];
         List<Unit> stack = null;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
         }
         if (game.getTurn() != stack.get(0).owner) {
 
@@ -163,18 +163,18 @@ public class UIW1 extends State {
 
     public void clickButton1(Point q) {
 
-        int faction = game.getSelectedFaction();
+        Point faction = game.getSelectedFaction();
         Point p = game.getSelectedPoint();
 //        int[][] unit_icons = Gui.getUnitIcons();
 //        BufferedImage bi = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
 //        WritableRaster wr = bi.getRaster();
 //        int[] pixel_data = new int[1];
         List<Unit> stack = null;
-        if (faction == -1) {
+        if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
         }
 
         if (stack.get(0).owner != game.getTurn()) {

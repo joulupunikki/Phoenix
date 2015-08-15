@@ -268,10 +268,10 @@ public class Resources implements Serializable {
      * @param owner Faction number of new owner
      * @param amount[] Array of resource amounts to add, one per resource type
      */
-    public void addResourcesToHex(int p_idx, int x, int y, int owner, int[] amount) {
+    public void addResourcesToHex(int p_idx, int x, int y, int owner, int prev_owner, int[] amount) {
 
         for (int type = 0; type < C.RES_TYPES; type++) {
-            addOneResourceTypeToHex(p_idx, x, y, owner, type, amount[type]);
+            addOneResourceTypeToHex(p_idx, x, y, owner, prev_owner, type, amount[type]);
         }
     }
 
@@ -284,7 +284,7 @@ public class Resources implements Serializable {
      * @param resource_type Type of resource
      * @param amount Amount to be added
      */
-    public void addOneResourceTypeToHex(int p_idx, int x, int y, int owner, int resource_type, int amount) {
+    public void addOneResourceTypeToHex(int p_idx, int x, int y, int owner, int prev_owner, int resource_type, int amount) {
 
         List<Unit> stack = game.getHexFromPXY(p_idx, x, y).getStack();    // Get the stack in the hex
 
@@ -303,7 +303,7 @@ public class Resources implements Serializable {
             // Now unit = null or suitable pod
 
             if (unit == null) {    // Need a new pod, so create an empty one
-                unit = game.createUnitInHex(p_idx, x, y, owner, C.CARGO_UNIT_TYPE, 0, resource_type, 0);
+                unit = game.createUnitInHex(p_idx, x, y, owner, prev_owner, C.CARGO_UNIT_TYPE, 0, resource_type, 0);
                 if (unit == null) {
                     break;    // But couldn't create unit in this hex, so give up on this resource type
                 }
@@ -598,7 +598,7 @@ public class Resources implements Serializable {
                         if (unit_type == C.MoveType.NAVAL.ordinal()) {
                             continue;    // Skip Naval types
                         }
-                        Unit unit = game.createUnitInHex(p_idx, x, y, faction, unit_type, 0, 0, 0);
+                        Unit unit = game.createUnitInHex(p_idx, x, y, faction, faction, unit_type, 0, 0, 0);
 
                         unit_type++;
                         if (unit_type > 91) {

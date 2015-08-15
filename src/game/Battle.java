@@ -714,13 +714,13 @@ public class Battle implements Serializable {
      */
     public void combatReportPre(CombatReport report) {
         for (Unit unit : combat_stack_a) {
-            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.type, unit.t_lvl, 0, 0, game);
+            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.prev_owner, unit.type, unit.t_lvl, 0, 0, game);
             copy.health = unit.health;
             copy.in_space = unit.in_space;
             report.attacker.add(copy);
         }
         for (Unit unit : combat_stack_b) {
-            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.type, unit.t_lvl, 0, 0, game);
+            Unit copy = new Unit(unit.p_idx, unit.x, unit.y, unit.owner, unit.prev_owner, unit.type, unit.t_lvl, 0, 0, game);
             copy.health = unit.health;
             copy.in_space = unit.in_space;
             report.defender.add(copy);

@@ -194,7 +194,7 @@ public class UnitInfoWindow extends JPanel {
     }
 
     public void drawUnits(Graphics g) {
-        int faction = game.getSelectedFaction();
+        int faction = game.getSelectedFaction().x;
         Point p = game.getSelectedPoint();
         int[][] unit_icons = Gui.getUnitIcons();
         BufferedImage bi = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
@@ -205,7 +205,7 @@ public class UnitInfoWindow extends JPanel {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
+            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[game.getSelectedFaction().y];
         }
 
         if (game.getTurn() != stack.get(0).owner) {
@@ -288,7 +288,6 @@ public class UnitInfoWindow extends JPanel {
     }
 
     public void drawDraggedUnit(Graphics g) {
-        int faction = game.getSelectedFaction();
         Point p = gui.getDragPoint();
         if (p == null) {
             return;
@@ -298,25 +297,7 @@ public class UnitInfoWindow extends JPanel {
         BufferedImage bi = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         WritableRaster wr = bi.getRaster();
         int[] pixel_data = new int[1];
-//        List<Unit> stack = null;
-//        if (faction == -1) {
-//            stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
-//        } else {
-//            Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-//            stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
-//        }
-//
-//        Iterator<Unit> iterator = stack.listIterator();
-//        Unit e = iterator.next();
         Graphics2D g2d = (Graphics2D) g;
-
-//        for (int i = 0; i < C.STACK_WINDOW_UNITS_Y; i++) {
-//            for (int j = 0; j < C.STACK_WINDOW_UNITS_X; j++) {
-//                g.setColor(Color.BLACK);
-//                g.fillRect((int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size),
-//                        (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size),
-//                        3 * ws.unit_icon_size,
-//                        ws.unit_icon_size);
         int color = Util.getOwnerColor(u.owner);
         if (u.selected) {
             color += 3;

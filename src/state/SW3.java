@@ -113,7 +113,7 @@ public class SW3 extends SW {
                         || (jump_path.getX1() == x2 && jump_path.getY1() == y2
                         && jump_path.getX2() == x1 && jump_path.getY2() == y1)) {
                     boolean jump_capable = false;
-                    List<Unit> stack = planet.space_stacks[game.getSelectedFaction()];
+                    List<Unit> stack = planet.space_stacks[game.getSelectedFaction().y];
                     for (Unit unit : stack) {
                         if (unit.selected && unit.move_points > 0
                                 && (unit.move_type == C.MoveType.JUMP || unit.move_type == C.MoveType.LANDER)) {
@@ -129,7 +129,7 @@ public class SW3 extends SW {
                     }
                     if (game.moveSpaceStack(p)) {
                         game.setJumpPath(null);
-                        game.setSelectedPoint(p, game.getSelectedFaction());
+                        game.setSelectedPoint(p, game.getSelectedFaction().y);
                         Planet p2 = galaxy_grid[x1][y1].planet;
                         Point smo = Util.resolveSpaceMapOrigin(new Point(p2.x, p2.y), ws);
                         game.setSpaceMapOrigin(smo);

@@ -266,12 +266,13 @@ public class Unit implements Serializable {
      *
      * Other Unit fields will be set to defaults. --RSW
      */
-    public Unit(int p_idx, int x, int y, int owner, int type, int t_lvl, int res_relic, int amount, Game game) {
+    public Unit(int p_idx, int x, int y, int owner, int prev_owner, int type, int t_lvl, int res_relic, int amount, Game game) {
 
         this.p_idx = p_idx;
         this.x = x;
         this.y = y;
         this.owner = owner;
+        this.prev_owner = prev_owner;
         this.type = type;
         this.t_lvl = t_lvl;
         this.res_relic = res_relic;
