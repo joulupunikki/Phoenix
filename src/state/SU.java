@@ -191,6 +191,7 @@ public class SU extends State {
 
             if (isSpotted(stack)) {
                 game.setSelectedPointFaction(new Point(map_point_x, map_point_y), -1, null, null);
+//                game.setSelectedFaction(stack.get(0).owner, stack.get(0).prev_owner);
 //                stack.get(0).selected = true;
                 List<Unit> spotted = new LinkedList<>();
                 boolean selected = false;
@@ -811,7 +812,7 @@ public class SU extends State {
         }
 
         long time = System.currentTimeMillis();
-        PathFind.setMoveCosts(planet_grid, terr_cost, tile_set, Util.stackSize(selected), selected.get(0).owner, destination);
+        PathFind.setMoveCosts(planet_grid, terr_cost, tile_set, Util.stackSize(selected), selected.get(0).owner, selected.get(0).prev_owner, destination);
         System.out.println("time = " + (System.currentTimeMillis() - time));
 
         UnitType[][] unit_types = game.getUnitTypes();
@@ -1115,8 +1116,12 @@ public class SU extends State {
         if (!is_carrier) {
             return false;
         }
-        // if all units can be cargo and have at least 1 move left
+        // test for legal mixing of units
         List<Unit> origin_stack = origin_hex.getStack();
+        if (!target_stack.isEmpty() && target_stack.get(0).prev_owner != origin_stack.get(0).prev_owner) {
+            return false;
+        }
+        // if all units can be cargo and have at least 1 move left
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : origin_stack) {
             if (unit.selected) {
@@ -1247,6 +1252,10 @@ public class SU extends State {
         if (!is_embarked) {
             return false;
         }
+        List<Unit> target_stack = target_hex.getStack();
+        if (!target_stack.isEmpty() && target_stack.get(0).prev_owner != selected.get(0).prev_owner) {
+            return false;
+        }
         // ask for action
         Object[] options = {"O.K.", "Cancel"};
         int choice = JOptionPane.showOptionDialog(gui,
@@ -1269,7 +1278,6 @@ public class SU extends State {
                 }
             }
         }
-        List<Unit> target_stack = target_hex.getStack();
         if (nr_disembarked + Util.stackSize(target_stack) > C.STACK_SIZE) {
             gui.showInfoWindow("Too many units in the destination area.");
             return true;

@@ -411,7 +411,7 @@ public class Battle implements Serializable {
                 skip = true;
                 //System.out.println("stack_size");
             } else if (stack_size > 0) {
-                if (unit_b.owner != hex.getStack().get(0).owner) {
+                if (unit_b.prev_owner != hex.getStack().get(0).prev_owner) {
                     skip = true;
                     //System.out.println("owner");
                 }
@@ -790,10 +790,10 @@ public class Battle implements Serializable {
 
         if (combat_type.equals(C.GROUND_COMBAT)) {
             if (game.isCapture()) {
-                game.capture();
+                game.capture(game.getSelectedPoint());
                 Structure city = path.get(1).getStructure();
                 if (city != null) {
-                    game.captureCity(city, stack_a.get(0).owner);
+                    game.captureCity(city, stack_a.get(0).owner, stack_a.get(0).prev_owner);
                 }
             }
         }

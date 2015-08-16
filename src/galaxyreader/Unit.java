@@ -105,6 +105,14 @@ public class Unit implements Serializable {
 
     public int turns_starving;    // RSW added
 
+    /**
+     * For testing purposes only, doesn't set all unit details.
+     *
+     * @param p_idx
+     * @param x
+     * @param y
+     * @param owner
+     */
     public Unit(int p_idx, int x, int y, int owner) {
         this.p_idx = p_idx;
         this.x = x;

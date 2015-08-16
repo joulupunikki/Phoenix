@@ -114,7 +114,9 @@ public class ByzII extends State {
         }
         for (Structure s1 : s) {
             if (s1.prev_owner == ministry) {
+                game.getEconomy().updateProdConsForCity(s1, false);
                 s1.owner = faction;
+                game.getEconomy().updateProdConsForCity(s1, true);
             }
         }
     }

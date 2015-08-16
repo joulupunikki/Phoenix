@@ -126,7 +126,7 @@ public class SW2 extends SW {
         } else {
             Planet planet2 = galaxy_grid[x1][y1].parent_planet;
             int attacked_faction = galaxy_grid[x1][y1].stack_owner;
-            int faction = game.getSelectedFaction().y;
+            int attacking_faction = game.getSelectedFaction().x;
             if (planet2 == null || !planet.equals(planet2)
                     || !game.checkMoveLeftSpace(stack)) {
                 return;
@@ -137,9 +137,9 @@ public class SW2 extends SW {
                 List<Integer> stack_list = new LinkedList<>();
                 int factions = 3;
                 for (int i = 0; i < factions; i++) {
-                    if (!galaxy_grid[x1][y1].parent_planet.space_stacks[attacked_faction + i].isEmpty()) {
+                    if (!planet2.space_stacks[attacked_faction + i].isEmpty()) {
 
-                        if (attacked_faction + i != faction) {
+                        if (planet2.space_stacks[attacked_faction + i].get(0).owner != attacking_faction) {
                             stack_list.add(new Integer(attacked_faction + i));
                         }
                     }
@@ -201,8 +201,8 @@ public class SW2 extends SW {
 
                 }
             }
-
-            if (attacked_faction == faction || planet.space_stacks[attacked_faction].isEmpty()) {
+            // why is this here ? all the checks are performed allready ...
+            if (attacked_faction == attacking_faction || planet.space_stacks[attacked_faction].isEmpty()) {
                 return;
             }
 

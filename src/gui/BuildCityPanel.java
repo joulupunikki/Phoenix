@@ -167,7 +167,7 @@ public class BuildCityPanel extends JPanel {
                     return;
                 }
 
-                Structure new_city = game.createCity(unit.owner, unit.p_idx, unit.x, unit.y, city_type, 50);
+                Structure new_city = game.createCity(unit.owner, unit.prev_owner, unit.p_idx, unit.x, unit.y, city_type, 50);
 //                hex.placeStructure(new_city);
 //                game.getStructures().add(new_city);
                 game.deleteUnitNotInCombat(unit);

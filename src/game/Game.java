@@ -1085,7 +1085,7 @@ public class Game implements Serializable {
         return rv;
     }
 
-    public void capture() {
+    public void capture(Point captor_faction) {
 
         List<Unit> stack = path.get(1).getStack();
 
@@ -1093,7 +1093,7 @@ public class Game implements Serializable {
 
         Unit u = iter.next();
         while (u != null) {
-            changeOwnerOfUnit(turn, u);
+            changeOwnerOfUnit(captor_faction, u);
             u.spotted[turn] = true;
             u = iter.next();
         }
@@ -1267,13 +1267,13 @@ public class Game implements Serializable {
             }
             Structure city_h = hex.getStructure();
             if (city_h != null) {
-                if (city_h.owner != turn) {
+                if (city_h.prev_owner != turn) {
                     continue;
                 }
             }
             List<Unit> stack = hex.getStack();
             if (!stack.isEmpty()) {
-                if (stack.get(0).owner != turn) {
+                if (stack.get(0).prev_owner != turn) {
                     continue;
                 }
             }
@@ -1525,7 +1525,7 @@ public class Game implements Serializable {
     public void unSpot(List<Unit> stack) {
         for (Unit unit : stack) {
             for (int i = 0; i < unit.spotted.length; i++) {
-                if (i != unit.owner) {
+                if (i != unit.owner && i != unit.prev_owner) {
                     unit.spotted[i] = false;
                 }
             }
@@ -1664,7 +1664,7 @@ public class Game implements Serializable {
             // which code-monkey did this ?
             setSelectedPointFaction(new Point(planet.x, planet.y), selected_faction.y, null, null);
             setSelectedPoint(new Point(planet.x, planet.y), selected_faction.y);
-            //setSelectedFaction(selected.get(0).owner, faction);
+            setSelectedFaction(selected_faction.x, selected_faction.y);
 //            System.out.println("selected_point = " + selected_point);
 //            System.out.println("faction = " + faction);
             rv = true;
@@ -2130,10 +2130,11 @@ public class Game implements Serializable {
      * @param city
      * @param new_owner
      */
-    public void captureCity(Structure city, int new_owner) {
+    public void captureCity(Structure city, int new_owner, int new_prev_owner) {
         //subtract prod_cons for old owner
         economy.updateProdConsForCity(city, false);
         city.owner = new_owner;
+        city.prev_owner = new_prev_owner;
         //add prod_cons for new owner
         economy.updateProdConsForCity(city, true);
     }
@@ -2148,8 +2149,8 @@ public class Game implements Serializable {
      * @param y
      * @return
      */
-    public Structure createCity(int owner, int p_idx, int x, int y, int type, int health) {
-        Structure city = new Structure(owner, type, p_idx, x, y, health);
+    public Structure createCity(int owner, int prev_owner, int p_idx, int x, int y, int type, int health) {
+        Structure city = new Structure(owner, prev_owner, type, p_idx, x, y, health);
         Hex hex = getHexFromPXY(p_idx, x, y);
         hex.placeStructure(city);
         structures.add(city);
@@ -2406,7 +2407,7 @@ public class Game implements Serializable {
      * @param new_owner
      * @param unit
      */
-    public void changeOwnerOfUnit(int new_owner, Unit unit) {    //RSW
+    public void changeOwnerOfUnit(Point new_owner, Unit unit) {    //RSW
 
         if (unit.type == C.CARGO_UNIT_TYPE) {
             resources.removeFromPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
@@ -2415,11 +2416,12 @@ public class Game implements Serializable {
         // update food consumption data
         if (unit.type_data.eat && !unit.in_space) {
             resources.addToProdCons(C.CONS, unit.owner, unit.p_idx, C.RES_FOOD, -1);
-            resources.addToProdCons(C.CONS, new_owner, unit.p_idx, C.RES_FOOD, 1);
+            resources.addToProdCons(C.CONS, new_owner.x, unit.p_idx, C.RES_FOOD, 1);
 
         }
 
-        unit.owner = new_owner;
+        unit.owner = new_owner.x;
+        unit.prev_owner = new_owner.y;
 
         if (unit.type == C.CARGO_UNIT_TYPE) {
             resources.addToPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
@@ -2452,7 +2454,7 @@ public class Game implements Serializable {
 
         if (unit.in_space) {
             Planet planet = planets.get(unit.p_idx);
-            stack = planet.space_stacks[unit.owner];
+            stack = planet.space_stacks[unit.prev_owner];
         } else {
             Hex hex = getUnitHex(unit);
             stack = hex.getStack();

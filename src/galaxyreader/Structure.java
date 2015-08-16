@@ -148,9 +148,9 @@ public class Structure implements Serializable {
         this.y = y;
     }
 
-    public Structure(int owner, int type, int p_idx, int x, int y, int health) {
+    public Structure(int owner, int prev_owner, int type, int p_idx, int x, int y, int health) {
         this.owner = owner;
-        this.prev_owner = owner;
+        this.prev_owner = prev_owner;
         this.type = type;
         this.p_idx = p_idx;
         this.x = x;

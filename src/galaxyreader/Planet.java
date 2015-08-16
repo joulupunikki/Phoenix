@@ -205,12 +205,18 @@ public class Planet implements Serializable {
         space_stacks[faction].removeAll(stack);
     }
 
+    /**
+     * Used to place units in space read from GALAXY.GAL at the (re)start of a
+     * game.
+     *
+     * @param e the unit to place
+     */
     public void placeUnit(Unit e) {
 //        if (space_stacks[e.owner] == null) {
 //            space_stacks[e.owner] = new LinkedList<>();
 //        }
 
-        space_stacks[e.owner].add(e);
+        space_stacks[e.prev_owner].add(e);
 
     }
 

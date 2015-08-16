@@ -383,7 +383,11 @@ public class PlanetMap extends JPanel {
 
     private void drawOutlinedText(Graphics g, String name, int dx, int dy, Structure city) {
         g.setFont(ws.font_structure_name_fg);
-        g.setColor(Color.BLACK);
+        if (city.owner == city.prev_owner) {
+            g.setColor(Color.BLACK);
+        } else {
+            g.setColor(Color.WHITE);
+        }
         g.drawString(name, dx + ws.font_structure_name_gap, dy);
         g.drawString(name, dx - ws.font_structure_name_gap, dy);
         g.drawString(name, dx, dy - ws.font_structure_name_gap);

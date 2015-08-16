@@ -30,6 +30,7 @@ package state;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Hex;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -122,12 +123,16 @@ public class PW4 extends PW {
             Hex target_hex = path.get(1);
             Structure city = target_hex.getStructure();
             List<Unit> stack = target_hex.getStack();
-            int f_idx = game.getTurn();
+            Unit moving_unit = game.getSelectedStack().get(0);
+            Point faction = new Point(moving_unit.owner, moving_unit.prev_owner);
             boolean stack_moving = true;
             //1: no city in hex
             if (city == null) {
                 //1.1, 1.2: no units in stack or own units in stack
-                if (stack.isEmpty() || stack.get(0).owner == f_idx) {
+                System.out.println("DEBUG1 " + faction.x);
+
+                if (stack.isEmpty() || stack.get(0).owner == faction.x) {
+                    System.out.println("DEBUG2");
                     tryToMove();
 //                    //1.3:neutral units in stack
 //                } else if (game.isNeutral(stack.get(0).owner)) {
@@ -136,7 +141,7 @@ public class PW4 extends PW {
                 } else {
                     //1.4.1: only non ground combatants in stack
                     if (game.isCapture()) {
-                        game.capture();
+                        game.capture(game.getSelectedPoint());
                         stop();
                         stack_moving = false;
                         //1.4.2: ground combatants in stack
@@ -146,9 +151,9 @@ public class PW4 extends PW {
                     }
                 }
                 //2: own city in hex
-            } else if (city.owner == f_idx) {
+            } else if (city.owner == faction.x) {
                 //2.1, 2.2: no units in stack or own units in stack
-                if (stack.isEmpty() || stack.get(0).owner == f_idx) {
+                if (stack.isEmpty() || stack.get(0).owner == faction.x) {
                     tryToMove();
                 }
                 //2.3, 2.4 not possible
@@ -159,7 +164,7 @@ public class PW4 extends PW {
             } else {
                 //4.1: no units in stack
                 if (stack.isEmpty()) {
-                    game.captureCity(city, f_idx);
+                    game.captureCity(city, faction.x, faction.y);
                     tryToMove();
                     stop();
                     stack_moving = false;
@@ -168,8 +173,8 @@ public class PW4 extends PW {
                 } else {
                     //4.4.1: only non ground combatants in stack
                     if (game.isCapture()) {
-                        game.capture();
-                        game.captureCity(city, f_idx);
+                        game.capture(game.getSelectedPoint());
+                        game.captureCity(city, faction.x, faction.y);
                         stop();
                         stack_moving = false;
                         //4.4.2: ground combatants in stack
