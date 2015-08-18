@@ -701,6 +701,7 @@ public class Util {
         g.drawString("" + ((char) (tech_lvl + e.t_lvl)), x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset);
 
         if (e.carrier != null) {
+            g.setColor(Color.WHITE);
             g.drawString("+", x + 2 * ws.font_unit_icon_offset, y + 8 * ws.font_unit_icon_offset);
         }
 

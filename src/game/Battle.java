@@ -790,7 +790,8 @@ public class Battle implements Serializable {
 
         if (combat_type.equals(C.GROUND_COMBAT)) {
             if (game.isCapture()) {
-                game.capture(game.getSelectedPoint());
+                Point faction = new Point(stack_a.get(0).owner, stack_a.get(0).prev_owner);
+                game.capture(faction);
                 Structure city = path.get(1).getStructure();
                 if (city != null) {
                     game.captureCity(city, stack_a.get(0).owner, stack_a.get(0).prev_owner);

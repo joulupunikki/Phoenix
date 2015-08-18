@@ -69,13 +69,15 @@ public class ByzII extends State {
             case C.STIGMATA:
             case C.THE_SPY:
             case C.FLEET:
-//                if (game.getTurn() != game.getRegency().getRegency()) {
-//                    gui.showInfoWindow("Only the Regent may assign ministries.");
-//                    return;
-//                }
+                if (game.getTurn() != game.getRegency().getRegent()) {
+                    gui.showInfoWindow("Only the Regent may assign ministries!");
+                    return;
+                }
+                break;
+            case C.IMPERIAL: // regent banner
                 break;
             default:
-                break;
+                return;
         }
 
         switch (pos) {
@@ -90,6 +92,9 @@ public class ByzII extends State {
             case C.FLEET:
                 r.setFleet(cycleMinistry(r.getFleet()));
                 setAssets(pos, r.getFleet());
+                break;
+            case C.IMPERIAL:
+                r.setRegent(cycleMinistry(r.getRegent()));
                 break;
             default:
                 throw new AssertionError();
@@ -107,15 +112,20 @@ public class ByzII extends State {
     private void setAssets(int ministry, int faction) {
         List<Unit> u = game.getUnits();
         List<Structure> s = game.getStructures();
+        Point p = new Point(faction, ministry);
+        if (faction == -1) {
+            p.x = ministry;
+        }
+        
         for (Unit u1 : u) {
             if (u1.prev_owner == ministry) {
-                u1.owner = faction;
+                game.changeOwnerOfUnit(p, u1);
             }
         }
         for (Structure s1 : s) {
             if (s1.prev_owner == ministry) {
                 game.getEconomy().updateProdConsForCity(s1, false);
-                s1.owner = faction;
+                s1.owner = p.x;
                 game.getEconomy().updateProdConsForCity(s1, true);
             }
         }
@@ -123,14 +133,17 @@ public class ByzII extends State {
     
     private int getPosition(Point p) {
         int pos = -1;
-        if (181 <= p.y && p.y <= 303) {
-            if (66 <= p.x && p.x <= 185) {
+        if (ws.bz2_ministry_y1 <= p.y && p.y <= ws.bz2_ministry_y2) {
+            if (ws.bz2_stigmata_x1 <= p.x && p.x <= ws.bz2_stigmata_x2) {
                 pos = C.STIGMATA;
-            } else if (261 <= p.x && p.x <= 380) {
+            } else if (ws.bz2_eye_x1 <= p.x && p.x <= ws.bz2_eye_x2) {
                 pos = C.THE_SPY;
-            } else if (456 <= p.x && p.x <= 575) {
+            } else if (ws.bz2_fleet_x1 <= p.x && p.x <= ws.bz2_fleet_x2) {
                 pos = C.FLEET;
             }
+        } else if (ws.bz2_regent_x1 <= p.x && p.x <= ws.bz2_regent_x2
+                && ws.bz2_regent_y1 <= p.y && p.y <= ws.bz2_regent_y2) {
+            pos = C.IMPERIAL; // using faction ID of IMPERIAL for regent
         }
         return pos;
     }

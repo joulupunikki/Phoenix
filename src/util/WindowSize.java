@@ -469,6 +469,20 @@ public class WindowSize {
     public int us_a_value_x1 = 65;
     public int us_a_value_x2 = 129;
 
+    // byzantium II screen
+    public int bz2_ministry_y1 = 181;
+    public int bz2_ministry_y2 = 303;
+    public int bz2_stigmata_x1 = 66;
+    public int bz2_stigmata_x2 = 185;
+    public int bz2_eye_x1 = 261;
+    public int bz2_eye_x2 = 380;
+    public int bz2_fleet_x1 = 456;
+    public int bz2_fleet_x2 = 575;
+    public int bz2_regent_x1 = bz2_eye_x1;
+    public int bz2_regent_x2 = bz2_eye_x2;
+    public int bz2_regent_y1 = 32;
+    public int bz2_regent_y2 = 154;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -881,6 +895,19 @@ public class WindowSize {
             us_a_name_h *= 2;
             us_a_value_x1 *= 2;
             us_a_value_x2 *= 2;
+
+            bz2_ministry_y1 *= 2;
+            bz2_ministry_y2 *= 2;
+            bz2_stigmata_x1 *= 2;
+            bz2_stigmata_x2 *= 2;
+            bz2_eye_x1 *= 2;
+            bz2_eye_x2 *= 2;
+            bz2_fleet_x1 *= 2;
+            bz2_fleet_x2 *= 2;
+            bz2_regent_x1 *= 2;
+            bz2_regent_x2 *= 2;
+            bz2_regent_y1 *= 2;
+            bz2_regent_y2 *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

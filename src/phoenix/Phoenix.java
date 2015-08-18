@@ -73,6 +73,15 @@ public class Phoenix {
     private static String last_jmenu = null;
     private static Gui gui = null;
     private static PrintWriter input_log_writer;
+    /**
+     * true iff Phoenix is doing an arbitrarily long task with user input
+     * dependent length (such as stack moving with animation, which can be
+     * stopped by user input at any point along the movement path) and wait
+     * times should not be culled. Will be set by Phoenix event handlers which
+     * start such tasks. Will be reset by after MousePressed event logged in an
+     * AWTEventListener which is set in Phoenix.main.
+     */
+    private static boolean is_real_time = false;
 
     static {
         start_time = System.nanoTime();
@@ -207,6 +216,7 @@ public class Phoenix {
                             log_mouse_move = false;
                         }
                         logDispatched(details, event);
+                        is_real_time = false;
                         break;
                     case MouseEvent.MOUSE_RELEASED:
                         // if not on a JMenu, disable mouse move logging
@@ -229,6 +239,9 @@ public class Phoenix {
             private void logDispatched(String details, AWTEvent event) {
                 int number = ++event_number;
                 int time = (int) ((System.nanoTime() - start_time) / 1_000_000);
+                if (is_real_time) {
+                    number *= -1;
+                }
                 String logged = number + " " + time + " " + details;
                 // logging delayed during 2click sequences
                 if (RobotTester.isDelayedLogging()) {
@@ -313,6 +326,10 @@ public class Phoenix {
 
     public static void setGui(Gui g) {
         gui = g;
+    }
+
+    public static void setRealTime() {
+        Phoenix.is_real_time = true;
     }
 
     static void flushLogMessages() {

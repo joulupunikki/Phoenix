@@ -38,7 +38,7 @@ public class Regency implements Serializable {
     private static final long serialVersionUID = 1L;
 
     // -1 if unassigned, faction ID otherwise
-    private int regency = -1;
+    private int regent = -1;
     private int garrison = -1;
     private int eye = -1;
     private int fleet = -1;
@@ -86,17 +86,17 @@ public class Regency implements Serializable {
     }
 
     /**
-     * @return the regency
+     * @return the regent
      */
-    public int getRegency() {
-        return regency;
+    public int getRegent() {
+        return regent;
     }
 
     /**
-     * @param regency the regency to set
+     * @param regent the regent to set
      */
-    public void setRegency(int regency) {
-        this.regency = regency;
+    public void setRegent(int regent) {
+        this.regent = regent;
     }
 
 }

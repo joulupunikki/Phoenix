@@ -28,6 +28,7 @@
 package gui;
 
 import game.Game;
+import game.Regency;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -96,10 +97,53 @@ public class ByzantiumIIWindow extends JPanel {
     }
 
     public void renderWindow(Graphics g) {
+        drawBackground(g);
+        drawDetails(g);
+    }
+    
+    private void drawBackground(Graphics g) {
         byte[][] pallette = gui.getPallette();
         BufferedImage bi = Util.loadImage(FN.S_BYZSECU_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(bi, null, 0, 0);       
+        g2d.drawImage(bi, null, 0, 0);
     }
 
+    private void drawDetails(Graphics g) {
+        Regency regency = game.getRegency();
+
+        drawMinistryDetails(g, C.STIGMATA, regency.getGarrison());
+        drawMinistryDetails(g, C.THE_SPY, regency.getEye());
+        drawMinistryDetails(g, C.FLEET, regency.getFleet());
+        drawMinistryDetails(g, C.IMPERIAL, regency.getRegent());
+    }
+
+    private void drawMinistryDetails(Graphics g, int ministry, int house) {
+        final int X_OFF = 10;
+        final int Y_OFF = 20;
+        int x = X_OFF;
+        int y = Y_OFF + ws.bz2_ministry_y1;
+        switch (ministry) {
+            case C.STIGMATA:
+                x += ws.bz2_stigmata_x1;
+                break;
+            case C.THE_SPY:
+                x += ws.bz2_eye_x1;
+                break;
+            case C.FLEET:
+                x += ws.bz2_fleet_x1;
+                break;
+            case C.IMPERIAL:
+                y = Y_OFF + ws.bz2_regent_y1;
+                x += ws.bz2_regent_x1;
+                break;
+            default:
+                throw new AssertionError();
+        }
+        String officer = "vacant";
+        if (house > -1) {
+            officer = Util.getFactionName(house);
+        }
+        g.setColor(C.COLOR_GOLD);
+        g.drawString(officer, x, y);
+    }
 }

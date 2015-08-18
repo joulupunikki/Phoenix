@@ -141,7 +141,7 @@ public class PW4 extends PW {
                 } else {
                     //1.4.1: only non ground combatants in stack
                     if (game.isCapture()) {
-                        game.capture(game.getSelectedPoint());
+                        game.capture(faction);
                         stop();
                         stack_moving = false;
                         //1.4.2: ground combatants in stack
@@ -173,7 +173,7 @@ public class PW4 extends PW {
                 } else {
                     //4.4.1: only non ground combatants in stack
                     if (game.isCapture()) {
-                        game.capture(game.getSelectedPoint());
+                        game.capture(faction);
                         game.captureCity(city, faction.x, faction.y);
                         stop();
                         stack_moving = false;

@@ -65,6 +65,17 @@ import util.FN;
  *
  * Notes on running:
  *
+ * As the events created by the RobotTester will not have identical timing with
+ * the originals, and OS-level/JVM interference will cause the game to have
+ * slightly different response times between executions with identical inputs,
+ * the tests have an unavoidable statistical characteristic: a test may fail
+ * from time to time with no apparent reason. False positives, however, should
+ * have astronomically low chance of occurring. Example: a timing difference may
+ * cause a double click to register as two single clicks and depending on the
+ * game state the test may fail right there (note however that this specific
+ * thing has been mitigated by setting the programmed inter-event delay between
+ * double click mouse events to well below the JVM double click threshold.)
+ *
  * If, on the test machine, some object has the focus when a Robot test is
  * started then the first mouse click will be consumed by giving focus to the
  * Phoenix window. Currently, this is not considered in RobotTester code and the
@@ -431,9 +442,9 @@ public class RobotTester extends Thread {
                 long result = FileUtils.checksumCRC32(FileUtils.getFile(FN.S_GAME_STATE_RECORD_FILE));
                 System.out.println("Expected end state  CRC32 = " + expect);
                 System.out.println("Resultant end state CRC32 = " + result);
+                System.out.println("State file: " + this.state_file.getName());
                 if (expect != result) {
-                    test_completed_succesfully = false;
-                    System.out.println("State file: " + this.state_file.getName());
+                    test_completed_succesfully = false; 
                     System.out.println("------ Game end states do not match !!! ----");
                 }
             } catch (IOException ex) {
@@ -525,7 +536,7 @@ public class RobotTester extends Thread {
             int_vals[i] = Integer.parseInt(tokens[i]);
         }
         // int values requiring strict match
-        if (int_vals[NUMBER_IDX] != d[NUMBER_IDX]
+        if (Math.abs(int_vals[NUMBER_IDX]) != Math.abs(d[NUMBER_IDX])
                 || int_vals[ID_IDX] != d[ID_IDX]
                 || int_vals[BUTTON_IDX] != d[BUTTON_IDX]
                 || int_vals[CLICK_COUNT_IDX] != d[CLICK_COUNT_IDX]) {
@@ -569,7 +580,7 @@ public class RobotTester extends Thread {
         System.out.println("Robot autodelay: " + AUTO_DELAY + "ms");
     }
 
-    private void setDelay(int time, int id, int double_click, int[] p) {
+    private void setDelay(int time, int id, boolean real_time, int double_click, int[] p) {
 
         // delay between events, - AUTO_DELAY
         int delay = p[TIME_IDX];
@@ -579,6 +590,7 @@ public class RobotTester extends Thread {
             delay = START_DELAY;
         }
         // ensure multi clicks will be registered as such
+        int tmp = delay;
         int current_time = (int) (System.currentTimeMillis() - start_time);
         if (double_click > 1) {
             switch (id) {
@@ -614,7 +626,11 @@ public class RobotTester extends Thread {
         }
         // do delay if positive time
         if (delay > 0) {
-            if (delay > MAX_DELAY) {
+            // for real time
+            if (real_time && id != MouseEvent.MOUSE_RELEASED) {
+                System.out.println("Real time delay");
+                delay = tmp;
+            } else if (delay > MAX_DELAY) {
                 delay = MAX_DELAY;
             }
             delayedPrint("Delay(ms): " + delay);
@@ -656,7 +672,7 @@ public class RobotTester extends Thread {
                     break;
             }
         }
-        setDelay(time, id, double_click, p);
+        setDelay(time, id, (number < 0), double_click, p);
         // implicit mouse motion
         if (id != MouseEvent.MOUSE_DRAGGED && id != MouseEvent.MOUSE_MOVED
                 && (x != p[X_IDX] || y != p[Y_IDX])) {

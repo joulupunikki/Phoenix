@@ -2003,6 +2003,7 @@ public class Gui extends JFrame {
     }
 
     public void startStackMove() {
+        Phoenix.setRealTime();
         setStack_move_counter(0);
         setStack_moving(true);
         setStop_stack(false);
