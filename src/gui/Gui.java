@@ -163,6 +163,8 @@ public class Gui extends JFrame {
     private JMenuItem menu_load;
     private JMenuItem menu_save;
     private JMenuItem menu_restart;
+    private JMenuItem menu_save_as;
+    private JMenuItem menu_options;
     private JMenu orders_menu;
     private JMenuItem menu_build;
     private JMenuItem menu_research;
@@ -292,59 +294,7 @@ public class Gui extends JFrame {
         no_menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
 
         menubar = new JMenuBar();
-        file_menu = new JMenu("File");
-        menu_exit = new JMenuItem("Exit Game");
-        menu_load = new JMenuItem("Load Game");
-        menu_save = new JMenuItem("Save Game");
-        menu_restart = new JMenuItem("Restart");
-
-        menubar.setBackground(Color.DARK_GRAY);
-        file_menu.setBackground(Color.DARK_GRAY);
-        menu_exit.setBackground(Color.DARK_GRAY);
-        menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-
-        file_menu.setForeground(C.COLOR_GOLD);
-        menu_exit.setForeground(C.COLOR_GOLD);
-        menu_exit.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (RobotTester.isRobotTest()) {
-                    System.out.println("Phoenix: RobotTester detected, waiting for robot shutdown");
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ex) {
-                    }
-                    System.out.println("Phoenix: Exiting ...");
-                }
-
-                game.record(FN.S_GAME_STATE_RECORD_FILE);
-                System.exit(0);
-            }
-        });
-        menu_load.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadGame();
-
-            }
-        });
-        menu_save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                saveGame();
-
-            }
-        });
-        menu_restart.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                toMainMenu();
-
-            }
-        });
-
-        file_menu.add(menu_save);
-        file_menu.add(menu_load);
-        file_menu.add(menu_restart);
-        file_menu.add(menu_exit);
-
-        menubar.add(file_menu);
+        setUpFileMenu();
         setUpOrdersMenu();
         setUpMessagesMenu();
         setUpArchivesMenu();
@@ -605,6 +555,78 @@ public class Gui extends JFrame {
         Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
         cycle_timer.start();
 
+    }
+
+    private void setUpFileMenu() {
+        file_menu = new JMenu("File");
+        menu_exit = new JMenuItem("Exit");
+        menu_load = new JMenuItem("Load");
+        menu_save = new JMenuItem("Save");
+        menu_save_as = new JMenuItem("Save As");
+        menu_restart = new JMenuItem("Restart");
+        menu_options = new JMenuItem("Options");
+        menubar.setBackground(Color.DARK_GRAY);
+        file_menu.setBackground(Color.DARK_GRAY);
+        menu_exit.setBackground(Color.DARK_GRAY);
+        menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+
+        file_menu.setForeground(C.COLOR_GOLD);
+        menu_exit.setForeground(C.COLOR_GOLD);
+        menu_exit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int ret_val = 0;
+                int robot_wait = 10000;
+                if (RobotTester.isRobotTest()) {
+                    System.out.println("Phoenix: RobotTester detected, waiting " + robot_wait + " ms for test shutdown");
+                    try {
+                        Thread.sleep(robot_wait);
+                    } catch (InterruptedException ex) {
+                    }
+                    System.out.println("Phoenix: RobotTester not finished in " + robot_wait + " ms, exiting ...");
+                    ret_val = 1;
+                } else {
+                    game.record(FN.S_GAME_STATE_RECORD_FILE);
+                }
+                System.exit(ret_val);
+            }
+        });
+        menu_load.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loadGame();
+
+            }
+        });
+        menu_save.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showInfoWindow("Not implemented yet, use \"Save As\"");
+            }
+        });
+        menu_save_as.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                saveGame();
+
+            }
+        });
+        menu_options.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                showInfoWindow("Not implemented yet");
+            }
+        });
+        menu_restart.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                toMainMenu();
+
+            }
+        });
+
+        file_menu.add(menu_save);
+        file_menu.add(menu_save_as);
+        file_menu.add(menu_load);
+        file_menu.add(menu_restart);
+        file_menu.add(menu_options);
+        file_menu.add(menu_exit);
+
+        menubar.add(file_menu);
     }
 
     public static CommandLine getMainArgs() {

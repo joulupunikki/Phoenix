@@ -145,19 +145,19 @@ public class HexProc implements Serializable {
             for (int i = 0; i < terrain.length; i++) {
                 if (terrain[i]) {
                     camo_mod *= (unit_spot[i][this.planet.tile_set_type][unit1.move_type.ordinal()] / 2);
-                    if (unit1.type == 49) {
-                        System.out.println("i = " + i);
-                        System.out.println("camo_mod = " + camo_mod);
-                    }
+//                    if (unit1.type == 49) {
+//                        System.out.println("i = " + i);
+//                        System.out.println("camo_mod = " + camo_mod);
+//                    }
                 }
 
             }
             if (hex.getStructure() != null) {
                 camo_mod *= (unit_spot[C.STRUCTURE][this.planet.tile_set_type][unit1.move_type.ordinal()] / 2);
-                if (unit1.type == 49) {
-                    System.out.println("structure");
-                    System.out.println("camo_mod = " + camo_mod);
-                }
+//                if (unit1.type == 49) {
+//                    System.out.println("structure");
+//                    System.out.println("camo_mod = " + camo_mod);
+//                }
             }
             int final_camo = (int) (unit1.type_data.camo * camo_mod);
             if (final_spot >= final_camo) {

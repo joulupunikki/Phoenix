@@ -91,7 +91,7 @@ public class PathFind {
 //            path.add(h);
 //           System.out.println("XXX");
             if (h.equals(destination)) {
-                System.out.println("time = " + (System.currentTimeMillis() - time));
+                //System.out.println("time = " + (System.currentTimeMillis() - time));
                 return getPath(h);
             }
 
@@ -130,7 +130,7 @@ public class PathFind {
             h = h.getPrevious();
 //             System.out.println("index = " + index++);
         }
-        System.out.println("time = " + (System.currentTimeMillis() - time));
+        //System.out.println("time = " + (System.currentTimeMillis() - time));
         return rv;
     }
 

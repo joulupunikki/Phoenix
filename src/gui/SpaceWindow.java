@@ -110,7 +110,7 @@ public class SpaceWindow extends JPanel {
 
         next_stack.setPressedIcon(next_stack_pressed);
         this.add(next_stack);
-        next_stack.setBounds(ws.unit_order_buttons_x, ws.unit_order_buttons_y,
+        next_stack.setBounds(ws.unit_order_buttons_x + ws.unit_order_buttons_w, ws.unit_order_buttons_y,
                 ws.unit_order_buttons_w, ws.unit_order_buttons_h);
         next_stack.setEnabled(true);
         next_stack.addActionListener(new ActionListener() {
@@ -135,7 +135,7 @@ public class SpaceWindow extends JPanel {
 
         skip_stack.setPressedIcon(skip_stack_pressed);
         this.add(skip_stack);
-        skip_stack.setBounds(ws.unit_order_buttons_x, ws.unit_order_buttons_y + ws.unit_order_buttons_h,
+        skip_stack.setBounds(ws.unit_order_buttons_x, ws.unit_order_buttons_y,
                 ws.unit_order_buttons_w, ws.unit_order_buttons_h);
         skip_stack.setEnabled(true);
         skip_stack.addActionListener(new ActionListener() {

@@ -1135,7 +1135,7 @@ public class Game implements Serializable {
         } else {
             Square[][] galaxy_grid = getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[selected_faction.y];
-            System.out.println("stack = " + stack);
+            //System.out.println("stack = " + stack);
         }
         return stack;
     }
@@ -1511,7 +1511,7 @@ public class Game implements Serializable {
                 move_cost = max_move;
             }
             e.move_points -= move_cost;
-            System.out.println("move_cost = " + move_cost);
+            //System.out.println("move_cost = " + move_cost);
         }
 
     }

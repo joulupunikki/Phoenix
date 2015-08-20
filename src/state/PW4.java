@@ -180,7 +180,7 @@ public class PW4 extends PW {
                         //4.4.2: ground combatants in stack
                     } else {
                         combat();
-                        System.out.println("Path: " + game.getPath());
+                        //System.out.println("Path: " + game.getPath());
 //                        game.setPath(path);
 //                        if (target_hex.getStack().isEmpty() || game.isCapture()) {
 //                            game.capture();

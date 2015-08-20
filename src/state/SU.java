@@ -134,7 +134,7 @@ public class SU extends State {
         } else if (map_point_x > 43) {
             map_point_x = map_point_x - C.PLANET_MAP_WIDTH;
         }
-        System.out.println("x, y: " + x + ", " + y);
+        //System.out.println("x, y: " + x + ", " + y);
         return new Point(map_point_x, map_point_y);
 
     }
@@ -177,7 +177,7 @@ public class SU extends State {
         //draw new map location
         gui.getPlanetWindow().repaint();
 
-        System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
+        //System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
     }
 
     public static void clickOnPlanetMapButton3(Point p) {
@@ -813,7 +813,7 @@ public class SU extends State {
 
         long time = System.currentTimeMillis();
         PathFind.setMoveCosts(planet_grid, terr_cost, tile_set, Util.stackSize(selected), selected.get(0).owner, selected.get(0).prev_owner, destination);
-        System.out.println("time = " + (System.currentTimeMillis() - time));
+        //System.out.println("time = " + (System.currentTimeMillis() - time));
 
         UnitType[][] unit_types = game.getUnitTypes();
         LinkedList<Hex> path = null;
@@ -862,7 +862,7 @@ public class SU extends State {
 
         }
 
-        PathFind.printPath(path);
+        //PathFind.printPath(path);
 
         game.setPath(path);
 
@@ -906,8 +906,8 @@ public class SU extends State {
         }
         Unit pod = pods.pop();
         Point p = new Point(pod.x, pod.y);
-        System.out.println("p = " + p);
-        System.out.println("pod x y " + pod.x + " " + pod.y);
+        //System.out.println("p = " + p);
+        //System.out.println("pod x y " + pod.x + " " + pod.y);
         List<Unit> stack = null;
         int faction = -1;
         Point q = null;
@@ -918,8 +918,8 @@ public class SU extends State {
             faction = pod.prev_owner;
             q = game.resolveSpaceStack(p, faction);
             stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
-            System.out.println("q = " + q);
-            System.out.println("stack = " + stack);
+            //System.out.println("q = " + q);
+            //System.out.println("stack = " + stack);
         }
         for (Unit unit : stack) {
             unit.selected = false;
@@ -929,9 +929,9 @@ public class SU extends State {
             pod.carrier.selected = true;
 //            p = q;
         }
-        System.out.println("p = " + p);
+        //System.out.println("p = " + p);
         game.setSelectedPoint(p, faction);
-        System.out.println(game.getSelectedPoint());
+        //System.out.println(game.getSelectedPoint());
         game.setSelectedFaction(faction);
         game.setCurrentPlanetNr(pod.p_idx);
         centerMapOnUnit(pod);
@@ -1021,35 +1021,35 @@ public class SU extends State {
 
         Unit unit = unmoved_units.get(0);
         int x = unit.x;
-        System.out.println("x = " + x);
+        //System.out.println("x = " + x);
         int y = unit.y;
-        System.out.println("y = " + y);
+        //System.out.println("y = " + y);
         Point point = new Point(x, y);
         Point faction = new Point(-1, -1);
         if (unit.in_space) {
-            System.out.println("unit.in_space = " + unit.in_space);
+            //System.out.println("unit.in_space = " + unit.in_space);
 //            point = game.resolveSpaceStack(new Point(x, y), unit.prev_owner);
             faction.x = unit.owner;
             faction.y = unit.prev_owner;
-            System.out.println("faction = " + faction);
+            //System.out.println("faction = " + faction);
         }
         game.setCurrentPlanetNr(unit.p_idx);
-        System.out.println("unit.p_idx = " + unit.p_idx);
+        //System.out.println("unit.p_idx = " + unit.p_idx);
         game.setSelectedPointFaction(point, faction.x, null, null);
         game.setSelectedPoint(point, faction.y);
         game.setSelectedFaction(faction.x, faction.y);
         String name = game.getPlanet(unit.p_idx).name;
-        System.out.println("name = " + name);
+        //System.out.println("name = " + name);
 
         Point p = game.getSelectedPoint();
-        System.out.println("p = " + p);
+        //System.out.println("p = " + p);
         List<Unit> stack = null;
         if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
-            System.out.println("stack = " + stack);
+            //System.out.println("stack = " + stack);
         }
 
         StackIterator iterator = new StackIterator(stack);
@@ -1067,7 +1067,7 @@ public class SU extends State {
         if (unit.in_space) {
             Point smo = Util.resolveSpaceMapOrigin(new Point(unit.x, unit.y), ws);
             game.setSpaceMapOrigin(smo);
-            System.out.println(" Star map");
+            //System.out.println(" Star map");
             SU.setWindow(C.S_STAR_MAP);
             gui.setCurrentState(SW2.get());
         } else {

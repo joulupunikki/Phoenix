@@ -157,7 +157,7 @@ public class LAND1 extends State {
         //draw new map location
         gui.getPlanetWindow().repaint();
 
-        System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
+        //System.out.println("map_X, map_y: " + map_point_x + ", " + map_point_y);
     }
 
     public void wheelRotated(MouseWheelEvent e) {
