@@ -50,6 +50,7 @@ public class Faction implements Serializable {
     private EfsIni efs_ini;
     private int turn;
 
+    private boolean eliminated;
     private int number;
     private int firebirds;
     private int tax_rate;
@@ -66,6 +67,7 @@ public class Faction implements Serializable {
         this.game = game;
         this.efs_ini = game.getEfs_ini();
 
+        eliminated = false;
         this.number = number;
         firebirds = efs_ini.starting_credits;
         tax_rate = efs_ini.default_tax_rate;
@@ -181,5 +183,13 @@ public class Faction implements Serializable {
     public void record(File file) {
         Util.printString(file, " " + Util.getFactionName(number) + "," + number);
         research.record(file);
+    }
+
+    public boolean isEliminated() {
+        return eliminated;
+    }
+
+    public void setEliminated() {
+        eliminated = true;
     }
 }

@@ -483,6 +483,17 @@ public class WindowSize {
     public int bz2_regent_y1 = 32;
     public int bz2_regent_y2 = 154;
 
+    public int bz2_house_names_y1 = 426;
+    public int bz2_house_names_y2 = 442;
+    public int bz2_house_names_x11 = 31;
+    public int bz2_house_names_x12 = 151;
+    public int bz2_house_names_x13 = 271;
+    public int bz2_house_names_x14 = 391;
+    public int bz2_house_names_x15 = 511;
+    public int bz2_house_names_w = 99;
+    public int bz2_house_banner_y1 = 324;
+    public int bz2_house_banner_y2 = 423;
+
     public WindowSize(boolean is_double) {
 
         this.is_double = is_double;
@@ -908,6 +919,18 @@ public class WindowSize {
             bz2_regent_x2 *= 2;
             bz2_regent_y1 *= 2;
             bz2_regent_y2 *= 2;
+
+            bz2_house_names_y1 *= 2;
+            bz2_house_names_y2 *= 2;
+            bz2_house_names_x11 *= 2;
+            bz2_house_names_x12 *= 2;
+            bz2_house_names_x13 *= 2;
+            bz2_house_names_x14 *= 2;
+            bz2_house_names_x15 *= 2;
+            bz2_house_names_w *= 2;
+
+            bz2_house_banner_y1 *= 2;
+            bz2_house_banner_y2 *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

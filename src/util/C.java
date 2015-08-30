@@ -324,6 +324,7 @@ public class C {
     public static final int SPACE_CARRIER_UNIT_TYPE = 16;    // RSW
     public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
+    public static final int SCEPTER_UNIT_TYPE = 28;
     public static final int ENGINEER_UNIT_TYPE = 53;
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 

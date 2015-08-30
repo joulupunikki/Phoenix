@@ -148,6 +148,12 @@ public abstract class State {
 
     }
 
+    public void pressVoteButton() {
+    }
+
+    public void pressAbstainButton() {
+    }
+
     public void error() {
         try {
             error2();

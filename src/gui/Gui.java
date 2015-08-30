@@ -783,6 +783,7 @@ public class Gui extends JFrame {
         byzantium_ii_menu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                byzantium_ii_window.setUpVoting();
                 SU.showByzantiumIIWindow();
             }
         });
@@ -1214,6 +1215,13 @@ public class Gui extends JFrame {
         city_dialog.setPlanet(planet);
         city_dialog.setCity(city);
         city_dialog.setVisible(true);
+    }
+
+    /**
+     * @return the byzantium_ii_window
+     */
+    public ByzantiumIIWindow getByzantium_ii_window() {
+        return byzantium_ii_window;
     }
 
     private class CityDialog extends JDialog {

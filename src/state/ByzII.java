@@ -34,9 +34,10 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.List;
 import util.C;
+import util.Util;
 
 /**
- * Byzantium II Window
+ * Byzantium II Window base state.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
@@ -60,6 +61,16 @@ public class ByzII extends State {
     }
 
     @Override
+    public void pressVoteButton() {
+        if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
+            gui.setCurrentState(ByzII2.get());
+            gui.showInfoWindow("Cast your votes, Lord " + Util.getFactionName(game.getTurn()) + ".");
+            gui.getByzantium_ii_window().enableAbstainButton(true);
+            gui.getByzantium_ii_window().enableVoteButton(false);
+        }
+    }
+
+    @Override
     public void clickOnByzantiumIIWindow(MouseEvent e) {
         Point p = e.getPoint();
         int pos = getPosition(p);
@@ -70,7 +81,7 @@ public class ByzII extends State {
             case C.THE_SPY:
             case C.FLEET:
                 if (game.getTurn() != game.getRegency().getRegent()) {
-                    gui.showInfoWindow("Only the Regent may assign ministries!");
+                    gui.showInfoWindow("Only the Regent may assign offices!");
                     return;
                 }
                 break;
@@ -93,7 +104,7 @@ public class ByzII extends State {
                 r.setFleet(cycleMinistry(r.getFleet()));
                 setAssets(pos, r.getFleet());
                 break;
-            case C.IMPERIAL:
+            case C.IMPERIAL: // this is used during debugging
                 r.setRegent(cycleMinistry(r.getRegent()));
                 break;
             default:
@@ -131,7 +142,7 @@ public class ByzII extends State {
         }
     }
     
-    private int getPosition(Point p) {
+    static protected int getPosition(Point p) {
         int pos = -1;
         if (ws.bz2_ministry_y1 <= p.y && p.y <= ws.bz2_ministry_y2) {
             if (ws.bz2_stigmata_x1 <= p.x && p.x <= ws.bz2_stigmata_x2) {
@@ -144,6 +155,19 @@ public class ByzII extends State {
         } else if (ws.bz2_regent_x1 <= p.x && p.x <= ws.bz2_regent_x2
                 && ws.bz2_regent_y1 <= p.y && p.y <= ws.bz2_regent_y2) {
             pos = C.IMPERIAL; // using faction ID of IMPERIAL for regent
+        } else if (ws.bz2_house_banner_y1 <= p.y && p.y <= ws.bz2_house_banner_y2) {
+            if (ws.bz2_house_names_x11 <= p.x && p.x <= ws.bz2_house_names_x11 + ws.bz2_house_names_w) {
+                pos = C.HOUSE1;
+            } else if (ws.bz2_house_names_x12 <= p.x && p.x <= ws.bz2_house_names_x12 + ws.bz2_house_names_w) {
+                pos = C.HOUSE2;
+            } else if (ws.bz2_house_names_x13 <= p.x && p.x <= ws.bz2_house_names_x13 + ws.bz2_house_names_w) {
+                pos = C.HOUSE3;
+            } else if (ws.bz2_house_names_x14 <= p.x && p.x <= ws.bz2_house_names_x14 + ws.bz2_house_names_w) {
+                pos = C.HOUSE4;
+            } else if (ws.bz2_house_names_x15 <= p.x && p.x <= ws.bz2_house_names_x15 + ws.bz2_house_names_w) {
+                pos = C.HOUSE5;
+            }
+            System.out.println(pos);
         }
         return pos;
     }

@@ -62,6 +62,9 @@ public class ByzantiumIIWindow extends JPanel {
     private Game game;
     private WindowSize ws;
     private JButton exit;
+    private JButton declare_emperor;
+    private JButton abstain;
+    private JButton vote;
 
     public ByzantiumIIWindow(Gui gui) {
         this.gui = gui;
@@ -80,6 +83,14 @@ public class ByzantiumIIWindow extends JPanel {
         renderWindow(g);
     }
 
+    public void setUpVoting() {
+        if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
+            vote.setEnabled(true);
+        } else {
+            vote.setEnabled(false);
+        }
+    }
+
     public void setUpWindow() {
         exit = new JButton("Exit");
         exit.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
@@ -94,6 +105,42 @@ public class ByzantiumIIWindow extends JPanel {
             }
         });
         this.add(exit);
+
+        vote = new JButton("Vote");
+        vote.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
+        vote.setBackground(Color.BLACK);
+        vote.setForeground(C.COLOR_GOLD);
+        vote.setBounds(ws.fw_eb_x - ws.main_window_width / 4, ws.fw_eb_y, ws.fw_eb_w, ws.fw_eb_h);
+        vote.setEnabled(true);
+        vote.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressVoteButton();
+            }
+        });
+        this.add(vote);
+
+        abstain = new JButton("Abstain");
+        abstain.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
+        abstain.setBackground(Color.BLACK);
+        abstain.setForeground(C.COLOR_GOLD);
+        abstain.setBounds(ws.fw_eb_x - ws.main_window_width / 2, ws.fw_eb_y, ws.fw_eb_w, ws.fw_eb_h);
+        abstain.setEnabled(false);
+        abstain.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressAbstainButton();
+            }
+        });
+        this.add(abstain);
+    }
+
+    public void enableAbstainButton(boolean enabled) {
+        abstain.setEnabled(enabled);
+    }
+
+    public void enableVoteButton(boolean enabled) {
+        vote.setEnabled(enabled);
     }
 
     public void renderWindow(Graphics g) {
@@ -115,13 +162,23 @@ public class ByzantiumIIWindow extends JPanel {
         drawMinistryDetails(g, C.THE_SPY, regency.getEye());
         drawMinistryDetails(g, C.FLEET, regency.getFleet());
         drawMinistryDetails(g, C.IMPERIAL, regency.getRegent());
+        drawMinistryDetails(g, C.HOUSE1, C.HOUSE1);
+        drawMinistryDetails(g, C.HOUSE2, C.HOUSE2);
+        drawMinistryDetails(g, C.HOUSE3, C.HOUSE3);
+        drawMinistryDetails(g, C.HOUSE4, C.HOUSE4);
+        drawMinistryDetails(g, C.HOUSE5, C.HOUSE5);
+
     }
 
     private void drawMinistryDetails(Graphics g, int ministry, int house) {
         final int X_OFF = 10;
         final int Y_OFF = 20;
-        int x = X_OFF;
-        int y = Y_OFF + ws.bz2_ministry_y1;
+        int x = ws.bz2_house_names_w;
+        int y = ws.bz2_house_names_y2;
+        if (ministry > C.HOUSE5) {
+            x = X_OFF;
+            y = Y_OFF + ws.bz2_ministry_y1;
+        }
         switch (ministry) {
             case C.STIGMATA:
                 x += ws.bz2_stigmata_x1;
@@ -136,6 +193,21 @@ public class ByzantiumIIWindow extends JPanel {
                 y = Y_OFF + ws.bz2_regent_y1;
                 x += ws.bz2_regent_x1;
                 break;
+            case C.HOUSE1:
+                x = ws.bz2_house_names_x11;
+                break;
+            case C.HOUSE2:
+                x = ws.bz2_house_names_x12;
+                break;
+            case C.HOUSE3:
+                x = ws.bz2_house_names_x13;
+                break;
+            case C.HOUSE4:
+                x = ws.bz2_house_names_x14;
+                break;
+            case C.HOUSE5:
+                x = ws.bz2_house_names_x15;
+                break;
             default:
                 throw new AssertionError();
         }
@@ -144,6 +216,9 @@ public class ByzantiumIIWindow extends JPanel {
             officer = Util.getFactionName(house);
         }
         g.setColor(C.COLOR_GOLD);
+        if (game.getFaction(house).isEliminated()) {
+            g.setColor(C.COLOR_GOLD_DARK);
+        }
         g.drawString(officer, x, y);
     }
 }
