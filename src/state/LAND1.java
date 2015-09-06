@@ -103,17 +103,14 @@ public class LAND1 extends State {
             JOptionPane.showMessageDialog(gui, "Cannot land on ruins.", null, JOptionPane.PLAIN_MESSAGE);
             return;
         }
-
-        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.y) {
+        if (!target_stack.isEmpty() && target_stack.get(0).owner == faction.x && target_stack.get(0).owner != faction.y) {
             JOptionPane.showMessageDialog(gui, "Cannot merge loaned stacks.", null, JOptionPane.PLAIN_MESSAGE);
             return;
         }
-
-        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.x) {
+        if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.x && !game.isNonCombat(target_stack)) {
             JOptionPane.showMessageDialog(gui, "Cannot land on another's units.", null, JOptionPane.PLAIN_MESSAGE);
             return;
         }
-
         if (Util.stackSize(selected) + Util.stackSize(target_stack) > 20) {
             JOptionPane.showMessageDialog(gui, "Too many units in target area.", null, JOptionPane.PLAIN_MESSAGE);
             return;

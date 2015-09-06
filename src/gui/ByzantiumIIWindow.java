@@ -216,7 +216,7 @@ public class ByzantiumIIWindow extends JPanel {
             officer = Util.getFactionName(house);
         }
         g.setColor(C.COLOR_GOLD);
-        if (game.getFaction(house).isEliminated()) {
+        if (game.getFaction(ministry).isEliminated()) {
             g.setColor(C.COLOR_GOLD_DARK);
         }
         g.drawString(officer, x, y);

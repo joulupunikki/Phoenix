@@ -54,7 +54,17 @@ public class ByzII extends State {
 
     @Override
     public void pressExitButton() {
-        game.initVisibilitySpot(false); // re-spot with ministry assets
+        if (game.getRegency().needToAssignOffices(game)) {
+            gui.showInfoWindow("You must assign all the offices !");
+            return;
+        }
+        if (game.getRegency().getRegent() == game.getTurn()) {
+            if (game.getRegency().isMay_set_offices()) {
+                game.initVisibilitySpot(false); // re-spot with ministry assets
+            }
+            game.getRegency().setMay_set_offices(false);
+        }
+        
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
         main_game_state = null;
@@ -84,43 +94,40 @@ public class ByzII extends State {
                     gui.showInfoWindow("Only the Regent may assign offices!");
                     return;
                 }
+                if (!game.getRegency().isMay_set_offices()) {
+                    gui.showInfoWindow("You may only assign offices once on your first turn as Regent.");
+                    return;
+                }
                 break;
-            case C.IMPERIAL: // regent banner
-                break;
+//            case C.IMPERIAL: // regent banner
+//                break;
             default:
                 return;
         }
 
         switch (pos) {
             case C.STIGMATA:
-                r.setGarrison(cycleMinistry(r.getGarrison()));
+                r.setGarrison(r.cycleMinistry(r.getGarrison(), Regency.GARRISON, game));
                 setAssets(pos, r.getGarrison());
                 break;
             case C.THE_SPY:
-                r.setEye(cycleMinistry(r.getEye()));
+                r.setEye(r.cycleMinistry(r.getEye(), Regency.EYE, game));
                 setAssets(pos, r.getEye());
                 break;
             case C.FLEET:
-                r.setFleet(cycleMinistry(r.getFleet()));
+                r.setFleet(r.cycleMinistry(r.getFleet(), Regency.FLEET, game));
                 setAssets(pos, r.getFleet());
                 break;
-            case C.IMPERIAL: // this is used during debugging
-                r.setRegent(cycleMinistry(r.getRegent()));
-                break;
+//            case C.IMPERIAL: // this is used during debugging
+//                r.setRegent(r.cycleMinistry(r.getRegent(), Regency.GARRISON, game));
+//                break;
             default:
                 throw new AssertionError();
         }
     }
 
-    private int cycleMinistry(int value) {
-        value++;
-        if (value > C.HOUSE5) {
-            value = -1;
-        }
-        return value;
-    }
 
-    private void setAssets(int ministry, int faction) {
+    public static void setAssets(int ministry, int faction) {
         List<Unit> u = game.getUnits();
         List<Structure> s = game.getStructures();
         Point p = new Point(faction, ministry);

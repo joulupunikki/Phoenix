@@ -43,7 +43,20 @@ public class MW extends State {
         SU.pressSkipStackButtonSU();
     }
 
+    /**
+     * Invoked when End Turn button is pressed.
+     */
+    @Override
     public void pressEndTurnButton() {
+        if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
+            gui.showInfoWindow("My Lord, we must cast our votes before the day is done!");
+            return;
+        }
+        if (game.getRegency().needToAssignOffices(game)) {
+            gui.showInfoWindow("My Lord, as newly elected Regents we must assign "
+                    + "all the offices before the day is done!");
+            return;
+        }
         if (game.getEfs_ini().pbem.pbem) {
             game.setSelectedPoint(null, -1);
             game.setSelectedFaction(-1);

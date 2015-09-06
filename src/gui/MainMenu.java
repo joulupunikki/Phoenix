@@ -29,6 +29,7 @@ package gui;
 
 import game.Game;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -45,6 +46,7 @@ import javax.swing.SwingConstants;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -216,6 +218,7 @@ public class MainMenu extends JPanel {
         private JButton start_new;
         private JButton load_game;
         private JButton quit_game;
+        private JButton credits;
         private JLabel name;
         private JLabel name2;
 
@@ -242,16 +245,26 @@ public class MainMenu extends JPanel {
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
-
-//            g.setColor(C.COLOR_GOLD);
-//            g.drawString("Emperor Of The Fading Suns", ws.human_control_selection_x, ws.human_control_selection_y - 15);
+            drawTitles(g2d);
+            //UtilG.drawStringGrad(g2d, "Gradient Font Test", ws, 50, 50, true);
         }
 
         public void setUpButtons() {
-            setUpName();
+            //setUpName();
             setUpStartNew();
             setUpLoadSaved();
             setUpQuit();
+            setUpCredits();
+        }
+
+        public void drawTitles(Graphics2D g2d) {
+            FontMetrics fm = this.getFontMetrics(ws.font_large);
+            String s = "Emperor Of The Fading Suns";
+            int string_w = fm.stringWidth(s);
+            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7, 1);
+            s = "Phoenix remake/patch " + FN.S_VERSION;
+            string_w = fm.stringWidth(s);
+            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7 + ws.sb_h, 1);
         }
 
         public void setUpName() {
@@ -317,6 +330,21 @@ public class MainMenu extends JPanel {
                 public void actionPerformed(ActionEvent e) {
                     gui.getCurrentState().pressQuit();
                 }
+            });
+        }
+
+        public void setUpCredits() {
+            credits = new JButton("Credits");
+            credits.setFont(ws.font_large);
+            credits.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+            this.add(credits);
+            credits.setBounds(ws.mm_sn_x, ws.mm_sn_y + 3 * ws.sb_h * 5 / 2,
+                    ws.mm_sn_w, ws.sb_h);
+            credits.addActionListener((ActionEvent e) -> {
+                gui.showInfoWindow("Emperor Of The Fading Suns software product is copyright Segasoft and/or Holistic Design Inc. (http://www.holistic-design.com) "
+                        + "\n" + "Fading Suns is a trademark and copyright of Holistic Design Inc. (http://www.holistic-design.com)"
+                        + "\n" + "Phoenix patch by joulupunikki and others (https://github.com/joulupunikki/Phoenix)"
+                        + "\n" + "Phoenix patch is powered by Apache Commons (http://www.apache.org)");
             });
         }
     }

@@ -51,6 +51,7 @@ import util.C;
 import util.FN;
 import util.StackIterator;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -151,6 +152,30 @@ public class UnitInfoWindow extends JPanel {
         drawDraggedUnit(g);
     }
 
+    public void drawDetails(Graphics g, int owner, int prev_owner) {
+        g.setColor(C.COLOR_GOLD);
+        int scale = 1;
+        if (ws.is_double) {
+            scale = 2;
+        }
+        if (owner != prev_owner) {
+            UtilG.drawStringGrad((Graphics2D) g, factionNameDisplay(prev_owner), g.getFont(), 10 * scale, ws.main_window_height - 30 * scale);
+            //g.drawString(factionNameDisplay(prev_owner), 10 * scale, ws.main_window_height - 30 * scale);
+        }
+        UtilG.drawStringGrad((Graphics2D) g, factionNameDisplay(owner), g.getFont(), 10 * scale, ws.main_window_height - 10 * scale);
+        //g.drawString(factionNameDisplay(owner), 10 * scale, ws.main_window_height - 10 * scale);
+    }
+
+    private String factionNameDisplay(int faction) {
+        String name = "";
+        if (C.HOUSE1 <= faction && faction <= C.HOUSE5) {
+            name += "House ";
+        } else if (faction == C.IMPERIAL || faction == C.FLEET || faction == C.THE_SPY) {
+            name += "Imperial ";
+        }
+        return name + Util.getFactionName(faction);
+    }
+
     public void drawBackground(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
@@ -207,7 +232,7 @@ public class UnitInfoWindow extends JPanel {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[game.getSelectedFaction().y];
         }
-
+        drawDetails(g, stack.get(0).owner, stack.get(0).prev_owner); // TODO this should be elsewhere
         if (game.getTurn() != stack.get(0).owner) {
 
             List<Unit> tmp = new LinkedList<>();

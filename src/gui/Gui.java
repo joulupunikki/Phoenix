@@ -171,7 +171,9 @@ public class Gui extends JFrame {
     private JMenuItem menu_build_city;
     private JPopupMenu stack_menu;
     private JMenu messages_menu;
+    private JMenuItem menu_send_message;
     private JMenuItem menu_read_messages;
+    private JMenuItem menu_read_contracts;
     private JMenu archives_menu;
     private JMenuItem menu_vol1;
     private JMenuItem menu_vol2;
@@ -792,16 +794,25 @@ public class Gui extends JFrame {
 
     public void setUpMessagesMenu() {
         messages_menu = new JMenu("Messages");
+        menu_send_message = new JMenuItem("Send Message");
+        menu_send_message.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        messages_menu.add(menu_send_message);
+
         menu_read_messages = new JMenuItem("Read Messages");
         menu_read_messages.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_read_messages.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
                 messages_window.addMessageData();
 
                 SU.showMessagesWindow();
             }
         });
         messages_menu.add(menu_read_messages);
+
+        menu_read_contracts = new JMenuItem("Read Contracts");
+        menu_read_contracts.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        messages_menu.add(menu_read_contracts);
+
         menubar.add(messages_menu);
     }
 
@@ -1788,7 +1799,16 @@ public class Gui extends JFrame {
         game.setJumpPath(null);
     }
 
+    /**
+     * Displays a String message in a simple window. The message will have
+     * automatic line breaks inserted.
+     *
+     * @param message
+     */
     public void showInfoWindow(String message) {
+        if (message == null) {
+            message = "<null/not implemented yet>";
+        }
         Font f = (Font) UIManager.get("OptionPane.messageFont");
         String s = setLineBreaks(message, f);
 //        JOptionPane pane = new JOptionPane(s);

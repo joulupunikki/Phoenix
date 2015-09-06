@@ -89,6 +89,7 @@ public class MsgsW extends State {
                         SU.showCombatReplay();
                         break;
                     default:
+                        gui.showInfoWindow(msg.getMsgTxt());
                         break;
 //                            throw new AssertionError();
                 }

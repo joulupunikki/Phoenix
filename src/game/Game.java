@@ -1008,6 +1008,10 @@ public class Game implements Serializable {
 //        return combat_type;
     }
 
+    public boolean isNonCombat(List<Unit> stack) {
+        return stack.stream().noneMatch((stack1) -> (stack1.type_data.non_combat == 0));
+    }
+
     public boolean isEnemy() {
         boolean rv = false;
 
@@ -1086,9 +1090,13 @@ public class Game implements Serializable {
     }
 
     public void capture(Point captor_faction) {
+        capture(captor_faction, null);
+    }
 
-        List<Unit> stack = path.get(1).getStack();
-
+    public void capture(Point captor_faction, List<Unit> stack) {
+        if (stack == null) {
+            stack = path.get(1).getStack();
+        }
         StackIterator iter = new StackIterator(stack);
 
         Unit u = iter.next();
@@ -1180,15 +1188,14 @@ public class Game implements Serializable {
     public void endTurn() {
         factions[turn].deleteOldMessages();
         advanceTurn();
-        while (!human_ctrl[turn]) {
+        while (!human_ctrl[turn] || factions[turn].isEliminated()) {
             advanceTurn();
         }
     }
 
     public void advanceTurn() {
         if (turn >= 13) {
-            turn = 0;
-            year++;
+            advanceYear();
         } else {
             turn++;
         }
@@ -1204,6 +1211,17 @@ public class Game implements Serializable {
         resetMovePoints();
         setMaxSpotRange();
         cargo_pods = Util.getCargoPods(units, this);
+        if (regency.needToVote(turn, efs_ini, year + 1)) { // election notice
+            factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
+        }
+    }
+
+    private void advanceYear() {
+        turn = 0;
+        year++;
+        Faction.eliminateNoblelessFactions(this);
+        regency.purgeEliminatedFromOffices(this);
+        regency.resolveElections(this);
     }
 
     public List<Unit> getCargoPods() {
@@ -1302,6 +1320,10 @@ public class Game implements Serializable {
 
     public Faction getFaction(int faction) {
         return factions[faction];
+    }
+
+    public Faction[] getFactions() {
+        return factions;
     }
 
     public void setFactionCities() {
@@ -1698,12 +1720,19 @@ public class Game implements Serializable {
 
         if (Util.stackSize(selected) + Util.stackSize(stack2) <= 20) {
             subMovePointsSpace(selected);
+            if (!stack2.isEmpty() && stack2.get(0).owner != selected.get(0).owner) {
+                capture(selected_faction, stack2);
+            }
             target_hex.addStack(selected);
             planet.minusStack(selected, selected_faction.y);
             setUnitCoords(false, planet.index, p.x, p.y, selected);
             setSelectedPointFaction(p, -1, null, null);
             unSpot(selected);
             hex_proc.spotProc(target_hex, selected);
+            Structure city = target_hex.getStructure();
+            if (city != null && city.owner != selected.get(0).owner) {
+                captureCity(city, selected.get(0).owner, selected.get(0).prev_owner);
+            }
             rv = true;
         }
         return rv;

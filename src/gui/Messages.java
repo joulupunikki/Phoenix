@@ -316,8 +316,14 @@ public class Messages extends JPanel {
                     case FAMINE:
                         val = "Famine";
                         break;
+                    case ELECTION_NOTICE:
+                        val = "Upcoming elections";
+                        break;
+                    case ELECTION_RESULTS:
+                        val = "Election results";
+                        break;
                     default:
-                        throw new AssertionError();
+                        throw new AssertionError("Undefined message type");
                 }
             }
             if (isSelected) {

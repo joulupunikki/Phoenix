@@ -28,6 +28,8 @@
 package game;
 
 import dat.EfsIni;
+import galaxyreader.Structure;
+import galaxyreader.Unit;
 import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -191,5 +193,41 @@ public class Faction implements Serializable {
 
     public void setEliminated() {
         eliminated = true;
+    }
+
+    public static void eliminateNoblelessFactions(Game game) {
+        List<Unit> units = game.getUnits();
+        List<Structure> cities = game.getStructures();
+        // find out newly eliminated factions and set them to eliminated and
+        // set their original assets to neutral/rebel faction
+        boolean[] prev_no_nobles = new boolean[C.NR_HOUSES];
+        for (int i = 0; i < prev_no_nobles.length; i++) {
+            prev_no_nobles[i] = game.getFaction(i).isEliminated();          
+        }
+        boolean[] no_nobles = {true, true, true, true, true};
+        for (Unit unit : units) {
+            if (unit.type == C.NOBLE_UNIT_TYPE && C.HOUSE1 <= unit.prev_owner && unit.prev_owner <= C.HOUSE5) {
+                no_nobles[unit.prev_owner] = false;
+            }
+        }
+        for (int i = 0; i < no_nobles.length; i++) {
+            if (no_nobles[i] ^ prev_no_nobles[i]) {
+                game.getFaction(i).setEliminated();
+                for (Unit unit : units) {
+                    if (unit.prev_owner == i) {
+                        unit.prev_owner = C.NEUTRAL;
+                        unit.owner = C.NEUTRAL;
+                    }
+                }
+                for (Structure city : cities) {
+                    if (city.prev_owner == i) {
+                        city.prev_owner = C.NEUTRAL;
+                        city.owner = C.NEUTRAL;
+                    }
+                }
+            }
+    
+        }
+
     }
 }

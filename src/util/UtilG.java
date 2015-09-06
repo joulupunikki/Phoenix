@@ -27,9 +27,13 @@
  */
 package util;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.WritableRaster;
 import javax.swing.JDialog;
 
@@ -268,5 +272,34 @@ public class UtilG {
         g.setColor(C.COLOR_GOLD_BRIGHT);
         g.drawLine(x - 1, y - 1, x + w, y - 1);
         g.drawLine(x - 1, y - 1, x - 1, y + h);
+    }
+
+    public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y) {
+        drawStringGrad(g2d, s, f, x, y, 0);
+    }
+
+    public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y, int border) {
+        //gradient font test
+//            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//                    RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setFont(f);
+        int line_height = f.getSize();
+        GradientPaint gp = new GradientPaint(0, y - line_height + 1, C.COLOR_GOLD_BRIGHT, 0, y, C.COLOR_GOLD_DARK, true);
+        if (border > 0) {
+            drawStringBorder(g2d, s, Color.BLACK, x, y, border);
+        }
+        g2d.setPaint(gp);
+        g2d.drawString(s, x, y);
+    }
+
+    public static void drawStringBorder(Graphics g, String s, Color c, int x, int y, int w) {
+        g.setColor(c);
+        for (; w > 0; w--) {
+            g.drawString(s, x - w, y);
+            g.drawString(s, x, y - w);
+            g.drawString(s, x + w, y);
+            g.drawString(s, x, y + w);
+        }
+
     }
 }

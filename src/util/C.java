@@ -153,7 +153,9 @@ public class C {
         CITY_FULL,
         FAMINE,
         CANNOT_PRODUCE,
-        COMBAT_REPORT
+        COMBAT_REPORT,
+        ELECTION_NOTICE,
+        ELECTION_RESULTS
     }
 
     // movement types
@@ -325,6 +327,7 @@ public class C {
     public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
     public static final int SCEPTER_UNIT_TYPE = 28;
+    public static final int NOBLE_UNIT_TYPE = 45;
     public static final int ENGINEER_UNIT_TYPE = 53;
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 

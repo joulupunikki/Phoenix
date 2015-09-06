@@ -28,6 +28,7 @@
 package gui;
 
 import game.Game;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -43,6 +44,7 @@ import javax.swing.JTextField;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -66,6 +68,12 @@ public class ResourcePanel extends JPanel {
     private JTextField res_name;
     private JButton exit;
 
+    private String s_planet_cons;
+    private String s_galaxy_cons;
+    private String s_planet_prod;
+    private String s_galaxy_prod;
+    private String s_res_name;
+
     public ResourcePanel(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
@@ -77,11 +85,11 @@ public class ResourcePanel extends JPanel {
         bi = tmp.getSubimage(0, 0, ws.rw_width, ws.rw_height);
 
         setUpExitButton();
-        setUpGalaxyProd();
-        setUpPlanetProd();
-        setUpGalaxyCons();
-        setUpPlanetCons();
-        setUpResName();
+//        setUpGalaxyProd();
+//        setUpPlanetProd();
+//        setUpGalaxyCons();
+//        setUpPlanetCons();
+//        setUpResName();
     }
 
     public void setGame(Game game) {
@@ -104,15 +112,20 @@ public class ResourcePanel extends JPanel {
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
-
-//        g.setColor(C.COLOR_GOLD);
+        Font f = ws.font_abbrev;
+        UtilG.drawStringGrad(g2d, s_planet_cons, f, ws.rw_pct_x_offset, ws.rw_pct_y_offset - 3 * ws.rw_pct_height);
+        UtilG.drawStringGrad(g2d, s_galaxy_cons, f, ws.rw_pct_x_offset, ws.rw_pct_y_offset - 2 * ws.rw_pct_height);
+        UtilG.drawStringGrad(g2d, s_planet_prod, f, ws.rw_pct_x_offset, ws.rw_pct_y_offset - ws.rw_pct_height);
+        UtilG.drawStringGrad(g2d, s_galaxy_prod, f, ws.rw_pct_x_offset, ws.rw_pct_y_offset);
+        UtilG.drawStringGrad(g2d, s_res_name, f, ws.rw_rn_x, 2 * ws.rw_rn_y);
+//        g.setColor(C.COLOR_GOLD_BRIGHT);
 //        g.drawRect(0, 0, ws.tech_window_w - 1, ws.tech_window_h - 1);
     }
 
     public void setUpExitButton() {
         exit = new JButton("Exit");
         exit.setFont(ws.font_default);
-        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD_BRIGHT));
         this.add(exit);
         exit.setBounds(ws.rw_exit_x_offset, ws.rw_exit_y_offset,
                 ws.rw_exit_width, ws.rw_exit_height);
@@ -133,7 +146,7 @@ public class ResourcePanel extends JPanel {
         galaxy_prod.setBounds(ws.rw_pct_x_offset, ws.rw_pct_y_offset,
                 ws.rw_pct_width, ws.rw_pct_height);
         galaxy_prod.setOpaque(false);
-        galaxy_prod.setForeground(C.COLOR_GOLD);
+        galaxy_prod.setForeground(C.COLOR_GOLD_BRIGHT);
         galaxy_prod.setEditable(false);
         galaxy_prod.setHorizontalAlignment(JTextField.LEFT);
         galaxy_prod.setBorder(null);
@@ -148,7 +161,7 @@ public class ResourcePanel extends JPanel {
         planet_prod.setBounds(ws.rw_pct_x_offset, ws.rw_pct_y_offset - ws.rw_pct_height,
                 ws.rw_pct_width, ws.rw_pct_height);
         planet_prod.setOpaque(false);
-        planet_prod.setForeground(C.COLOR_GOLD);
+        planet_prod.setForeground(C.COLOR_GOLD_BRIGHT);
         planet_prod.setEditable(false);
         planet_prod.setHorizontalAlignment(JTextField.LEFT);
         planet_prod.setBorder(null);
@@ -163,7 +176,7 @@ public class ResourcePanel extends JPanel {
         galaxy_cons.setBounds(ws.rw_pct_x_offset, ws.rw_pct_y_offset - 2 * ws.rw_pct_height,
                 ws.rw_pct_width, ws.rw_pct_height);
         galaxy_cons.setOpaque(false);
-        galaxy_cons.setForeground(C.COLOR_GOLD);
+        galaxy_cons.setForeground(C.COLOR_GOLD_BRIGHT);
         galaxy_cons.setEditable(false);
         galaxy_cons.setHorizontalAlignment(JTextField.LEFT);
         galaxy_cons.setBorder(null);
@@ -179,7 +192,7 @@ public class ResourcePanel extends JPanel {
                 ws.rw_pct_width, ws.rw_pct_height);
 //        planet_cons.setBackground(Color.BLACK);
         planet_cons.setOpaque(false);
-        planet_cons.setForeground(C.COLOR_GOLD);
+        planet_cons.setForeground(C.COLOR_GOLD_BRIGHT);
         planet_cons.setEditable(false);
         planet_cons.setHorizontalAlignment(JTextField.LEFT);
         planet_cons.setBorder(null);
@@ -195,7 +208,7 @@ public class ResourcePanel extends JPanel {
                 ws.rw_rn_w, ws.rw_rn_h);
 //        planet_cons.setBackground(Color.BLACK);
         res_name.setOpaque(false);
-        res_name.setForeground(C.COLOR_GOLD);
+        res_name.setForeground(C.COLOR_GOLD_BRIGHT);
         res_name.setEditable(false);
         res_name.setHorizontalAlignment(JTextField.LEFT);
         res_name.setBorder(null);
@@ -221,11 +234,16 @@ public class ResourcePanel extends JPanel {
         for (int i = 0; i < pc[C.PROD][f_idx].length; i++) {
             g_prod += pc[C.PROD][f_idx][i][resource];
         }
-        planet_cons.setText(consuming + p_cons + planet);
-        galaxy_cons.setText(consuming + g_cons + galaxy);
-        planet_prod.setText(producing + p_prod + planet);
-        galaxy_prod.setText(producing + g_prod + galaxy);
+//        planet_cons.setText(consuming + p_cons + planet);
+//        galaxy_cons.setText(consuming + g_cons + galaxy);
+//        planet_prod.setText(producing + p_prod + planet);
+//        galaxy_prod.setText(producing + g_prod + galaxy);
 
-        res_name.setText(game.getEconomy().getResName(resource));
+//        res_name.setText(game.getEconomy().getResName(resource));
+        s_planet_cons = consuming + p_cons + planet;
+        s_galaxy_cons = consuming + g_cons + galaxy;
+        s_planet_prod = producing + p_prod + planet;
+        s_galaxy_prod = producing + g_prod + galaxy;
+        s_res_name = game.getEconomy().getResName(resource);
     }
 }
