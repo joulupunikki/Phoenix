@@ -254,13 +254,13 @@ public class Gui extends JFrame {
         color_index = loadICM();
 
         unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
-        resources = new Resource(this);
         // set resolution
         if (args.hasOption(C.OPT_DOUBLE_RES)) {
             ws = new WindowSize(true);
         } else {
             ws = new WindowSize(false);
         }
+        resources = new Resource(this);
         // load galaxy
         String galaxy_file_name = FN.S_GALAXY_GAL;
         if (args.hasOption(C.OPT_NAMED_GALAXY)) {
@@ -473,7 +473,7 @@ public class Gui extends JFrame {
         main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
 
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
-        setMouseCursor();
+        setMouseCursor(C.S_CURSOR_SCEPTOR);
 
         setUpStackMenu();
         setUpCityDialog3(game, ws);
@@ -1900,7 +1900,11 @@ public class Gui extends JFrame {
         }
     }
 
-    public void setMouseCursor() {
+    public void setMouseCursor(String cursor) {
+        this.setCursor(resources.getCursor(cursor));
+    }
+
+    public Cursor createMouseCursor(String cursor_file, String cursor_name, boolean bullseye) {
 
         int wt;
         int ht;
@@ -1914,7 +1918,7 @@ public class Gui extends JFrame {
 
         BufferedImage bi = new BufferedImage(wt, ht, BufferedImage.TYPE_BYTE_INDEXED, color_index);
         WritableRaster wr = bi.getRaster();
-        int[] cursor_img = Util.loadSquare(FN.S_MOUSE_MSK, 0, 32 * 32);
+        int[] cursor_img = Util.loadSquare(cursor_file, 0, 32 * 32);
         if (ws.is_double) {
             cursor_img = Util.scale2XImage(cursor_img, 32 * 32, 32);
         }
@@ -1943,7 +1947,12 @@ public class Gui extends JFrame {
 
         }
 
-        this.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(alpha_img, new Point(0, 0), "sceptor"));
+        Point focus = new Point(0, 0);
+        if (bullseye) {
+            focus.x = wt / 2;
+            focus.y = ht / 2;
+        }
+        return Toolkit.getDefaultToolkit().createCustomCursor(alpha_img, focus, cursor_name);
 
     }
 

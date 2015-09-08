@@ -493,23 +493,30 @@ public class SU extends State {
         if (!stp_capable) {
             return;
         }
-        Object[] options = {"Land", "Cancel"};
+        Object[] options = {"Attack", "Land", "Cancel"};
         int choice = JOptionPane.showOptionDialog(gui,
                 "Do you want to attack or land?",
                 "",
-                JOptionPane.YES_NO_OPTION,
+                JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 options,
-                options[1]);
-        if (choice == JOptionPane.NO_OPTION) {
-            return;
+                options[2]);
+        switch (choice) {
+            case JOptionPane.CANCEL_OPTION:
+                return;
+            case JOptionPane.YES_OPTION:
+                System.out.println("Bombard");
+                break;
+            case JOptionPane.NO_OPTION:
+                game.setCurrentPlanetNr(planet.index);
+                setWindow(C.S_PLANET_MAP);
+                gui.setMenus(false);
+                gui.setCurrentState(LAND1.get());
+                break;
+            default:
+                throw new AssertionError();
         }
-        game.setCurrentPlanetNr(planet.index);
-        setWindow(C.S_PLANET_MAP);
-        gui.setMenus(false);
-        gui.setCurrentState(LAND1.get());
-
     }
 
     public static boolean checkForSpaceStacks(int x, int y, int owner, Square[][] galaxy_grid) {

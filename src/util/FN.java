@@ -59,6 +59,9 @@ public class FN {
     public static final String S_EFS_PAL = "EFS.PAL";
     public static final String S_GALAXY_GAL = "GALAXY.GAL";
     public static final String S_MOUSE_MSK = "MOUSE.MSK";
+    public static final String S_MOUSE1_MSK = "MOUSE1.MSK";
+    public static final String S_MOUSE2_MSK = "MOUSE2.MSK";
+    public static final String S_MOUSE3_MSK = "MOUSE3.MSK";
     // these three help define EFSTILE?.BIN and STRUCT?.BIN with ? being index
     public static final String S_EFSTILE = S_BIN + F_S + "EFSTILE";
     public static final String S_STRUCT = S_BIN + F_S + "STRUCT";

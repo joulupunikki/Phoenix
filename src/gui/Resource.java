@@ -31,6 +31,8 @@ import dat.EfsIni;
 import dat.TerColor;
 import dat.UnitSpot;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.util.HashMap;
 import java.util.Properties;
 import util.C;
 import util.FN;
@@ -50,6 +52,7 @@ public class Resource {
     private Properties efs_ini;
     private Properties phoenix_ini;
     private int[][] res_icons;
+    private HashMap<String, Cursor> cursors;
 
     public Resource(Gui gui) {
 
@@ -61,6 +64,18 @@ public class Resource {
         phoenix_ini = EfsIni.readPhoenixIni();
         res_icons = Util.loadSquares(FN.S_CARGO_BIN, C.RES_TYPES,
                 C.CARGO_WIDTH * C.CARGO_HEIGHT);
+        createMouseCursors(gui);
+    }
+
+    public Cursor getCursor(String cursor) {
+        return cursors.get(cursor);
+    }
+
+    private void createMouseCursors(Gui gui) {
+        cursors = new HashMap<>(4);
+        cursors.put(C.S_CURSOR_SCEPTOR, gui.createMouseCursor(FN.S_MOUSE_MSK, C.S_CURSOR_SCEPTOR, false));
+        cursors.put(C.S_CURSOR_LAND, gui.createMouseCursor(FN.S_MOUSE1_MSK, C.S_CURSOR_LAND, false));
+        cursors.put(C.S_CURSOR_BOMBARD, gui.createMouseCursor(FN.S_MOUSE2_MSK, C.S_CURSOR_BOMBARD, true));
     }
 
     public void setColors(byte[][] pallette) {
