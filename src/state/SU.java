@@ -512,6 +512,7 @@ public class SU extends State {
                 game.setCurrentPlanetNr(planet.index);
                 setWindow(C.S_PLANET_MAP);
                 gui.setMenus(false);
+                gui.setMouseCursor(C.S_CURSOR_LAND);
                 gui.setCurrentState(LAND1.get());
                 break;
             default:

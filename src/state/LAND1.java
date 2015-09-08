@@ -117,6 +117,7 @@ public class LAND1 extends State {
         }
         if (game.landStack(p)) {
             gui.setMenus(true);
+            gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
             gui.setCurrentState(PW2.get());
         }
     }
@@ -166,6 +167,7 @@ public class LAND1 extends State {
 
     public void pressSpaceButton() {
         SU.setWindow(C.S_STAR_MAP);
+        gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
         gui.setCurrentState(SW2.get());
     }
 }
