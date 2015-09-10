@@ -74,6 +74,7 @@ public class CombatWindow extends JPanel {
     private JCheckBox[] hc;
     private JButton fight;
     private JButton exit;
+    private JButton bombard_again;
     private JLabel planet_name;
 
     public CombatWindow(Gui gui) {
@@ -103,7 +104,17 @@ public class CombatWindow extends JPanel {
         planet_name.setText(name);
     }
 
-    public void toggleButtons(boolean exit_visible, boolean fight_enabled) {
+    public void toggleButtons(boolean exit_visible, boolean fight_enabled, boolean again_visible) {
+        if (exit_visible) {
+            this.add(exit);
+        } else {
+            this.remove(exit);
+        }
+        if (again_visible) {
+            this.add(bombard_again);
+        } else {
+            this.remove(bombard_again);
+        }
         if (exit_visible) {
             this.add(exit);
         } else {
@@ -134,6 +145,22 @@ public class CombatWindow extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gui.getCurrentState().pressFightButton();
+            }
+        });
+
+        bombard_again = new JButton("Bombard Again");
+        bombard_again.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
+
+        bombard_again.setBackground(Color.BLACK);
+        bombard_again.setForeground(C.COLOR_GOLD);
+
+        bombard_again.setBounds(ws.combat_window_fight_button_x, ws.combat_window_bombard_again_button_y,
+                ws.combat_window_fight_button_w, ws.combat_window_fight_button_h);
+        bombard_again.setEnabled(true);
+        bombard_again.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressBombardAgainButton();
             }
         });
 

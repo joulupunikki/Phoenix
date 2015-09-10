@@ -27,44 +27,30 @@
  */
 package state;
 
-import javax.swing.JTable;
-import util.C;
-
 /**
- * Combat Replay 2
+ * Combat Window Bombard 1
  *
- * @author joulupunikki <joulupunikki@gmail.communist.invalid>
+ * @author joulupunikki
  */
-public class CR2 extends State {
+public class CWB1 extends State {
 
-    private static CR2 instance = new CR2();
+    private static CWB1 instance = new CWB1();
 
-    public CR2() {
+    public CWB1() {
     }
 
     public static State get() {
         return instance;
     }
 
-    public void pressExitButton() {
-        CR1.updateStacks();
-        gui.getCombatWindow().toggleButtons(false, true, false);
-        gui.getMessages().getMessageTable().clearSelection();
-        gui.getCombatWindow().setFightText("Do Combat");
-        SU.setWindow(C.S_MESSAGES);
-        gui.setCurrentState(MsgsW.get());
-
-    }
-
     public void pressFightButton() {
-        CR1.updateStacks();
-        JTable messages = gui.getMessages().getMessageTable();
-        int row = gui.getMessages().findNextReplay(-2);
-        gui.getMessages().setReplay(row);
-        gui.getCombatWindow().toggleButtons(false, true, false);
-        gui.getCombatWindow().setFightText("Do Combat");
-        gui.getCombatWindow().repaint();
-        gui.setCurrentState(CR1.get());
+        game.resolveGroundBattleFight();
+        if (game.checkMoveLeftSpace(game.getCombatStack("a"))) {
+            gui.getCombatWindow().toggleButtons(false, true, true);
+        }
+        
+        gui.getCombatWindow().setFightText("Combat Done");
+        gui.setCurrentState(CWB2.get());
     }
 
 }

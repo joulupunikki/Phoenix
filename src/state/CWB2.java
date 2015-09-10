@@ -27,44 +27,51 @@
  */
 package state;
 
-import javax.swing.JTable;
+import game.Hex;
 import util.C;
 
 /**
- * Combat Replay 2
+ * Combat Window Bombard 2
  *
- * @author joulupunikki <joulupunikki@gmail.communist.invalid>
+ * @author joulupunikki
  */
-public class CR2 extends State {
+public class CWB2 extends State {
 
-    private static CR2 instance = new CR2();
+    private static CWB2 instance = new CWB2();
 
-    public CR2() {
+    public CWB2() {
     }
 
     public static State get() {
         return instance;
     }
 
-    public void pressExitButton() {
-        CR1.updateStacks();
-        gui.getCombatWindow().toggleButtons(false, true, false);
-        gui.getMessages().getMessageTable().clearSelection();
+    @Override
+    public void pressFightButton() {
+        game.resolveGroundBattleFinalize();
         gui.getCombatWindow().setFightText("Do Combat");
-        SU.setWindow(C.S_MESSAGES);
-        gui.setCurrentState(MsgsW.get());
-
+        gui.getCombatWindow().toggleButtons(false, true, false);
+        if (game.getSelectedStack().isEmpty()) {
+            game.setSelectedPointFaction(null, -1, null, null);
+                gui.setCurrentState(SW1.get());
+        } else {
+            gui.setCurrentState(SW2.get());
+        }
+        SU.setWindow(C.S_STAR_MAP);
     }
 
-    public void pressFightButton() {
-        CR1.updateStacks();
-        JTable messages = gui.getMessages().getMessageTable();
-        int row = gui.getMessages().findNextReplay(-2);
-        gui.getMessages().setReplay(row);
-        gui.getCombatWindow().toggleButtons(false, true, false);
+    @Override
+    public void pressBombardAgainButton() {
+        // need to get target hex here since resolveBattleFinalize nulls it
+        Hex target = game.getBattle().getRangedSpaceTarget();
+        game.resolveGroundBattleFinalize();
         gui.getCombatWindow().setFightText("Do Combat");
-        gui.getCombatWindow().repaint();
-        gui.setCurrentState(CR1.get());
+        gui.getCombatWindow().toggleButtons(false, true, false);       
+        game.startBombardOrPTS(target);
+        game.resolveGroundBattleInit(C.BOMBARD_COMBAT, game.getBattle().getRangedSpaceTarget().getStack().get(0).owner);
+        gui.setCurrentState(CWB1.get());
+        game.subMovePointsSpace(game.getCombatStack("a"));
+        SU.showCombatWindowBombard();
     }
 
 }

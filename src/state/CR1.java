@@ -52,9 +52,9 @@ public class CR1 extends State {
         // not needed, Battle already holds the references
 //        game.getBattle().setCombatStacks(report.attacker, report.defender);
         if (gui.getMessages().findNextReplay(-2) == -1) {
-            gui.getCombatWindow().toggleButtons(true, false);
+            gui.getCombatWindow().toggleButtons(true, false, false);
         } else {
-            gui.getCombatWindow().toggleButtons(true, true);
+            gui.getCombatWindow().toggleButtons(true, true, false);
         }
         gui.getCombatWindow().setFightText("Next Replay");
         gui.getCombatWindow().repaint();

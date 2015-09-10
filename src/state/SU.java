@@ -479,14 +479,15 @@ public class SU extends State {
         int faction = game.getSelectedFaction().y;
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
         List<Unit> stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction];
-        boolean stp_capable = false;
+        boolean stp_capable = true;
+        boolean ranged_capable = true;
         for (Unit unit : stack) {
             if (unit.selected) {
-                if (unit.move_points > 0) {
-                    stp_capable = true;
-                } else {
+                if (unit.move_points == 0) {
                     stp_capable = false;
-                    break;
+                }
+                if (unit.type_data.ranged_sp_str == 0) {
+                    ranged_capable = false;
                 }
             }
         }
@@ -506,6 +507,14 @@ public class SU extends State {
             case JOptionPane.CANCEL_OPTION:
                 return;
             case JOptionPane.YES_OPTION:
+                if (!ranged_capable) {
+                    return;
+                }
+                game.setCurrentPlanetNr(planet.index);
+                setWindow(C.S_PLANET_MAP);
+                gui.setMenus(false);
+                gui.setMouseCursor(C.S_CURSOR_BOMBARD);
+                gui.setCurrentState(Bomb.get());
                 System.out.println("Bombard");
                 break;
             case JOptionPane.NO_OPTION:
@@ -583,6 +592,11 @@ public class SU extends State {
         setWindow(C.S_COMBAT_WINDOW);
         saveMainGameState();
         gui.setCurrentState(CW1.get());
+    }
+
+    public static void showCombatWindowBombard() {
+        setWindow(C.S_COMBAT_WINDOW);
+        gui.setCurrentState(CWB1.get());
     }
 
     public static void showByzantiumIIWindow() {

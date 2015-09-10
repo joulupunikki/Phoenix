@@ -410,6 +410,8 @@ public class C {
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";
     public static final String SPACE_COMBAT = "space_combat";
+    public static final String BOMBARD_COMBAT = "bombard_combat";
+    public static final String PTS_COMBAT = "pts_combat";
 
     public static final String ATTACKING_CMBT_STACK = "attacking_combat_stack";
     public static final String DEFENDING_CMBT_STACK = "defending_combat_stack";

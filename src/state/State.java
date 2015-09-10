@@ -130,6 +130,9 @@ public abstract class State {
     public void pressFightButton() {
     }
 
+    public void pressBombardAgainButton() {
+    }
+
     public void clickOnGalacticMap(MouseEvent e) {
     }
 

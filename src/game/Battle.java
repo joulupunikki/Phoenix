@@ -66,6 +66,10 @@ public class Battle implements Serializable {
     private int current_planet;
     private List<Planet> planets;
     private Game game;
+    // target hex of landing or bombardment
+    private Hex ranged_space_target;
+    // pts defence fire queue against landing bombardment
+    private List<Hex> pts_queue;
 
     public Battle() {
     }
@@ -685,6 +689,39 @@ public class Battle implements Serializable {
         Util.sortRank(combat_stack_b);
     }
 
+    /**
+     * Select fighters for a bombard/PTS battle. If bombard include units
+     * vulnerable to ranged space.
+     *
+     * @param bombard true iff bombarding, false iff landing
+     */
+    public void selectPTSFighters(boolean bombard) {
+
+        List<Unit> stack_a = game.getSelectedStack();
+        List<Unit> stack_b = ranged_space_target.getStack();
+
+        List<Unit> attacker = new LinkedList<>();
+        for (Unit unit : stack_a) {
+            if (unit.selected) {
+                attacker.add(unit);
+                unit.health_tmp = unit.health;
+            }
+        }
+        combat_stack_a = attacker;
+        Util.sortRank(combat_stack_a);
+
+        List<Unit> defender = new LinkedList<>();
+        for (Unit unit : stack_b) {
+
+            if (unit.type_data.ranged_sp_str > 0 || (bombard) && target[unit.move_type.ordinal()][C.RANGED_SPACE] == 1) {
+                defender.add(unit);
+                unit.health_tmp = unit.health;
+            }
+        }
+        combat_stack_b = defender;
+        Util.sortRank(combat_stack_b);
+    }
+
     public void resolveGroundBattleInit(String combat_type, int defender_owner) {
         this.combat_type = combat_type;
         this.attacked_faction = defender_owner;
@@ -695,6 +732,12 @@ public class Battle implements Serializable {
                 break;
             case C.SPACE_COMBAT:
                 selectSpaceFighters();
+                break;
+            case C.BOMBARD_COMBAT:
+                selectPTSFighters(true);
+                break;
+            case C.PTS_COMBAT:
+                selectPTSFighters(false);
                 break;
             default:
                 throw new AssertionError();
@@ -775,15 +818,25 @@ public class Battle implements Serializable {
     public void resolveGroundBattleFinalize() {
         List<Unit> stack_a = game.getSelectedStack();
         List<Unit> stack_b = null;
-        if (combat_type.equals(C.GROUND_COMBAT)) {
-            stack_b = path.get(1).getStack();
-            retreatRouted(stack_a, stack_b);
-        } else if (combat_type.equals(C.SPACE_COMBAT)) {
-            Point p = game.getSelectedPoint();
-            Square[][] grid = game.getGalaxyMap().getGalaxyGrid();
-            Planet planet = grid[p.x][p.y].parent_planet;
-            stack_b = planet.space_stacks[attacked_faction];
-            cancelRout(stack_a, stack_b);
+        switch (combat_type) {
+            case C.GROUND_COMBAT:
+                stack_b = path.get(1).getStack();
+                retreatRouted(stack_a, stack_b);
+                break;
+            case C.SPACE_COMBAT:
+                Point p = game.getSelectedPoint();
+                Square[][] grid = game.getGalaxyMap().getGalaxyGrid();
+                Planet planet = grid[p.x][p.y].parent_planet;
+                stack_b = planet.space_stacks[attacked_faction];
+                cancelRout(stack_a, stack_b);
+                break;
+            case C.BOMBARD_COMBAT:
+            case C.PTS_COMBAT:
+                stack_b = ranged_space_target.getStack();
+                cancelRout(stack_a, stack_b);
+                break;
+            default:
+                throw new AssertionError();
         }
         removeDead(stack_a);
         removeDead(stack_b);
@@ -803,6 +856,7 @@ public class Battle implements Serializable {
         combat_stack_a = null;
         combat_stack_b = null;
         combat_type = null;
+        ranged_space_target = null;
         attacked_faction = -2;
     }
 
@@ -836,6 +890,11 @@ public class Battle implements Serializable {
             case C.SPACE_COMBAT:
                 combat_loop_iter = 1;
                 combat_phases = C.SPACE_COMBAT_PHASES;
+                break;
+            case C.BOMBARD_COMBAT:
+            case C.PTS_COMBAT:
+                combat_loop_iter = 1;
+                combat_phases = C.PTS_COMBAT_PHASES;
                 break;
             default:
                 throw new AssertionError();
@@ -879,6 +938,20 @@ public class Battle implements Serializable {
 
     public String getCombatType() {
         return combat_type;
+    }
+
+    public Hex getRangedSpaceTarget() {
+        return ranged_space_target;
+    }
+
+    /**
+     * Called when bombarding or landing. Records target hex, checks for hostile
+     * PTS around target hex and queues them for return fire.
+     *
+     * @param p
+     */
+    public void startBombardOrPTS(Hex h) {
+        ranged_space_target = h;
     }
 
 }
