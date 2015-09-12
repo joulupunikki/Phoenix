@@ -119,12 +119,12 @@ public class Bomb extends State {
             return;
         }
         // bombard and schedule PTS
+        game.getDiplomacy().setDiplomaticState(faction.x, target_stack.get(0).owner, C.DS_WAR);
         game.subMovePointsSpace(selected);
         target_hex.spot(faction.x);
-        game.startBombardOrPTS(target_hex);
+        game.startBombardOrPTS(target_hex, true);
         game.resolveGroundBattleInit(C.BOMBARD_COMBAT, target_stack.get(0).owner);
         gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
-        gui.setCurrentState(CWB1.get());
         SU.showCombatWindowBombard();
 //        if (game.landStack(p)) {
 //            gui.setMenus(true);

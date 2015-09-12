@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -68,10 +69,11 @@ public class Battle implements Serializable {
     private Game game;
     // target hex of landing or bombardment
     private Hex ranged_space_target;
-    // pts defence fire queue against landing bombardment
+    // pts defence fire queue against landing or bombardment
     private List<Hex> pts_queue;
 
     public Battle() {
+        
     }
 
     public void battleInit(Random random, int[][] damage, int[][] target,
@@ -83,6 +85,8 @@ public class Battle implements Serializable {
         this.terr_cost = terr_cost;
         this.game = game;
         this.planets = planets;
+        this.pts_queue = new LinkedList<>();
+        System.out.println(pts_queue.size());
     }
 
     public void perBattleInit(LinkedList<Hex> path, int current_planet) {
@@ -944,14 +948,39 @@ public class Battle implements Serializable {
         return ranged_space_target;
     }
 
+    public List<Hex> getPTSQueue() {
+        return pts_queue;
+    }
+
     /**
-     * Called when bombarding or landing. Records target hex, checks for hostile
-     * PTS around target hex and queues them for return fire.
+     * Called when bombarding or landing. Records target hex, if queue_pts then
+     * checks for hostile PTS around target hex and queues them for return fire.
      *
-     * @param p
+     * @param h
+     * @param queue_pts
      */
-    public void startBombardOrPTS(Hex h) {
+    public void startBombardOrPTS(Hex h, boolean queue_pts) {
         ranged_space_target = h;
+        if (!queue_pts) {
+            return;
+        }
+        Set<Hex> pts_area = Util.getHexesWithinRadiusOf(h, game.getEfs_ini().pts_fire_range);
+        pts_area.remove(h);
+        for (Hex next : pts_area) {
+            List<Unit> stack = next.getStack();
+            if (!stack.isEmpty()) {
+                int fac_a = stack.get(0).owner;
+                int fac_b = game.getTurn();
+                if (fac_a != fac_b && game.getDiplomacy().getDiplomaticState(fac_a, fac_b) == C.DS_WAR) {
+                    for (Unit unit : stack) {
+                        if (unit.type_data.ranged_sp_str > 0) {
+                            pts_queue.add(next);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 
 }

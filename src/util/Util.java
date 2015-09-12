@@ -58,8 +58,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -1911,7 +1911,7 @@ public class Util {
         // Find the neighbours of the given hex, and then the neighbours of those neighbours, etc.
         // To avoid adding the same hex more than once, use Set instead of List, as that leaves it
         // to the JRE to avoid duplicates
-        Set<Hex> ret_val = new HashSet<>();    // Set of hexes to be returned
+        Set<Hex> ret_val = new LinkedHashSet<>();    // Set of hexes to be returned
         LinkedList<Hex> queue = new LinkedList<>();
         LinkedList<Integer> queueR = new LinkedList<>();
 
@@ -2041,6 +2041,23 @@ public class Util {
             System.out.println("File not found: " + file_name);
             System.exit(1);
         }
+    }
+
+    /**
+     * Return a substack consisting of the selected units of a stack, and thus
+     * may be empty.
+     *
+     * @param stack
+     * @return
+     */
+    public static List<Unit> getSelectedUnits(List<Unit> stack) {
+        List<Unit> selected = new LinkedList<>();
+        for (Unit u : stack) {
+            if (u.selected) {
+                selected.add(u);
+            }
+        }
+        return selected;
     }
 
 }

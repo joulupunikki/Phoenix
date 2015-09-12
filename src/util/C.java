@@ -421,6 +421,9 @@ public class C {
     public static final int STARTING_FIREBIRDS = 4500;
 
     public static final Border GOLD_BORDER = BorderFactory.createLineBorder(C.COLOR_GOLD);
+    // diplomatic states
+    public static final int DS_PEACE = 0;
+    public static final int DS_WAR = 1;
 
     /**
      * Short print method for debugging, fixed message.

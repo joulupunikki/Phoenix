@@ -126,6 +126,7 @@ public class EfsIni implements Serializable {
     public int lab_cost = -1;
     public boolean wizard_mode = false;
     public int regency_term_length = -1;
+    public int pts_fire_range = -1;
 
     /**
      * Converts EFS.INI and phoenix.ini values from Properties to internal game
@@ -148,6 +149,8 @@ public class EfsIni implements Serializable {
         lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());
         wizard_mode = Boolean.parseBoolean((phoenix_ini.getProperty("wizard_mode")).trim());
         regency_term_length = Integer.parseInt((phoenix_ini.getProperty("regency_term_length")).trim());
+        pts_fire_range = Integer.parseInt((phoenix_ini.getProperty("pts_fire_range")).trim());
+
         pbem = new PBEM();
     }
 

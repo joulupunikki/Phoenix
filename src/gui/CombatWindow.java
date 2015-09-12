@@ -115,11 +115,6 @@ public class CombatWindow extends JPanel {
         } else {
             this.remove(bombard_again);
         }
-        if (exit_visible) {
-            this.add(exit);
-        } else {
-            this.remove(exit);
-        }
         fight.setEnabled(fight_enabled);
 
     }

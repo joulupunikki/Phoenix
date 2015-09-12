@@ -27,42 +27,27 @@
  */
 package state;
 
-import game.Hex;
-import util.C;
-
 /**
- * Combat Window Bombard 2
+ * Combat Window Bombard 1
  *
  * @author joulupunikki
  */
-public class CWB2 extends State {
+public class CWPTS1 extends State {
 
-    private static CWB2 instance = new CWB2();
+    private static CWPTS1 instance = new CWPTS1();
 
-    public CWB2() {
+    public CWPTS1() {
     }
 
     public static State get() {
         return instance;
     }
 
-    @Override
     public void pressFightButton() {
-        CWPTS2.pressFightButtonProcess();
-    }
-
-    @Override
-    public void pressBombardAgainButton() {
-        // need to get target hex here since resolveBattleFinalize nulls it
-        Hex target = game.getBattle().getRangedSpaceTarget();
-        game.resolveGroundBattleFinalize();
-        gui.getCombatWindow().setFightText("Do Combat");
-        gui.getCombatWindow().toggleButtons(false, true, false);       
-        game.startBombardOrPTS(target, true);
-        game.resolveGroundBattleInit(C.BOMBARD_COMBAT, game.getBattle().getRangedSpaceTarget().getStack().get(0).owner);
-        gui.setCurrentState(CWB1.get());
-        game.subMovePointsSpace(game.getCombatStack("a"));
-        SU.showCombatWindowBombard();
+        game.resolveGroundBattleFight();
+        gui.getCombatWindow().toggleButtons(false, true, false);        
+        gui.getCombatWindow().setFightText("Combat Done");
+        gui.setCurrentState(CWPTS2.get());
     }
 
 }

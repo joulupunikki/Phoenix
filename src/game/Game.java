@@ -96,7 +96,7 @@ public class Game implements Serializable {
     private double[][][] terr_cost;
 //    private int max_spot_range;
     private GameResources game_resources;
-
+    private Resource dat_resources;
 //    private List<Unit> current_stack;
     private List<Planet> planets;
     private List<JumpGate> jump_gates;
@@ -123,6 +123,7 @@ public class Game implements Serializable {
     private Economy economy;
     private Battle battle;
     private HexProc hex_proc;
+    private Diplomacy diplomacy;
 
     public Game(String galaxy_file, int current_planet) {
 
@@ -192,6 +193,7 @@ public class Game implements Serializable {
         for (int i = 0; i < C.NR_FACTIONS; i++) {
             factions[i] = new Faction(this, i);
         }
+        diplomacy = new Diplomacy(this);
     }
 
     public void initVisibilitySpot(boolean do_reset) {
@@ -1852,9 +1854,18 @@ public class Game implements Serializable {
     /**
      * Called when bombarding or landing, delegates to Battle instance.
      *
-     * @param p
+     * @param h
+     * @param queue_pts
      */
-    public void startBombardOrPTS(Hex h) {
-        battle.startBombardOrPTS(h);
+    public void startBombardOrPTS(Hex h, boolean queue_pts) {
+        battle.startBombardOrPTS(h, queue_pts);
+
+    }
+
+    /**
+     * @return the diplomacy
+     */
+    public Diplomacy getDiplomacy() {
+        return diplomacy;
     }
 }

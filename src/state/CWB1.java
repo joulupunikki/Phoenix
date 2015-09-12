@@ -27,6 +27,8 @@
  */
 package state;
 
+import galaxyreader.Unit;
+
 /**
  * Combat Window Bombard 1
  *
@@ -45,8 +47,15 @@ public class CWB1 extends State {
 
     public void pressFightButton() {
         game.resolveGroundBattleFight();
-        if (game.checkMoveLeftSpace(game.getCombatStack("a"))) {
-            gui.getCombatWindow().toggleButtons(false, true, true);
+        if (game.checkMoveLeftSpace(game.getCombatStack("a")) && game.getBattle().getPTSQueue().isEmpty()) {
+            boolean fighters_left = false;
+            for (Unit u : game.getCombatStack("a")) {
+                if (u.health > 0) {
+                    fighters_left = true;
+                    break;
+                }
+            }
+            gui.getCombatWindow().toggleButtons(false, true, fighters_left);
         }
         
         gui.getCombatWindow().setFightText("Combat Done");

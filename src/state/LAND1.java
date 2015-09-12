@@ -50,7 +50,15 @@ public class LAND1 extends State {
 
     private static LAND1 instance = new LAND1();
 
+    private Point landing_point;
+
     public LAND1() {
+    }
+
+    public Point popLandingPoint() {
+        Point p = landing_point;
+        landing_point = null;
+        return p;
     }
 
     public static State get() {
@@ -113,6 +121,23 @@ public class LAND1 extends State {
         }
         if (Util.stackSize(selected) + Util.stackSize(target_stack) > 20) {
             JOptionPane.showMessageDialog(gui, "Too many units in target area.", null, JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+                
+        // start PTS defence fire if any
+        game.startBombardOrPTS(target_hex, true);
+        List<Hex> pts_queue = game.getBattle().getPTSQueue();
+        if (!pts_queue.isEmpty()) {
+            // save state so we can land in state.CWPTS2 after PTS
+            saveMainGameState();
+            landing_point = p;
+            Hex pts_hex = pts_queue.remove(0);
+            // since we are landing, do not try to bomb landing hex
+            game.startBombardOrPTS(pts_hex, false);
+            pts_hex.spot(game.getTurn());
+            game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
+            gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
+            SU.showCombatWindowPTS();
             return;
         }
         if (game.landStack(p)) {
