@@ -48,14 +48,21 @@ public class CWB1 extends State {
     public void pressFightButton() {
         game.resolveGroundBattleFight();
         if (game.checkMoveLeftSpace(game.getCombatStack("a")) && game.getBattle().getPTSQueue().isEmpty()) {
-            boolean fighters_left = false;
+            boolean offence_left = false;
+            boolean defence_left = false;
             for (Unit u : game.getCombatStack("a")) {
                 if (u.health > 0) {
-                    fighters_left = true;
+                    offence_left = true;
                     break;
                 }
             }
-            gui.getCombatWindow().toggleButtons(false, true, fighters_left);
+            for (Unit u : game.getCombatStack("b")) {
+                if (u.health > 0) {
+                    defence_left = true;
+                    break;
+                }
+            }
+            gui.getCombatWindow().toggleButtons(false, true, offence_left && defence_left);
         }
         
         gui.getCombatWindow().setFightText("Combat Done");

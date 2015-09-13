@@ -417,6 +417,11 @@ public class RobotTester extends Thread {
                         createEvent(buffer.get(NEXT_EVENT_IDX), click_count);
                         break;
                     case FINISHING2:
+                        // FIXME ? without AutoWaitForIdle set to false here
+                        // the last "robot.mouseRelease(button);" call in
+                        // "robottester.createEvent()" may hang resulting in a
+                        // otherwise succesfull test failing
+                        robot.setAutoWaitForIdle(false);
                         stop = true;
                         createEvent(buffer.get(1), click_count);
                         test_completed_succesfully = true;
@@ -437,14 +442,14 @@ public class RobotTester extends Thread {
         );
         if (this.state_file != null) {
             try {
-                gui.getGame().record(FN.S_GAME_STATE_RECORD_FILE);
+                long check_time = System.currentTimeMillis();
                 System.out.println("State file: " + this.state_file.getName());
                 gui.getGame().record(FN.S_GAME_STATE_RECORD_FILE);
                 long expect = FileUtils.checksumCRC32(this.state_file);
                 long result = FileUtils.checksumCRC32(FileUtils.getFile(FN.S_GAME_STATE_RECORD_FILE));
                 System.out.println("Expected end state  CRC32 = " + expect);
                 System.out.println("Resultant end state CRC32 = " + result);
-                
+                System.out.println("Check time : " + (System.currentTimeMillis() - check_time));
                 if (expect != result) {
                     test_completed_succesfully = false; 
                     System.out.println("------ Game end states do not match !!! ----");

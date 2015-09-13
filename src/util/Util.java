@@ -162,6 +162,20 @@ public class Util {
         }
     }
 
+    public static String factionNameDisplay(int faction) {
+        String name = "";
+        if (C.HOUSE1 <= faction && faction <= C.HOUSE5) {
+            name += "House ";
+        } else if (faction == C.IMPERIAL || faction == C.FLEET || faction == C.THE_SPY) {
+            name += "Imperial ";
+        } else if (faction == C.STIGMATA) {
+            name += "Stigmata ";
+        } else {
+            name += "the ";
+        }
+        return name + Util.getFactionName(faction);
+    }
+
     /**
      * Iterator for going thru Hexes of a planet. Will first go thru column 0
      * then column 1 etc. Semantics: next returns next Hex in order, when all

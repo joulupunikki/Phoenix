@@ -98,14 +98,8 @@ public class Bomb extends State {
             } else {
                 msg = "You created some mighty fireworks !";
             }
-            game.subMovePointsSpace(selected);
             JOptionPane.showMessageDialog(gui, msg, null, JOptionPane.PLAIN_MESSAGE);
-            for (Unit selected1 : selected) {
-                if (selected1.move_points == 0) {
-                    pressSpaceButton();
-                }
-                break;
-            }
+            subMoveAndToSpaceIfNoLeft(selected);
             return;
         }
 
@@ -116,6 +110,11 @@ public class Bomb extends State {
 //        }
 
         if (!target_stack.isEmpty() && target_stack.get(0).owner == faction.x) {
+            return;
+        }
+        if (game.getDiplomacy().getDiplomaticState(faction.x, target_stack.get(0).owner) != C.DS_WAR
+                && !gui.showAttackConfirmWindow(faction.x, target_stack)) {
+            subMoveAndToSpaceIfNoLeft(selected);
             return;
         }
         // bombard and schedule PTS
@@ -131,6 +130,16 @@ public class Bomb extends State {
 //            gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
 //            gui.setCurrentState(PW2.get());
 //        }
+    }
+
+    private void subMoveAndToSpaceIfNoLeft(List<Unit> selected) {
+        game.subMovePointsSpace(selected);
+        for (Unit selected1 : selected) {
+            if (selected1.move_points == 0) {
+                pressSpaceButton();
+            }
+            break;
+        }
     }
 
     public static void clickOnPlanetMapButton3(Point p) {
@@ -181,4 +190,5 @@ public class Bomb extends State {
         gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
         gui.setCurrentState(SW2.get());
     }
+
 }

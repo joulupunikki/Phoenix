@@ -387,11 +387,12 @@ public class C {
     public static final String OPT_GAME_STATE_FILE = "gamestatefile";
     public static final String OPT_MAX_DELAY = "maxdelay";
     public static final String OPT_WIZARD_MODE = "wizardmode";
-
+    // stack menu choices
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
     public static final String S_NONCOMBAT = "noncombat";
     public static final String S_TRANSPORT = "transport";
+    public static final String S_BOMBARD = "bombard";
 
     // mouse cursors
     public static final String S_CURSOR_SCEPTOR = "cursor_sceptor";

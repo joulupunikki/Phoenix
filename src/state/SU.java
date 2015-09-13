@@ -508,6 +508,7 @@ public class SU extends State {
                 return;
             case JOptionPane.YES_OPTION:
                 if (!ranged_capable) {
+                    gui.showInfoWindow("All units are not ranged capable.");
                     return;
                 }
                 game.setCurrentPlanetNr(planet.index);

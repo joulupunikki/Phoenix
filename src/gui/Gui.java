@@ -1106,11 +1106,14 @@ public class Gui extends JFrame {
         stack_menu = new JPopupMenu("Select");
         JMenuItem select_all = new JMenuItem("Select all");
         JMenuItem select_combat = new JMenuItem(" -combat");
+        JMenuItem select_bombard = new JMenuItem(" -bombard");
         JMenuItem select_noncombat = new JMenuItem(" -noncombat");
 //        JMenuItem select_attack = new JMenuItem(" attack");
         JMenuItem select_transport = new JMenuItem(" -transport");
+
         stack_menu.add(select_all);
         stack_menu.add(select_combat);
+        stack_menu.add(select_bombard);
         stack_menu.add(select_noncombat);
 //        stack_menu.add(select_attack);
         stack_menu.add(select_transport);
@@ -1122,6 +1125,11 @@ public class Gui extends JFrame {
         select_combat.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 selectUnits(C.S_COMBAT);
+            }
+        });
+        select_bombard.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectUnits(C.S_BOMBARD);
             }
         });
         select_noncombat.addActionListener(new ActionListener() {
@@ -1164,6 +1172,13 @@ public class Gui extends JFrame {
                     }
                     if (u.carrier != null) {
                         u.selected = u.carrier.selected;
+                    }
+                    break;
+                case C.S_BOMBARD:
+                    if (u.move_points > 0 && u.type_data.ranged_sp_str > 0) {
+                        u.selected = true;
+                    } else {
+                        u.selected = false;
                     }
                     break;
                 case C.S_NONCOMBAT:
@@ -1809,8 +1824,7 @@ public class Gui extends JFrame {
         if (message == null) {
             message = "<null/not implemented yet>";
         }
-        Font f = (Font) UIManager.get("OptionPane.messageFont");
-        String s = setLineBreaks(message, f);
+        String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
 //        JOptionPane pane = new JOptionPane(s);
         JOptionPane.showMessageDialog(this, s, null, JOptionPane.PLAIN_MESSAGE);
 
@@ -1891,13 +1905,36 @@ public class Gui extends JFrame {
     }
 
     public boolean showConfirmWindow(String message) {
+        String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
         int reply = JOptionPane.showConfirmDialog(this,
-                message, null, JOptionPane.YES_NO_OPTION);
-        if (reply == JOptionPane.OK_OPTION) {
-            return true;
-        } else {
-            return false;
+                s, null, JOptionPane.YES_NO_OPTION);
+        return reply == JOptionPane.YES_OPTION;
+    }
+
+    /**
+     * Show attack confirm window if hex has non-hostile units.
+     *
+     * @param my_faction
+     * @param target_stack
+     * @return
+     */
+    public boolean showAttackConfirmWindow(int my_faction, List<Unit> target_stack) {
+        String msg = ". Shall we attack anyway?";
+        boolean spotted = false;
+        for (Unit u : target_stack) {
+            if (u.spotted[my_faction]) {
+                spotted = true;
+                break;
+            }
         }
+        if (spotted) {
+            msg = "My Lord, we are not at war with " + Util.factionNameDisplay(target_stack.get(0).owner)
+                    + msg;
+        } else {
+            msg = "Unspotted units from " + Util.factionNameDisplay(target_stack.get(0).owner)
+                    + " are here. We are not at war with them" + msg;
+        }
+        return showConfirmWindow(msg);
     }
 
     public void setMouseCursor(String cursor) {
