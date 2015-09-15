@@ -230,6 +230,7 @@ public class C {
     public static final int RES_MONOPOLS = 10;
     public static final int RES_GEMS = 11;
     public static final int RES_SINGULARITIES = 12;
+    public static final int NR_RESOURCES = 13;
 
     // Harvesting city types - index into Harvest table    // RSW
     public static final int FARM_HARVESTING = 0;
@@ -374,6 +375,7 @@ public class C {
     public static final String S_BYZANTIUM_II_WINDOW = "byzantium_ii_window";
     public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_MESSAGES = "messages window";
+    public static final String S_AGORA_WINDOW = "agora window";
     // command line options
     public static final String OPT_DOUBLE_RES = "d";
     public static final String OPT_NAMED_GALAXY = "g";
@@ -472,6 +474,40 @@ public class C {
         System.out.println("STIGMATA:" + STIGMATA);
         System.out.println("THE_SPY:" + THE_SPY);
         System.out.println("NEUTRAL:" + NEUTRAL);
+    }
+
+    /**
+     * Gui Coordinates. Keys to HashMaps in WindowSize. Eg. if in a WindowSize
+     * ws there is a HashMap agora then ws.agora.get(C.GC.FOOD_X) will return
+     * the x_coordinate of the upper left corner of food text in agora trade
+     * window.
+     */
+    public enum GC {
+
+        FOOD_X, // first resource name
+        FOOD_Y,
+        LINE_H, // line height
+        BOX_H, // box height
+        HEADER_Y,
+        SELL_H_X, // column headers
+        AVAIL_H_X,
+        BUY_H_X,
+        AMT_H_X,
+        COST_H_X,
+        SELL_V_X, // column values
+        AVAIL_V_X,
+        BUY_V_X,
+        AMT_V_X, // the last two are boxed
+        AMT_V_Y,
+        AMT_V_W,
+        COST_V_X,
+        SLIDER_X,
+        SLIDER_Y,
+        SLIDER_W,
+        PURCHASE_X,
+        PURCHASE_Y,
+        PURCHASE_W,
+        CANCEL_X
     }
 }
 /*

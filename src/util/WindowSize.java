@@ -28,7 +28,9 @@
 package util;
 
 import java.awt.Font;
-
+import java.util.HashMap;
+import java.util.function.BiFunction;
+import util.C.GC;
 /**
  *
  * @author joulupunikki
@@ -495,9 +497,14 @@ public class WindowSize {
     public int bz2_house_banner_y1 = 324;
     public int bz2_house_banner_y2 = 423;
 
-    public WindowSize(boolean is_double) {
+    public HashMap<Enum, Integer> agora;
 
+    private final Doubler mul2;
+
+    public WindowSize(boolean is_double) {
+        this.mul2 = new Doubler();
         this.is_double = is_double;
+        iAgora(is_double);
         if (is_double) {
             main_window_width *= 2;
             main_window_height *= 2;
@@ -948,5 +955,45 @@ public class WindowSize {
         font_bcw_2 = new Font("Arial", Font.PLAIN, font_bcw_2_size);
 
         font_large = new Font("Arial", Font.BOLD, font_large_size);
+    }
+
+    private void iAgora(boolean is_double) {
+        agora = new HashMap<>();
+        agora.put(GC.FOOD_X, 66);
+        agora.put(GC.FOOD_Y, 38);
+        agora.put(GC.LINE_H, 29);
+        agora.put(GC.BOX_H, 19);
+        agora.put(GC.HEADER_Y, 15);
+        agora.put(GC.SELL_H_X, 199);
+        agora.put(GC.AVAIL_H_X, 239);
+        agora.put(GC.BUY_H_X, 301);
+        agora.put(GC.AMT_H_X, 497);
+        agora.put(GC.COST_H_X, 568);
+        agora.put(GC.SELL_V_X, 223);
+        agora.put(GC.AVAIL_V_X, 273);
+        agora.put(GC.BUY_V_X, 323);
+        agora.put(GC.AMT_V_X, 474);
+        agora.put(GC.AMT_V_Y, 25);
+        agora.put(GC.AMT_V_W, 52);
+        agora.put(GC.COST_V_X, 549);
+        agora.put(GC.SLIDER_X, 348);
+        agora.put(GC.SLIDER_Y, 25);
+        agora.put(GC.SLIDER_W, 104);
+        agora.put(GC.PURCHASE_X, 18);
+        agora.put(GC.PURCHASE_Y, 453);
+        agora.put(GC.PURCHASE_W, 104);
+        agora.put(GC.CANCEL_X, 138);
+        if (is_double) {
+            agora.replaceAll(mul2);
+        }
+
+    }
+
+    private class Doubler implements BiFunction<Enum, Integer, Integer> {
+
+        @Override
+        public Integer apply(Enum t, Integer u) {
+            return 2 * u;
+        }
     }
 }

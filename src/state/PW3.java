@@ -121,4 +121,9 @@ public class PW3 extends PW {
         SU.pressBuildButtonSU();
     }
 
+    @Override
+    public void pressTradeButton() {
+        SU.pressTradeButtonSU();
+    }
+
 }

@@ -48,6 +48,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import javax.swing.AbstractButton;
 import javax.swing.JMenu;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
@@ -98,6 +100,7 @@ public class Phoenix {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        setLAF();
 
         // parse options
         CommandLine cli_opts = parseCLI(args);
@@ -273,6 +276,17 @@ public class Phoenix {
         });
         // start GUI
         Gui.execute(cli_opts);
+    }
+
+    private static void setLAF() {
+        try {
+            // Set cross-platform Java L&F (also called "Metal")
+            UIManager.setLookAndFeel(
+                    UIManager.getCrossPlatformLookAndFeelClassName());
+            //MetalLookAndFeel.setCurrentTheme(new DarkTheme());
+        } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            System.out.println("setLAF failed");
+        }
     }
 
     private static CommandLine parseCLI(String[] args) {

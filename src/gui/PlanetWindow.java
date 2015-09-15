@@ -76,6 +76,7 @@ public class PlanetWindow extends JPanel {
     JButton skip_stack;
 
     JButton build;
+    JButton trade;
 
     //bug test
     long test_long = 0;
@@ -150,6 +151,7 @@ public class PlanetWindow extends JPanel {
         });
 
         setUpSkipStack();
+        setUpTrade();
 
         ButtonIcon build_disabled = new ButtonIcon(ws.build_button_w, ws.build_button_h, null, 0, color_index, ws);
 //        file_offset = 2;
@@ -171,6 +173,22 @@ public class PlanetWindow extends JPanel {
             }
         });
 
+    }
+
+    public void setUpTrade() {
+        trade = new JButton("Trade");
+        trade.setFont(ws.font_default);
+        trade.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        this.add(trade);
+        trade.setBounds(ws.build_button_x_offset, ws.build_button_y_offset - ws.build_button_h,
+                ws.build_button_w, ws.build_button_h);
+        trade.setVisible(false);
+        trade.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressTradeButton();
+            }
+        });
     }
 
     public void setUpSkipStack() {
@@ -289,6 +307,7 @@ public class PlanetWindow extends JPanel {
         int faction = game.getSelectedFaction().y;
         boolean enable_launch = false;
         boolean enable_build = false;
+        boolean trade_visible = false;
         if (selected != null) {
             Util.drawStackDisplay(g, game, selected, faction);
 
@@ -296,9 +315,13 @@ public class PlanetWindow extends JPanel {
                 Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
                 if (hex.getStructure() != null) {
                     city_name.setText(game.getStrBuild(hex.getStructure().type).name);
+                    if (hex.getStructure().type == C.AGORA) {
+                        trade_visible = true;
+                    }
                 } else {
                     city_name.setText("");
                 }
+                trade.setVisible(trade_visible);
                 List<Unit> stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y).getStack();
                 if (stack.get(0).owner == game.getTurn()) {
 //                    Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);

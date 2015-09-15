@@ -112,4 +112,9 @@ public class PW2 extends PW {
         SU.pressBuildButtonSU();
     }
 
+    @Override
+    public void pressTradeButton() {
+        SU.pressTradeButtonSU();
+    }
+
 }

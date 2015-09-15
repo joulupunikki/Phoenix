@@ -907,6 +907,12 @@ public class SU extends State {
 //        bp.citySelected(null, s);
     }
 
+    public static void pressTradeButtonSU() {
+        saveMainGameState();
+        gui.setCurrentState(AW.get());
+        setWindow(C.S_AGORA_WINDOW);
+    }
+
     public static void pressLaunchButtonSU() {
         if (game.launchStack()) {
             setWindow(C.S_STAR_MAP);

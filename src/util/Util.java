@@ -2074,4 +2074,54 @@ public class Util {
         return selected;
     }
 
+    public static class DeadLockGuard extends Thread {
+        private static int REPEAT = 1000;
+        boolean on_guard;
+        int interval;
+        Object guarded;
+
+        private DeadLockGuard() {
+            this.on_guard = true;
+        }
+
+        public DeadLockGuard(int interval, Object guarded) {
+            this.on_guard = true;
+            this.interval = interval;
+            this.guarded = guarded;
+        }
+
+        @Override
+        public void run() {
+            long start_time = System.currentTimeMillis();
+            boolean alert = false;
+            while (on_guard) {
+                if (alert) {
+                    if (interval < REPEAT) {
+                        interval = REPEAT;
+                    }
+                    throw new AssertionError("DeadLockGuard waited "
+                            + (System.currentTimeMillis() - start_time)
+                            + "ms on " + guarded.getClass().getCanonicalName(), null);
+                } else {
+                    alert = true;
+                }
+                try {
+                    Thread.sleep(interval);
+                } catch (InterruptedException ex) {
+                }
+
+            }
+
+        }
+
+        public void stopGuard() {
+            on_guard = false;
+        }
+
+    }
+
+    public static DeadLockGuard getDeadLockGuard(int interval, Object guarded) {
+        return new DeadLockGuard(interval, guarded);
+    }
+
 }

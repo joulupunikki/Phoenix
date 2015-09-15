@@ -96,6 +96,7 @@ import util.Comp;
 import util.FN;
 import util.StackIterator;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -133,6 +134,7 @@ public class Gui extends JFrame {
     private MainMenu main_menu;
     private MainMenu.W1 main_menu1;
     private CombatWindow combat_window;
+    private AgoraWindow agora_window;
     private BuildPanel build_panel;
     private JDialog build_window;
     // panel showing research options
@@ -221,31 +223,7 @@ public class Gui extends JFrame {
     private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
-        // set swing component default colors
-        UIManager.put("OptionPane.background", Color.DARK_GRAY);
-        UIManager.put("OptionPane.foreground", C.COLOR_GOLD);
-        UIManager.put("Panel.background", Color.DARK_GRAY);
-        UIManager.put("Panel.foreground", C.COLOR_GOLD);
-        UIManager.put("OptionPane.messageForeground", C.COLOR_GOLD);
-        UIManager.put("Button.background", Color.BLACK);
-        UIManager.put("Button.foreground", C.COLOR_GOLD);
-        UIManager.put("Button.border", new BorderUIResource(new LineBorder(C.COLOR_GOLD)));
-        UIManager.put("Dialog.background", Color.DARK_GRAY);
-        UIManager.put("Dialog.foreground", C.COLOR_GOLD);
-        UIManager.put("ProgressBar.foreground", C.COLOR_GOLD);
-        UIManager.put("ProgressBar.background", Color.DARK_GRAY);
-        UIManager.put("MenuItem.background", Color.DARK_GRAY);
-        UIManager.put("MenuItem.foreground", C.COLOR_GOLD);
-        UIManager.put("MenuItem.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
-        UIManager.put("Menu.background", Color.DARK_GRAY);
-        UIManager.put("Menu.foreground", C.COLOR_GOLD);
-        UIManager.put("Menu.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
-        UIManager.put("TextArea.background", Color.BLACK);
-        UIManager.put("TextArea.foreground", C.COLOR_GOLD);
-        UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
-        UIManager.put("TextField.background", Color.BLACK);
-        UIManager.put("TextField.foreground", C.COLOR_GOLD);
-        UIManager.put("Label.foreground", C.COLOR_GOLD);
+        UtilG.setUIDefaults();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         CommandLine args = Gui.args;
@@ -460,6 +438,8 @@ public class Gui extends JFrame {
             }
         });
 
+        agora_window = AgoraWindow.getAgoraWindow(this);
+
         main_windows = new JPanel(new CardLayout());
 
         main_windows.add(main_menu1, C.S_MAIN_MENU1);
@@ -471,6 +451,7 @@ public class Gui extends JFrame {
         main_windows.add(unit_info_window, C.S_UNIT_INFO);
         main_windows.add(combat_window, C.S_COMBAT_WINDOW);
         main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
+        main_windows.add(agora_window, C.S_AGORA_WINDOW);
 
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
         setMouseCursor(C.S_CURSOR_SCEPTOR);
@@ -558,6 +539,7 @@ public class Gui extends JFrame {
         cycle_timer.start();
 
     }
+
 
     private void setUpFileMenu() {
         file_menu = new JMenu("File");
@@ -1517,6 +1499,7 @@ public class Gui extends JFrame {
         // to set attributes of chooser components google "Darryl SwingUtils"
         // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
+        UtilG.setJComponentChildrenToDark(chooser);
         String path_name = System.getProperty("user.dir")
                 + System.getProperty("file.separator") + FN.S_SAV;
         chooser.setCurrentDirectory(new File(path_name));
@@ -1616,10 +1599,12 @@ public class Gui extends JFrame {
         }
     }
 
+
     public void saveGame() {
         // to set attributes of chooser components google "Darryl SwingUtils"
         // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
+        UtilG.setJComponentChildrenToDark(chooser);
 //        FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //                "JPG & GIF Images", "jpg", "gif");
 //        chooser.setFileFilter(filter);
@@ -1808,6 +1793,7 @@ public class Gui extends JFrame {
         city_dialog.setGame(game);
         cargo_win.setGame(game);
         byzantium_ii_window.setGame(game);
+        agora_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

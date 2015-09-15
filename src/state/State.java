@@ -109,6 +109,12 @@ public abstract class State {
 
     }
 
+    public void pressPurchaseButton() {
+    }
+
+    public void pressTradeButton() {
+    }
+
     public void clickOnWindow(MouseEvent e) {
     }
 
