@@ -30,7 +30,7 @@ package state;
 import galaxyreader.Unit;
 
 /**
- * Combat Window Bombard 1
+ * Combat Window PTS fire 1
  *
  * @author joulupunikki
  */

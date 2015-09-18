@@ -81,15 +81,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
-import javax.swing.border.LineBorder;
-import javax.swing.plaf.BorderUIResource;
 import org.apache.commons.cli.CommandLine;
 import phoenix.Phoenix;
 import phoenix.RobotTester;
 import state.MM1;
 import state.SU;
 import state.State;
-import state.StateRef;
 import state.WS;
 import util.C;
 import util.Comp;
@@ -208,7 +205,6 @@ public class Gui extends JFrame {
     private boolean animation_blink = true;
     private int stack_move_counter;
     private State state;
-    private StateRef state_ref;
     private int color_cycle_count;
     private Color[] color_cycle_colors;
     private Color color_cycle_color;
@@ -2188,6 +2184,10 @@ public class Gui extends JFrame {
 
     public JPanel getMainWindows() {
         return main_windows;
+    }
+
+    public AgoraWindow getAgoraWindow() {
+        return agora_window;
     }
 
     public JPanel getPlanetWindow() {

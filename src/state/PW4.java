@@ -60,61 +60,6 @@ public class PW4 extends PW {
 
     }
 
-//    public void stackMoveEvent2() {
-//        gui.setStack_move_counter(gui.getStack_move_counter() + 1);
-//        if (gui.getStack_move_counter() >= 20) {
-//            gui.setStack_move_counter(0);
-//            if (game.isCapture()) {
-//                gui.setStop_stack(true);
-//                game.capture();
-//                game.setPath(null);
-//                gui.setCurrentState(PW2.get());
-//                gui.setMenus(true);
-//                gui.getStack_move_timer().stop();
-//                gui.setStack_moving(false);
-//                return;
-//            } else if (game.isCombat()) {
-//                gui.setStop_stack(true);
-////                game.setPath(null);
-//                game.resolveGroundBattleInit(C.GROUND_COMBAT, -1);
-//                gui.setCurrentState(PW2.get());
-//                gui.setMenus(true);
-//                gui.getStack_move_timer().stop();
-//                gui.setStack_moving(false);
-//                SU.showCombatWindow();
-//
-//                return;
-//            } else if (game.isEnemy()) {
-//                gui.setStop_stack(true);
-//            } else if (!game.moveStack()) {
-//                gui.setStop_stack(true);
-//                JOptionPane.showMessageDialog(gui, "Too many units in the destination area.", null, JOptionPane.PLAIN_MESSAGE);
-////                gui.showTooManyUnits();
-//            }
-//            LinkedList<Hex> path = game.getPath();
-//            if (path != null && path.getFirst().equals(path.getLast())) {
-//                gui.setStop_stack(true);
-//                game.setPath(null);
-//            } else if (!Util.moveCapable(game)) {
-//                gui.setStop_stack(true);
-//            }
-//            if (gui.isStop_stack()) {
-//                gui.getStack_move_timer().stop();
-//                gui.setStack_moving(false);
-//                if (game.getPath() == null) {
-//                    gui.setCurrentState(PW2.get());
-//                } else {
-//                    gui.setCurrentState(PW3.get());
-//                }
-//                gui.setMenus(true);
-//            }
-//        }
-//        if (0 < gui.getStack_move_counter() && gui.getStack_move_counter() < 20) {
-//            gui.getPlanetMap().repaint();
-//        } else {
-//            gui.getPlanetWindow().repaint();
-//        }
-//    }
     public void stackMoveEvent() {
         gui.setStack_move_counter(gui.getStack_move_counter() + 1);
         if (gui.getStack_move_counter() >= 20) {
@@ -157,9 +102,16 @@ public class PW4 extends PW {
                     tryToMove();
                 }
                 //2.3, 2.4 not possible
-//            //3: neutral city in hex
-//            } else if (game.isNeutral(target_hex.getStructure().owner)) {
-//                // TODO
+            //3: neutral city in hex TODO only trade with league is considered
+            } else if (game.getDiplomacy().getDiplomaticState(target_hex.getStructure().owner, faction.x) != C.DS_WAR
+                    && target_hex.getStructure().type == C.AGORA && target_hex.getStructure().owner == C.LEAGUE
+                    && Util.anyCargoPods(path.get(0).getStack())) {
+                stop();
+                stack_moving = false;
+                saveMainGameState();
+                gui.setCurrentState(AW2.get());
+                gui.getAgoraWindow().enterAgora(target_hex);
+                SU.setWindow(C.S_AGORA_WINDOW);
                 //4: at war with city owner
             } else {
                 //4.1: no units in stack

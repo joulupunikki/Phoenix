@@ -33,6 +33,7 @@ import game.Game;
 import java.util.Comparator;
 
 /**
+ * Various Comparator implementations
  *
  * @author joulupunikki
  */

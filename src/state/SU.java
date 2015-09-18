@@ -910,6 +910,7 @@ public class SU extends State {
     public static void pressTradeButtonSU() {
         saveMainGameState();
         gui.setCurrentState(AW.get());
+        gui.getAgoraWindow().enterAgora(null);
         setWindow(C.S_AGORA_WINDOW);
     }
 

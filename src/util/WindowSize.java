@@ -983,6 +983,11 @@ public class WindowSize {
         agora.put(GC.PURCHASE_Y, 453);
         agora.put(GC.PURCHASE_W, 104);
         agora.put(GC.CANCEL_X, 138);
+        agora.put(GC.BANK_H_X, 451);
+        agora.put(GC.BANK_H_Y, 417);
+        agora.put(GC.BANK_V_X, 549);
+        agora.put(GC.BANK_V_Y, 404);
+        agora.put(GC.BANK_V_W, 53);
         if (is_double) {
             agora.replaceAll(mul2);
         }

@@ -62,9 +62,9 @@ import util.FN;
  * Phoenix functionality. Events are generated from an event log file which is
  * generated during normal Phoenix/EFS operation/play. This class is a
  * singleton, start with startRobotTester().
- *
+ * <p>
  * Notes on running:
- *
+ * <p>
  * As the events created by the RobotTester will not have identical timing with
  * the originals, and OS-level/JVM interference will cause the game to have
  * slightly different response times between executions with identical inputs,
@@ -75,24 +75,24 @@ import util.FN;
  * game state the test may fail right there (note however that this specific
  * thing has been mitigated by setting the programmed inter-event delay between
  * double click mouse events to well below the JVM double click threshold.)
- *
+ * <p>
  * If, on the test machine, some object has the focus when a Robot test is
  * started then the first mouse click will be consumed by giving focus to the
  * Phoenix window. Currently, this is not considered in RobotTester code and the
  * Robot test will most likely report a failure on the first event in such
  * cases.
- *
+ * <p>
  * PROPOSED FIX: insert a dummy click on Phoenix window as first event in every
  * Robot test, or otherwise ensure that Phoenix window has focus.
- *
+ * <p>
  * Questionable Implementation Features:
- *
+ * <p>
  * Mouse drag with open JMenu is raw, all events are logged and repeated. Thus,
  * with all the processing and Robot.autodelay(), the drag is slooooow. And the
  * log is clogged with drag events. This has to be done cause I could not find a
  * way to detect mouse pointer moving from an open JMenu to another JMenu during
  * a drag.
- *
+ * <p>
  * "private synchronized void dispacthedEventD(String event)" is called from
  * event dispatch thread, which probably should not have to wait for user level
  * program execution. This is, however, only as a part of automated robot

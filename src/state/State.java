@@ -36,7 +36,7 @@ import javax.swing.JCheckBox;
 import util.WindowSize;
 
 /**
- * Superclass for state objects. PW planet window SW space window SU State Util
+ * Superclass for all state implementing objects.
  *
  * @author joulupunikki
  */
@@ -109,7 +109,10 @@ public abstract class State {
 
     }
 
-    public void pressPurchaseButton() {
+    public void pressBuySellButton() {
+    }
+
+    public void pressCancelButton() {
     }
 
     public void pressTradeButton() {

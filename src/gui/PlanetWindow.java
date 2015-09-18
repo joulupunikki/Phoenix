@@ -315,7 +315,7 @@ public class PlanetWindow extends JPanel {
                 Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
                 if (hex.getStructure() != null) {
                     city_name.setText(game.getStrBuild(hex.getStructure().type).name);
-                    if (hex.getStructure().type == C.AGORA) {
+                    if (hex.getStructure().type == C.AGORA && hex.getStructure().owner == C.LEAGUE) {
                         trade_visible = true;
                     }
                 } else {
@@ -359,8 +359,7 @@ public class PlanetWindow extends JPanel {
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
         year_display.setText(
                 "A.D. " + game.getYear());
-        money_display.setText(
-                "4500 FB");
+        money_display.setText("" + game.getFaction(game.getTurn()).getFirebirds());
         drawResAmounts();
     }
 

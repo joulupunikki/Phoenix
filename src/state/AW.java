@@ -27,8 +27,18 @@
  */
 package state;
 
+import galaxyreader.Structure;
+import galaxyreader.Unit;
+import game.Hex;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import util.C;
+import util.Util;
+
 /**
- * Byzantium II Window Casting Votes
+ * Agora Window Buy
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
@@ -44,9 +54,65 @@ public class AW extends State {
     }
 
     @Override
-    public void pressPurchaseButton() {
+    public void pressBuySellButton() {
+        int[] amounts = gui.getAgoraWindow().getAmounts();
+        int[] sells = gui.getAgoraWindow().getSells();
+        List<Unit> agora_stack = game.getSelectedStack();
+        Hex h = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(agora_stack.get(0).x, agora_stack.get(0).y);
+        Set<Hex> hexes = Util.getHexesWithinRadiusOf(h, 1);
+        hexes.remove(h);
+        h = null;
+        List<Integer> manifest = new LinkedList<>();
+        for (int i = 0; i < amounts.length; i++) {
+            if (amounts[i] > 0) {
+                manifest.add(i);
+            }
+        }
+        for (Hex hex : hexes) {
+            Structure struct = hex.getStructure();
+            List<Unit> stack = hex.getStack();
+            if ((struct == null || struct.owner == game.getTurn())
+                    && (stack.isEmpty() || (stack.get(0).owner == game.getTurn())
+                    && stack.size() + manifest.size() <= C.STACK_SIZE)) {
+                h = hex;
+                break;
+            }
+        }
+        if (h == null) {
+            gui.showInfoWindow("We cannot sell resources to you because there is nowhere to put it. ("
+                    + "At least one hex next to the Agora must have enough room for as many new pods "
+                    + "as the number of different resources you bought.)");
+            pressCancelButton();
+            return;
+        }
+        for (int i = 0; i < amounts.length; i++) {
+            if(amounts[i] > 0) {
+                for (Unit u : agora_stack) {
+                    if (u.type == C.CARGO_UNIT_TYPE && u.res_relic == i) {
+                        u.amount -= amounts[i];
+                        game.getFaction(game.getTurn()).addFirebirds(amounts[i] * sells[i] * (-1));
+                        game.getResources().addOneResourceTypeToHex(game.getCurrentPlanetNr(), h.getX(), h.getY(), game.getTurn(), game.getTurn(), i, amounts[i]);
+                    }
+                        
+                }
+            }  
+        }
+        for (Iterator<Unit> iterator = agora_stack.iterator(); iterator.hasNext();) {
+            Unit next = iterator.next();
+
+            if (next.type == C.CARGO_UNIT_TYPE && next.amount < 1) {
+                iterator.remove();
+                game.deleteUnitNotInCombat(next);
+            }
+        }
+        pressCancelButton();
+    }
+
+    @Override
+    public void pressCancelButton() {
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
         main_game_state = null;
     }
+
 }

@@ -31,7 +31,7 @@ import game.Hex;
 import util.C;
 
 /**
- * Combat Window Bombard 2
+ * Combat Window PTS fire 2
  *
  * @author joulupunikki
  */

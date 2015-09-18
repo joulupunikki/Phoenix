@@ -28,6 +28,7 @@
 package util;
 
 /**
+ * This is used in reading of planet maps in GALAXY.GAL files.
  *
  * @author joulupunikki
  */

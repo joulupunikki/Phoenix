@@ -30,6 +30,7 @@ package state;
 import util.C;
 
 /**
+ * Main Menu 1, the first screen presented to players.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
@@ -44,15 +45,27 @@ public class MM1 extends State {
         return instance;
     }
 
+    /**
+     * Start new game
+     */
+    @Override
     public void pressStartNew() {
         SU.setWindow(C.S_MAIN_MENU);
         gui.setCurrentState(MM3.get());
     }
 
+    /**
+     * Load saved game
+     */
+    @Override
     public void pressLoadGame() {
         gui.loadGame();
     }
 
+    /**
+     * Quit game
+     */
+    @Override
     public void pressQuit() {
         System.exit(0);
     }

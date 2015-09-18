@@ -66,6 +66,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 
 /**
+ * A motley crew of utilities, candidate for separation.
  *
  * @author joulupunikki
  */
@@ -2122,6 +2123,21 @@ public class Util {
 
     public static DeadLockGuard getDeadLockGuard(int interval, Object guarded) {
         return new DeadLockGuard(interval, guarded);
+    }
+
+    /**
+     * Return true iff any unit in stack is a cargo pod
+     *
+     * @param stack
+     * @return
+     */
+    public static boolean anyCargoPods(List<Unit> stack) {
+        for (Unit u : Util.xS(stack)) {
+            if (u.type == C.CARGO_UNIT_TYPE) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

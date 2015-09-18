@@ -28,6 +28,7 @@
 package state;
 
 /**
+ * Combat Window (between two planetary stacks) 1
  *
  * @author joulupunikki
  */

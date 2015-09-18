@@ -230,4 +230,22 @@ public class Faction implements Serializable {
         }
 
     }
+
+    /**
+     * @return the firebirds
+     */
+    public int getFirebirds() {
+        return firebirds;
+    }
+
+    /**
+     * @param firebirds the firebirds to set
+     */
+    public void setFirebirds(int firebirds) {
+        this.firebirds = firebirds;
+    }
+
+    public void addFirebirds(int firebirds) {
+        this.firebirds += firebirds;
+    }
 }

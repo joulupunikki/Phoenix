@@ -32,6 +32,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 
 /**
+ * Main Menu 3, select game parameters. Like factions, PBEM.
  *
  * @author joulupunikki
  */

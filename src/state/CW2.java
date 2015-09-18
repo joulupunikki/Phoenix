@@ -30,6 +30,7 @@ package state;
 import util.C;
 
 /**
+ * Combat Window (between two planetary stacks) 2
  *
  * @author joulupunikki
  */

@@ -29,8 +29,10 @@ package gui;
 
 import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -49,12 +51,13 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.C.GC;
 import util.FN;
 import util.Util;
 import util.UtilG;
-import util.UtilG.CustomSliderUI;
+import util.UtilG.DarkSliderUI;
 import util.WindowSize;
 
 /**
@@ -67,11 +70,12 @@ public class AgoraWindow extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final double SELL_PREMIUM = 1.3;
     // pointer to GUI
     private Gui gui;
     private Game game;
     private WindowSize ws;
-    private JButton purchase;
+    private JButton buy_sell;
     private JButton cancel;
     private JSlider[] sliders;
     private JTextField[] amount;
@@ -79,8 +83,14 @@ public class AgoraWindow extends JPanel {
     private int[] buys;
     private int[] avails;
     private int[] sells;
+    private int[] amounts;
+    private JTextField bank;
+    private JTextField total;
+    private JTextField result;
     // pointer to map holding gui element coordinates
     private Map<Enum, Integer> c;
+    // null iff buying, othewise pointer to agora hex to which we are selling
+    private Hex sell;
 
     public static AgoraWindow getAgoraWindow(Gui gui) {
         AgoraWindow aw = new AgoraWindow(gui);
@@ -120,17 +130,17 @@ public class AgoraWindow extends JPanel {
             }
         });
         System.out.println(c.get(GC.PURCHASE_X) + "," + c.get(GC.PURCHASE_Y));
-        purchase = new JButton("Purchase");
-        purchase.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        purchase.setBackground(Color.BLACK);
-        purchase.setForeground(C.COLOR_GOLD);
-        this.add(purchase);
-        purchase.setBounds(c.get(GC.PURCHASE_X), c.get(GC.PURCHASE_Y), c.get(GC.PURCHASE_W), c.get(GC.BOX_H));
-        purchase.setEnabled(true);
-        purchase.addActionListener(new ActionListener() {
+        buy_sell = new JButton("Purchase");
+        buy_sell.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        buy_sell.setBackground(Color.BLACK);
+        buy_sell.setForeground(C.COLOR_GOLD);
+        this.add(buy_sell);
+        buy_sell.setBounds(c.get(GC.PURCHASE_X), c.get(GC.PURCHASE_Y), c.get(GC.PURCHASE_W), c.get(GC.BOX_H));
+        buy_sell.setEnabled(true);
+        buy_sell.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gui.getCurrentState().pressPurchaseButton();
+                gui.getCurrentState().pressBuySellButton();
             }
         });
         
@@ -140,11 +150,11 @@ public class AgoraWindow extends JPanel {
         cancel.setBackground(Color.BLACK);
         cancel.setForeground(C.COLOR_GOLD);
         cancel.setBounds(c.get(GC.CANCEL_X), c.get(GC.PURCHASE_Y), c.get(GC.PURCHASE_W), c.get(GC.BOX_H));
-        cancel.setEnabled(false);
+        cancel.setEnabled(true);
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                gui.getCurrentState().pressAbstainButton();
+                gui.getCurrentState().pressCancelButton();
             }
         });
         this.add(cancel);
@@ -152,22 +162,35 @@ public class AgoraWindow extends JPanel {
         setUpSliders();
         setUpAmount();
         setUpCost();
+        setUpInventory();
+        amounts = new int[C.NR_RESOURCES];
+        bank = getResultJTF(0);
+        total = getResultJTF(1);
+        result = getResultJTF(2);
+
+    }
+
+    private JTextField getResultJTF(int i) {
+        JTextField jtf = new JTextField();
+        jtf.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        jtf.setBounds(c.get(GC.BANK_V_X), c.get(GC.BANK_V_Y) + i * c.get(GC.BOX_H), c.get(GC.BANK_V_W), c.get(GC.BOX_H));
+        jtf.setHorizontalAlignment(JTextField.RIGHT);
+        this.add(jtf);
+        return jtf;
     }
 
     private void setUpSliders() {
         sliders = new JSlider[C.NR_RESOURCES];
+        ChangeListener cl = (ChangeEvent e) -> {
+            updateShoppingCart();
+        };
         for (int i = 0; i < C.NR_RESOURCES; i++) {
-            sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 100, 100);
-            sliders[i].setUI(new CustomSliderUI(sliders[i], C.COLOR_GOLD_DARK));
+            sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
+            //sliders[i].setUI(new CustomSliderUI(sliders[i], C.COLOR_GOLD_DARK));
+            sliders[i].setUI(new DarkSliderUI());
             sliders[i].setBackground(Color.BLACK);
             sliders[i].setForeground(Color.BLACK);
-            sliders[i].addChangeListener(new ChangeListener() {
-
-                @Override
-                public void stateChanged(ChangeEvent e) {
-                    JSlider src = (JSlider) e.getSource();
-                }
-            });
+            sliders[i].addChangeListener(cl);
             sliders[i].setBounds(c.get(GC.SLIDER_X), c.get(GC.SLIDER_Y) + i * c.get(GC.LINE_H), c.get(GC.SLIDER_W), c.get(GC.BOX_H));
             this.add(sliders[i]);
         }
@@ -195,6 +218,12 @@ public class AgoraWindow extends JPanel {
         }
     }
 
+    private void setUpInventory() {
+        buys = new int[C.NR_RESOURCES];
+        avails = new int[C.NR_RESOURCES];
+        sells = new int[C.NR_RESOURCES];
+    }
+
     private void renderWindow(Graphics g) {
         drawBackground(g);
         drawDetails(g);
@@ -211,6 +240,7 @@ public class AgoraWindow extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         drawHeaders(g2d);
         drawLines(g2d);
+
     }
 
     private void drawHeaders(Graphics2D g) {
@@ -219,6 +249,9 @@ public class AgoraWindow extends JPanel {
         UtilG.drawStringGrad(g, "Buy", ws.font_large, c.get(GC.BUY_H_X), c.get(GC.HEADER_Y));
         UtilG.drawStringGrad(g, "Amt", ws.font_large, c.get(GC.AMT_H_X), c.get(GC.HEADER_Y));
         UtilG.drawStringGrad(g, "Cost", ws.font_large, c.get(GC.COST_H_X), c.get(GC.HEADER_Y));
+        UtilG.drawStringGrad(g, "Bank", ws.font_large, c.get(GC.BANK_H_X), c.get(GC.BANK_H_Y));
+        UtilG.drawStringGrad(g, "Total Cost", ws.font_large, c.get(GC.BANK_H_X), c.get(GC.BANK_H_Y) + c.get(GC.BOX_H));
+        UtilG.drawStringGrad(g, "Result", ws.font_large, c.get(GC.BANK_H_X), c.get(GC.BANK_H_Y) + 2 * c.get(GC.BOX_H));
 
     }
 
@@ -226,20 +259,133 @@ public class AgoraWindow extends JPanel {
         FontMetrics fm = this.getFontMetrics(ws.font_large);
         String s;
         for (int i = 0; i < 13; i++) {
-            UtilG.drawStringGrad(g, Util.getResName(i), ws.font_large, c.get(GC.FOOD_X), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
-            s = String.valueOf(i);
-            UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.SELL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
-            UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.AVAIL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
-            UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.BUY_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);          
+            drawField(i, g, Util.getResName(i), ws.font_large, c.get(GC.FOOD_X), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            s = "" + buys[i];
+            drawField(i, g, s, ws.font_large, c.get(GC.SELL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            //UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.SELL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            s = "" + avails[i];
+            drawField(i, g, s, ws.font_large, c.get(GC.AVAIL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            //UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.AVAIL_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            s = "" + sells[i];
+            drawField(i, g, s, ws.font_large, c.get(GC.BUY_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
+            //UtilG.drawStringGrad(g, s, ws.font_large, c.get(GC.BUY_V_X) - fm.stringWidth(s), c.get(GC.FOOD_Y) + c.get(GC.LINE_H) * i);
         }
     }
 
-    private void recalculateTradeDeal() {
-
+    private void drawField(int i, Graphics2D g, String s, Font f, int x, int y) {
+        if (sliders[i].isEnabled()) {
+            UtilG.drawStringGrad(g, s, f, x, y);
+        } else {
+            g.setColor(C.COLOR_GOLD_DARK);
+            g.drawString(s, x, y);
+        }
+    } 
+    
+    public void enterAgora(Hex sell) {
+        this.sell = sell;
+        if (sell == null) {
+            buy_sell.setText("Purchase");
+        } else {
+            buy_sell.setText("Sell");
+        }
+        resetInventory();
+        fillInventory();
+        adjustSliders(true, 0);
     }
 
-    private void enterAgora() {
-        List<Unit> stock = game.getSelectedStack();
+    private void adjustSliders(boolean zero, int sum) {
+        for (int i = 0; i < sliders.length; i++) {
+            int max;
+            if (sell != null) {
+                max = C.STACK_SIZE * C.MAX_CARGO;
+            } else {
+                max = FastMath.min(((game.getFaction(game.getTurn()).getFirebirds() - sum) / sells[i]) + amounts[i], C.MAX_CARGO);
+            }
+            if (max < 1) {
+                sliders[i].setEnabled(false);
+            } else {
+                sliders[i].setEnabled(true);
+            }
+            sliders[i].setMaximum(FastMath.max(0, FastMath.min(avails[i], max)));
+            if (zero) {
+                int zero_val = 0;
+                if (sell != null) {
+                    zero_val = sliders[i].getMaximum();
+                }
+                sliders[i].setValue(zero_val);
+            }
+        }
+    }
 
+    private void fillInventory() {
+        List<Unit> stock = game.getSelectedStack();
+        if (sell != null) {
+            stock = Util.getSelectedUnits(stock);
+        }
+        for (Unit u : stock) {
+            if (u.type == C.CARGO_UNIT_TYPE) {
+                avails[u.res_relic] += u.amount;
+            }
+        }
+    }
+
+    private void resetInventory() {
+        for (int i = 0; i < buys.length; i++) {
+            buys[i] = game.getResTypes()[i].price;
+            avails[i] = 0;
+            sells[i] = (int) FastMath.ceil(buys[i] * SELL_PREMIUM);
+        }
+    }
+
+    private void updateShoppingCart() {
+        int sum = 0;
+        int tmp = 0;
+        for (int i = 0; i < sliders.length; i++) {
+            amounts[i] = sliders[i].getValue();
+            amount[i].setText("" + amounts[i]);
+            if (sell != null) {
+                tmp = amounts[i] * buys[i];
+            } else {
+                tmp = amounts[i] * sells[i];
+            }
+            cost[i].setText("" + tmp);
+            sum += tmp;
+        }
+        adjustSliders(false, sum);
+        bank.setText("" + game.getFaction(game.getTurn()).getFirebirds());
+        total.setText("" + sum);
+        if (sell != null) {
+            result.setText("" + (game.getFaction(game.getTurn()).getFirebirds() + sum));
+        } else {
+            result.setText("" + (game.getFaction(game.getTurn()).getFirebirds() - sum));
+        }
+    }
+
+    /**
+     * @return the amounts
+     */
+    public int[] getAmounts() {
+        return amounts;
+    }
+
+    /**
+     * @return the sell
+     */
+    public Hex getAgoraHex() {
+        return sell;
+    }
+
+    /**
+     * @return the buys
+     */
+    public int[] getBuys() {
+        return buys;
+    }
+
+    /**
+     * @return the sells
+     */
+    public int[] getSells() {
+        return sells;
     }
 }

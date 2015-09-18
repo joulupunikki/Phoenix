@@ -14,6 +14,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Provides the finite state machine implementation to control Phoenix.
+ * Provides the finite state machine implementation to control Phoenix. Every
+ * class is either a state implementation or a collection of common state logic.
  */
 package state;

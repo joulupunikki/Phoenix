@@ -28,6 +28,7 @@
 package state;
 
 /**
+ * Unused, candidate for deletion.
  *
  * @author joulupunikki
  */
