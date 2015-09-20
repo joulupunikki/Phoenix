@@ -27,6 +27,8 @@
  */
 package state;
 
+import util.C;
+
 /**
  * Main Window MW, superclass of PW and SW, super superclass for Planet Windows
  * (PW1-4) and Space Windows (SW1-3)
@@ -48,14 +50,21 @@ public class MW extends State {
      */
     @Override
     public void pressEndTurnButton() {
-        if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
-            gui.showInfoWindow("My Lord, we must cast our votes before the day is done!");
-            return;
-        }
-        if (game.getRegency().needToAssignOffices(game)) {
-            gui.showInfoWindow("My Lord, as newly elected Regents we must assign "
-                    + "all the offices before the day is done!");
-            return;
+        if (game.getTurn() <= C.HOUSE5) {
+            if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
+                gui.showInfoWindow("My Lord, we must cast our votes before the day is done!");
+                return;
+            }
+            if (game.getRegency().needToAssignOffices(game)) {
+                gui.showInfoWindow("My Lord, as newly elected Regents we must assign "
+                        + "all the offices before the day is done!");
+                return;
+            }
+            if (!game.getFaction(game.getTurn()).balanceBudget()) {
+                gui.showInfoWindow("My Lord, we must find a way to pay our debts "
+                        + "before the day is done!");
+                return;
+            }
         }
         if (game.getEfs_ini().pbem.pbem) {
             game.setSelectedPoint(null, -1);

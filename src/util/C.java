@@ -376,6 +376,7 @@ public class C {
     public static final String S_X_PLAYER_SCREEN = "x player screen";
     public static final String S_MESSAGES = "messages window";
     public static final String S_AGORA_WINDOW = "agora window";
+    public static final String S_HOUSE_WINDOW = "house window";
     // command line options
     public static final String OPT_DOUBLE_RES = "d";
     public static final String OPT_NAMED_GALAXY = "g";

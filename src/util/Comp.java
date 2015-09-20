@@ -42,6 +42,8 @@ public class Comp {
     private static Game game = null;
     public static CityType city_type = new CityType();
     public static CityName city_name = new CityName();
+    public static CityXY city_xy = new CityXY();
+    public static CityPIdx city_pidx = new CityPIdx();
 
     public static UnitXY unit_xy = new UnitXY();
     public static UnitPIdx unit_pidx = new UnitPIdx();
@@ -88,6 +90,33 @@ public class Comp {
         public int compare(Structure a, Structure b) {
             return game.getStrBuild(a.type).name.compareTo(game.getStrBuild(b.type).name);
         }
+    }
+
+    /**
+     * Sorts by unit x,y coordinates.
+     */
+    public static class CityXY implements Comparator<Structure> {
+
+        public int compare(Structure o1, Structure o2) {
+            int x = o1.x - o2.x;
+            if (x != 0) {
+                return x;
+            } else {
+                return o1.y - o2.y;
+            }
+
+        }
+    }
+
+    /**
+     * Sorts by unit planet index.
+     */
+    public static class CityPIdx implements Comparator<Structure> {
+
+        public int compare(Structure o1, Structure o2) {
+            return o1.p_idx - o2.p_idx;
+        }
+
     }
 
     /**

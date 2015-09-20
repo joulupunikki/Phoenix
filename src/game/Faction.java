@@ -34,6 +34,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.Util;
 
@@ -48,16 +49,18 @@ public class Faction implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final int CITY_GDP = 1000;
     private Game game;
     private EfsIni efs_ini;
     private int turn;
 
     private boolean eliminated;
-    private int number;
+    private int number; // faction ID
     private int firebirds;
     private int tax_rate;
     private int tithe_rate;
     private int pay_rate;
+    private int debt;
     List<Message> messages = new LinkedList<>();
 //    private boolean[] techs;
 //    private int[] tech_costs;
@@ -247,5 +250,108 @@ public class Faction implements Serializable {
 
     public void addFirebirds(int firebirds) {
         this.firebirds += firebirds;
+    }
+
+    /**
+     * Calculate faction Gross Domestic Product, that is the total firebirds
+     * produced by cities on planets where you own the palace.
+     */
+    public int calculateGDP() {
+        int pop = 0;
+        List<Structure> all_cities = game.getStructures();
+        boolean[] rules = new boolean[game.getPlanets().size()];
+        for (Structure s : all_cities) {
+            if (s.type == C.PALACE && s.owner == game.getTurn()) {
+                rules[s.p_idx] = true;
+            }
+        }
+        for (Structure s : all_cities) {
+            if (s.prev_owner == number && rules[s.p_idx]) {
+                pop += s.health;
+            }
+        }
+        return (int) FastMath.ceil(pop * CITY_GDP / 100);
+    }
+    
+
+    /**
+     * Calculate base unit pay.
+     *
+     * @return
+     */
+    public int calculateUnitPay() {
+        int pay = 0;
+        List<Unit> all_units = game.getUnits();
+        for (Unit u : all_units) {
+            if (u.prev_owner == number) {
+                pay += u.type_data.crd_trn;
+            }
+        }
+        return pay;
+    }
+
+    /**
+     * Try to balance the budget, to be called when end turn button is pressed.
+     * Calculate
+     * <code>total = firebirds + taxes + tithe skim - unit pay - debt</code>, if
+     * total is less than 0 return false, else set
+     * <code>firebirds = total</code> and return true
+     *
+     * @return true if budget is balanced
+     */
+    public boolean balanceBudget() {
+        int gdp = calculateGDP();
+        int total = gdp * tax_rate / 100
+                + gdp * tithe_rate / 1000
+                - calculateUnitPay() * pay_rate / 100
+                - debt
+                + firebirds;
+        if (total < 0) {
+            return false;
+        }
+        firebirds = total;
+        return true;
+    }
+    
+    /**
+     * @return the tax_rate
+     */
+    public int getTaxRate() {
+        return tax_rate;
+    }
+
+    /**
+     * @param tax_rate the tax_rate to set
+     */
+    public void setTaxRate(int tax_rate) {
+        this.tax_rate = tax_rate;
+    }
+
+    /**
+     * @return the tithe_rate
+     */
+    public int getTitheRate() {
+        return tithe_rate;
+    }
+
+    /**
+     * @param tithe_rate the tithe_rate to set
+     */
+    public void setTitheRate(int tithe_rate) {
+        this.tithe_rate = tithe_rate;
+    }
+
+    /**
+     * @return the pay_rate
+     */
+    public int getPayRate() {
+        return pay_rate;
+    }
+
+    /**
+     * @param pay_rate the pay_rate to set
+     */
+    public void setPayRate(int pay_rate) {
+        this.pay_rate = pay_rate;
     }
 }

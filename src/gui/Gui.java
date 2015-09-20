@@ -85,9 +85,12 @@ import org.apache.commons.cli.CommandLine;
 import phoenix.Phoenix;
 import phoenix.RobotTester;
 import state.MM1;
+import state.PW;
 import state.SU;
 import state.State;
+import static state.State.saveMainGameState;
 import state.WS;
+import state.Wiz;
 import util.C;
 import util.Comp;
 import util.FN;
@@ -132,6 +135,7 @@ public class Gui extends JFrame {
     private MainMenu.W1 main_menu1;
     private CombatWindow combat_window;
     private AgoraWindow agora_window;
+    private HouseWindow house_window;
     private BuildPanel build_panel;
     private JDialog build_window;
     // panel showing research options
@@ -155,37 +159,39 @@ public class Gui extends JFrame {
     private ByzantiumIIWindow byzantium_ii_window;
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
+    //menubar
     private JMenuBar menubar;
     private JMenuBar no_menubar;
-    private JMenu file_menu;
+    private JMenu file_menu; //file menu
     private JMenuItem menu_exit;
     private JMenuItem menu_load;
     private JMenuItem menu_save;
     private JMenuItem menu_restart;
     private JMenuItem menu_save_as;
     private JMenuItem menu_options;
-    private JMenu orders_menu;
+    private JMenu orders_menu; //orders menu
     private JMenuItem menu_build;
     private JMenuItem menu_research;
     private JMenuItem menu_build_city;
     private JPopupMenu stack_menu;
-    private JMenu messages_menu;
+    private JMenu messages_menu; // messages menu
     private JMenuItem menu_send_message;
     private JMenuItem menu_read_messages;
     private JMenuItem menu_read_contracts;
-    private JMenu archives_menu;
+    private JMenu archives_menu; //archives menu
     private JMenuItem menu_vol1;
     private JMenuItem menu_vol2;
     private JMenuItem menu_vol3;
     private JMenuItem menu_vol4;
     private JMenuItem menu_vol5;
-    private JMenu wizard_menu;
+    private JMenu wizard_menu; //wizard mode menu
     private JMenuItem menu_all_tech;
     private JMenuItem menu_all_resources;
+    private JMenuItem menu_create_unit;
     private JMenuItem menu_randomize_rng;
-    private JMenu house_menu;
-    private JMenu diplomacy_menu;
-    private JMenuItem byzantium_ii_menu;
+    private JMenuItem house_menu; // house menu
+    private JMenuItem diplomacy_menu; // diplomacy menu
+    private JMenuItem byzantium_ii_menu; // bydantium II menu
     private Resource resources;
     //stack display window
     private JDialog stack_window;
@@ -219,7 +225,7 @@ public class Gui extends JFrame {
     private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
-        UtilG.setUIDefaults();
+        //UtilG.setUIDefaults();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         CommandLine args = Gui.args;
@@ -435,6 +441,7 @@ public class Gui extends JFrame {
         });
 
         agora_window = AgoraWindow.getAgoraWindow(this);
+        house_window = HouseWindow.getHouseWindow(this);
 
         main_windows = new JPanel(new CardLayout());
 
@@ -448,7 +455,7 @@ public class Gui extends JFrame {
         main_windows.add(combat_window, C.S_COMBAT_WINDOW);
         main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
         main_windows.add(agora_window, C.S_AGORA_WINDOW);
-
+        main_windows.add(house_window, C.S_HOUSE_WINDOW);
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
         setMouseCursor(C.S_CURSOR_SCEPTOR);
 
@@ -650,6 +657,17 @@ public class Gui extends JFrame {
                 game.getAllResources();
             }
         });
+        menu_create_unit = new JMenuItem("Create units.");
+        menu_create_unit.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_create_unit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (!(getCurrentState() instanceof PW)) {
+                    return;
+                }
+                saveMainGameState();
+                gui.setCurrentState(Wiz.get());
+            }
+        });
         menu_randomize_rng = new JMenuItem("Randomize RNG.");
         menu_randomize_rng.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_randomize_rng.addActionListener(new ActionListener() {
@@ -659,6 +677,7 @@ public class Gui extends JFrame {
         });
         wizard_menu.add(menu_all_tech);
         wizard_menu.add(menu_all_resources);
+        wizard_menu.add(menu_create_unit);
         wizard_menu.add(menu_randomize_rng);
         menubar.add(wizard_menu);
     }
@@ -745,14 +764,25 @@ public class Gui extends JFrame {
         menubar.add(archives_menu);
     }
 
-    public void setUpHouseMenu() {
-        house_menu = new JMenu("House");
+    private void setUpHouseMenu() {
+        house_menu = new JMenuItem("House");
         house_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        house_menu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SU.showHouseWindow();
+                house_window.enterHouseWindow();
+            }
+        });
         menubar.add(house_menu);
+        
+//        house_menu.setSize(55, 17);
+//        house_menu.setBounds(0, 0, 55, 17);
+        
     }
 
     public void setUpDiplomacyMenu() {
-        diplomacy_menu = new JMenu("Diplomacy");
+        diplomacy_menu = new JMenuItem("Diplomacy");
         diplomacy_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menubar.add(diplomacy_menu);
     }
@@ -1226,6 +1256,13 @@ public class Gui extends JFrame {
      */
     public ByzantiumIIWindow getByzantium_ii_window() {
         return byzantium_ii_window;
+    }
+
+    /**
+     * @return the house_window
+     */
+    public HouseWindow getHouseWindow() {
+        return house_window;
     }
 
     private class CityDialog extends JDialog {
@@ -1790,6 +1827,7 @@ public class Gui extends JFrame {
         cargo_win.setGame(game);
         byzantium_ii_window.setGame(game);
         agora_window.setGame(game);
+        house_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

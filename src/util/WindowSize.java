@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 import util.C.GC;
+import util.G.CH;
 /**
  *
  * @author joulupunikki
@@ -498,6 +499,7 @@ public class WindowSize {
     public int bz2_house_banner_y2 = 423;
 
     public HashMap<Enum, Integer> agora;
+    public HashMap<Enum, Integer> house;
 
     private final Doubler mul2;
 
@@ -505,6 +507,7 @@ public class WindowSize {
         this.mul2 = new Doubler();
         this.is_double = is_double;
         iAgora(is_double);
+        iHouse(is_double);
         if (is_double) {
             main_window_width *= 2;
             main_window_height *= 2;
@@ -994,6 +997,33 @@ public class WindowSize {
 
     }
 
+    private void iHouse(boolean is_double) {
+        house = new HashMap<>();
+        // budget
+        house.put(CH.BUDGET_H, 36);
+        house.put(CH.DEBT_H_X, 443);
+        house.put(CH.DEBT_H_Y, 395);
+        house.put(CH.DEBT_H_H, 20);
+        house.put(CH.DEBT_V_Y, 384);
+        house.put(CH.SLIDER_W, 84);
+        house.put(CH.SLIDER_X, 416);
+        house.put(CH.SLIDER_Y, 288);
+        house.put(CH.TAX_H_X, 447);
+        house.put(CH.TAX_H_Y, 283);
+        house.put(CH.TAX_V_W, 52);
+        house.put(CH.TAX_V_X, 564);
+        house.put(CH.TITHE_SKIM_H_X, 423);
+        house.put(CH.UNIT_PAY_H_X, 430);
+        // leader
+        house.put(CH.LEADER_H_W, 230);
+        house.put(CH.LEADER_H_X, 20);
+        house.put(CH.LEADER_H_Y, 236);
+
+        if (is_double) {
+            house.replaceAll(mul2);
+        }
+
+    }
     private class Doubler implements BiFunction<Enum, Integer, Integer> {
 
         @Override

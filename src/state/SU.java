@@ -59,6 +59,9 @@ import util.Util;
 public class SU extends State {
 //    public static void click
 
+    private SU() {
+    }
+
     /**
      * Does changes to gui state based on what state the UI is in. Updates build
      * city menu item status.
@@ -609,6 +612,12 @@ public class SU extends State {
         setWindow(C.S_BYZANTIUM_II_WINDOW);
         saveMainGameState();
         gui.setCurrentState(ByzII.get());
+    }
+
+    public static void showHouseWindow() {
+        setWindow(C.S_HOUSE_WINDOW);
+        saveMainGameState();
+        gui.setCurrentState(HW.get());
     }
 
     public static void showUnitInfoWindow() {

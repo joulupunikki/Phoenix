@@ -32,6 +32,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -291,6 +292,11 @@ public class UtilG {
         g.setColor(C.COLOR_GOLD_BRIGHT);
         g.drawLine(x - 1, y - 1, x + w, y - 1);
         g.drawLine(x - 1, y - 1, x - 1, y + h);
+    }
+
+    public static int center(Graphics g, int x, int w, Font f, String s) {
+        FontMetrics fm = g.getFontMetrics(f);
+        return x + (w - fm.stringWidth(s)) / 2;
     }
 
     public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y) {

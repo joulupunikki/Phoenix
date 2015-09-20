@@ -58,6 +58,7 @@ import org.apache.commons.cli.ParseException;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 
 /**
  * Main entry point of Phoenix, clone/remake/patch/replacement of the EFS.EXE in
@@ -284,6 +285,7 @@ public class Phoenix {
             UIManager.setLookAndFeel(
                     UIManager.getCrossPlatformLookAndFeelClassName());
             //MetalLookAndFeel.setCurrentTheme(new DarkTheme());
+            UtilG.setUIDefaults();
         } catch (UnsupportedLookAndFeelException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             System.out.println("setLAF failed");
         }

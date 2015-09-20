@@ -52,6 +52,7 @@ public class FN {
     public static final String S_EFS_INI = "DAT" + F_S + "EFS.INI";
     public static final String S_EFS_INI_TMP = "EFS.INI.TMP";
     public static final String S_BG0_PCX = S_PCX + F_S + "BG0.PCX";
+    public static final String S_HOUSE_PCX = S_PCX + F_S + "HOUSE.PCX";
     public static final String S_BYZSECU_PCX = S_PCX + F_S + "BYZSECU.PCX";
     public static final String S_UNITBG2_PCX = S_PCX + F_S + "UNITBG2.PCX";
     public static final String S_SKULL_BIN = S_BIN + F_S + "SKULL.BIN";
