@@ -136,6 +136,7 @@ public class Gui extends JFrame {
     private CombatWindow combat_window;
     private AgoraWindow agora_window;
     private HouseWindow house_window;
+    private DiplomacyWindow diplomacy_window;
     private BuildPanel build_panel;
     private JDialog build_window;
     // panel showing research options
@@ -154,6 +155,7 @@ public class Gui extends JFrame {
     // build city panel
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
+    private DiplomacySelectorPanel diplomacy_selector;
     private XPlayerScreen x_player_screen;
     private PBEMGui pbem_gui;
     private ByzantiumIIWindow byzantium_ii_window;
@@ -225,14 +227,10 @@ public class Gui extends JFrame {
     private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
-        //UtilG.setUIDefaults();
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         CommandLine args = Gui.args;
-
         pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
-
         unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
         // set resolution
         if (args.hasOption(C.OPT_DOUBLE_RES)) {
@@ -247,9 +245,9 @@ public class Gui extends JFrame {
             galaxy_file_name = args.getOptionValue(C.OPT_NAMED_GALAXY);
         }
         Util.foundOrExit(galaxy_file_name);
+        // create game object
         game = new Game(galaxy_file_name, 14);
         game.init(resources);
-
         // set fonts after WindowSize has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_large);
         UIManager.put("Button.font", ws.font_large);
@@ -259,14 +257,14 @@ public class Gui extends JFrame {
         pbem_gui = new PBEMGui(game);
         pbem_gui.getDATAHashes();
         this.setSize(ws.main_window_width, ws.main_window_height);
-
         loadHexTiles();
-
         loadStructureTiles();
-
         Comp.setGame(game);
         /*
          * build Gui
+         */
+        /*
+         *set up menubar
          */
         no_menubar = new JMenuBar();
         no_menubar.setBackground(Color.DARK_GRAY);
@@ -274,7 +272,6 @@ public class Gui extends JFrame {
         no_menu.setBackground(Color.DARK_GRAY);
         no_menubar.add(no_menu);
         no_menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-
         menubar = new JMenuBar();
         setUpFileMenu();
         setUpOrdersMenu();
@@ -287,76 +284,177 @@ public class Gui extends JFrame {
             setUpWizardModeMenu();
         }
         this.setJMenuBar(menubar);
-
-        build_window = new JDialog(this, true);
-        build_window.setLayout(null);
-        build_window.setPreferredSize(new Dimension(ws.planet_map_width + 50,
-                ws.planet_map_height));
-        //System.out.println("this.getX() = " + this.getX());
-        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
-                this.getY() + ws.planet_map_y_offset,
-                ws.planet_map_width + 50, ws.planet_map_height);
-        build_window.setDefaultCloseOperation(
-                JDialog.DO_NOTHING_ON_CLOSE);
-        build_window.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
-                build_panel.clearSelection();
-                build_panel.zeroLists();
-                build_window.setVisible(false);
-            }
-        });
-        build_panel = new BuildPanel(this);
-        build_panel.setLayout(null);
-        build_window.add(build_panel);
-        build_panel.setBounds(0, 0,
-                ws.planet_map_width, ws.planet_map_height);
-        build_window.add(build_panel);
-        build_window.pack();
-
+        /*
+         * build gui windows
+         */
+        diplomacy_selector = DiplomacySelectorPanel.getWindow(this);
+        setUpBuildWindow();
         setUpTechWindow();
         setUpTechDBWindow();
         setUpManowitzWindow();
         setUpResourceWindow();
         setUpBuildCityWindow();
         cargo_win = CargoPanel.getCargoWin(this);
-        /*
-         * create planet map display
-         */
-        planet_window = new PlanetWindow(this);
-        planet_window.setLayout(null);
-        planet_window.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-//        this.add(planet_window);
-
-        planet_window.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-//                clickOnPlanetMap(e);
-                state.clickOnPlanetWindow(e);
-            }
-        });
-
-        planet_map = new PlanetMap(this);
-        planet_window.add(planet_map);
-        planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
-                ws.planet_map_width, ws.planet_map_height);
-
-        planet_map.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-//                clickOnPlanetMap(e);
-                state.clickOnPlanetMap(e);
-            }
-        });
-
-        planet_map.addMouseWheelListener(new MouseAdapter() {
-            public void mouseWheelMoved(MouseWheelEvent e) {
-//                handleWheelMove(e);
-                state.wheelRotated(e);
-            }
-        });
-
+        setUpPlanetWindow();
         setUpSpaceButton();
         setUpLaunchButton();
+        setUpSpaceWindow();
+        setUpUnitInfoWindow();
+        setUpMainMenus();
+        setUpCombatWindow();
+        setUpMiniMaps();
+        setUpXPlayerScreen();
+        setUpMessagesWindow();
+        setUpByzantiumIIWindow();
+        agora_window = AgoraWindow.getAgoraWindow(this);
+        house_window = HouseWindow.getHouseWindow(this);
+        diplomacy_window = DiplomacyWindow.getWindow(this);
+        /*
+         * collect main windows into card layout
+         */
+        assembleMainWindows();
+      
+        setUpStackMenu();
+        setUpCityDialog3(game, ws);
 
+        // initialize game state
+        this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
+        this.setJMenuBar(no_menubar);
+        state = MM1.get();
+
+        this.pack();
+        this.setVisible(true);
+
+        // set up stack blink and jump route color cycling
+        setUpAnimation();
+
+    }
+
+    private void setUpAnimation() {
+        /*
+         * set animation timer
+         */
+        int delay = 400; //milliseconds
+        ActionListener timer_listener = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                animation_blink = !animation_blink;
+                if (!stack_moving) {
+                    main_windows.repaint();
+                }
+            }
+        };
+        Timer anim_timer = new Timer(delay, timer_listener);
+        anim_timer.start();
+
+        /*
+        * set stack movement timer and listener,
+         */
+        int move_delay = 30;
+        ActionListener stack_move_listener = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                state.stackMoveEvent();
+            }
+        };
+        stack_move_timer = new Timer(move_delay, stack_move_listener);
+
+        setColorCycle();
+        color_cycle_count = 0;
+        color_cycle_color = color_cycle_colors[0];
+        int cycle_delay = 200; //milliseconds
+        ActionListener cycle_listener = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+
+                if (!stack_moving) {
+                    main_windows.repaint();
+                }
+                color_cycle_count++;
+                if (color_cycle_count == 5) {
+                    color_cycle_count = -2;
+                }
+                if (color_cycle_count >= 0) {
+                    color_cycle_color = color_cycle_colors[color_cycle_count];
+                }
+            }
+        };
+        Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
+        cycle_timer.start();
+    }
+
+    private void assembleMainWindows() {
+        main_windows = new JPanel(new CardLayout());
+        main_windows.add(main_menu1, C.S_MAIN_MENU1);
+        main_windows.add(main_menu, C.S_MAIN_MENU);
+        main_windows.add(messages_window, C.S_MESSAGES);
+        main_windows.add(x_player_screen, C.S_X_PLAYER_SCREEN);
+        main_windows.add(planet_window, C.S_PLANET_MAP);
+        main_windows.add(space_window, C.S_STAR_MAP);
+        main_windows.add(unit_info_window, C.S_UNIT_INFO);
+        main_windows.add(combat_window, C.S_COMBAT_WINDOW);
+        main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
+        main_windows.add(agora_window, C.S_AGORA_WINDOW);
+        main_windows.add(house_window, C.S_HOUSE_WINDOW);
+        main_windows.add(diplomacy_window, C.S_DIPLOMACY_WINDOW);
+        this.getContentPane().add(main_windows, BorderLayout.CENTER);
+    }
+
+    private void setUpByzantiumIIWindow() {
+        byzantium_ii_window = new ByzantiumIIWindow(this);
+        byzantium_ii_window.setLayout(null);
+        byzantium_ii_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+        byzantium_ii_window.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                state.clickOnByzantiumIIWindow(e);
+            }
+        });
+    }
+
+    private void setUpMessagesWindow() {
+        messages_window = new Messages(this);
+        messages_window.setLayout(null);
+        messages_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+    }
+
+    private void setUpXPlayerScreen() {
+        x_player_screen = new XPlayerScreen(this);
+        x_player_screen.setLayout(null);
+        x_player_screen.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+    }
+
+    private void setUpCombatWindow() {
+        combat_window = new CombatWindow(this);
+        combat_window.setLayout(null);
+        combat_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+    }
+
+    private void setUpMainMenus() {
+        main_menu1 = new MainMenu.W1(this);
+        main_menu1.setLayout(null);
+        main_menu1.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
+        main_menu = new MainMenu(this);
+        main_menu.setLayout(null);
+        main_menu.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+//        main_menu.setUpWindow();
+    }
+
+    private void setUpUnitInfoWindow() {
+        /*
+         * create unit info window/stack window
+         */
+        unit_info_window = new UnitInfoWindow(this);
+        unit_info_window.setLayout(null);
+        unit_info_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+        unit_info_window.setUpWindow();
+    }
+
+    private void setUpSpaceWindow() {
         /*
          * create star map display
          */
@@ -392,155 +490,70 @@ public class Gui extends JFrame {
                 state.wheelRotated(e);
             }
         });
+    }
 
+    private void setUpPlanetWindow() {
         /*
-         * create unit info window/stack window
+         * create planet map display
          */
-        unit_info_window = new UnitInfoWindow(this);
-        unit_info_window.setLayout(null);
-        unit_info_window.setPreferredSize(new Dimension(ws.main_window_width,
+        planet_window = new PlanetWindow(this);
+        planet_window.setLayout(null);
+        planet_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
-        unit_info_window.setUpWindow();
+//        this.add(planet_window);
 
-        main_menu1 = new MainMenu.W1(this);
-        main_menu1.setLayout(null);
-        main_menu1.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-
-        main_menu = new MainMenu(this);
-        main_menu.setLayout(null);
-        main_menu.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-//        main_menu.setUpWindow();
-
-        combat_window = new CombatWindow(this);
-        combat_window.setLayout(null);
-        combat_window.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-
-        setUpMiniMaps();
-
-        x_player_screen = new XPlayerScreen(this);
-        x_player_screen.setLayout(null);
-        x_player_screen.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-
-        messages_window = new Messages(this);
-        messages_window.setLayout(null);
-        messages_window.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-
-        byzantium_ii_window = new ByzantiumIIWindow(this);
-        byzantium_ii_window.setLayout(null);
-        byzantium_ii_window.setPreferredSize(new Dimension(ws.main_window_width,
-                ws.main_window_height));
-        byzantium_ii_window.addMouseListener(new MouseAdapter() {
+        planet_window.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
-                state.clickOnByzantiumIIWindow(e);
+//                clickOnPlanetMap(e);
+                state.clickOnPlanetWindow(e);
             }
         });
 
-        agora_window = AgoraWindow.getAgoraWindow(this);
-        house_window = HouseWindow.getHouseWindow(this);
+        planet_map = new PlanetMap(this);
+        planet_window.add(planet_map);
+        planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
+                ws.planet_map_width, ws.planet_map_height);
 
-        main_windows = new JPanel(new CardLayout());
-
-        main_windows.add(main_menu1, C.S_MAIN_MENU1);
-        main_windows.add(main_menu, C.S_MAIN_MENU);
-        main_windows.add(messages_window, C.S_MESSAGES);
-        main_windows.add(x_player_screen, C.S_X_PLAYER_SCREEN);
-        main_windows.add(planet_window, C.S_PLANET_MAP);
-        main_windows.add(space_window, C.S_STAR_MAP);
-        main_windows.add(unit_info_window, C.S_UNIT_INFO);
-        main_windows.add(combat_window, C.S_COMBAT_WINDOW);
-        main_windows.add(byzantium_ii_window, C.S_BYZANTIUM_II_WINDOW);
-        main_windows.add(agora_window, C.S_AGORA_WINDOW);
-        main_windows.add(house_window, C.S_HOUSE_WINDOW);
-        this.getContentPane().add(main_windows, BorderLayout.CENTER);
-        setMouseCursor(C.S_CURSOR_SCEPTOR);
-
-        setUpStackMenu();
-        setUpCityDialog3(game, ws);
-
-//        State.setReferences(this, game, ws);
-        setMenus(false);
-        state = MM1.get();
-
-        this.pack();
-        this.setVisible(true);
-
-        /*
-         * set animation timer
-         */
-        int delay = 400; //milliseconds
-        ActionListener timer_listener = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                animation_blink = !animation_blink;
-                if (!stack_moving) {
-                    main_windows.repaint();
-                }
+        planet_map.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+//                clickOnPlanetMap(e);
+                state.clickOnPlanetMap(e);
             }
-        };
-        Timer anim_timer = new Timer(delay, timer_listener);
-        anim_timer.start();
+        });
 
-        /*
-         * set stack movement timer and listener, 
-         */
-        int move_delay = 30;
-        ActionListener stack_move_listener = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                state.stackMoveEvent();
-//                setStack_move_counter(getStack_move_counter() + 1);
-//                if (getStack_move_counter() >= 20) {
-//                    setStack_move_counter(0);
-//                    if (!game.moveStack()) {
-//                        setStop_stack(true);
-//                        showTooManyUnits();
-//                    }
-//                    LinkedList<Hex> path = game.getPath();
-//                    if (path.getFirst().equals(path.getLast())) {
-//                        setStop_stack(true);
-//                        game.setPath(null);
-//                    } else if (!Util.moveCapable(game)) {
-//                        setStop_stack(true);
-//                    }
-//                    if (isStop_stack()) {
-//                        getStack_move_timer().stop();
-//                        setStack_moving(false);
-//                        // bit ugly to set state here
-//                        if (game.getPath() == null) {
-//                            setCurrentState(PW2.get());
-//                        } else {
-//                            setCurrentState(PW3.get());
-//                        }
-//                    }
-//                }
-//                planet_window.repaint();
+        planet_map.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+//                handleWheelMove(e);
+                state.wheelRotated(e);
             }
-        };
-        stack_move_timer = new Timer(move_delay, stack_move_listener);
+        });
+    }
 
-        setColorCycle();
-        color_cycle_count = 0;
-        color_cycle_color = color_cycle_colors[0];
-        int cycle_delay = 300; //milliseconds
-        ActionListener cycle_listener = new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-
-                if (!stack_moving) {
-                    main_windows.repaint();
-                }
-                color_cycle_count++;
-                if (color_cycle_count == 5) {
-                    color_cycle_count = 0;
-                }
-                color_cycle_color = color_cycle_colors[color_cycle_count];
+    private void setUpBuildWindow() {
+        build_window = new JDialog(this, true);
+        build_window.setLayout(null);
+        build_window.setPreferredSize(new Dimension(ws.planet_map_width + 50,
+                ws.planet_map_height));
+        //System.out.println("this.getX() = " + this.getX());
+        build_window.setBounds(this.getX() + ws.planet_map_x_offset,
+                this.getY() + ws.planet_map_y_offset,
+                ws.planet_map_width + 50, ws.planet_map_height);
+        build_window.setDefaultCloseOperation(
+                JDialog.DO_NOTHING_ON_CLOSE);
+        build_window.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                build_panel.clearSelection();
+                build_panel.zeroLists();
+                build_window.setVisible(false);
             }
-        };
-        Timer cycle_timer = new Timer(cycle_delay, cycle_listener);
-        cycle_timer.start();
-
+        });
+        build_panel = new BuildPanel(this);
+        build_panel.setLayout(null);
+        build_window.add(build_panel);
+        build_panel.setBounds(0, 0,
+                ws.planet_map_width, ws.planet_map_height);
+        build_window.add(build_panel);
+        build_window.pack();
     }
 
 
@@ -637,7 +650,7 @@ public class Gui extends JFrame {
         manowitz_window.setVisible(false);
     }
 
-    public void setUpWizardModeMenu() {
+    private void setUpWizardModeMenu() {
         wizard_menu = new JMenu("WIZARD MODE");
         menu_all_tech = new JMenuItem("Get all techs.");
         menu_all_tech.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -682,7 +695,7 @@ public class Gui extends JFrame {
         menubar.add(wizard_menu);
     }
 
-    public void setUpOrdersMenu() {
+    private void setUpOrdersMenu() {
         orders_menu = new JMenu("Orders");
         menu_build = new JMenuItem("Build units");
 
@@ -715,7 +728,7 @@ public class Gui extends JFrame {
         menubar.add(orders_menu);
     }
 
-    public void setUpArchivesMenu() {
+    private void setUpArchivesMenu() {
         archives_menu = new JMenu("Archives");
         archives_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_vol1 = new JMenuItem("Volume 1: The Known Worlds");
@@ -781,13 +794,21 @@ public class Gui extends JFrame {
         
     }
 
-    public void setUpDiplomacyMenu() {
+    private void setUpDiplomacyMenu() {
         diplomacy_menu = new JMenuItem("Diplomacy");
         diplomacy_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        diplomacy_menu.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                diplomacy_selector.setWindowVisiblity(true);
+            }
+        });
         menubar.add(diplomacy_menu);
+
     }
 
-    public void setUpByzantiumIIMenu() {
+    private void setUpByzantiumIIMenu() {
         byzantium_ii_menu = new JMenuItem("Byzantium II");
         byzantium_ii_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         byzantium_ii_menu.addActionListener(new ActionListener() {
@@ -800,7 +821,7 @@ public class Gui extends JFrame {
         menubar.add(byzantium_ii_menu);
     }
 
-    public void setUpMessagesMenu() {
+    private void setUpMessagesMenu() {
         messages_menu = new JMenu("Messages");
         menu_send_message = new JMenuItem("Send Message");
         menu_send_message.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -863,7 +884,7 @@ public class Gui extends JFrame {
         build_city_window.setVisible(false);
     }
 
-    public void setUpBuildCityWindow() {
+    private void setUpBuildCityWindow() {
 //        JDialog build_city_window;
 //        JPanel build_city_panel;
         build_city_window = new JDialog(this, true);
@@ -895,7 +916,7 @@ public class Gui extends JFrame {
         resource_window.setVisible(false);
     }
 
-    public void setUpResourceWindow() {
+    private void setUpResourceWindow() {
 //        JDialog resource_window;
 //        JPanel resource_panel;
         resource_window = new JDialog(this, true);
@@ -920,7 +941,7 @@ public class Gui extends JFrame {
                 ws.rw_width, ws.rw_height);
     }
 
-    public void setUpTechWindow() {
+    private void setUpTechWindow() {
 //        JDialog tech_window;
 //        JPanel tech_panel;
         tech_window = new JDialog(this, true);
@@ -958,7 +979,7 @@ public class Gui extends JFrame {
         tech_db_window.setVisible(true);
     }
 
-    public void setUpTechDBWindow() {
+    private void setUpTechDBWindow() {
 //        JDialog tech_window;
 //        JPanel tech_panel;
         tech_db_window = new JDialog(this, true);
@@ -1003,7 +1024,7 @@ public class Gui extends JFrame {
         }
     }
 
-    public void setUpManowitzWindow() {
+    private void setUpManowitzWindow() {
 //        JDialog tech_window;
 //        JPanel tech_panel;
         manowitz_window = new JDialog(this, true);
@@ -1037,7 +1058,7 @@ public class Gui extends JFrame {
                 ws.manowitz_window_w, ws.manowitz_window_h);
     }
 
-    public void setUpMiniMaps() {
+    private void setUpMiniMaps() {
         galactic_map = new GalacticMap(this, game, ws, true);
         space_window.add(galactic_map);
         galactic_map.setBounds(ws.galactic_map_x_pos, ws.galactic_map_y_pos,
@@ -1110,7 +1131,7 @@ public class Gui extends JFrame {
         stack_menu.show(e.getComponent(), e.getX(), e.getY());
     }
 
-    public void setUpStackMenu() {
+    private void setUpStackMenu() {
         stack_menu = new JPopupMenu("Select");
         JMenuItem select_all = new JMenuItem("Select all");
         JMenuItem select_combat = new JMenuItem(" -combat");
@@ -1265,6 +1286,13 @@ public class Gui extends JFrame {
         return house_window;
     }
 
+    /**
+     * @return the diplomacy_window
+     */
+    public DiplomacyWindow getDiplomacyWindow() {
+        return diplomacy_window;
+    }
+
     private class CityDialog extends JDialog {
 
         /**
@@ -1387,7 +1415,7 @@ public class Gui extends JFrame {
 //        city_dialog.pack();
 ////        dialog.setVisible(true);
 //    }
-    public void setUpCityDialog3(Game game, WindowSize ws) {
+    private void setUpCityDialog3(Game game, WindowSize ws) {
         city_dialog = new CityDialog(this, null, true, game, ws);
         city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
                 this.getY() + ws.planet_map_y_offset,
@@ -1828,6 +1856,8 @@ public class Gui extends JFrame {
         byzantium_ii_window.setGame(game);
         agora_window.setGame(game);
         house_window.setGame(game);
+        diplomacy_selector.setGame(game);
+        diplomacy_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);
@@ -1848,6 +1878,10 @@ public class Gui extends JFrame {
 //        JOptionPane pane = new JOptionPane(s);
         JOptionPane.showMessageDialog(this, s, null, JOptionPane.PLAIN_MESSAGE);
 
+    }
+
+    public void showDiplomacySelectorWindow() {
+        diplomacy_selector.setWindowVisiblity(true);
     }
 
     public String setLineBreaks(String text, Font font) {
@@ -2021,7 +2055,7 @@ public class Gui extends JFrame {
         launch_button.setEnabled(enabled);
     }
 
-    public void setUpLaunchButton() {
+    private void setUpLaunchButton() {
 
         launch_button_enabled = new ButtonIcon(ws.launch_button_width, ws.launch_button_height, FN.S_EFSBUT_BIN[3], 0, color_index, ws);
 
@@ -2047,7 +2081,7 @@ public class Gui extends JFrame {
         });
     }
 
-    public void setUpSpaceButton() {
+    private void setUpSpaceButton() {
 
         ButtonIcon space_button_enabled = new ButtonIcon(ws.space_button_width, ws.space_button_height, FN.S_EFSBUT_BIN[2], 0, color_index, ws);
 
@@ -2113,7 +2147,8 @@ public class Gui extends JFrame {
     public void setColorCycle() {
         color_cycle_colors = new Color[5];
         for (int i = 0; i < color_cycle_colors.length; i++) {
-            color_cycle_colors[i] = new Color(150 - 10 * i, 150 - 10 * i, 255);
+            int cycle = 20 * i;
+            color_cycle_colors[color_cycle_colors.length - i - 1] = new Color(60 + cycle, 80 + cycle, 160 + cycle);
 
         }
     }

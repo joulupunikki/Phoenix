@@ -45,6 +45,7 @@ import util.UtilG;
  */
 public class Resource {
 
+    private static final int BANNER_100_SIZE = 10000;
     private int[] color_scaler;
     private double[][][] unit_spot;
     private Color[] colors;
@@ -53,6 +54,7 @@ public class Resource {
     private Properties phoenix_ini;
     private int[][] res_icons;
     private HashMap<String, Cursor> cursors;
+    private int[][] banners_100;
 
     public Resource(Gui gui) {
 
@@ -65,6 +67,25 @@ public class Resource {
         res_icons = Util.loadSquares(FN.S_CARGO_BIN, C.RES_TYPES,
                 C.CARGO_WIDTH * C.CARGO_HEIGHT);
         createMouseCursors(gui);
+        loadBanners100();
+    }
+
+    private void loadBanners100() {
+        banners_100 = new int[C.NR_FACTIONS][100000];
+        banners_100[C.HOUSE1] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.HOUSE2] = Util.loadSquares(FN.S_HOUSE2_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.HOUSE3] = Util.loadSquares(FN.S_HOUSE3_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.HOUSE4] = Util.loadSquares(FN.S_HOUSE4_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.HOUSE5] = Util.loadSquares(FN.S_HOUSE5_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.LEAGUE] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.THE_CHURCH] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.SYMBIOT] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.VAU] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.IMPERIAL] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.FLEET] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.STIGMATA] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.THE_SPY] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.NEUTRAL] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
     }
 
     public Cursor getCursor(String cursor) {
@@ -116,5 +137,9 @@ public class Resource {
 
     public int[][] getResIcons() {
         return res_icons;
+    }
+
+    public int[] getBanner100(int faction) {
+        return banners_100[faction];
     }
 }

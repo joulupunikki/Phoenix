@@ -31,6 +31,8 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 import util.C.GC;
+import util.G.CD;
+import util.G.CDW;
 import util.G.CH;
 /**
  *
@@ -498,8 +500,11 @@ public class WindowSize {
     public int bz2_house_banner_y1 = 324;
     public int bz2_house_banner_y2 = 423;
 
+    public int d = 1;
     public HashMap<Enum, Integer> agora;
     public HashMap<Enum, Integer> house;
+    public HashMap<Enum, Integer> diplomacy;
+    public HashMap<Enum, Integer> diplomacy_window;
 
     private final Doubler mul2;
 
@@ -508,7 +513,10 @@ public class WindowSize {
         this.is_double = is_double;
         iAgora(is_double);
         iHouse(is_double);
+        iDiplomacy(is_double);
+        iDiplomacyWindow(is_double);
         if (is_double) {
+            d = 2;
             main_window_width *= 2;
             main_window_height *= 2;
 
@@ -1024,6 +1032,51 @@ public class WindowSize {
         }
 
     }
+
+    private void iDiplomacy(boolean is_double) {
+        diplomacy = new HashMap<>();
+        diplomacy.put(CD.WIN_X, 20);
+        diplomacy.put(CD.WIN_Y, 60);
+        int x = diplomacy.get(CD.WIN_X) - 1;
+        int y = diplomacy.get(CD.WIN_Y) - 1;        
+        diplomacy.put(CD.WIN_W, 600);
+        diplomacy.put(CD.WIN_H, 360);
+        diplomacy.put(CD.WIN_H_X, 95 - x);
+        diplomacy.put(CD.WIN_H_Y, 85 - y);
+
+        diplomacy.put(CD.ROW1_X, 58 - x);
+        diplomacy.put(CD.ROW1_Y, 98 - y);
+        diplomacy.put(CD.ROW2_X, 128 - x);
+        diplomacy.put(CD.ROW2_Y, 238 - y);
+        diplomacy.put(CD.ROW_W, 140);
+        diplomacy.put(CD.ROW_H_Y, 213 - y);
+
+        diplomacy.put(CD.EXIT_X, 268 - x);
+        diplomacy.put(CD.EXIT_Y, 378 - y);
+        diplomacy.put(CD.EXIT_W, 114);
+        diplomacy.put(CD.EXIT_H, 16);
+
+        if (is_double) {
+            diplomacy.replaceAll(mul2);
+        }
+
+    }
+
+    private void iDiplomacyWindow(boolean is_double) {
+        diplomacy_window = new HashMap<>();
+        diplomacy_window.put(CDW.GIVE_X, 329);
+        diplomacy_window.put(CDW.GIVE_Y, 52);
+        diplomacy_window.put(CDW.GIVE_W, 281);
+        diplomacy_window.put(CDW.GIVE_H, 19);
+        diplomacy_window.put(CDW.ROW_H, 18);
+        diplomacy_window.put(CDW.TAKE_Y, 154);
+
+        if (is_double) {
+            diplomacy_window.replaceAll(mul2);
+        }
+
+    }
+
     private class Doubler implements BiFunction<Enum, Integer, Integer> {
 
         @Override

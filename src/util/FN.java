@@ -55,8 +55,15 @@ public class FN {
     public static final String S_HOUSE_PCX = S_PCX + F_S + "HOUSE.PCX";
     public static final String S_BYZSECU_PCX = S_PCX + F_S + "BYZSECU.PCX";
     public static final String S_UNITBG2_PCX = S_PCX + F_S + "UNITBG2.PCX";
+    public static final String S_DIPLOMA_PCX = S_PCX + F_S + "DIPLOMA.PCX";
     public static final String S_SKULL_BIN = S_BIN + F_S + "SKULL.BIN";
     public static final String S_FLAG_BIN = S_BIN + F_S + "FLAG.BIN";
+    public static final String S_HOUSE1_BIN = S_BIN + F_S + "HOUSE1.BIN";
+    public static final String S_HOUSE2_BIN = S_BIN + F_S + "HOUSE2.BIN";
+    public static final String S_HOUSE3_BIN = S_BIN + F_S + "HOUSE3.BIN";
+    public static final String S_HOUSE4_BIN = S_BIN + F_S + "HOUSE4.BIN";
+    public static final String S_HOUSE5_BIN = S_BIN + F_S + "HOUSE5.BIN";
+
     public static final String S_EFS_PAL = "EFS.PAL";
     public static final String S_GALAXY_GAL = "GALAXY.GAL";
     public static final String S_MOUSE_MSK = "MOUSE.MSK";
