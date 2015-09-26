@@ -82,7 +82,7 @@ public class DiplomacySelectorPanel extends JPanel {
         this.dialog = dialog;
         this.gui = gui;
         ws = Gui.getWindowSize();
-        c = ws.diplomacy;
+        c = ws.diplomacy_selector;
         game = gui.getGame();
         setUpWindow();
         dialog.setUndecorated(true);
@@ -91,7 +91,7 @@ public class DiplomacySelectorPanel extends JPanel {
 
     public static DiplomacySelectorPanel getWindow(Gui gui) {
         JDialog dialog = new JDialog(gui);
-        Map<Enum, Integer> c = Gui.getWindowSize().diplomacy;
+        Map<Enum, Integer> c = Gui.getWindowSize().diplomacy_selector;
         dialog.setBounds(c.get(CD.WIN_X) + gui.getX(), c.get(CD.WIN_Y) + gui.getY(), c.get(CD.WIN_W), c.get(CD.WIN_H));
         dialog.setModal(true);
         DiplomacySelectorPanel w = new DiplomacySelectorPanel(gui, dialog);
@@ -164,10 +164,11 @@ public class DiplomacySelectorPanel extends JPanel {
             if (i == game.getTurn()) {
                 continue;
             }
-            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW1_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW1_Y), C.BANNER100_SIDE, C.BANNER100_SIDE);
+            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW1_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW1_Y), ws.banner100_side, ws.banner100_side);
             count++;
         }
         g2d.drawImage(bi, null, 0, 0);
+        UtilG.drawFrameRectIn(g, 0, 0, c.get(CD.WIN_W), c.get(CD.WIN_H));
     }
 
     private void drawDetails(Graphics gg) {
@@ -185,7 +186,7 @@ public class DiplomacySelectorPanel extends JPanel {
                 continue;
             }
             s = Util.factionNameDisplay(i);
-            x = UtilG.center(g, c.get(CD.ROW1_X) + count * c.get(CD.ROW_W), ws.d * C.BANNER100_SIDE, ws.font_large, s);
+            x = UtilG.center(g, c.get(CD.ROW1_X) + count * c.get(CD.ROW_W), ws.banner100_side, ws.font_large, s);
             UtilG.drawStringGrad(g, s, ws.font_large, x, c.get(CD.ROW_H_Y));
             count++;
         }
@@ -193,10 +194,10 @@ public class DiplomacySelectorPanel extends JPanel {
 
     private int getFaction(Point p) {
         int faction = -1;
-        if (c.get(G.CD.ROW1_Y) <= p.y && p.y <= c.get(G.CD.ROW1_Y) + ws.d * C.BANNER100_SIDE) {
+        if (c.get(G.CD.ROW1_Y) <= p.y && p.y <= c.get(G.CD.ROW1_Y) + ws.banner100_side) {
             for (int i = 0; i < 4; i++) {
                 int tmp = c.get(G.CD.ROW1_X) + i * c.get(G.CD.ROW_W);
-                if (tmp <= p.x && p.x <= tmp + ws.d * C.BANNER100_SIDE) {
+                if (tmp <= p.x && p.x <= tmp + ws.banner100_side) {
                     faction = i;
                     if (game.getTurn() <= i) {
                         faction++;

@@ -56,6 +56,7 @@ public class FN {
     public static final String S_BYZSECU_PCX = S_PCX + F_S + "BYZSECU.PCX";
     public static final String S_UNITBG2_PCX = S_PCX + F_S + "UNITBG2.PCX";
     public static final String S_DIPLOMA_PCX = S_PCX + F_S + "DIPLOMA.PCX";
+    public static final String S_CONTRACT_PCX = S_PCX + F_S + "CONTRACT.PCX";
     public static final String S_SKULL_BIN = S_BIN + F_S + "SKULL.BIN";
     public static final String S_FLAG_BIN = S_BIN + F_S + "FLAG.BIN";
     public static final String S_HOUSE1_BIN = S_BIN + F_S + "HOUSE1.BIN";
@@ -90,8 +91,12 @@ public class FN {
     public static final String S_STARMAP3_PCX = S_PCX + F_S + "STARMAP3.PCX";
     public static final String S_UNITINFO_PCX = S_PCX + F_S + "UNITINFO.PCX";
     // filenames of buttons 1-16 in array slots 1-16 (slot 0 is unused)
-    public static final String[] S_EFSBUT_BIN = initEfsBut();
     public static final int EFSBUT_NR = 16;
+    public static final String[] S_EFSBUT_BIN;
+    static {
+        S_EFSBUT_BIN = initEfsBut();
+    }
+    ;
     public static final String S_ARBORIUM_DAT = "DAT" + F_S + "ARBORIUM.DAT";
     public static final String S_EFSUNIT_BIN = "BIN" + F_S + "EFSUNIT.BIN";
     public static final String S_TECH_DAT = "DAT" + F_S + "TECH.DAT";

@@ -17,7 +17,7 @@
  * Implements most of the high level data structures which define the game
  * state. Especially, Game.java is the root object of all game state and is
  * directly serialized to and from save files during the File->Save and
- * File->Load * actions and initialized from EFS and Phoenix data files during
+ * File->Load actions and initialized from EFS and Phoenix data files during
  * Phoenix boot up and File->Restart actions.
  */
 package game;

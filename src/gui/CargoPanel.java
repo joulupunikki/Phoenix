@@ -29,6 +29,7 @@ package gui;
 
 import galaxyreader.Unit;
 import game.Game;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -45,6 +46,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.BorderUIResource;
 import util.C;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -142,6 +144,9 @@ public class CargoPanel extends JPanel {
 
     private void setUpSlider() {
         slider = new JSlider(JSlider.VERTICAL);
+        slider.setUI(new UtilG.DarkSliderUI());
+        slider.setBackground(Color.BLACK);
+        slider.setForeground(C.COLOR_GOLD);
         slider.setMinimum(0);
         slider.setBounds(ws.cp_s_x, ws.cp_t_y + ws.cp_b_y_gap, ws.cp_s_w, ws.cp_s_h);
         slider.addChangeListener(new ChangeListener() {

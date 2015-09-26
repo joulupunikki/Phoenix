@@ -96,63 +96,6 @@ public class Faction implements Serializable {
         return research;
     }
 
-//    public void setResearch(int tech) {
-//        research.researched = tech;
-//    }
-//
-//    /**
-//     * Calculate research points at beginning of turn.
-//     */
-//    public void initResearchPts() {
-//        research.points_left = 0;
-//        List<Structure> cities = game.getStructures();
-//        for (Structure structure : cities) {
-//            if (structure.owner == game.getTurn() && structure.type == C.LAB) {
-//                research.points_left += game.getEfs_ini().lab_points;
-//            }
-//        }
-//
-//        for (int i = 0; i < research.techs.length; i++) {
-//            if (research.techs[i]) {
-//                research.points_left -= game.getResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
-//            }
-//
-//        }
-//
-//    }
-//
-//    public void doResearch() {
-//        if (research.researched == 0) {
-//            return;
-//        }
-//        research.points[research.researched] += research.points_left;
-//        int cost = game.getResources().getTech()[research.researched].stats[C.TECH_COST];
-//        research.points_left = research.points[research.researched] - cost;
-//        if (research.points_left >= 0) {
-//            research.techs[research.researched] = true;
-//            research.researched = 0;
-//        } else {
-//            research.points_left = 0;
-//        }
-//    }
-//    public void initTechs() {
-//        int len = game.getResources().getTech().length;
-//        techs = new boolean[len];
-//        tech_costs = new int[len];
-//        for (int i = 0; i < techs.length; i++) {
-//            techs[i] = false;
-//            tech_costs[i] = 0;
-//
-//        }
-//        techs[0] = true;
-//    }
-//    public boolean[] getTechs() {
-//        return techs;
-//    }
-//
-//    public int[] getTechCosts() {
-//        return tech_costs;
-//    }
     public List<Message> getMessages() {
         return messages;
     }
@@ -161,17 +104,18 @@ public class Faction implements Serializable {
         messages.clear();
     }
 
-//    public void deleteOldMessages(int year) {
-//        ListIterator<Message> iter = messages.listIterator();
-//        Message m = null;
-//        while (iter.hasNext()) {
-//            m = iter.next();
-//            if (year > m.getYear()) {
-//                iter.remove();
-//            }
-//        }
-//
-//    }
+    public boolean haveUnresolvedContracts() {
+        for (Message message : messages) {
+            Contract c = message.getContract();
+            if (c != null) {
+                if (!c.isResolved()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     public static Faction[] createFactions(Game game) {
         Faction[] factions = new Faction[C.NR_FACTIONS];
         for (int i = 0; i < factions.length; i++) {
@@ -294,23 +238,24 @@ public class Faction implements Serializable {
      * Try to balance the budget, to be called when end turn button is pressed.
      * Calculate
      * <code>total = firebirds + taxes + tithe skim - unit pay - debt</code>, if
-     * total is less than 0 return false, else set
-     * <code>firebirds = total</code> and return true
+     * total is not less than 0 and set_budget == true then set
+     * <code>firebirds = total</code> and always return total.
      *
-     * @return true if budget is balanced
+     * @param set_budget
+     * @return total
      */
-    public boolean balanceBudget() {
+    public int balanceBudget(boolean set_budget) {
         int gdp = calculateGDP();
         int total = gdp * tax_rate / 100
                 + gdp * tithe_rate / 1000
                 - calculateUnitPay() * pay_rate / 100
                 - debt
                 + firebirds;
-        if (total < 0) {
-            return false;
+        if (total >= 0 && set_budget) {
+            firebirds = total;
         }
-        firebirds = total;
-        return true;
+        
+        return total;
     }
     
     /**

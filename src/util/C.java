@@ -69,7 +69,6 @@ public class C {
     public static final int STAR_MAP_SQUARES_Y = 13;
     public static final int END_OF_SECTION = -2;
     public static final int END_OF_GROUP = -3;
-    public static final int BANNER100_SIDE = 100;
     public static final int STRUCT_BIN_HEIGHT = 40;
     public static final int STRUCT_BIN_WIDTH = 48;
     public static final int EFSUNIT_BIN_HEIGHT = 32;
@@ -156,7 +155,9 @@ public class C {
         CANNOT_PRODUCE,
         COMBAT_REPORT,
         ELECTION_NOTICE,
-        ELECTION_RESULTS
+        ELECTION_RESULTS,
+        CONTRACT,
+        RESPONSE,
     }
 
     // movement types

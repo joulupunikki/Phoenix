@@ -41,6 +41,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Map;
@@ -184,6 +186,7 @@ public class AgoraWindow extends JPanel {
         ChangeListener cl = (ChangeEvent e) -> {
             updateShoppingCart();
         };
+
         for (int i = 0; i < C.NR_RESOURCES; i++) {
             sliders[i] = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
             //sliders[i].setUI(new CustomSliderUI(sliders[i], C.COLOR_GOLD_DARK));
@@ -191,6 +194,17 @@ public class AgoraWindow extends JPanel {
             sliders[i].setBackground(Color.BLACK);
             sliders[i].setForeground(Color.BLACK);
             sliders[i].addChangeListener(cl);
+            final JSlider tmp = sliders[i];
+            MouseWheelListener mwl = new MouseAdapter() {
+
+                @Override
+                public void mouseWheelMoved(MouseWheelEvent e) {
+                    int old = tmp.getValue();
+                    tmp.setValue(old - e.getWheelRotation() * 10);
+                }
+
+            };
+            sliders[i].addMouseWheelListener(mwl);
             sliders[i].setBounds(c.get(GC.SLIDER_X), c.get(GC.SLIDER_Y) + i * c.get(GC.LINE_H), c.get(GC.SLIDER_W), c.get(GC.BOX_H));
             this.add(sliders[i]);
         }

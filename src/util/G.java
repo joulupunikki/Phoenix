@@ -66,8 +66,10 @@ public class G {
         LEADER_H_Y,
         LEADER_H_W,
         LEADER_V_X,
-        LEADER_V_Y,
+        LEADER_V_Y, 
 
+        // faction relations, lower left
+        STATE_X, STATE_Y, STATE_W, STATE_S,
     }
 
     /**
@@ -96,15 +98,23 @@ public class G {
     }
 
     /**
-     * Diplomacy Window gui coordinates
+     * Diplomacy Window gui coordinates, Resolve Contract Window gui
+     * coordinates.
      */
     public enum CDW {
-
+        GIVE_H_Y,
         GIVE_X,
         GIVE_Y,
         GIVE_W,
         GIVE_H,
         ROW_H,
         TAKE_Y,
+        // Resolve Contract Window coordinates
+        R_ACCEPT_X,
+        R_ACCEPT_Y,
+        R_ACCEPT_W,
+        R_ACCEPT_H,
+        R_BUTTON_W, R_WIN_Y, R_WIN_H,
     }
+
 }

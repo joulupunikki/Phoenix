@@ -47,6 +47,7 @@ public class DW extends State {
 
     @Override
     public void pressExitButton() {
+        //gui.getDiplomacyWindow().done();
         SU.restoreMainWindow();
         gui.setCurrentState(main_game_state);
         main_game_state = null;

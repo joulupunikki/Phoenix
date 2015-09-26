@@ -285,6 +285,23 @@ public class UtilG {
         dialog.setLocation((c_size.width - d_size.width) / 2, (c_size.height - d_size.height) / 2);
     }
 
+    /**
+     * Draws a yellow rectangle
+     *
+     * @param g
+     * @param x
+     * @param y
+     * @param w
+     * @param h
+     */
+    public static void drawFrameRectIn(Graphics g, int x, int y, int w, int h) {
+        x++;
+        y++;
+        w -= 2;
+        h -= 2;
+        drawFrameRect(g, x, y, w, h);
+    }
+
     public static void drawFrameRect(Graphics g, int x, int y, int w, int h) {
         g.setColor(C.COLOR_GOLD_DARK);
         g.drawLine(x - 1, y + h, x + w, y + h);
@@ -297,6 +314,11 @@ public class UtilG {
     public static int center(Graphics g, int x, int w, Font f, String s) {
         FontMetrics fm = g.getFontMetrics(f);
         return x + (w - fm.stringWidth(s)) / 2;
+    }
+
+    public static int centerY(Graphics g, int y, int h, Font f) {
+        FontMetrics fm = g.getFontMetrics(f);
+        return y - (h - fm.getAscent()) / 2;
     }
 
     public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y) {

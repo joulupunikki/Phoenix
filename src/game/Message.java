@@ -45,6 +45,7 @@ public class Message implements Serializable {
     private int year;
     private Object source;
     private boolean read;
+    private Contract contract;
 
     public Message(String msg_txt, C.Msg type, int year, Object source) {
         this.msg_txt = msg_txt;
@@ -52,6 +53,20 @@ public class Message implements Serializable {
         this.year = year;
         this.source = source;
         this.read = false;
+    }
+
+    /**
+     * @return the contract
+     */
+    public Contract getContract() {
+        return contract;
+    }
+
+    /**
+     * @param contract the contract to set
+     */
+    public void setContract(Contract contract) {
+        this.contract = contract;
     }
 
     /**

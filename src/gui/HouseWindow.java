@@ -36,6 +36,7 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -45,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import util.C;
 import util.FN;
+import util.G;
 import util.G.CH;
 import util.Util;
 import util.UtilG;
@@ -220,6 +222,8 @@ public class HouseWindow extends JPanel {
         byte[][] pallette = gui.getPallette();
         BufferedImage bi = Util.loadImage(FN.S_HOUSE_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
+        WritableRaster wr = bi.getRaster();
+        drawTreatyFlags(g2d, wr);
         g2d.drawImage(bi, null, 0, 0);
     }
 
@@ -227,8 +231,24 @@ public class HouseWindow extends JPanel {
         Graphics2D g = (Graphics2D) gg;
         drawBudgetHeaders(g);
         drawLeader(g);
+        
     }
 
+    private void drawTreatyFlags(Graphics2D g, WritableRaster wr) {
+        int[] pixel_data = new int[1];
+        for (int i = 0; i < C.NR_HOUSES; i++) {
+            for (int j = 0; j < C.NR_HOUSES; j++) {
+                if (i == j) {
+                    continue;
+                }
+                if (game.getDiplomacy().getDiplomaticState(i, j) == C.DS_WAR) {
+                    Util.writeRect(pixel_data, gui.getResources().getTreatyFlag(C.DS_WAR), wr, ws, c.get(G.CH.STATE_X) + i * c.get(G.CH.STATE_S), c.get(G.CH.STATE_Y) + j * c.get(G.CH.STATE_S), c.get(G.CH.STATE_W), c.get(G.CH.STATE_W));
+                }
+            }
+        }
+
+    }
+    
     private void drawLeader(Graphics2D g) {
         String s = Util.factionNameDisplay(game.getTurn());
         int x = UtilG.center(g, c.get(CH.LEADER_H_X), c.get(CH.LEADER_H_W), ws.font_large, s);

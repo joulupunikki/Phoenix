@@ -39,7 +39,8 @@ import util.G.CH;
  * @author joulupunikki
  */
 public class WindowSize {
-
+    public int banner100_side = 100;
+    public int treaty_flag_side = 27;
     public final boolean is_double;
     /**
      * Main window width;
@@ -503,7 +504,7 @@ public class WindowSize {
     public int d = 1;
     public HashMap<Enum, Integer> agora;
     public HashMap<Enum, Integer> house;
-    public HashMap<Enum, Integer> diplomacy;
+    public HashMap<Enum, Integer> diplomacy_selector;
     public HashMap<Enum, Integer> diplomacy_window;
 
     private final Doubler mul2;
@@ -516,6 +517,8 @@ public class WindowSize {
         iDiplomacy(is_double);
         iDiplomacyWindow(is_double);
         if (is_double) {
+            banner100_side *= 2;
+            treaty_flag_side *= 2;
             d = 2;
             main_window_width *= 2;
             main_window_height *= 2;
@@ -1026,6 +1029,11 @@ public class WindowSize {
         house.put(CH.LEADER_H_W, 230);
         house.put(CH.LEADER_H_X, 20);
         house.put(CH.LEADER_H_Y, 236);
+        house.put(CH.STATE_X, 40);
+        house.put(CH.STATE_Y, 318);
+        house.put(CH.STATE_W, 27);
+        house.put(CH.STATE_S, 28);
+
 
         if (is_double) {
             house.replaceAll(mul2);
@@ -1034,42 +1042,52 @@ public class WindowSize {
     }
 
     private void iDiplomacy(boolean is_double) {
-        diplomacy = new HashMap<>();
-        diplomacy.put(CD.WIN_X, 20);
-        diplomacy.put(CD.WIN_Y, 60);
-        int x = diplomacy.get(CD.WIN_X) - 1;
-        int y = diplomacy.get(CD.WIN_Y) - 1;        
-        diplomacy.put(CD.WIN_W, 600);
-        diplomacy.put(CD.WIN_H, 360);
-        diplomacy.put(CD.WIN_H_X, 95 - x);
-        diplomacy.put(CD.WIN_H_Y, 85 - y);
+        diplomacy_selector = new HashMap<>();
+        diplomacy_selector.put(CD.WIN_X, 20);
+        diplomacy_selector.put(CD.WIN_Y, 60);
+        int x = diplomacy_selector.get(CD.WIN_X) - 1;
+        int y = diplomacy_selector.get(CD.WIN_Y) - 1;
+        diplomacy_selector.put(CD.WIN_W, 600);
+        diplomacy_selector.put(CD.WIN_H, 360);
+        diplomacy_selector.put(CD.WIN_H_X, 95 - x);
+        diplomacy_selector.put(CD.WIN_H_Y, 85 - y);
 
-        diplomacy.put(CD.ROW1_X, 58 - x);
-        diplomacy.put(CD.ROW1_Y, 98 - y);
-        diplomacy.put(CD.ROW2_X, 128 - x);
-        diplomacy.put(CD.ROW2_Y, 238 - y);
-        diplomacy.put(CD.ROW_W, 140);
-        diplomacy.put(CD.ROW_H_Y, 213 - y);
+        diplomacy_selector.put(CD.ROW1_X, 58 - x);
+        diplomacy_selector.put(CD.ROW1_Y, 98 - y);
+        diplomacy_selector.put(CD.ROW2_X, 128 - x);
+        diplomacy_selector.put(CD.ROW2_Y, 238 - y);
+        diplomacy_selector.put(CD.ROW_W, 140);
+        diplomacy_selector.put(CD.ROW_H_Y, 213 - y);
 
-        diplomacy.put(CD.EXIT_X, 268 - x);
-        diplomacy.put(CD.EXIT_Y, 378 - y);
-        diplomacy.put(CD.EXIT_W, 114);
-        diplomacy.put(CD.EXIT_H, 16);
+        diplomacy_selector.put(CD.EXIT_X, 268 - x);
+        diplomacy_selector.put(CD.EXIT_Y, 378 - y);
+        diplomacy_selector.put(CD.EXIT_W, 114);
+        diplomacy_selector.put(CD.EXIT_H, 16);
 
         if (is_double) {
-            diplomacy.replaceAll(mul2);
+            diplomacy_selector.replaceAll(mul2);
         }
 
     }
 
     private void iDiplomacyWindow(boolean is_double) {
         diplomacy_window = new HashMap<>();
+        diplomacy_window.put(CDW.GIVE_H_Y, 43);
         diplomacy_window.put(CDW.GIVE_X, 329);
         diplomacy_window.put(CDW.GIVE_Y, 52);
         diplomacy_window.put(CDW.GIVE_W, 281);
         diplomacy_window.put(CDW.GIVE_H, 19);
-        diplomacy_window.put(CDW.ROW_H, 18);
+        diplomacy_window.put(CDW.ROW_H, 28);
         diplomacy_window.put(CDW.TAKE_Y, 154);
+
+        diplomacy_window.put(CDW.R_WIN_Y, 90);
+        int y = diplomacy_window.get(CDW.R_WIN_Y) - 1;
+        diplomacy_window.put(CDW.R_WIN_H, 300);
+        diplomacy_window.put(CDW.R_ACCEPT_X, 272);
+        diplomacy_window.put(CDW.R_ACCEPT_Y, 363 - y);
+        diplomacy_window.put(CDW.R_ACCEPT_W, 95);
+        diplomacy_window.put(CDW.R_ACCEPT_H, 16);
+        diplomacy_window.put(CDW.R_BUTTON_W, 123);
 
         if (is_double) {
             diplomacy_window.replaceAll(mul2);

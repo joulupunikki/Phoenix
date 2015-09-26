@@ -31,6 +31,7 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.Message;
 import game.PBEM;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -156,6 +157,7 @@ public class Gui extends JFrame {
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
     private DiplomacySelectorPanel diplomacy_selector;
+    private ResolveContract resolve_contract_dialog;
     private XPlayerScreen x_player_screen;
     private PBEMGui pbem_gui;
     private ByzantiumIIWindow byzantium_ii_window;
@@ -192,7 +194,7 @@ public class Gui extends JFrame {
     private JMenuItem menu_create_unit;
     private JMenuItem menu_randomize_rng;
     private JMenuItem house_menu; // house menu
-    private JMenuItem diplomacy_menu; // diplomacy menu
+    private JMenuItem diplomacy_menu; // diplomacy_selector menu
     private JMenuItem byzantium_ii_menu; // bydantium II menu
     private Resource resources;
     //stack display window
@@ -232,7 +234,7 @@ public class Gui extends JFrame {
         pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
         unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
-        // set resolution
+        // set resolution, needed when building Gui elements.
         if (args.hasOption(C.OPT_DOUBLE_RES)) {
             ws = new WindowSize(true);
         } else {
@@ -309,6 +311,7 @@ public class Gui extends JFrame {
         agora_window = AgoraWindow.getAgoraWindow(this);
         house_window = HouseWindow.getHouseWindow(this);
         diplomacy_window = DiplomacyWindow.getWindow(this);
+        resolve_contract_dialog = ResolveContract.getWindow(this);
         /*
          * collect main windows into card layout
          */
@@ -1858,6 +1861,7 @@ public class Gui extends JFrame {
         house_window.setGame(game);
         diplomacy_selector.setGame(game);
         diplomacy_window.setGame(game);
+        resolve_contract_dialog.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);
@@ -2404,5 +2408,9 @@ public class Gui extends JFrame {
 
         }
         return p;
+    }
+
+    public void showResolveContractDialog(Message msg) {
+        resolve_contract_dialog.enterDialog(msg);
     }
 }

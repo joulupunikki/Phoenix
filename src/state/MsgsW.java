@@ -80,13 +80,15 @@ public class MsgsW extends State {
             if (col == 0) {
                 switch (msg_type) {
                     case COMBAT_REPORT:
-
                         CombatReport report = (CombatReport) msg.getSource();
                         game.getBattle().setCombatStacks(report.attacker, report.defender);
                         System.out.println("combat stacks set");
                         gui.getMessages().setCombatReport(report);
 //                        current_cmbt_report = report;
                         SU.showCombatReplay();
+                        break;
+                    case CONTRACT:
+                        gui.showResolveContractDialog(msg);
                         break;
                     default:
                         gui.showInfoWindow(msg.getMsgTxt());

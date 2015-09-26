@@ -46,7 +46,8 @@ public class MW extends State {
     }
 
     /**
-     * Invoked when End Turn button is pressed.
+     * Invoked when End Turn button is pressed. Note: be careful when adding
+     * checks than have side-effects.
      */
     @Override
     public void pressEndTurnButton() {
@@ -60,7 +61,13 @@ public class MW extends State {
                         + "all the offices before the day is done!");
                 return;
             }
-            if (!game.getFaction(game.getTurn()).balanceBudget()) {
+            if (game.getFaction(game.getTurn()).haveUnresolvedContracts()) {
+                gui.showInfoWindow("My Lord, all contracts must be resolved "
+                        + "before the day is done!");
+                return;
+            }
+            // ***** NOTE: since this has side-effects it must be last ! *****
+            if (game.getFaction(game.getTurn()).balanceBudget(true) < 0) {
                 gui.showInfoWindow("My Lord, we must find a way to pay our debts "
                         + "before the day is done!");
                 return;

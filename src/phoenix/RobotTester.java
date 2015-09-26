@@ -76,14 +76,14 @@ import util.FN;
  * thing has been mitigated by setting the programmed inter-event delay between
  * double click mouse events to well below the JVM double click threshold.)
  * <p>
- * If, on the test machine, some object has the focus when a Robot test is
- * started then the first mouse click will be consumed by giving focus to the
+ * (I had consistent problems with this, but it has completely disappeared as of
+ * late, so ultimately I do not know what the issue was, something transient ?)
+ * <strike>If, on the test machine, some object has the focus when a Robot test
+ * is started then the first mouse click will be consumed by giving focus to the
  * Phoenix window. Currently, this is not considered in RobotTester code and the
  * Robot test will most likely report a failure on the first event in such
- * cases.
- * <p>
- * PROPOSED FIX: insert a dummy click on Phoenix window as first event in every
- * Robot test, or otherwise ensure that Phoenix window has focus.
+ * cases. PROPOSED FIX: insert a dummy click on Phoenix window as first event in
+ * every Robot test, or otherwise ensure that Phoenix window has focus.</strike>
  * <p>
  * Questionable Implementation Features:
  * <p>
@@ -107,6 +107,7 @@ public class RobotTester extends Thread {
 
     private static final int AUTO_DELAY;
     private static final int MAX_DELAY;
+
     static {
         AUTO_DELAY = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_AUTO_DELAY, "40"));
         MAX_DELAY = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_MAX_DELAY, "1000000"));
@@ -451,7 +452,7 @@ public class RobotTester extends Thread {
                 System.out.println("Resultant end state CRC32 = " + result);
                 System.out.println("Check time : " + (System.currentTimeMillis() - check_time));
                 if (expect != result) {
-                    test_completed_succesfully = false; 
+                    test_completed_succesfully = false;
                     System.out.println("------ Game end states do not match !!! ----");
                 }
             } catch (IOException ex) {

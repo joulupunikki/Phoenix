@@ -38,6 +38,7 @@ import util.C;
 import util.FN;
 import util.Util;
 import util.UtilG;
+import util.WindowSize;
 
 /**
  *
@@ -46,6 +47,7 @@ import util.UtilG;
 public class Resource {
 
     private static final int BANNER_100_SIZE = 10000;
+    private static final int EFSBUT1_SIZE = 729;
     private int[] color_scaler;
     private double[][][] unit_spot;
     private Color[] colors;
@@ -55,9 +57,10 @@ public class Resource {
     private int[][] res_icons;
     private HashMap<String, Cursor> cursors;
     private int[][] banners_100;
+    private int[][] treaty_flags;
 
     public Resource(Gui gui) {
-
+        WindowSize ws = Gui.getWindowSize();
         color_scaler = UtilG.scaleColorsToDark(C.GRAY_SCALING_FACTOR, gui.getPallette());
         unit_spot = UnitSpot.readUnitSpot();
         setColors(gui.getPallette());
@@ -68,6 +71,13 @@ public class Resource {
                 C.CARGO_WIDTH * C.CARGO_HEIGHT);
         createMouseCursors(gui);
         loadBanners100();
+        loadTreatyFlags();
+
+    }
+
+    private void loadTreatyFlags() {
+        treaty_flags = Util.loadSquares(FN.S_EFSBUT_BIN[1], 2, EFSBUT1_SIZE);
+        
     }
 
     private void loadBanners100() {
@@ -141,5 +151,9 @@ public class Resource {
 
     public int[] getBanner100(int faction) {
         return banners_100[faction];
+    }
+
+    public int[] getTreatyFlag(int flag) {
+        return treaty_flags[flag];
     }
 }
