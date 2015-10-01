@@ -149,7 +149,7 @@ public class RobotTester extends Thread {
     private File state_file = null;
     private LinkedList<String> log_buffer = new LinkedList<>();
     private int[] prev_event = {-1, -1, -1, -1, -1, -1, -1};
-
+    private int halt_on_event_nr = 0;
     private Gui gui;
 
     private RobotTester() { // prevent creation of singleton
@@ -232,6 +232,9 @@ public class RobotTester extends Thread {
      * @return
      */
     private boolean init(String file_name, String state_file) {
+        if (Gui.getMainArgs().hasOption(C.OPT_ROBOT_STOP)) {
+            halt_on_event_nr = Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_ROBOT_STOP));
+        }
         if (state_file != null) {
             this.state_file = FileUtils.getFile(state_file);
             if (!this.state_file.exists()) {
@@ -434,6 +437,12 @@ public class RobotTester extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (halt_on_event_nr > 0) {
+            System.out.println("Halting RobotTester on event number " + halt_on_event_nr);
+            System.out.println("WARNING: os/jvm mouse/keyboard input may be left in unresponsive state.");
+            robot_tester = null;
+            return;
+        }
         flushLogMessages();
         Phoenix.flushLogMessages();
         long stop_time = System.currentTimeMillis();
@@ -526,6 +535,9 @@ public class RobotTester extends Thread {
             }
             stop = true;
             return;
+        }
+        if (halt_on_event_nr == Math.abs(d[NUMBER_IDX])) {
+            stop = true;
         }
         last_created_event_id = -1;
     }

@@ -481,7 +481,8 @@ public class Gui extends JFrame {
                 ws.space_map_width, ws.space_map_height);
 
         space_map.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
+            @Override
+            public void mouseClicked(MouseEvent e) {
 //                clickOnSpaceMap(e);
                 state.clickOnSpaceMap(e);
             }
@@ -817,7 +818,7 @@ public class Gui extends JFrame {
         byzantium_ii_menu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                byzantium_ii_window.setUpVoting();
+                byzantium_ii_window.enterWindow();
                 SU.showByzantiumIIWindow();
             }
         });

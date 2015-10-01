@@ -326,7 +326,10 @@ public class Messages extends JPanel {
                         val = "* Contract *";
                         break;
                     case RESPONSE:
-                        val = "* Response *";
+                        val = "Response";
+                        break;
+                    case THRONE_CLAIM:
+                        val = "* Throne claim *";
                         break;
                     default:
                         throw new AssertionError("Undefined message type");

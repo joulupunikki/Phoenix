@@ -500,6 +500,10 @@ public class WindowSize {
     public int bz2_house_names_w = 99;
     public int bz2_house_banner_y1 = 324;
     public int bz2_house_banner_y2 = 423;
+    public int bz2_button1_x = 25;
+    public int bz2_button1_y = 455;
+    public int bz2_button1_w = 235;
+    public int bz2_button1_h = 15;
 
     public int d = 1;
     public HashMap<Enum, Integer> agora;
@@ -954,6 +958,11 @@ public class WindowSize {
 
             bz2_house_banner_y1 *= 2;
             bz2_house_banner_y2 *= 2;
+
+            bz2_button1_x *= 2;
+            bz2_button1_y *= 2;
+            bz2_button1_w *= 2;
+            bz2_button1_h *= 2;
 
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);

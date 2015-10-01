@@ -55,6 +55,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import util.C;
 import util.FN;
 import util.Util;
@@ -67,7 +69,7 @@ import util.UtilG;
  * @author joulupunikki
  */
 public class Phoenix {
-
+    public static final Logger logger = LogManager.getLogger();
     public static final long start_time;
     private static int event_number = 0;
     private static LinkedList<String> log_buffer = new LinkedList<>();
@@ -102,6 +104,7 @@ public class Phoenix {
      */
     public static void main(String[] args) {
         setLAF();
+        logger.debug("Test log4j logging");
 
         // parse options
         CommandLine cli_opts = parseCLI(args);
@@ -305,6 +308,8 @@ public class Phoenix {
         opts.addOption(null, C.OPT_GAME_STATE_FILE, true, "Game state record file to check against");
         opts.addOption(null, C.OPT_MAX_DELAY, true, "Maximum event delay (in ms) during Robot testing");
         opts.addOption(null, C.OPT_WIZARD_MODE, false, "Activate wizard mode");
+        opts.addOption(null, C.OPT_ROBOT_STOP, true, "Execute Robot test for this number of events then stop "
+                + "Robot and leave game as is");
 
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();

@@ -46,6 +46,7 @@ import javax.swing.border.Border;
 public class C {
 
 // 1. Various int and int[] finals
+    public static final int BYZ_II_P_IDX = 1;
     public static final int DEBUG_PRINT = 0;
     public static final int NORTH = 0;
     public static final int NORTHEAST = 1;
@@ -158,6 +159,7 @@ public class C {
         ELECTION_RESULTS,
         CONTRACT,
         RESPONSE,
+        THRONE_CLAIM,
     }
 
     // movement types
@@ -326,11 +328,14 @@ public class C {
     public static final int BARREN_TILE_SET = 4;    // RSW
 
     // Unit types (only needed for units with special abilities)
+    public static final int STEALTH_SHIP_UNIT_TYPE = 11;
     public static final int SPACE_CARRIER_UNIT_TYPE = 16;    // RSW
     public static final int FIGHTER_UNIT_TYPE = 17;    // RSW
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
+    public static final int SUBMARINE_UNIT_TYPE = 23;
     public static final int SCEPTER_UNIT_TYPE = 28;
     public static final int NOBLE_UNIT_TYPE = 45;
+    public static final int SPY_UNIT_TYPE = 49;
     public static final int ENGINEER_UNIT_TYPE = 53;
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
 
@@ -386,6 +391,7 @@ public class C {
     public static final String OPT_HELP = "h";
     // options mostly used for testing
     public static final String OPT_ROBOT_TEST = "robottest";
+    public static final String OPT_ROBOT_STOP = "robotstop";
     public static final String OPT_WAIT_BEFORE_START = "wait";
     public static final String OPT_ECONOMY_PRINT = "printeconomy";
     public static final String OPT_AUTO_DELAY = "autodelay";

@@ -35,7 +35,11 @@ import game.Square;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
+import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -57,12 +61,15 @@ public class SpaceMap extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final int MARGIN = 1;
     private Gui gui;
     private Game game;
     private int[][] planet_images;
     private int[][] unit_icons;
     private WindowSize ws;
     private IndexColorModel color_index;
+
+    MouseEvent[] mouse_events;
 
     public SpaceMap(Gui gui) {
         this.gui = gui;
@@ -76,6 +83,35 @@ public class SpaceMap extends JPanel {
 
         color_index = gui.getICM();
 
+        //setUpMouse(gui);
+
+    }
+
+    private void setUpMouse(Gui gui) throws HeadlessException {
+        mouse_events = new MouseEvent[MouseInfo.getNumberOfButtons() + 1];
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                mouse_events[e.getButton()] = e;
+            }
+        });
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int button = e.getButton();
+                MouseEvent press = mouse_events[button];
+                if (press == null) {
+                    return;
+                }
+                mouse_events[button] = null;
+                Point p_p = press.getPoint();
+                Point r_p = e.getPoint();
+                if (p_p.x - MARGIN <= r_p.x && r_p.x <= p_p.x + MARGIN
+                        && p_p.y - MARGIN <= r_p.y && r_p.y <= p_p.y + MARGIN) {
+                    gui.getCurrentState().clickOnSpaceMap(press);
+                }
+            }
+        });
     }
 
     public void setGame(Game game) {

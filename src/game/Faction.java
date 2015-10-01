@@ -299,4 +299,30 @@ public class Faction implements Serializable {
     public void setPayRate(int pay_rate) {
         this.pay_rate = pay_rate;
     }
+    
+    /**
+     * Return -1 iff at least 2 houses left; house id iff only 1 house left; -2
+     * iff no houses left.
+     *
+     * @param factions
+     * @return
+     */
+    public static int checkVictoryByElimination(Faction[] factions) {
+        int ret = -2;
+        int left = C.NR_HOUSES;
+        for (int i = 0; i < C.NR_HOUSES; i++) {
+            if (factions[i].isEliminated()) {
+                left--;
+            } else {
+                ret = i;
+            }
+        }
+        switch (left) {
+            case 0:
+            case 1:
+                return ret;
+            default:
+                return -1;
+        }
+    }
 }

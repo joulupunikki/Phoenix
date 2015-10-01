@@ -157,9 +157,9 @@ public class DiplomacyWindow extends JPanel {
         System.out.println("enterWindow() start : " + contract);
         if (contract == null) {
             contract = new Contract();
-        } else {
-            contract.clear();
         }
+        clear();
+
         System.out.println("enterWindow() end : " + contract);
         this.faction = faction;
     }
@@ -231,6 +231,10 @@ public class DiplomacyWindow extends JPanel {
         }
         for (int i = 0; i < then_we_items.length; i++) {
             then_we_items[i].setEnabled(true);
+        }
+        if (game.getDiplomacy().getDiplomaticState(game.getTurn(), faction) != C.DS_WAR) {
+            if_you_items[IfYouWill.PEACE.ordinal()].setEnabled(false);
+            then_we_items[ThenWeWill.PEACE.ordinal()].setEnabled(false);
         }
 
     }

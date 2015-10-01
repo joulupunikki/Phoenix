@@ -29,6 +29,7 @@ package state;
 
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import game.Message;
 import game.Regency;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -74,10 +75,39 @@ public class ByzII extends State {
     public void pressVoteButton() {
         if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
             gui.setCurrentState(ByzII2.get());
-            gui.showInfoWindow("Cast your votes, Lord " + Util.getFactionName(game.getTurn()) + ".");
+            String s = "This is";
+            int claim = game.getRegency().getYearsSinceThroneClaim();
+            if (claim < 1) {
+                s += " a vote for the regency. ";
+            } else {
+                if (claim == 1) {
+                    s += " the first vote for ";
+                } else {
+                    s += " the final vote for ";
+                }
+                s += Util.factionNameDisplay(game.getRegency().getRegent())
+                        + "'s claim to the emperor's crown.";
+            }
+            gui.showInfoWindow(s + " Cast your votes, Lord " + Util.getFactionName(game.getTurn()) + ".");
             gui.getByzantium_ii_window().enableAbstainButton(true);
             gui.getByzantium_ii_window().enableVoteButton(false);
         }
+    }
+
+    @Override
+    public void pressDeclareEmperorButton() {
+        if (!gui.showConfirmWindow("Are you sure you want to lay a claim to the emperor's crown?")) {
+            return;
+        }
+        game.getRegency().advanceThroneClaim(true);
+        String s = "" + Util.factionNameDisplay(game.getTurn()) + " has laid claim "
+                + "to the emperor's crown in the year " + game.getYear() + ". New "
+                + "elections must take place in the year " + (game.getYear() + 1)
+                + " to decide the legitimacy of this claim.";
+        for (int i = 0; i < C.NR_HOUSES; i++) {
+            game.getFaction(i).addMessage(new Message(s, C.Msg.THRONE_CLAIM, i, null));
+        }
+        gui.getByzantium_ii_window().hideDeclareEmperorButton();
     }
 
     @Override

@@ -125,22 +125,22 @@ public class SW2 extends SW {
             }
         } else {
             Planet planet2 = galaxy_grid[x1][y1].parent_planet;
-            int attacked_faction = galaxy_grid[x1][y1].stack_owner;
+            int attacked_slot = galaxy_grid[x1][y1].stack_owner;
             int attacking_faction = game.getSelectedFaction().x;
             if (planet2 == null || !planet.equals(planet2)
                     || !game.checkMoveLeftSpace(stack)) {
                 return;
             }
 
-            if (attacked_faction >= C.LEAGUE) {
+            if (attacked_slot >= C.LEAGUE) {
 
                 List<Integer> stack_list = new LinkedList<>();
                 int factions = 3;
                 for (int i = 0; i < factions; i++) {
-                    if (!planet2.space_stacks[attacked_faction + i].isEmpty()) {
+                    if (!planet2.space_stacks[attacked_slot + i].isEmpty()) {
 
-                        if (planet2.space_stacks[attacked_faction + i].get(0).owner != attacking_faction) {
-                            stack_list.add(new Integer(attacked_faction + i));
+                        if (planet2.space_stacks[attacked_slot + i].get(0).owner != attacking_faction) {
+                            stack_list.add(new Integer(attacked_slot + i));
                         }
                     }
 
@@ -151,7 +151,7 @@ public class SW2 extends SW {
                 if (size == 0) {
                     return;
                 } else if (size == 1) {
-                    attacked_faction = stack_list.get(0).intValue();
+                    attacked_slot = stack_list.get(0).intValue();
                 } else {
 
                     Object[] options = new Object[size];
@@ -197,18 +197,23 @@ public class SW2 extends SW {
                             break;
                     }
 
-                    attacked_faction = selected_faction;
+                    attacked_slot = selected_faction;
 
                 }
             }
             // why is this here ? all the checks are performed allready ...
-            if (attacked_faction == attacking_faction || planet.space_stacks[attacked_faction].isEmpty()) {
+            if (attacked_slot == attacking_faction || planet.space_stacks[attacked_slot].isEmpty()) {
                 return;
             }
 
-            System.out.println("attacked_faction = " + attacked_faction);
+            System.out.println("attacked_slot = " + attacked_slot);
 
-            game.resolveGroundBattleInit(C.SPACE_COMBAT, attacked_faction);
+            if (game.getDiplomacy().getDiplomaticState(game.getTurn(), attacked_slot) != C.DS_WAR
+                    && !gui.showAttackConfirmWindow(game.getTurn(), planet.space_stacks[attacked_slot])) {
+                return;
+            }
+            game.getDiplomacy().setDiplomaticState(game.getTurn(), planet.space_stacks[attacked_slot].get(0).owner, C.DS_WAR);
+            game.resolveGroundBattleInit(C.SPACE_COMBAT, attacked_slot);
             SU.showCombatWindow();
 
         }

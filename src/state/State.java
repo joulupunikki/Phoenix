@@ -33,6 +33,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.JCheckBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import util.WindowSize;
 
 /**
@@ -41,7 +43,7 @@ import util.WindowSize;
  * @author joulupunikki
  */
 public abstract class State {
-
+    public static final Logger logger = LogManager.getLogger();
     static Gui gui;
     static Game game;
     static WindowSize ws;
@@ -62,23 +64,18 @@ public abstract class State {
     }
 
     public void wheelRotated(MouseWheelEvent e) {
-//        error();
     }
 
     public void clickOnPlanetMap(MouseEvent e) {
-//        error();
     }
 
     public void clickOnPlanetWindow(MouseEvent e) {
-//        error();
     }
 
     public void clickOnSpaceWindow(MouseEvent e) {
-//         error();
     }
 
     public void clickOnSpaceMap(MouseEvent e) {
-//        error();
     }
 
     public void clickOnStackWindow() {
@@ -166,17 +163,6 @@ public abstract class State {
     public void pressAbstainButton() {
     }
 
-    public void error() {
-        try {
-            error2();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public void error2() throws NoSuchMethodException {
-        System.out.println("Error, unsupported event handler for state.");
-        throw new NoSuchMethodException();
+    public void pressDeclareEmperorButton() {
     }
 }

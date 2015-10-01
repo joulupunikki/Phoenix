@@ -41,6 +41,7 @@ import javax.swing.JPanel;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -83,11 +84,16 @@ public class ByzantiumIIWindow extends JPanel {
         renderWindow(g);
     }
 
-    public void setUpVoting() {
+    public void enterWindow() {
         if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
             vote.setEnabled(true);
         } else {
             vote.setEnabled(false);
+        }
+        if (game.getRegency().getRegent() == game.getTurn() && game.getRegency().getYearsSinceThroneClaim() < 0) {
+            declare_emperor.setVisible(true);
+        } else {
+            declare_emperor.setVisible(false);
         }
     }
 
@@ -133,6 +139,22 @@ public class ByzantiumIIWindow extends JPanel {
             }
         });
         this.add(abstain);
+
+        declare_emperor = new JButton("Declare Yourself Emperor");
+        declare_emperor.setBorder((BorderFactory.createLineBorder(C.COLOR_GOLD)));
+        declare_emperor.setBackground(Color.BLACK);
+        declare_emperor.setForeground(C.COLOR_GOLD);
+        declare_emperor.setBounds(ws.bz2_button1_x, ws.bz2_button1_y, ws.bz2_button1_w, ws.bz2_button1_h);
+        declare_emperor.setEnabled(true);
+        declare_emperor.setVisible(false);
+        declare_emperor.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Declare Yourself Emperor -pressed");
+                gui.getCurrentState().pressDeclareEmperorButton();
+            }
+        });
+        this.add(declare_emperor);
     }
 
     public void enableAbstainButton(boolean enabled) {
@@ -141,6 +163,10 @@ public class ByzantiumIIWindow extends JPanel {
 
     public void enableVoteButton(boolean enabled) {
         vote.setEnabled(enabled);
+    }
+
+    public void hideDeclareEmperorButton() {
+        declare_emperor.setVisible(false);
     }
 
     public void renderWindow(Graphics g) {
@@ -168,6 +194,10 @@ public class ByzantiumIIWindow extends JPanel {
         drawMinistryDetails(g, C.HOUSE4, C.HOUSE4);
         drawMinistryDetails(g, C.HOUSE5, C.HOUSE5);
 
+        if (regency.getYearsSinceThroneClaim() > -1) {
+            UtilG.drawStringGrad((Graphics2D) g, "Emperor declared", ws.font_large,
+                    ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1);
+        }
     }
 
     private void drawMinistryDetails(Graphics g, int ministry, int house) {

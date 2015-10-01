@@ -161,12 +161,30 @@ public class Regency implements Serializable {
      * @return
      */
     public boolean needToVote(int faction, EfsIni ini, int year) {
+        return needToVote(faction, ini, year, false);
+    }
+
+    /**
+     *
+     * @param ini
+     * @param faction
+     * @param year
+     * @param advance_notice
+     * @return
+     */
+    public boolean needToVote(int faction, EfsIni ini, int year, boolean advance_notice) {
+        int years_since_throne_claim = this.years_since_throne_claim;
+        if (advance_notice) {
+            years_since_throne_claim++;
+        }
         int term_length = ini.regency_term_length;
         if (faction <= C.THE_CHURCH) {
-            if (vote_tally[faction][CANDIDATE_IDX] == -2
-                    && ((years_since_throne_claim == 1 || years_since_throne_claim == term_length + 1)
-                    || (year != C.STARTING_YEAR && (year - C.STARTING_YEAR) % term_length == 0))) {
-                return true;
+            if (vote_tally[faction][CANDIDATE_IDX] == -2) {
+                if (years_since_throne_claim < 1 && year != C.STARTING_YEAR && (year - C.STARTING_YEAR) % term_length == 0) {
+                    return true; // regent elections
+                } else if (years_since_throne_claim == 1 || years_since_throne_claim == term_length + 1) {
+                    return true; // thone claim
+                }
             }
         }
         return false;
@@ -187,7 +205,7 @@ public class Regency implements Serializable {
     public void resolveElections(Game game) {
         may_set_offices = false;
         if (haveVotes()) {
-            String message = "";
+            String message = "Election results:";
             // count votes
             int[] vote_count = new int[C.NR_HOUSES];
             for (int[] vote_tally1 : vote_tally) {
@@ -195,29 +213,53 @@ public class Regency implements Serializable {
                     vote_count[vote_tally1[CANDIDATE_IDX]] += vote_tally1[VOTES_IDX];
                 }
             }
-            if (years_since_throne_claim < 0) { // regent elections
-                int max_votes = 0;
-                int candidate = -1;
-                for (int i = 0; i < vote_count.length; i++) {
-                    if (vote_count[i] > max_votes) { // new frontrunner
-                        max_votes = vote_count[i];
-                        candidate = i;
-                    } else if (vote_count[i] == max_votes) { // a draw
-                        candidate = -1;
-                    }
+            for (int i = 0; i < C.NR_HOUSES; i++) {
+                message += " " + Util.getFactionName(i) + " " + vote_count[i] + ";";
+            }
+            int max_votes = 0;
+            int candidate = -1;
+            for (int i = 0; i < vote_count.length; i++) {
+                if (vote_count[i] > max_votes) { // new frontrunner
+                    max_votes = vote_count[i];
+                    candidate = i;
+                } else if (vote_count[i] == max_votes) { // a draw
+                    candidate = -1;
                 }
+            }
+            if (years_since_throne_claim < 2) { // regent elections
+
                 if (candidate > -1) { // a new regent
                     setRegent(candidate);
                     may_set_offices = true;
-                    message = "Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
+                    message += " Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
 
                 } else {
-                    message = "No one had a majority of votes, so the Regent remains the same.";
+                    message += " No one had a majority of votes, so the Regent remains the same.";
                 }
-            } else if (years_since_throne_claim == 2) { // 1st emperor vote
-
-            } else { // final emperor vote
-
+            } else { // emperor vote
+                if (candidate == -1 && vote_count[regent] == max_votes) {
+                    message += " The vote was a tie with the throne claimant. The claim is dropped and the claimant remains a Regent.";
+                    dropThroneClaim();
+                } else if (candidate == -1 && vote_count[regent] < max_votes) {
+                    message += " The vote was a tie without the throne claimant. The claim is dropped and the regency is vacated.";
+                    dropThroneClaim();
+                    regent = -1;
+                } else if (candidate == regent) {
+                    if (years_since_throne_claim == 2) { // 1st vote
+                        message += " The claimant " + Util.getFactionName(candidate)
+                                + " has gathered the support necessary to become emperor."
+                                + " Other houses have " + game.getEfs_ini().regency_term_length
+                                + " years before the rest of humanity recognizes this claim.";
+                    } else { // final vote
+                        message += " In the final vote, the claimant " + Util.getFactionName(candidate)
+                                + " has gathered the support necessary to become emperor. The "
+                                + Util.factionNameDisplay(candidate) + " has been crowned the Emperor !";
+                    }
+                } else {
+                    setRegent(candidate);
+                    may_set_offices = true;
+                    message += "The claimant loses the election. Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
+                }  
             }
             for (Faction faction : game.getFactions()) {
                 faction.addMessage(new Message(message, C.Msg.ELECTION_RESULTS, game.getYear(), null));
@@ -326,10 +368,11 @@ public class Regency implements Serializable {
                         throw new AssertionError();
                 }
                 ByzII.setAssets(t, t);
-            }
-            
-            
+            } 
         }
     }
-    
+
+    public int getYearsSinceThroneClaim() {
+        return years_since_throne_claim;
+    }
 }

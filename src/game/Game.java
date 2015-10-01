@@ -517,7 +517,7 @@ public class Game implements Serializable {
         resetMovePoints();
         setMaxSpotRange();
         cargo_pods = Util.getCargoPods(units, this);
-        if (regency.needToVote(turn, efs_ini, year + 1)) { // election notice
+        if (regency.needToVote(turn, efs_ini, year + 1, true)) { // election notice
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
     }
@@ -526,7 +526,9 @@ public class Game implements Serializable {
         turn = 0;
         year++;
         Faction.eliminateNoblelessFactions(this);
+        // TODO if(Faction.checkVictoryByElimination(factions);
         regency.purgeEliminatedFromOffices(this);
+        regency.advanceThroneClaim(false);
         regency.resolveElections(this);
     }
 
