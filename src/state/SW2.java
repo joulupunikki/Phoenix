@@ -36,9 +36,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.LinkedList;
 import java.util.List;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import static state.State.gui;
 import util.C;
 import util.Util;
+import util.UtilG;
 
 /**
  * Space window stack selected no destination selected.
@@ -56,16 +59,9 @@ public class SW2 extends SW {
         return instance;
     }
 
+    @Override
     public void clickOnSpaceMap(MouseEvent e) {
-        //button3
-        //on stack
-        //on empty square
-        //on planet
-        //button 1
-        //on stack
-        //on planet
         Point p = SU.getSpaceMapClickPoint(e);
-
         if (e.getButton() == MouseEvent.BUTTON3) {
             SU.clickOnSpaceMapButton3(p);
         } else if (e.getButton() == MouseEvent.BUTTON1) {
@@ -73,6 +69,7 @@ public class SW2 extends SW {
         }
     }
 
+    @Override
     public void clickOnSpaceWindow(MouseEvent e) {
         Point p = e.getPoint();
         if (SU.isOnStackDisplay(p)) {
@@ -80,15 +77,7 @@ public class SW2 extends SW {
         }
     }
 
-//        public void clickOnStackDisplay(MouseEvent e) {
-//        if (e.getButton() == MouseEvent.BUTTON1) {
-//            SU.clickOnStackDisplayButton1(e);
-//        } else if (e.getButton() == MouseEvent.BUTTON3) {
-//            // display stack window
-////            gui.showStackWindow();
-//            SU.showUnitInfoWindow();
-//        }
-//    }
+    @Override
     public void wheelRotated(MouseWheelEvent e) {
         SU.wheelOnSpaceMap(e);
     }
@@ -154,7 +143,7 @@ public class SW2 extends SW {
                     attacked_slot = stack_list.get(0).intValue();
                 } else {
 
-                    Object[] options = new Object[size];
+                    String[] options = new String[size];
                     int[] faction_nrs = new int[size];
                     for (int i = 0; i < size; i++) {
                         int tmp = stack_list.get(i).intValue();
@@ -171,30 +160,21 @@ public class SW2 extends SW {
                         j_options = JOptionPane.YES_NO_CANCEL_OPTION;
                     }
 
-                    int n = JOptionPane.showOptionDialog(gui,
-                            "Who do you want to attack?",
-                            "",
-                            j_options,
-                            JOptionPane.PLAIN_MESSAGE,
-                            null,
-                            options,
-                            options[0]);
-
+                    JOptionPane pane = new UtilG.PhoenixJOptionPane("Who do you want to attack?",
+                            JOptionPane.PLAIN_MESSAGE, j_options,
+                            null, options, options[0]);
+                    JDialog dialog = pane.createDialog(gui, null);
+                    dialog.setVisible(true);
+                    String n = (String) pane.getValue();
                     int selected_faction = -1;
-
-                    switch (n) {
-                        case JOptionPane.YES_OPTION:
-                            selected_faction = faction_nrs[0];
-                            break;
-                        case JOptionPane.NO_OPTION:
-                            selected_faction = faction_nrs[1];
-                            break;
-                        case JOptionPane.CANCEL_OPTION:
-                            selected_faction = faction_nrs[2];
-                            break;
-                        default:
-                            selected_faction = faction_nrs[0];
-                            break;
+                    if (n == null || n.equals(options[0])) {
+                        selected_faction = faction_nrs[0];
+                    } else if (n.equals(options[1])) {
+                        selected_faction = faction_nrs[1];
+                    } else if (size == 3 && n.equals(options[2])) {
+                        selected_faction = faction_nrs[2];
+                    } else {
+                        selected_faction = faction_nrs[0];
                     }
 
                     attacked_slot = selected_faction;
@@ -208,7 +188,11 @@ public class SW2 extends SW {
 
             System.out.println("attacked_slot = " + attacked_slot);
 
-            if (game.getDiplomacy().getDiplomaticState(game.getTurn(), attacked_slot) != C.DS_WAR
+            if (!SU.byzIICombatOK(stack, true)) {
+                return;
+            }
+
+            if (game.getDiplomacy().getDiplomaticState(game.getTurn(), planet.space_stacks[attacked_slot].get(0).owner) != C.DS_WAR
                     && !gui.showAttackConfirmWindow(game.getTurn(), planet.space_stacks[attacked_slot])) {
                 return;
             }

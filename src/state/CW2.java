@@ -28,6 +28,7 @@
 package state;
 
 import util.C;
+import util.Util;
 
 /**
  * Combat Window (between two planetary stacks) 2
@@ -57,7 +58,7 @@ public class CW2 extends State {
         gui.setCurrentState(main_game_state);
         main_game_state = null;
         gui.getCombatWindow().setFightText("Do Combat");
-        if (game.getSelectedStack().isEmpty()) {
+        if (Util.getSelectedUnits(game.getSelectedStack()).isEmpty()) {
             game.setSelectedPointFaction(null, -1, null, null);
             if (gui.getCurrentState() instanceof PW) {
                 gui.setCurrentState(PW1.get());

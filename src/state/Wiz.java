@@ -55,6 +55,8 @@ public class Wiz extends State {
 
     private JPopupMenu unit_menu;
 
+    private Point p;
+
     private Wiz() {
     }
 
@@ -70,12 +72,13 @@ public class Wiz extends State {
         //on empty hex
         // if button 1
         //on hex
-        Point p = SU.getPlanetMapClickPoint(e);
+        p = SU.getPlanetMapClickPoint(e);
         if (e.getButton() == MouseEvent.BUTTON1) {
             Hex h = game.getHexFromPXY(game.getCurrentPlanetNr(), p.x, p.y);
             if (h.getStructure() == null && h.getStack().isEmpty()) {
+
                 if (unit_menu == null) {
-                    setUpStackMenu(p);
+                    setUpStackMenu();
                 }
                 unit_menu.show(gui.getPlanetMap(), p.x, p.y);
             }
@@ -100,7 +103,7 @@ public class Wiz extends State {
 
     }
 
-    private void setUpStackMenu(Point p) {
+    private void setUpStackMenu() {
         unit_menu = new JPopupMenu("Select");
         unit_menu.setBackground(Color.DARK_GRAY);
         JMenu[] cats = new JMenu[C.MoveType.values().length];

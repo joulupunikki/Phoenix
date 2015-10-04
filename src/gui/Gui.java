@@ -255,6 +255,7 @@ public class Gui extends JFrame {
         UIManager.put("Button.font", ws.font_large);
         UIManager.put("Label.font", ws.font_large);
         UIManager.put("TextField.font", ws.font_large);
+        UtilG.setUpUtilG(this);
         // set up PBEM
         pbem_gui = new PBEMGui(game);
         pbem_gui.getDATAHashes();
@@ -262,19 +263,9 @@ public class Gui extends JFrame {
         loadHexTiles();
         loadStructureTiles();
         Comp.setGame(game);
-        /*
-         * build Gui
-         */
-        /*
-         *set up menubar
-         */
-        no_menubar = new JMenuBar();
-        no_menubar.setBackground(Color.DARK_GRAY);
-        JMenu no_menu = new JMenu(".");
-        no_menu.setBackground(Color.DARK_GRAY);
-        no_menubar.add(no_menu);
-        no_menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-        menubar = new JMenuBar();
+
+        setUpMenubar();
+
         setUpFileMenu();
         setUpOrdersMenu();
         setUpMessagesMenu();
@@ -331,6 +322,24 @@ public class Gui extends JFrame {
         // set up stack blink and jump route color cycling
         setUpAnimation();
 
+    }
+
+    private void setUpMenubar() {
+        /*
+         * build Gui
+         */
+        /*
+         *set up menubar
+         */
+        no_menubar = new JMenuBar();
+        no_menubar.setBackground(Color.BLACK);
+        JMenu no_menu = new JMenu(".");
+        no_menu.setBackground(Color.BLACK);
+        no_menubar.add(no_menu);
+        no_menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        menubar = new JMenuBar();
+        menubar.setBackground(Color.BLACK);
+        menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
     }
 
     private void setUpAnimation() {
@@ -569,13 +578,13 @@ public class Gui extends JFrame {
         menu_save_as = new JMenuItem("Save As");
         menu_restart = new JMenuItem("Restart");
         menu_options = new JMenuItem("Options");
-        menubar.setBackground(Color.DARK_GRAY);
-        file_menu.setBackground(Color.DARK_GRAY);
-        menu_exit.setBackground(Color.DARK_GRAY);
-        menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-
-        file_menu.setForeground(C.COLOR_GOLD);
-        menu_exit.setForeground(C.COLOR_GOLD);
+//        menubar.setBackground(Color.DARK_GRAY);
+//        file_menu.setBackground(Color.DARK_GRAY);
+//        menu_exit.setBackground(Color.DARK_GRAY);
+//        menubar.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+//
+//        file_menu.setForeground(C.COLOR_GOLD);
+//        menu_exit.setForeground(C.COLOR_GOLD);
         menu_exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int ret_val = 0;
@@ -1880,9 +1889,9 @@ public class Gui extends JFrame {
             message = "<null/not implemented yet>";
         }
         String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
-//        JOptionPane pane = new JOptionPane(s);
-        JOptionPane.showMessageDialog(this, s, null, JOptionPane.PLAIN_MESSAGE);
-
+        JOptionPane pane = new UtilG.PhoenixJOptionPane(s, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
+        JDialog dialog = pane.createDialog(this, null);
+        dialog.setVisible(true);
     }
 
     public void showDiplomacySelectorWindow() {
@@ -1965,8 +1974,14 @@ public class Gui extends JFrame {
 
     public boolean showConfirmWindow(String message) {
         String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
-        int reply = JOptionPane.showConfirmDialog(this,
-                s, null, JOptionPane.YES_NO_OPTION);
+        JOptionPane pane = new UtilG.PhoenixJOptionPane(s, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_OPTION, null, null, JOptionPane.NO_OPTION);
+        JDialog dialog = pane.createDialog(this, null);
+        dialog.setVisible(true);
+        int reply = JOptionPane.NO_OPTION;
+        Object val = pane.getValue();
+        if (val != null) {
+            reply = (Integer) val;
+        }
         return reply == JOptionPane.YES_OPTION;
     }
 

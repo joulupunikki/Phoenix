@@ -27,6 +27,7 @@
  */
 package util;
 
+import gui.Gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -37,11 +38,17 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
@@ -49,6 +56,7 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalSliderUI;
+import phoenix.Phoenix;
 
 /**
  * Graphics related utilities.
@@ -405,6 +413,39 @@ public class UtilG {
       return tList;
     }
 
+    public static <T extends JComponent> Set<Container> findParentsOf(Class<T> clazz, Container container) {
+        Container parent = container;
+        List<Container> child_list = new LinkedList<>();
+        List<Container> parent_list = new LinkedList<>();
+        Set<Container> parents = new LinkedHashSet<>();
+        Component[] children = null;
+        synchronized (container.getTreeLock()) {
+            children = container.getComponents();
+        }
+        for (Component component : children) {
+            child_list.add((Container) component);
+            parent_list.add(container);
+        }
+        int count = 1;
+        while (!child_list.isEmpty()) {
+            System.out.println("Finding parents " + count++);
+            Container child = child_list.remove(0);
+            parent = parent_list.remove(0);
+            if (clazz.isAssignableFrom(child.getClass())) {
+                parents.add(parent);
+            }
+            synchronized (child.getTreeLock()) {
+                children = child.getComponents();
+            }
+            for (Component tmp : children) {
+                child_list.add((Container) tmp);
+                parent_list.add(child);
+            }
+        }
+
+        return parents;
+    }
+
     public static void setJComponentChildrenToDark(JComponent chooser) {
         List<JComponent> c_list;
         //tried this with 1 ms delay
@@ -425,24 +466,24 @@ public class UtilG {
     }
 
     public static void setUIDefaults() {
-        UIManager.put("OptionPane.background", Color.DARK_GRAY);
+        UIManager.put("OptionPane.background", Color.BLACK);
         UIManager.put("OptionPane.foreground", C.COLOR_GOLD);
-        UIManager.put("Panel.background", Color.DARK_GRAY);
+        UIManager.put("Panel.background", Color.BLACK);
         UIManager.put("Panel.foreground", C.COLOR_GOLD);
         UIManager.put("OptionPane.messageForeground", C.COLOR_GOLD);
         UIManager.put("Button.background", Color.BLACK);
         UIManager.put("Button.foreground", C.COLOR_GOLD);
         UIManager.put("Button.border", new BorderUIResource(new LineBorder(C.COLOR_GOLD)));
-        UIManager.put("Dialog.background", Color.DARK_GRAY);
+        UIManager.put("Dialog.background", Color.BLACK);
         UIManager.put("Dialog.foreground", C.COLOR_GOLD);
         UIManager.put("ProgressBar.foreground", C.COLOR_GOLD);
-        UIManager.put("ProgressBar.background", Color.DARK_GRAY);
-        UIManager.put("MenuItem.background", Color.DARK_GRAY);
+        UIManager.put("ProgressBar.background", Color.BLACK);
+        UIManager.put("MenuItem.background", Color.BLACK);
         UIManager.put("MenuItem.foreground", C.COLOR_GOLD);
-        UIManager.put("MenuItem.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
-        UIManager.put("Menu.background", Color.DARK_GRAY);
+        UIManager.put("MenuItem.border", new BorderUIResource(new LineBorder(C.COLOR_GOLD, 0)));
+        UIManager.put("Menu.background", Color.BLACK);
         UIManager.put("Menu.foreground", C.COLOR_GOLD);
-        UIManager.put("Menu.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
+        UIManager.put("Menu.border", new BorderUIResource(new LineBorder(C.COLOR_GOLD, 0)));
         UIManager.put("TextArea.background", Color.BLACK);
         UIManager.put("TextArea.foreground", C.COLOR_GOLD);
         UIManager.put("TextField.border", new BorderUIResource(new LineBorder(Color.DARK_GRAY, 0)));
@@ -460,6 +501,8 @@ public class UtilG {
         UIManager.put("Slider.highlight", C.COLOR_GOLD);
         UIManager.put("Slider.shadow", C.COLOR_GOLD);
         UIManager.put("Slider.background", C.COLOR_GOLD);
+        UIManager.put("MenuBar.background", Color.BLACK);
+        UIManager.put("MenuBar.foreground", Color.BLACK);
     }
 
     public static class DarkTheme extends DefaultMetalTheme {
@@ -596,6 +639,114 @@ public class UtilG {
             g.translate(-knobBounds.x, -knobBounds.y);
         }
 
+    }
+
+    public static class PhoenixJOptionPane extends JOptionPane {
+
+
+        private static final long serialVersionUID = 1L;
+        private static byte[][] pallette;
+        private static WindowSize ws;
+
+        /**
+         *
+         * @param message the value of message
+         * @param message_type the value of message_type
+         * @param option_type the value of option_type
+         * @param icon the value of icon
+         * @param options the value of options
+         * @param initial_value the value of initial_value
+         */
+        public PhoenixJOptionPane(Object message, int message_type, int option_type, Icon icon, Object[] options, Object initial_value) {
+            super(message, message_type, option_type, icon, options);
+            List<JComponent> descendantsOfType = null;
+            synchronized (this.getTreeLock()) {
+                descendantsOfType = UtilG.getDescendantsOfType(JComponent.class, this, true);
+            }
+            for (JComponent jc : descendantsOfType) {
+                System.out.println(jc.getClass() + "\n   " + jc);
+                if (jc instanceof JPanel) {
+                    ((JPanel) jc).setOpaque(false);
+                }
+            }
+            this.setOpaque(false);
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(bi, null, 0, 0);
+            
+            Phoenix.logger.debug(this.toString());
+            //super.paint(g);
+            super.paint(g);
+        }
+
+        public static void setUpPhoenixJOptionPane(Gui gui) {
+            pallette = gui.getPallette();
+            ws = Gui.getWindowSize();
+        }
+
+//        private JDialog createDialog(Component parentComponent, String title,
+//                int style)
+//                throws HeadlessException {
+//
+//            final JDialog dialog;
+//
+//            Window window = PhoenixJOptionPane.getWindowForComponent(parentComponent);
+//            if (window instanceof Frame) {
+//                dialog = new JDialog((Frame) window, title, true);
+//            } else {
+//                dialog = new JDialog((Dialog) window, title, true);
+//            }
+//            if (window instanceof SwingUtilities.SharedOwnerFrame) {
+//                WindowListener ownerShutdownListener
+//                        = SwingUtilities.getSharedOwnerFrameShutdownListener();
+//                dialog.addWindowListener(ownerShutdownListener);
+//            }
+//            super.initDialog(dialog, style, parentComponent);
+//            return dialog;
+//        }
+
+//        static Window getWindowForComponent(Component parentComponent)
+//                throws HeadlessException {
+//            if (parentComponent == null) {
+//                return getRootFrame();
+//            }
+//            if (parentComponent instanceof Frame || parentComponent instanceof Dialog) {
+//                return (Window) parentComponent;
+//            }
+//            return PhoenixJOptionPane.getWindowForComponent(parentComponent.getParent());
+//
+//        }
+        
+    }
+
+//    private static class PhoenixJDialog extends JDialog {
+//
+//        private static byte[][] pallette;
+//        private static WindowSize ws;
+//
+//        @Override
+//        public void paint(Graphics g) {
+//            super.paint(g);
+//
+//            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+//            Graphics2D g2d = (Graphics2D) g;
+//
+//            g2d.drawImage(bi, null, 0, 0);
+//        }
+//
+//        public static void setUpPhoenixJDialog(Gui gui) {
+//            pallette = gui.getPallette();
+//            ws = Gui.getWindowSize();
+//        }
+//
+//    }
+
+    public static void setUpUtilG(Gui gui) {
+        PhoenixJOptionPane.setUpPhoenixJOptionPane(gui);
     }
 
 }

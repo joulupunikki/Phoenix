@@ -124,11 +124,18 @@ public class PW4 extends PW {
      * Additionally, we have a special case for neutral cities: 0. city is a
      * League agora and there are cargo pods in moving stack.
      * <p>
+     * Additionally, we have special cases for own units/cities: in 1.2 and 2
+     * cannot merge loaned unit stacks
+     * <p>
      * Combining the above, and removing impossible combinations we get the
-     * following cases:
+     * following cases (stacks with only non-combat units are handled
+     * separately):
      * <pre>
      * 1: no city in target hex
-     *   1.1,1.2: no units in stack or own units in stack
+     *   1.1: no units in stack
+     *   *** try to move
+     *   1.2: own units in stack
+     *   *** check merging of loaned
      *   *** try to move
      *   1.3: neutral units in stack
      *     *** check Byz II, ask confirmation, start a war
@@ -142,6 +149,7 @@ public class PW4 extends PW {
      *     1.4.2: ground combatants in stack
      *     *** battle
      * 2: own city in hex
+     * *** check merging of loaned
      * *** try to move
      * 3: neutral city in hex //WIP
      *   3.0: league agora and cargo in moving stack
@@ -174,20 +182,49 @@ public class PW4 extends PW {
         Hex target_hex = path.get(1);
         Structure city = target_hex.getStructure();
         List<Unit> stack = target_hex.getStack();
-        List<Unit> moving_stack = game.getSelectedStack();
-        Unit moving_unit = game.getSelectedStack().get(0);
+        List<Unit> moving_stack = Util.getSelectedUnits(game.getSelectedStack());
+        Unit moving_unit = moving_stack.get(0);
         Point faction = new Point(moving_unit.owner, moving_unit.prev_owner);
         boolean stack_moving = true;
+        // handle non-combat stacks and agora sales
+        if (!Util.anyCombat(moving_stack)) {
+            logger.debug("PW4 non-combat stack");
+            boolean agora_sale = false;
+            if (city != null && city.owner != faction.x) {
+                if (city.type == C.AGORA && city.owner == C.LEAGUE
+                        && game.getDiplomacy().getDiplomaticState(city.owner, faction.x) != C.DS_WAR
+                        && Util.anyCargoPods(moving_stack)) {
+                    logger.debug(" + agora sale");
+                    agora_sale = true;
+                } else {
+                    stop();
+                    return false;
+                }
+            }
+            if (!agora_sale && !stack.isEmpty() && stack.get(0).owner != faction.x) {
+                stop();
+                return false;
+            }
+        }
         //1: no city in hex
         if (city == null) {
-            //1.1, 1.2: no units in stack or own units in stack
-            if (stack.isEmpty() || stack.get(0).owner == faction.x) {
-                logger.debug("PW4 1.1 1.2");
+            //1.1: no units in stack 
+            if (stack.isEmpty()) {
+                logger.debug("PW4 1.1");
+                tryToMove();
+                //1.2: own units in stack
+            } else if (stack.get(0).owner == faction.x) {
+                logger.debug("PW4 1.2");
+                if (stack.get(0).prev_owner != faction.y) {
+                    gui.showInfoWindow("Cannot merge loaned unit stacks.");
+                    stop();
+                    return false;
+                }
                 tryToMove();
                 //1.3:neutral units in stack
             } else if (game.getDiplomacy().getDiplomaticState(faction.x, stack.get(0).owner) != C.DS_WAR) {
                 logger.debug("PW4 1.3");
-                if (!byzIICombatOK(stack)) {
+                if (!byzIICombatOK(moving_stack)) {
                     return false;
                 }
                 if (!gui.showAttackConfirmWindow(faction.x, stack)) {
@@ -229,12 +266,17 @@ public class PW4 extends PW {
             //2: own city in hex
         } else if (city.owner == faction.x) {
             logger.debug("PW4 2");
+            if (city.prev_owner != faction.y) {
+                gui.showInfoWindow("Cannot merge loaned unit stacks.");
+                stop();
+                return false;
+            }
             tryToMove();
             //3: neutral city in hex
-        } else if (game.getDiplomacy().getDiplomaticState(target_hex.getStructure().owner, faction.x) != C.DS_WAR) {
+        } else if (game.getDiplomacy().getDiplomaticState(city.owner, faction.x) != C.DS_WAR) {
             //3.0: league agora and cargo in moving stack
-            if (target_hex.getStructure().type == C.AGORA && target_hex.getStructure().owner == C.LEAGUE
-                    && Util.anyCargoPods(path.get(0).getStack())) {
+            if (city.type == C.AGORA && city.owner == C.LEAGUE
+                    && Util.anyCargoPods(moving_stack)) {
                 logger.debug("PW4 3.0");
                 stop();
                 saveMainGameState();
@@ -310,10 +352,9 @@ public class PW4 extends PW {
         return stack_moving;
     }
 
-    @Override
-    protected boolean byzIICombatOK(List<Unit> stack) {
+    private boolean byzIICombatOK(List<Unit> stack) {
 //        return true; //DEBUG
-        if (super.byzIICombatOK(stack)) {
+        if (SU.byzIICombatOK(stack, true)) {
             return true;
         }
 

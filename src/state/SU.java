@@ -44,12 +44,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import util.C;
 import util.PathFind;
 import util.StackIterator;
 import util.Util;
+import util.UtilG;
 
 /**
  * Utility class for states. Contains common functions.
@@ -477,7 +479,15 @@ public class SU extends State {
 
     }
 
+    enum STPOpts {
+
+        Attack,
+        Land,
+        Cancel,
+    }
+    
     public static void spaceToPlanet(Planet planet) {
+
         Point p = game.getSelectedPoint();
         int faction = game.getSelectedFaction().y;
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
@@ -497,19 +507,32 @@ public class SU extends State {
         if (!stp_capable) {
             return;
         }
-        Object[] options = {"Attack", "Land", "Cancel"};
-        int choice = JOptionPane.showOptionDialog(gui,
-                "Do you want to attack or land?",
-                "",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[2]);
+        Object[] options = {STPOpts.Attack, STPOpts.Land, STPOpts.Cancel};
+        JOptionPane pane = new UtilG.PhoenixJOptionPane("Do you want to attack or land?",
+                JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_CANCEL_OPTION,
+                null, options, STPOpts.Cancel);
+        JDialog dialog = pane.createDialog(gui, null);
+        dialog.setVisible(true);
+        STPOpts choice = STPOpts.Cancel;
+        Object val = pane.getValue();
+        if (val != null) {
+            choice = (STPOpts) val;
+        }
+//        int choice = JOptionPane.showOptionDialog(gui,
+//                "Do you want to attack or land?",
+//                "",
+//                JOptionPane.YES_NO_CANCEL_OPTION,
+//                JOptionPane.PLAIN_MESSAGE,
+//                null,
+//                options,
+//                options[2]);
         switch (choice) {
-            case JOptionPane.CANCEL_OPTION:
+            case Cancel:
                 return;
-            case JOptionPane.YES_OPTION:
+            case Attack:
+                if (!byzIICombatOK(stack, true)) {
+                    return;
+                }
                 if (!ranged_capable) {
                     gui.showInfoWindow("All units are not ranged capable.");
                     return;
@@ -521,7 +544,7 @@ public class SU extends State {
                 gui.setCurrentState(Bomb.get());
                 System.out.println("Bombard");
                 break;
-            case JOptionPane.NO_OPTION:
+            case Land:
                 game.setCurrentPlanetNr(planet.index);
                 setWindow(C.S_PLANET_MAP);
                 gui.setMenus(false);
@@ -1347,6 +1370,35 @@ public class SU extends State {
             }
         }
         target_hex.addStack(disembarked);
+        return true;
+    }
+
+    /**
+     *
+     * @param stack the value of stack
+     * @param show_msg the value of show_msg
+     * @return the boolean
+     */
+    public static boolean byzIICombatOK(List<Unit> stack, boolean show_msg) {
+        if (game.getRegency().getYearsSinceThroneClaim() < 0 && stack.get(0).p_idx == C.BYZ_II_P_IDX) {
+            for (Unit u : stack) {
+                switch (u.type) {
+                    case C.STEALTH_SHIP_UNIT_TYPE:
+                    case C.SUBMARINE_UNIT_TYPE:
+                    case C.SPY_UNIT_TYPE:
+                        // OK to attack
+                        break;
+                    default:
+                        if (show_msg) {
+                            gui.showInfoWindow("Combat is restriced on Byzantium II "
+                                    + "until someone has made a claim to the emperor's "
+                                    + "crown.  Until that time, only spies, submarines, "
+                                    + "and stealth ships are permitted to engage in combat.");
+                        }
+                        return false;
+                }
+            }
+        }
         return true;
     }
 }

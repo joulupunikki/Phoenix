@@ -315,7 +315,8 @@ public class PlanetWindow extends JPanel {
                 Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(selected.x, selected.y);
                 if (hex.getStructure() != null) {
                     city_name.setText(game.getStrBuild(hex.getStructure().type).name);
-                    if (hex.getStructure().type == C.AGORA && hex.getStructure().owner == C.LEAGUE) {
+                    if (hex.getStructure().type == C.AGORA && hex.getStructure().owner == C.LEAGUE
+                            && game.getDiplomacy().getDiplomaticState(game.getTurn(), C.LEAGUE) != C.DS_WAR) {
                         trade_visible = true;
                     }
                 } else {

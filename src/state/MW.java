@@ -27,8 +27,6 @@
  */
 package state;
 
-import galaxyreader.Unit;
-import java.util.List;
 import util.C;
 
 /**
@@ -91,24 +89,4 @@ public class MW extends State {
 
     }
 
-    protected boolean byzIICombatOK(List<Unit> stack) {
-        if (game.getRegency().getYearsSinceThroneClaim() < 0 && stack.get(0).p_idx == C.BYZ_II_P_IDX) {
-            for (Unit u : stack) {
-                switch (u.type) {
-                    case C.STEALTH_SHIP_UNIT_TYPE:
-                    case C.SUBMARINE_UNIT_TYPE:
-                    case C.SPY_UNIT_TYPE:
-                        // OK to attack
-                        break;
-                    default:
-                        gui.showInfoWindow("Combat is restriced on Byzantium II "
-                                + "until someone has made a claim to the emperor's "
-                                + "crown.  Until that time, only spies, submarines, "
-                                + "and stealth ships are permitted to engage in combat.");
-                        return false;
-                }
-            }
-        }
-        return true;
-    }
 }

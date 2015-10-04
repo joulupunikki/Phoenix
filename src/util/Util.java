@@ -2140,4 +2140,18 @@ public class Util {
         return false;
     }
 
+    /**
+     * Return true iff any unit in stack is a combat unit
+     *
+     * @param stack
+     * @return
+     */
+    public static boolean anyCombat(List<Unit> stack) {
+        for (Unit u : Util.xS(stack)) {
+            if (u.type_data.non_combat == 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

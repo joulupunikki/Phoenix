@@ -125,20 +125,22 @@ public class LAND1 extends State {
         }
                 
         // start PTS defence fire if any
-        game.startBombardOrPTS(target_hex, true);
-        List<Hex> pts_queue = game.getBattle().getPTSQueue();
-        if (!pts_queue.isEmpty()) {
-            // save state so we can land in state.CWPTS2 after PTS
-            saveMainGameState();
-            landing_point = p;
-            Hex pts_hex = pts_queue.remove(0);
-            // since we are landing, do not try to bomb landing hex
-            game.startBombardOrPTS(pts_hex, false);
-            pts_hex.spot(game.getTurn());
-            game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
-            gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
-            SU.showCombatWindowPTS();
-            return;
+        if (SU.byzIICombatOK(stack, false)) {
+            game.startBombardOrPTS(target_hex, true);
+            List<Hex> pts_queue = game.getBattle().getPTSQueue();
+            if (!pts_queue.isEmpty()) {
+                // save state so we can land in state.CWPTS2 after PTS
+                saveMainGameState();
+                landing_point = p;
+                Hex pts_hex = pts_queue.remove(0);
+                // since we are landing, do not try to bomb landing hex
+                game.startBombardOrPTS(pts_hex, false);
+                pts_hex.spot(game.getTurn());
+                game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
+                gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
+                SU.showCombatWindowPTS();
+                return;
+            }
         }
         if (game.landStack(p)) {
             gui.setMenus(true);
