@@ -2157,7 +2157,7 @@ public class Gui extends JFrame {
     }
 
     public void showTooManyUnits() {
-        JOptionPane.showMessageDialog(this, "Too many units in the destination area.", null, JOptionPane.PLAIN_MESSAGE);
+        showInfoWindow("Too many units in the destination area.");
     }
 
     public Color getColorCycleColor() {

@@ -37,7 +37,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import util.C;
 import util.Util;
 
@@ -103,24 +102,24 @@ public class LAND1 extends State {
 //
 //        }
         if (terr_types[0] && tile_set != 4) {
-            JOptionPane.showMessageDialog(gui, "Cannot land on water.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Cannot land on water.");
             return;
         }
         Structure struct = target_hex.getStructure();
         if (struct != null && (struct.type == C.RUINS || struct.type == C.ALIEN_RUINS)) {
-            JOptionPane.showMessageDialog(gui, "Cannot land on ruins.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Cannot land on ruins.");
             return;
         }
         if (!target_stack.isEmpty() && target_stack.get(0).owner == faction.x && target_stack.get(0).owner != faction.y) {
-            JOptionPane.showMessageDialog(gui, "Cannot merge loaned stacks.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Cannot merge loaned stacks.");
             return;
         }
         if (!target_stack.isEmpty() && target_stack.get(0).owner != faction.x && !game.isNonCombat(target_stack)) {
-            JOptionPane.showMessageDialog(gui, "Cannot land on another's units.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Cannot land on another's units.");
             return;
         }
         if (Util.stackSize(selected) + Util.stackSize(target_stack) > 20) {
-            JOptionPane.showMessageDialog(gui, "Too many units in target area.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Too many units in target area.");
             return;
         }
                 

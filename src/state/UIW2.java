@@ -33,7 +33,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.JOptionPane;
 import util.C;
 
 /**
@@ -97,11 +96,11 @@ public class UIW2 extends State {
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE))
                                     && (u.type_data.cargo == 0 || u.cargo_list.size() >= u.type_data.cargo)) {
-                                JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
+                                gui.showInfoWindow("Cannot unload cargo in space.");
                                 zeroDragUnit();
                                 return;
                             } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
-                                JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
+                                gui.showInfoWindow("Cannot unload cargo on the ocean.");
                                 zeroDragUnit();
                                 return;
                             } else {
@@ -131,10 +130,10 @@ public class UIW2 extends State {
 //                            drag_unit.carrier = u;
                                     }
                                 } else {
-                                    JOptionPane.showMessageDialog(gui, "Transport is full.", null, JOptionPane.PLAIN_MESSAGE);
+                                    gui.showInfoWindow("Transport is full.");
                                 }
                             } else {
-                                JOptionPane.showMessageDialog(gui, "That unit cannot be loaded onto a transport.", null, JOptionPane.PLAIN_MESSAGE);
+                                gui.showInfoWindow("That unit cannot be loaded onto a transport.");
                             }
                         }
                         if (drag_unit.type == C.CARGO_UNIT_TYPE && u.type == C.CARGO_UNIT_TYPE
@@ -169,9 +168,9 @@ public class UIW2 extends State {
                             if (faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE)) {
-                                JOptionPane.showMessageDialog(gui, "Cannot unload cargo in space.", null, JOptionPane.PLAIN_MESSAGE);
+                                gui.showInfoWindow("Cannot unload cargo in space.");
                             } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
-                                JOptionPane.showMessageDialog(gui, "Cannot unload cargo on the ocean.", null, JOptionPane.PLAIN_MESSAGE);
+                                gui.showInfoWindow("Cannot unload cargo on the ocean.");
 
                             } else {
                                 Unit carrier = drag_unit.carrier;

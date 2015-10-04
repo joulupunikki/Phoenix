@@ -34,7 +34,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import util.C;
 import util.Util;
 
@@ -365,7 +364,7 @@ public class PW4 extends PW {
     private void tryToMove() {
         if (!game.moveStack()) {
             gui.setStop_stack(true);
-            JOptionPane.showMessageDialog(gui, "Too many units in the destination area.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Too many units in the destination area.");
         }
     }
 

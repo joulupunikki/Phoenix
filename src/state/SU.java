@@ -314,7 +314,8 @@ public class SU extends State {
             }
         } else if (galaxy_grid[x][y].planet != null) {
             if (!galaxy_grid[x][y].planet.spotted[game.getTurn()]) {
-                JOptionPane.showMessageDialog(gui, "We lost our map of this planet long ago. We must send a ship there or buy the information from another party.", null, JOptionPane.PLAIN_MESSAGE);
+                gui.showInfoWindow("We lost our map of this planet long ago. We "
+                        + "must send a ship there or buy the information from another party.");
                 return;
             }
             JPanel main_windows = gui.getMainWindows();
@@ -962,7 +963,7 @@ public class SU extends State {
             //System.out.println("gui = " + gui);
         } else {
 
-            JOptionPane.showMessageDialog(gui, "Too many units in target area.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Too many units in target area.");
 
         }
 
@@ -974,7 +975,7 @@ public class SU extends State {
     public static void pressSkipStackButtonSU() {
         LinkedList<Unit> pods = (LinkedList) game.getCargoPods();
         if (pods.isEmpty()) {
-            JOptionPane.showMessageDialog(gui, "You have moved all of your units.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("You have moved all of your units.");
             return;
         }
         Unit pod = pods.pop();
@@ -1017,7 +1018,7 @@ public class SU extends State {
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
         if (unmoved_units.isEmpty()) {
-            JOptionPane.showMessageDialog(gui, "You have moved all of your units.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("You have moved all of your units.");
             return;
         }
         if (p != null) {
@@ -1038,7 +1039,7 @@ public class SU extends State {
         }
 
         if (unmoved_units.isEmpty()) {
-            JOptionPane.showMessageDialog(gui, "You have moved all of your units.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("You have moved all of your units.");
             return;
         }
 
@@ -1088,7 +1089,7 @@ public class SU extends State {
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
         if (unmoved_units.isEmpty()) {
-            JOptionPane.showMessageDialog(gui, "You have moved all of your units.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("You have moved all of your units.");
             return;
         }
 

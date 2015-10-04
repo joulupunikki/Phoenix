@@ -36,7 +36,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.JOptionPane;
 import util.C;
 
 /**
@@ -98,7 +97,7 @@ public class Bomb extends State {
             } else {
                 msg = "You created some mighty fireworks !";
             }
-            JOptionPane.showMessageDialog(gui, msg, null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow(msg);
             subMoveAndToSpaceIfNoLeft(selected);
             return;
         }

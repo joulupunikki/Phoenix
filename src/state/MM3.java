@@ -29,7 +29,6 @@ package state;
 
 import java.awt.event.ItemEvent;
 import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
 
 /**
  * Main Menu 3, select game parameters. Like factions, PBEM.
@@ -89,7 +88,7 @@ public class MM3 extends State {
 
             SU.selectNextUnmovedUnit();
         } else {
-            JOptionPane.showMessageDialog(gui, "Need to select at least one human player.", null, JOptionPane.PLAIN_MESSAGE);
+            gui.showInfoWindow("Need to select at least one human player.");
         }
     }
 }

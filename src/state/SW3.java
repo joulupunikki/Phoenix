@@ -35,7 +35,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
-import javax.swing.JOptionPane;
 import util.C;
 import util.Util;
 
@@ -124,7 +123,7 @@ public class SW3 extends SW {
                         }
                     }
                     if (!jump_capable) {
-                        JOptionPane.showMessageDialog(gui, "Cannot make the jump...you have selected units without jump capability.", null, JOptionPane.PLAIN_MESSAGE);
+                        gui.showInfoWindow("Cannot make the jump...you have selected units without jump capability.");
                         return;
                     }
                     if (game.moveSpaceStack(p)) {
@@ -137,7 +136,7 @@ public class SW3 extends SW {
                         gui.getSpaceWindow().repaint();
                     } else {
                         //info window too many units in target area
-                        JOptionPane.showMessageDialog(gui, "Too many units in the destination area.", null, JOptionPane.PLAIN_MESSAGE);
+                        gui.showInfoWindow("Too many units in the destination area.");
                     }
 
                 } else {
