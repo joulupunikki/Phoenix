@@ -1,0 +1,25 @@
+# netbeans config files
+/nb*.xml
+
+# eclipse config files
+/.classpath
+/.project
+/.settings/
+/Run-Phoenix-Eclipse.launch
+
+# per-developer config file
+/per-developer-pom.xml
+
+# tmp
+/tmp/
+
+# releases
+/releases/releases/
+/releases/include/src/*list.txt
+
+# backup files
+**/*~
+
+# Maven build directory
+/target/
+/dependency-reduced-pom.xml
