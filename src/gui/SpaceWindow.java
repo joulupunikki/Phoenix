@@ -42,6 +42,7 @@ import javax.swing.JTextField;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -206,5 +207,7 @@ public class SpaceWindow extends JPanel {
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
         year_display.setText("A.D. " + game.getYear());
         money_display.setText("4500 FB");
+
+        UtilG.emperorCrowned(g2d, game, ws);
     }
 }

@@ -27,6 +27,7 @@
  */
 package util;
 
+import game.Game;
 import gui.Gui;
 import java.awt.Color;
 import java.awt.Component;
@@ -503,6 +504,14 @@ public class UtilG {
         UIManager.put("Slider.background", C.COLOR_GOLD);
         UIManager.put("MenuBar.background", Color.BLACK);
         UIManager.put("MenuBar.foreground", Color.BLACK);
+    }
+
+    public static void emperorCrowned(Graphics2D g, Game game, WindowSize ws) {
+        int emperor = game.getRegency().getCrownedEmperor();
+        if (emperor > -1) {
+            String s = "Lord of " + Util.getFactionName(emperor) + " has been crowned Emperor of the Fading Suns";
+            UtilG.drawStringGrad(g, s, ws.font_large, 5, 5 + ws.font_large.getSize(), 1);
+        }
     }
 
     public static class DarkTheme extends DefaultMetalTheme {

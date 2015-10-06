@@ -67,6 +67,8 @@ public class Regency implements Serializable {
     // vote_tally[faction][VOTES_IDX]: number of votes
     private int[][] vote_tally = new int[C.THE_CHURCH + 1][2]; // {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}};
 
+    private int crowned_emperor = -1;
+
     public Regency() {
         resetVoteTally();
     }
@@ -254,6 +256,7 @@ public class Regency implements Serializable {
                         message += " In the final vote, the claimant " + Util.getFactionName(candidate)
                                 + " has gathered the support necessary to become emperor. The "
                                 + Util.factionNameDisplay(candidate) + " has been crowned the Emperor !";
+                        crowned_emperor = regent;
                     }
                 } else {
                     setRegent(candidate);
@@ -375,4 +378,12 @@ public class Regency implements Serializable {
     public int getYearsSinceThroneClaim() {
         return years_since_throne_claim;
     }
+
+    /**
+     * @return the crowned_emperor
+     */
+    public int getCrownedEmperor() {
+        return crowned_emperor;
+    }
+
 }

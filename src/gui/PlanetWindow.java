@@ -48,6 +48,7 @@ import javax.swing.JTextField;
 import util.C;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -362,6 +363,8 @@ public class PlanetWindow extends JPanel {
                 "A.D. " + game.getYear());
         money_display.setText("" + game.getFaction(game.getTurn()).getFirebirds());
         drawResAmounts();
+
+        UtilG.emperorCrowned(g2d, game, ws);
     }
 
     public void drawResAmounts() {
