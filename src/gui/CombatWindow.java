@@ -30,6 +30,7 @@ package gui;
 import galaxyreader.Unit;
 import game.Game;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
@@ -186,8 +187,16 @@ public class CombatWindow extends JPanel {
     public void renderCombatWindow(Graphics g) {
         drawUnits(g);
         drawFrameRect(g);
+        drawFactionDetails(g);
     }
 
+    private void drawFactionDetails(Graphics g) {
+        FontMetrics fm = this.getFontMetrics(ws.font_large);
+        String s = Util.getFactionName(game.getBattle().getCombatStack("a").get(0).owner);
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.cw_att_n_x, ws.cw_att_n_y1);
+        s = Util.getFactionName(game.getBattle().getCombatStack("b").get(0).owner);
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.cw_def_n_x - fm.stringWidth(s), ws.cw_att_n_y1);
+    }
     /**
      * Draw golden frames around window items.
      *

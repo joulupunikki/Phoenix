@@ -61,7 +61,7 @@ public class Damage {
         damages = Pattern.compile("[0-9]+");
 
         m = damages.matcher(line);
-        m.find();
+        //m.find();
 
         //System.out.println("getCosts");
         for (int i = 0; i < C.DAMAGE_DAT_X; i++) {

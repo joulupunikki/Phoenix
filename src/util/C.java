@@ -147,6 +147,7 @@ public class C {
     public static final int RANGED_SPACE = 6;
     public static final int DIRECT_SPACE = 7;
     public static final int CLOSE_SPACE = 8;
+    public static final double DISBAND_REFUND = 0.75;
 
     // message types
     public enum Msg {

@@ -50,6 +50,8 @@ public class WindowSize {
      * Main window height;
      */
     public int main_window_height = 480;
+
+    public int std_button_h = 16;
     public int space_map_x_pos = 124;
     public int space_map_y_pos = 29;
     public int space_map_width = 504;
@@ -133,6 +135,10 @@ public class WindowSize {
     public int combat_window_fight_button_w = 80;
     public int combat_window_fight_button_h = 15;
     public int combat_window_bombard_again_button_y = 428;
+    public int cw_att_n_x = 127;
+    public int cw_def_n_x = 513;
+    public int cw_att_n_y1 = 18;
+
     public int skull_offset = 3;
     public int skull_side = 40;
     public int unit_info_attack_type_x = 310;
@@ -148,6 +154,13 @@ public class WindowSize {
     public int unit_info_left_stat_w = 30;
     public int unit_info_left_stat_h = unit_info_attack_type_h;
     public int unit_info_left_stat_x2 = 180;
+    public int ui_disband_x = 554;
+    public int ui_disband_y = 165;
+    public int ui_disband_w = 62;
+    public int ui_unload_x = 525;
+    public int ui_unload_y = 408;
+    public int ui_unload_w = 102;
+
     public int galactic_map_x_pos = 10;
     public int galactic_map_y_pos = 23;
     public int galactic_map_width = 100;
@@ -445,6 +458,16 @@ public class WindowSize {
     public int sw_ap_w = 130;
     public int sw_ap_h = 45;
 
+    public int sw_flc_x = 442;
+    public int sw_flc_y = 11;
+
+    public int sw_tp_x = 222;
+    public int sw_tp_x2 = 233;
+    public int sw_tp_y = 16;
+
+    public int sw_tp_y2 = 31;
+    public int sw_tp_h = 12;
+
     // build panel left stats panel
     public int bp_lsp_x = 9;
 
@@ -526,7 +549,7 @@ public class WindowSize {
             d = 2;
             main_window_width *= 2;
             main_window_height *= 2;
-
+            std_button_h *= 2;
             space_map_x_pos *= 2;
             space_map_y_pos *= 2;
             space_map_width *= 2;
@@ -624,6 +647,9 @@ public class WindowSize {
             combat_window_fight_button_w *= 2;
             combat_window_fight_button_h *= 2;
             combat_window_bombard_again_button_y *= 2;
+            cw_att_n_x *= 2;
+            cw_def_n_x *= 2;
+            cw_att_n_y1 *= 2;
             skull_offset *= 2;
             skull_side *= 2;
 
@@ -640,6 +666,12 @@ public class WindowSize {
             unit_info_left_stat_w *= 2;
             unit_info_left_stat_h *= 2;
             unit_info_left_stat_x2 *= 2;
+            ui_disband_x *= 2;
+            ui_disband_y *= 2;
+            ui_disband_w *= 2;
+            ui_unload_x *= 2;
+            ui_unload_y *= 2;
+            ui_unload_w *= 2;
 
             galactic_map_x_pos *= 2;
             galactic_map_y_pos *= 2;
@@ -907,6 +939,13 @@ public class WindowSize {
             sw_ap_x *= 2;
             sw_ap_w *= 2;
             sw_ap_h *= 2;
+            sw_flc_x *= 2;
+            sw_flc_y *= 2;
+            sw_tp_x *= 2;
+            sw_tp_x2 *= 2;
+            sw_tp_y *= 2;
+            sw_tp_y2 *= 2;
+            sw_tp_h *= 2;
 
             bp_lsp_x *= 2;
 

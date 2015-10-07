@@ -165,4 +165,10 @@ public abstract class State {
 
     public void pressDeclareEmperorButton() {
     }
+
+    public void pressDisbandButton() {
+    }
+
+    public void pressUnloadButton() {
+    }
 }

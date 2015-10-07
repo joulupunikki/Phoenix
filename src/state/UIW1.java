@@ -34,6 +34,7 @@ import java.awt.event.MouseEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 
 /**
@@ -59,6 +60,70 @@ public class UIW1 extends State {
         main_game_state = null;
         gui.setInfo_unit(null);
 
+    }
+
+    /**
+     * May only disband non-cargo/noble/scepter house units on planets.
+     */
+    @Override
+    public void pressDisbandButton() {
+        Unit u = gui.getInfo_unit();
+        if (u == null || u.prev_owner != game.getTurn() || game.getSelectedFaction().x != -1) {
+            return;
+        }
+        switch (u.type) {
+            case C.CARGO_UNIT_TYPE:
+            case C.NOBLE_UNIT_TYPE:
+            case C.SCEPTER_UNIT_TYPE:
+                return;
+            default:
+                break;
+        }
+        int[] res = u.type_data.reqd_res;
+        for (int i = 0; i < res.length; i++) {
+            int req = res[i];
+            if (req > 0) {
+                req = (int) FastMath.ceil(req * C.DISBAND_REFUND);
+                game.getResources().addOneResourceTypeToHex(u.p_idx, u.x, u.y, u.owner, u.prev_owner, i, req);
+            }
+        }
+        game.deleteUnitNotInCombat(u);
+    }
+
+    @Override
+    public void pressUnloadButton() {
+        List<Unit> stack = game.getSelectedStack();
+        Point faction = game.getSelectedFaction();
+        if (stack.get(0).owner != game.getTurn()) {
+            return;
+        }
+        Point p = game.getSelectedPoint();
+        boolean[] terrain = null;
+        int tile_set = -1;
+        if (faction.x == -1) {
+            terrain = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getTerrain();
+            tile_set = game.getPlanet(game.getCurrentPlanetNr()).tile_set_type;
+        }
+        List<Unit> tmp = new LinkedList<>();
+        for (Unit u : stack) {
+            if (u.cargo_list.size() > 0) {
+                for (Unit c : u.cargo_list) {
+                    if ((faction.x != -1 && !(c.move_type == C.MoveType.JUMP
+                            || c.move_type == C.MoveType.LANDER
+                            || c.move_type == C.MoveType.SPACE))
+                            || (terrain[C.OCEAN] == true && tile_set != 4)) {
+                        continue;
+                    }
+                    tmp.add(c);
+                }
+            }
+        }
+        Unit c;
+        for (Unit u : tmp) {
+            c = u.carrier;
+            c.disembark(u);
+        }
+        stack.addAll(tmp);
     }
 
     public void clickOnWindow(MouseEvent e) {

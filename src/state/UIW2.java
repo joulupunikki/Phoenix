@@ -171,7 +171,6 @@ public class UIW2 extends State {
                                 gui.showInfoWindow("Cannot unload cargo in space.");
                             } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
                                 gui.showInfoWindow("Cannot unload cargo on the ocean.");
-
                             } else {
                                 Unit carrier = drag_unit.carrier;
                                 carrier.disembark(drag_unit);

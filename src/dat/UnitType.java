@@ -31,6 +31,7 @@ import galaxyreader.Unit;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
@@ -109,6 +110,7 @@ public class UnitType implements Serializable {
     public boolean eat;
     public int rank;
     public int rop;
+    public String art;
 
     /**
      * Parse and store a line from UNITTYPE.DAT
@@ -125,10 +127,11 @@ public class UnitType implements Serializable {
 
         this.index = index;
         this.t_lvl = t_lvl;
+        int stats_end;
         /*
          * accepts alphanum, -, ' and .
          */
-        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z ,\\(\\)\\[\\]\\!\\*\\-'\\.\\&]+\"");
+        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z_ ,\\(\\)\\[\\]\\!\\*\\-'\\.\\&]+\"");
 
         Matcher m = unit_type.matcher(s);
 
@@ -158,7 +161,7 @@ public class UnitType implements Serializable {
         //last one is a big string of one text and dozens of integer values
         String stats = s.substring(m.start() + 1, m.end() - 1);
         Util.debugPrint("Stats: " + stats);
-
+        stats_end = m.end();
         Pattern stats_pattern = Pattern.compile("[0-9a-zA-Z]+");
 
         m = stats_pattern.matcher(stats);
@@ -172,7 +175,7 @@ public class UnitType implements Serializable {
 
         m = stats_pattern.matcher(stats);
 
-        m.find();
+        //m.find();
 
         // m.find() is done in processIntVal
         move_pts = processIntVal(stats, m);
@@ -247,6 +250,18 @@ public class UnitType implements Serializable {
         rop = processIntVal(stats, m);
         Util.debugPrint("rop: " + rop);
 
+        // name of FLC file
+        stats = s.substring(stats_end + 1, s.length());
+        //System.out.println("art :" + stats);
+        m = unit_type.matcher(stats);
+        //skip "art"
+        m.find();
+        //System.out.println(stats.substring(m.start() + 1, m.end() - 1));
+        m.find();
+        
+        art = stats.substring(m.start() + 1, m.end() - 1).toUpperCase(Locale.ROOT);
+        //System.out.println(art);
+
     }
 
     /**
@@ -257,11 +272,8 @@ public class UnitType implements Serializable {
      * @return
      */
     public static int processIntVal(String s, Matcher m) {
-
-        int ret_val = Integer.parseInt(s.substring(m.start(), m.end()));
-
         m.find();
-
+        int ret_val = Integer.parseInt(s.substring(m.start(), m.end()));
         return ret_val;
     }
 

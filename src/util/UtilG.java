@@ -40,7 +40,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -57,7 +59,10 @@ import javax.swing.plaf.BorderUIResource;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalSliderUI;
+import org.apache.commons.math3.util.FastMath;
 import phoenix.Phoenix;
+import static util.Util.readFile;
+import static util.Util.scale2XImage;
 
 /**
  * Graphics related utilities.
@@ -512,6 +517,214 @@ public class UtilG {
             String s = "Lord of " + Util.getFactionName(emperor) + " has been crowned Emperor of the Fading Suns";
             UtilG.drawStringGrad(g, s, ws.font_large, 5, 5 + ws.font_large.getSize(), 1);
         }
+    }
+
+    /**
+     *
+     * @param encoded_data the value of encoded_data
+     * @param image_size the value of image_size
+     */
+    public static int[] pcxDecode(byte[] encoded_data, int image_size) {
+        int[] target_array = new int[image_size];
+        int src_idx = 128;
+        int tgt_idx = 0;
+        for (; src_idx < encoded_data.length - 769; src_idx++) {
+            int datum = encoded_data[src_idx] & 255;
+            if (datum < 192) {
+                target_array[tgt_idx] = datum;
+                ++tgt_idx;
+                if (tgt_idx == image_size) {
+                    return target_array;
+                }
+            } else {
+                src_idx++;
+                int d = encoded_data[src_idx] & 255;
+                for (int j = 0; j < datum - 192; j++) {
+                    target_array[tgt_idx] = d;
+                    ++tgt_idx;
+                    if (tgt_idx == image_size) {
+                        return target_array;
+                    }
+                }
+            }
+        }
+        return target_array;
+    }
+
+    /**
+     * Decodes the first frame of an FLC video in the FLC directory, really a
+     * quick bare bones implementation.
+     *
+     * @param encoded_data
+     * @param width
+     * @param height
+     * @return decoded frame
+     */
+    public static int[] flcDecodeFirst(byte[] encoded_data, int width, int height) {
+        final int HEADER_LENGTH = 128;
+        final int FRAME_HEADER_LENGTH = 16;
+        final int CHUNK_HEADER_LEN = 6;
+        // see http://www.compuphase.com/flic.htm
+        final int CEL_DATA = 3;
+        final int COLOR_256 = 4;
+        final int DELTA_FLC = 7;
+        final int COLOR_64 = 11;
+        final int DELTA_FLI = 12;
+        final int BLACK = 13;
+        final int BYTE_RUN = 15;
+        final int FLI_COPY = 16;
+        final int PSTAMP = 18;
+        final int DTA_BRUN = 25;
+        final int DTA_COPY = 26;
+        final int DTA_LC = 27;
+        final int LABEL = 31;
+        final int BMP_MASK = 32;
+        final int MLEV_MASK = 33;
+        final int SEGMENT = 34;
+        final int KEY_IMAGE = 35;
+        final int KEY_PAL = 36;
+        final int REGION = 37;
+        final int WAVE = 38;
+        final int USERSTRING = 39;
+        final int RGN_MASK = 40;
+        final int LABELEX = 41;
+        final int SHIFT = 42;
+        final int PATHMAP = 43;
+
+        final int PREFIX_TYPE = 0xF100;
+        final int SCRIPT_CHUNK = 0xF1E0;
+        final int FRAME_TYPE = 0xF1FA;
+        final int SEGMENT_TABLE = 0xF1FB;
+        final int HUFFMAN_TABLE = 0xF1FC;
+
+        int[] decoded;
+
+        int s_idx = 0;
+        int t_idx = 0;
+        int magic = bytesToInt(encoded_data, s_idx + 4, 2);
+        int wt = bytesToInt(encoded_data, s_idx + 8, 2);
+        int ht = bytesToInt(encoded_data, s_idx + 10, 2);
+        if (magic != 0xaf12) {
+            Util.logFileFormatError("null", 0, "Incompatible magic number in FLC file");
+            return null;
+        }
+        System.out.println("FLC Debug: Magic : " + magic + " size : " + wt + "," + ht);
+        decoded = new int[wt * ht];
+        //skip header
+        s_idx += HEADER_LENGTH;
+        int main_size = bytesToInt(encoded_data, s_idx, 4);
+        int main_chunk = bytesToInt(encoded_data, s_idx + 4, 2);
+        
+        while (main_chunk != FRAME_TYPE) {
+            System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size);
+            s_idx += main_size;
+            main_size = bytesToInt(encoded_data, s_idx, 4);
+            main_chunk = bytesToInt(encoded_data, s_idx + 4, 2);
+        }
+        int chunks;
+        chunks = bytesToInt(encoded_data, s_idx + 6, 2);
+        System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size + " chunks : " + chunks);
+
+        s_idx += FRAME_HEADER_LENGTH;
+
+        boolean loop = true;
+        for (; loop;) {
+            int chunk_size = bytesToInt(encoded_data, s_idx, 4);
+            int chunk_type = bytesToInt(encoded_data, s_idx + 4, 2);
+            
+            System.out.println("  Chunk type :" + chunk_type + " size :" + chunk_size);
+            if (chunk_type != BYTE_RUN) {
+                s_idx += chunk_size;
+                continue;
+            }
+            loop = false;
+            s_idx += CHUNK_HEADER_LEN;
+            //System.out.println("s_idx :" + s_idx);
+            for (int line = 0; line < ht; line++) {
+                // ignored in FLC
+                int packets = 0xff & encoded_data[s_idx++];
+                //System.out.println("Line : " + line);
+                for (int j = 0; j < wt;) {
+                    
+                    int run = (int) encoded_data[s_idx++];
+                    //System.out.println("  Packet : " + j + " run_len : " + run);
+                    if (run >= 0) {
+                        int k = 0;
+                        int color = 0xff & encoded_data[s_idx++];
+                        //System.out.println("  Color : " + color);
+                        //run = FastMath.min(run, wt - j);
+                        for (; k < run; k++) {    
+                            decoded[t_idx++] = color;
+                        }
+                        j += k;
+                    } else {
+                        run = -run;
+                        int k = 0;
+                        //run = FastMath.min(run, wt - j);
+                        for (; k < run; k++) {
+                            decoded[t_idx++] = 0xff & encoded_data[s_idx++];
+                        }
+                        j += k;
+                    }
+                }
+
+            }
+        }
+        // FLC file sizes are a bit wonky in some mods, like 176*150 or 176*152
+        // this should correct that
+        int c = decoded.length / height;
+        if (c != width) {
+            int[] tmp = new int[width * height];
+            for (int i = 0; i < FastMath.min(ht, height); i++) {
+                for (int j = 0; j < FastMath.min(wt, width); j++) {
+                    tmp[width * i + j] = decoded[wt * i + j];
+                }
+            }
+            decoded = tmp;
+        }
+
+        return decoded;
+    }
+
+    public static int bytesToInt(byte[] buffer, int idx, int count) {
+        int ret = 0;
+        for (int i = 0; i < count; i++) {
+            ret += (0xff & buffer[idx + i]) << (i * 8);
+        }
+        return ret;
+    }
+
+    public static BufferedImage loadFLCFirst(String file_name, boolean double_size_window, byte[][] rgb_data, int width, int height) {
+
+        BufferedImage bi = null;
+        int image_size = height * width;
+
+        byte[] image_data = readFile(file_name, -1, ByteOrder.BIG_ENDIAN);
+
+        int[] i_data_array = UtilG.flcDecodeFirst(image_data, width, height);
+        if (i_data_array == null) {
+            return null;
+        }
+        // if double size main window double image dimensions
+        if (double_size_window) {
+
+            i_data_array = scale2XImage(i_data_array, image_size, width);
+
+            height = 2 * height;
+            width = 2 * width;
+
+        }
+
+        // create ICM based on pallette data, BGR-format
+        IndexColorModel icm = new IndexColorModel(8, 256, rgb_data[2], rgb_data[1], rgb_data[0], 256);
+        // create empty byte-indexed buffered image
+        bi = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, icm);
+        // write portrait data to buffered image raster
+        WritableRaster wr = bi.getRaster();
+        wr.setPixels(0, 0, width, height, i_data_array);
+
+        return bi;
+
     }
 
     public static class DarkTheme extends DefaultMetalTheme {

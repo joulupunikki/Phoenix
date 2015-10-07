@@ -31,6 +31,7 @@ import galaxyreader.Unit;
 import game.Game;
 import game.Square;
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -40,6 +41,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -67,6 +69,8 @@ public class UnitInfoWindow extends JPanel {
     Gui gui;
     Game game;
     WindowSize ws;
+    JButton disband_button;
+    JButton unload_button;
     JButton exit_button;
     JTextField spot_name;
     JTextField spot_stat;
@@ -85,6 +89,9 @@ public class UnitInfoWindow extends JPanel {
     JTextField attack3_stat;
     JTextField attack4_type;
     JTextField attack4_stat;
+    Unit prev;
+    BufferedImage unit_image;
+    BufferedImage bi;
 
     public UnitInfoWindow(Gui gui) {
         this.gui = gui;
@@ -98,25 +105,13 @@ public class UnitInfoWindow extends JPanel {
 
     public void setUpWindow() {
         setUpListeners();
+        setUpButtons();
         setUpStatDisplay();
+        byte[][] pallette = gui.getPallette();
+        bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
     }
 
     public void setUpListeners() {
-        exit_button = new JButton("Exit");
-        this.add(exit_button);
-        exit_button.setBackground(Color.BLACK);
-        exit_button.setForeground(C.COLOR_GOLD);
-        exit_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
-                ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
-        exit_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                State state = gui.getCurrentState();
-                state.pressExitButton();
-            }
-        });
-
         MouseAdapter mouse_adapter = new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 State state = gui.getCurrentState();
@@ -137,6 +132,62 @@ public class UnitInfoWindow extends JPanel {
         this.addMouseMotionListener(mouse_adapter);
     }
 
+    private void setUpButtons() {
+        setUpExit();
+        setUpDisband();
+        setUpUnload();
+    }
+
+    private void setUpExit() {
+        exit_button = new JButton("Exit");
+        this.add(exit_button);
+        exit_button.setBackground(Color.BLACK);
+        exit_button.setForeground(C.COLOR_GOLD);
+        exit_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        exit_button.setBounds(ws.stack_window_exit_button_x, ws.stack_window_exit_button_y,
+                ws.stack_window_exit_button_w, ws.stack_window_exit_button_h);
+        exit_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressExitButton();
+            }
+        });
+    }
+
+    private void setUpDisband() {
+        disband_button = new JButton("Disband");
+        this.add(disband_button);
+        disband_button.setBackground(Color.BLACK);
+        disband_button.setForeground(C.COLOR_GOLD);
+        disband_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        disband_button.setBounds(ws.ui_disband_x, ws.ui_disband_y,
+                ws.ui_disband_w, ws.std_button_h);
+        disband_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressDisbandButton();
+            }
+        });
+    }
+
+    private void setUpUnload() {
+        unload_button = new JButton("Unload All");
+        this.add(unload_button);
+        unload_button.setBackground(Color.BLACK);
+        unload_button.setForeground(C.COLOR_GOLD);
+        unload_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        unload_button.setBounds(ws.ui_unload_x, ws.ui_unload_y,
+                ws.ui_unload_w, ws.std_button_h);
+        unload_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressUnloadButton();
+            }
+        });
+    }
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -150,6 +201,47 @@ public class UnitInfoWindow extends JPanel {
         drawUnits(g);
 //        drawUnitDetails(g);
         drawDraggedUnit(g);
+        drawTopStats(g);
+    }
+
+    private void drawTopStats(Graphics g) {
+        FontMetrics fm = this.getFontMetrics(ws.font_large);
+        String s = "Name:";
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y);
+        s = "Sect:";
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2);
+        s = "Health:";
+        int offset = ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2 + offset);
+        s = "Loyalty:";
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2 + offset);
+        s = "Experience:";
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2 + offset);
+        s = "Moves Left:";
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2 + offset);
+        Unit u = gui.getInfo_unit();
+        if (u == null) {
+            return;
+        }
+        s = u.type_data.name;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y);
+        s = "" + u.sect; //Util.getSectName(u.sect);
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2);
+        s = "" + u.health + "%";
+        offset = ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
+        s = "" + u.loyalty + "%";
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
+        s = "" + u.experience;
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
+        s = "" + u.move_points;
+        offset += ws.sw_tp_h;
+        UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
     }
 
     public void drawDetails(Graphics g, int owner, int prev_owner) {
@@ -170,10 +262,26 @@ public class UnitInfoWindow extends JPanel {
     public void drawBackground(Graphics g) {
 
         byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
+        //BufferedImage bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
+        Unit u = gui.getInfo_unit();
+        
+        if (u != null) {
+            if (!u.equals(prev)) {
+                String filename = FN.S_FLC + FN.F_S + u.type_data.art;
+                File flc = new File(filename);
+                if (flc.exists()) {
+                    unit_image = UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150);
+                } else {
+                    unit_image = null;
+                }
+                prev = u;
+            }
+            g2d.drawImage(unit_image, null, ws.sw_flc_x, ws.sw_flc_y);
+
+        }
     }
 
     public void setStats() {

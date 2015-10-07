@@ -72,7 +72,7 @@ public class Target {
         Pattern targets = Pattern.compile("[0-9]+");
 
         m = targets.matcher(line);
-        m.find();
+        //m.find();
 
         //System.out.println("getCosts");
         for (int i = 0; i < C.TARGET_DAT_X; i++) {

@@ -47,6 +47,7 @@ public class FN {
     public static final String S_SAV = "SAV";
     public static final String S_BIN = "BIN";
     public static final String S_PCX = "PCX";
+    public static final String S_FLC = "FLC";
     public static final String S_MANOWITZ = "MANOWITZ";
     public static final String S_PHOENIX_INI = "PHOENIX" + F_S + "PHOENIX.INI";
     public static final String S_EFS_INI = "DAT" + F_S + "EFS.INI";

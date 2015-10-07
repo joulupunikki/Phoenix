@@ -61,13 +61,13 @@ public class Unit implements Serializable {
     public int t_lvl;      //char 
     public C.MoveType move_type;  //short 
     int orders;    //short 
-    int experience; //char 
+    public int experience; //char
     public int move_points; //char 
     public int res_relic; //char/Union of char/char - RSW made public
     public int amount;     //short - RSW made public
     public int health;     //char 
     public int health_tmp; // used and initialized during battles
-    int sect;       //char 
+    public int sect;       //char
     int unit_no;     //int 
     int flags;      //UINT 
     int used_unit_type; //char  

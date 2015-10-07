@@ -1168,7 +1168,7 @@ public class Util {
 
         byte[] image_data = readFile(file_name, -1, ByteOrder.BIG_ENDIAN);
 
-        int[] i_data_array = pcxDecode(image_data, image_size);
+        int[] i_data_array = UtilG.pcxDecode(image_data, image_size);
 
         for (int i = 0; i < i_data_array.length; i++) {
             if (i_data_array[i] == 0) {
@@ -1205,7 +1205,7 @@ public class Util {
 
         byte[] image_data = readFile(file_name, -1, ByteOrder.BIG_ENDIAN);
 
-        int[] i_data_array = pcxDecode(image_data, image_size);
+        int[] i_data_array = UtilG.pcxDecode(image_data, image_size);
 
         // if double size main window double image dimensions
         if (double_size_window) {
@@ -1275,48 +1275,6 @@ public class Util {
         extractPallette(rgb_data[2], rgb_data[1], rgb_data[0], pallette_data);
 
         return rgb_data;
-    }
-
-    public static int[] pcxDecode(byte[] encoded_data, int image_size) {
-
-// rle-decode pcx 256 color image
-        int[] target_array = new int[image_size];
-        int src_idx = 128;
-        int tgt_idx = 0;
-
-        for (; src_idx < encoded_data.length - 769; src_idx++) {
-
-            int datum = encoded_data[src_idx] & 0xff;
-
-            if (datum < 192) {
-//                    System.out.println("Datum = " + datum);
-                target_array[tgt_idx] = datum;
-                ++tgt_idx;
-
-                //dirty hack, otherwise starfld2.pcx won't show
-                if (tgt_idx == image_size) {
-                    return target_array;
-                }
-
-            } else {
-
-                src_idx++;
-                int d = encoded_data[src_idx] & 0xff;
-
-                for (int j = 0; j < datum - 192; j++) {
-//                        System.out.println("Datum > 11000000");
-                    target_array[tgt_idx] = d;
-
-                    ++tgt_idx;
-                    //dirty hack, otherwise starfld2.pcx won't show
-                    if (tgt_idx == image_size) {
-                        return target_array;
-                    }
-                }
-            }
-        }
-
-        return target_array;
     }
 
     public static int[] readImageData(String file_name, long pos, int size, ByteOrder byte_order) {
@@ -2153,5 +2111,29 @@ public class Util {
             }
         }
         return false;
+    }
+
+    public static String getSectName(int sect_id) {
+        String s = null;
+        switch (sect_id) {
+            case 0:
+                s = "Orthodox";
+                break;
+            case 1:
+                s = "Orthodox";
+                break;
+            case 2:
+                s = "Orthodox";
+                break;
+            case 3:
+                s = "Orthodox";
+                break;
+            case 4:
+                s = "Orthodox";
+                break;
+            default:
+                throw new AssertionError();
+        }
+        return s;
     }
 }

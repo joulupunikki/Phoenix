@@ -246,6 +246,9 @@ public class MainMenu extends JPanel {
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
             drawTitles(g2d);
+            //bi = UtilG.loadFLCFirst(FN.S_FLC + FN.F_S + "ADVISOR.FLC", ws.is_double, pallette, 175, 150);
+//            bi = UtilG.loadFLCFirst(FN.S_FLC + FN.F_S + "AFIGHTER.FLC", ws.is_double, pallette, 175, 150);
+//            g2d.drawImage(bi, null, ws.sw_flc_x, ws.sw_flc_y);
             //UtilG.drawStringGrad(g2d, "Gradient Font Test", ws, 50, 50, true);
         }
 
