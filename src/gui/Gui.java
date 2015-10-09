@@ -78,7 +78,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
-import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -653,6 +652,9 @@ public class Gui extends JFrame {
      */
     public void openManowitzVol(int vol) {
         manowitz_panel.pressContents(vol);
+        manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
+                this.getY() + ws.manowitz_window_y_offset,
+                ws.manowitz_window_w, ws.manowitz_window_h);
         manowitz_window.setVisible(true);
     }
 
@@ -883,11 +885,18 @@ public class Gui extends JFrame {
         tech_panel.setLabsCost();
         tech_panel.setRPAvailable();
         tech_panel.setLabResearches();
+//        tech_window.setBounds(this.getX() + ws.tech_window_x_offset,
+//                this.getY() + ws.tech_window_y_offset,
+//                ws.tech_window_w, ws.tech_window_h);
+        setDialogSize(tech_window, ws.tech_window_x_offset,
+                ws.tech_window_y_offset, ws.tech_window_w, ws.tech_window_h);
         tech_window.setVisible(true);
     }
 
     public void showBuildCityWindow() {
         if (build_city_panel.initPanel()) {
+            build_city_window.setBounds(this.getX(), this.getY(),
+                    ws.main_window_width, ws.main_window_height);
             build_city_window.setVisible(true);
         }
     }
@@ -982,9 +991,9 @@ public class Gui extends JFrame {
                 ws.tech_window_w, ws.tech_window_h);
         tech_window.add(tech_panel);
         tech_window.pack();
-        setDialogSize(tech_window, this.getX() + ws.tech_window_x_offset,
-                this.getY() + ws.tech_window_y_offset,
-                ws.tech_window_w, ws.tech_window_h);
+//        setDialogSize(tech_window, this.getX() + ws.tech_window_x_offset,
+//                this.getY() + ws.tech_window_y_offset,
+//                ws.tech_window_w, ws.tech_window_h);
     }
 
     public void showTechDBWindow() {
@@ -1030,6 +1039,9 @@ public class Gui extends JFrame {
             manowitz_panel.setNrChapters(vol);
             manowitz_panel.setChapter(vol, chapter);
             manowitz_panel.setState();
+            manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
+                    this.getY() + ws.manowitz_window_y_offset,
+                    ws.manowitz_window_w, ws.manowitz_window_h);
             manowitz_window.setVisible(true);
 //        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
 //                this.getY() + ws.manowitz_window_y_offset,
@@ -1277,8 +1289,8 @@ public class Gui extends JFrame {
     }
 
     public void showCityDialog(int planet, Structure city) {
-        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
-                this.getY() + ws.planet_map_y_offset,
+        city_dialog.setBounds(this.getX() + ws.city_window_x,
+                this.getY() + ws.city_window_y,
                 ws.city_window_w, ws.city_window_h);
         city_dialog.setPlanet(planet);
         city_dialog.setCity(city);
@@ -1322,6 +1334,7 @@ public class Gui extends JFrame {
             super(owner, title, modal);
             this.game = game;
             this.ws = ws;
+            this.setUndecorated(true);
             setUp();
         }
 
@@ -1365,75 +1378,15 @@ public class Gui extends JFrame {
          */
         public void setCity(Structure city) {
             this.city = city;
-            city_panel.setCityName(game.getStrBuild(city.type).name);
+            city_panel.setCity(city);
         }
     }
 
-//    public void setUpCityDialog() {
-//        city_dialog = new CityDialog(this, null, true);
-//        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
-//                this.getY() + ws.planet_map_y_offset,
-//                ws.planet_map_width + 50, ws.planet_map_height / 3);
-//        city_dialog.setDefaultCloseOperation(
-//                JDialog.DO_NOTHING_ON_CLOSE);
-//        city_dialog.addWindowListener(new WindowAdapter() {
-//            public void windowClosing(WindowEvent we) {
-//                ;
-//            }
-//        });
-//        JPanel city_panel = new JPanel();
-//        city_panel.setLayout(null);
-//        city_panel.setBounds(0, 0, ws.build_window_width, ws.build_window_height);
-//        city_panel.setBackground(Color.DARK_GRAY);
-//        city_panel.setForeground(Color.DARK_GRAY);
-//
-//        JTextField city_name_display = new JTextField();
-//
-//        city_panel.add(city_name_display);
-//        city_name_display.setBounds(ws.city_name_display_x_offset, ws.city_name_display_y_offset,
-//                ws.city_name_display_w, ws.city_name_display_h);
-//        city_name_display.setBackground(Color.BLACK);
-//        city_name_display.setForeground(C.COLOR_GOLD);
-//        city_name_display.setEditable(false);
-//        city_name_display.setHorizontalAlignment(JTextField.CENTER);
-//        city_name_display.setBorder(null);
-//        city_name_display.setFont(ws.font_default);
-//        JButton build = new JButton("Build");
-//        build.setFont(ws.font_default);
-//        build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-//        city_panel.add(build);
-//        build.setBounds(ws.city_build_button_x_offset, ws.city_build_button_y_offset,
-//                ws.city_build_button_w, ws.city_build_button_h);
-//        build.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                city_dialog.setVisible(false);
-//                showBuildWindow(null, city_dialog.getPlanet(), city_dialog.getCity());
-//            }
-//        });
-//
-//        JButton exit = new JButton("Exit");
-//        exit.setFont(ws.font_default);
-//        exit.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-//        city_panel.add(exit);
-//        exit.setBounds(ws.city_exit_button_x_offset, ws.city_exit_button_y_offset,
-//                ws.city_exit_button_w, ws.city_exit_button_h);
-//        exit.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                city_dialog.setVisible(false);
-//            }
-//        });
-//        city_dialog.add(city_panel);
-//        city_dialog.pack();
-////        dialog.setVisible(true);
-//    }
     private void setUpCityDialog3(Game game, WindowSize ws) {
         city_dialog = new CityDialog(this, null, true, game, ws);
-        city_dialog.setBounds(this.getX() + ws.planet_map_x_offset,
-                this.getY() + ws.planet_map_y_offset,
+        city_dialog.setBounds(this.getX() + ws.city_window_x,
+                this.getY() + ws.city_window_y,
                 ws.city_window_w, ws.city_window_h);
-//                ws.planet_map_width + 50, ws.planet_map_height / 3);
         city_dialog.setDefaultCloseOperation(
                 JDialog.DO_NOTHING_ON_CLOSE);
         city_dialog.addWindowListener(new WindowAdapter() {
@@ -1453,37 +1406,32 @@ public class Gui extends JFrame {
          *
          */
         private static final long serialVersionUID = 1L;
-        JTextField city_name_display;
         JButton build;
         JButton exit;
+        Structure city;
 
         public CityPanel() {
             setUpPanel();
         }
 
-        public void setCityName(String name) {
-            city_name_display.setText(name);
+        /**
+         *
+         * @param city the value of city
+         */
+        public void setCity(Structure city) {
+            this.city = city;
         }
 
         public void paintComponent(Graphics g) {
+            System.out.println("Paint");
             super.paintComponent(g);
-            g.setColor(Color.DARK_GRAY);
-            g.fillRect(0, 0, ws.build_window_width, ws.build_window_height);
+            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.drawImage(bi, null, 0, 0);
+            UtilG.drawCityArea(g, game, ws, ws.city_panel_city_area_x, ws.city_panel_city_area_x, city);
         }
 
         public void setUpPanel() {
-
-            city_name_display = new JTextField();
-
-            this.add(city_name_display);
-            city_name_display.setBounds(ws.city_name_display_x_offset, ws.city_name_display_y_offset,
-                    ws.city_name_display_w, ws.city_name_display_h);
-            city_name_display.setBackground(Color.DARK_GRAY);
-            city_name_display.setForeground(C.COLOR_GOLD);
-            city_name_display.setEditable(false);
-            city_name_display.setHorizontalAlignment(JTextField.CENTER);
-            city_name_display.setBorder(null);
-            city_name_display.setFont(ws.font_default);
             build = new JButton("Build");
             build.setFont(ws.font_default);
             build.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
@@ -1552,7 +1500,7 @@ public class Gui extends JFrame {
         //System.out.println("heigth = " + heigth);
         int x = (p_width - width) / 2;
         int y = (p_height - heigth) / 2;
-        dialog.setBounds(x, y, width, heigth);
+        dialog.setBounds(this.getX() + x, this.getY() + y, width, heigth);
         dialog.setDefaultCloseOperation(
                 JDialog.DO_NOTHING_ON_CLOSE);
         dialog.addWindowListener(new WindowAdapter() {

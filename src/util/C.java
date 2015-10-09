@@ -420,6 +420,7 @@ public class C {
     public static final Color COLOR_DARK_GREEN = new Color(53, 94, 59);
     public static final Color COLOR_LIGHT_GREEN = new Color(76, 187, 23);
     public static final Color COLOR_RES_DISP_GREEN = new Color(96, 208, 64);
+    public static final Color COLOR_RES_DISP_GREEN_D = new Color(20, 104, 12);
     public static final int INDEX_COLOR_EFS_BLACK = 14;
     public static final int INDEX_COLOR_BLACK = -96;
     public static final String GROUND_COMBAT = "ground_combat";

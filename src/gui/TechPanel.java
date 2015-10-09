@@ -126,8 +126,7 @@ public class TechPanel extends JPanel {
         super.paintComponent(g);
 
         byte[][] pallette = gui.getPallette();
-        String file = FN.S_BG0_PCX;
-        BufferedImage bi = Util.loadImage(file, ws.is_double, pallette, 640, ws.tech_window_h);
+        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, ws.tech_window_h);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

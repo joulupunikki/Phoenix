@@ -196,7 +196,7 @@ public class ByzantiumIIWindow extends JPanel {
 
         if (regency.getYearsSinceThroneClaim() > -1) {
             UtilG.drawStringGrad((Graphics2D) g, "Emperor declared", ws.font_large,
-                    ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1);
+                    ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1, false);
         }
     }
 

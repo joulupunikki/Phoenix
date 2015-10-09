@@ -27,7 +27,12 @@
  */
 package util;
 
+import dat.Prod;
+import dat.ResType;
+import galaxyreader.Structure;
+import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import gui.Gui;
 import java.awt.Color;
 import java.awt.Component;
@@ -38,6 +43,7 @@ import java.awt.FontMetrics;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -336,16 +342,36 @@ public class UtilG {
     }
 
     public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y) {
-        drawStringGrad(g2d, s, f, x, y, 0);
+        drawStringGrad(g2d, s, f, x, y, 0, false);
     }
 
-    public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y, int border) {
+    public static void drawStringGradRes(Graphics2D g2d, String s, Font f, int x, int y) {
+        drawStringGrad(g2d, s, f, x, y, 0, true);
+    }
+
+    /**
+     *
+     * @param g2d the value of g2d
+     * @param s the value of s
+     * @param f the value of f
+     * @param x the value of x
+     * @param y the value of y
+     * @param border the value of border
+     * @param res_disp the value of res_disp
+     */
+    public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y, int border, boolean res_disp) {
         //gradient font test
 //            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 //                    RenderingHints.VALUE_ANTIALIAS_ON);
+        Color bright = C.COLOR_GOLD_BRIGHT;
+        Color dark = C.COLOR_GOLD_DARK;
+        if (res_disp) {
+            bright = C.COLOR_RES_DISP_GREEN;
+            dark = C.COLOR_RES_DISP_GREEN_D;
+        }
         g2d.setFont(f);
         int line_height = f.getSize();
-        GradientPaint gp = new GradientPaint(0, y - line_height + 1, C.COLOR_GOLD_BRIGHT, 0, y, C.COLOR_GOLD_DARK, true);
+        GradientPaint gp = new GradientPaint(0, y - line_height + 1, bright, 0, y, dark, true);
         if (border > 0) {
             drawStringBorder(g2d, s, Color.BLACK, x, y, border);
         }
@@ -454,8 +480,7 @@ public class UtilG {
 
     public static void setJComponentChildrenToDark(JComponent chooser) {
         List<JComponent> c_list;
-        //tried this with 1 ms delay
-        Util.DeadLockGuard guard = Util.getDeadLockGuard(1, chooser);
+        Util.DeadLockGuard guard = Util.getDeadLockGuard(1000, chooser);
         guard.start();
         synchronized (chooser.getTreeLock()) {
             c_list = UtilG.getDescendantsOfType(JComponent.class, chooser);
@@ -515,7 +540,7 @@ public class UtilG {
         int emperor = game.getRegency().getCrownedEmperor();
         if (emperor > -1) {
             String s = "Lord of " + Util.getFactionName(emperor) + " has been crowned Emperor of the Fading Suns";
-            UtilG.drawStringGrad(g, s, ws.font_large, 5, 5 + ws.font_large.getSize(), 1);
+            UtilG.drawStringGrad(g, s, ws.font_large, 5, 5 + ws.font_large.getSize(), 1, false);
         }
     }
 
@@ -725,6 +750,96 @@ public class UtilG {
 
         return bi;
 
+    }
+
+    public static void drawCityArea(Graphics g, Game game, WindowSize ws, int x, int y, Structure city) {
+        if (city == null) {
+            Point selected = game.getSelectedPoint();
+            Point faction = game.getSelectedFaction();
+            System.out.println(faction);
+            if (selected == null || faction.x != -1) {
+                return;
+            }
+            Unit unit = game.getSelectedStack().get(0);
+            Hex hex = game.getHexFromPXY(unit.p_idx, unit.x, unit.y);
+            city = hex.getStructure();
+            if (city == null) {
+                return;
+            }
+        }
+        UtilG.drawStringGrad((Graphics2D) g, Structure.getName(city.type), ws.font_large, x + ws.city_name_x, y + ws.city_name_y);
+        boolean harvest;
+        switch (city.type) {
+            case C.FARM:
+            case C.ARBORIUM:
+            case C.WELL:
+            case C.MINE:
+                harvest = true;
+                break;
+            case C.CERAMSTEEL:
+            case C.BIOPLANT:
+            case C.CHEMICALS:
+            case C.ELECTRONICS:
+            case C.FUSORIUM:
+            case C.CYCLOTRON:
+            case C.WETWARE:
+                harvest = false;
+                break;
+            default:
+                // not a resource producing city
+                return;
+        }
+        ResType[] res_types = game.getEconomy().getResType();
+        String upper_prod = "";
+        String lower_prod = "";
+        if (harvest) {
+            System.out.println("Harvest");
+            int[] production = game.getEconomy().calculateBaseProduction(city);
+            int res_count = 0;
+            for (int i = production.length - 1; i >= 0; i--) {
+                if (production[i] > 0) {
+                    res_count++;
+                    switch (res_count) {
+                        case 1:
+                            break;
+                        case 2:
+                            upper_prod = " and " + upper_prod;
+                            break;
+                        default:
+                            upper_prod = ", " + upper_prod;
+                            break;
+                    }
+                    upper_prod = production[i] + " " + res_types[i].name + upper_prod;
+                }
+            }
+            upper_prod = "Harvests " + upper_prod;
+        } else {
+            System.out.println("Refine");
+            Prod[] prod_table = game.getEconomy().getProd();
+            upper_prod = "Produces " + prod_table[city.type].make.resource_amount + " " + res_types[prod_table[city.type].make.resource_type].name;
+            int res_count = 0;
+            for (int j = 2; j >= 0; j--) {
+                if (prod_table[city.type].need[j] != null) {
+                    res_count++;
+                    switch (res_count) {
+                        case 1:
+                            break;
+                        case 2:
+                            lower_prod = " and " + lower_prod;
+                            break;
+                        default:
+                            lower_prod = ", " + lower_prod;
+                            break;
+                    }
+                    lower_prod = prod_table[city.type].need[j].resource_amount + " " + res_types[prod_table[city.type].need[j].resource_type].name + lower_prod;
+                }
+            }
+            lower_prod = "Consumes " + lower_prod;
+        }
+        UtilG.drawStringGradRes((Graphics2D) g, upper_prod, ws.font_bcw_2, x + ws.city_harvest_x, y + ws.city_harvest_y);
+        if (lower_prod.length() > 1) {
+            UtilG.drawStringGradRes((Graphics2D) g, lower_prod, ws.font_bcw_2, x + ws.city_harvest_x, y + ws.city_harvest_y2);
+        }
     }
 
     public static class DarkTheme extends DefaultMetalTheme {

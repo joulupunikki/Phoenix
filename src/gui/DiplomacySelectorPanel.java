@@ -100,6 +100,7 @@ public class DiplomacySelectorPanel extends JPanel {
     }
 
     public void setWindowVisiblity(boolean visible) {
+        dialog.setBounds(c.get(CD.WIN_X) + gui.getX(), c.get(CD.WIN_Y) + gui.getY(), c.get(CD.WIN_W), c.get(CD.WIN_H));
         dialog.setVisible(visible);
     }
 

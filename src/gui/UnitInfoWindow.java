@@ -191,17 +191,18 @@ public class UnitInfoWindow extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        renderStackWindow(g);
+        renderUnitInfoWindow(g);
 
     }
 
-    public void renderStackWindow(Graphics g) {
+    public void renderUnitInfoWindow(Graphics g) {
         setStats();
         drawBackground(g);
         drawUnits(g);
 //        drawUnitDetails(g);
         drawDraggedUnit(g);
         drawTopStats(g);
+        UtilG.drawCityArea(g, game, ws, ws.sw_city_x, ws.sw_city_y, null);
     }
 
     private void drawTopStats(Graphics g) {
@@ -251,13 +252,12 @@ public class UnitInfoWindow extends JPanel {
             scale = 2;
         }
         if (owner != prev_owner) {
-            UtilG.drawStringGrad((Graphics2D) g, Util.factionNameDisplay(prev_owner), g.getFont(), 10 * scale, ws.main_window_height - 30 * scale);
+            UtilG.drawStringGrad((Graphics2D) g, Util.factionNameDisplay(prev_owner), ws.font_large, 10 * scale, ws.main_window_height - 30 * scale);
             //g.drawString(factionNameDisplay(prev_owner), 10 * scale, ws.main_window_height - 30 * scale);
         }
-        UtilG.drawStringGrad((Graphics2D) g, Util.factionNameDisplay(owner), g.getFont(), 10 * scale, ws.main_window_height - 10 * scale);
+        UtilG.drawStringGrad((Graphics2D) g, Util.factionNameDisplay(owner), ws.font_large, 10 * scale, ws.main_window_height - 10 * scale);
         //g.drawString(factionNameDisplay(owner), 10 * scale, ws.main_window_height - 10 * scale);
     }
-
 
     public void drawBackground(Graphics g) {
 

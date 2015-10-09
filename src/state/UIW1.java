@@ -88,6 +88,7 @@ public class UIW1 extends State {
             }
         }
         game.deleteUnitNotInCombat(u);
+        gui.setInfo_unit(null);
     }
 
     @Override

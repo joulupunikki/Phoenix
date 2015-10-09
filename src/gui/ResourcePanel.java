@@ -80,8 +80,7 @@ public class ResourcePanel extends JPanel {
         game = gui.getGame();
 
         byte[][] pallette = gui.getPallette();
-        String file = FN.S_BG0_PCX;
-        BufferedImage tmp = Util.loadImage(file, ws.is_double, pallette, 640, 480);
+        BufferedImage tmp = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         bi = tmp.getSubimage(0, 0, ws.rw_width, ws.rw_height);
 
         setUpExitButton();

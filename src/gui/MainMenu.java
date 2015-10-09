@@ -264,10 +264,10 @@ public class MainMenu extends JPanel {
             FontMetrics fm = this.getFontMetrics(ws.font_large);
             String s = "Emperor Of The Fading Suns";
             int string_w = fm.stringWidth(s);
-            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7, 1);
+            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7, 1, false);
             s = "Phoenix remake/patch " + FN.S_VERSION;
             string_w = fm.stringWidth(s);
-            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7 + ws.sb_h, 1);
+            UtilG.drawStringGrad(g2d, s, ws.font_large, (ws.main_window_width - string_w) / 2, ws.mm_sn_y * 3 / 7 + ws.sb_h, 1, false);
         }
 
         public void setUpName() {

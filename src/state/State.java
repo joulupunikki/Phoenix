@@ -78,9 +78,6 @@ public abstract class State {
     public void clickOnSpaceMap(MouseEvent e) {
     }
 
-    public void clickOnStackWindow() {
-    }
-
     public void clickOnByzantiumIIWindow(MouseEvent e) {
     }
 

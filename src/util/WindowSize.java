@@ -203,16 +203,19 @@ public class WindowSize {
     public int build_button_h = 15;
     public int city_build_button_w = 50;
     public int city_build_button_h = 15;
-    public int city_build_button_x_offset = 10;
-    public int city_build_button_y_offset = planet_map_height / 3 - city_build_button_h - 10;
+    public int city_build_button_x_offset = 8;
+    public int city_build_button_y_offset = 93;
 
     public int city_exit_button_w = 50;
     public int city_exit_button_h = 15;
-    public int city_exit_button_x_offset = planet_map_width - city_exit_button_w - 10;
-    public int city_exit_button_y_offset = planet_map_height / 3 - city_exit_button_h - 10;
+    public int city_exit_button_x_offset = 438;
+    public int city_exit_button_y_offset = 93;
 
-    public int city_window_w = build_window_width;
-    public int city_window_h = planet_map_height / 3 + 40;
+    public int city_window_x = 120;
+    public int city_window_y = 20;
+    public int city_window_w = 510;
+    public int city_window_h = 120;
+    public int city_panel_city_area_x = 8;
 
     public int city_name_display_x_offset = 10;
     public int city_name_display_y_offset = 10;
@@ -457,16 +460,28 @@ public class WindowSize {
     public int sw_ap_x = 304;
     public int sw_ap_w = 130;
     public int sw_ap_h = 45;
-
+    // stack window unit image/animation
     public int sw_flc_x = 442;
     public int sw_flc_y = 11;
-
+    // stack window top unit details
     public int sw_tp_x = 222;
     public int sw_tp_x2 = 233;
     public int sw_tp_y = 16;
-
     public int sw_tp_y2 = 31;
     public int sw_tp_h = 12;
+    // stack window city area upper left coordinates
+    public int sw_city_x = 127;
+    public int sw_city_y = 384;
+    // city area coordinates, for stack window and city panel
+    public int city_img_x = 0;
+    public int city_img_y = 0;
+    public int city_name_x = 58;
+    public int city_name_y = 9;
+    public int city_harvest_x = 57;
+    public int city_harvest_y = 20;
+    public int city_harvest_y2 = 31;
+    public int city_loyalty_x = 57;
+    public int city_loyalty_y = 41;
 
     // build panel left stats panel
     public int bp_lsp_x = 9;
@@ -719,9 +734,12 @@ public class WindowSize {
             city_exit_button_x_offset *= 2;
             city_exit_button_y_offset *= 2;
 
+            city_window_x *= 2;
+            city_window_y *= 2;
             city_window_w *= 2;
             city_window_h *= 2;
-
+            city_panel_city_area_x *= 2;
+            city_panel_city_area_x *= 2;
             city_name_display_x_offset *= 2;
             city_name_display_y_offset *= 2;
             city_name_display_w *= 2;
@@ -946,6 +964,19 @@ public class WindowSize {
             sw_tp_y *= 2;
             sw_tp_y2 *= 2;
             sw_tp_h *= 2;
+
+            sw_city_x *= 2;
+            sw_city_y *= 2;
+
+            city_img_x *= 2;
+            city_img_y *= 2;
+            city_name_x *= 2;
+            city_name_y *= 2;
+            city_harvest_x *= 2;
+            city_harvest_y *= 2;
+            city_harvest_y2 *= 2;
+            city_loyalty_x *= 2;
+            city_loyalty_y *= 2;
 
             bp_lsp_x *= 2;
 
