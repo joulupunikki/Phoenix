@@ -895,7 +895,7 @@ public class Gui extends JFrame {
 
     public void showBuildCityWindow() {
         if (build_city_panel.initPanel()) {
-            build_city_window.setBounds(this.getX(), this.getY(),
+            setDialogSize(build_city_window, 0, 0,
                     ws.main_window_width, ws.main_window_height);
             build_city_window.setVisible(true);
         }
@@ -924,13 +924,15 @@ public class Gui extends JFrame {
         build_city_panel.setBounds(0, 0,
                 ws.main_window_width, ws.main_window_height);
         build_city_window.pack();
-        setDialogSize(build_city_window, this.getX(),
-                this.getY(),
+        setDialogSize(build_city_window, 0,
+                0,
                 ws.main_window_width, ws.main_window_height);
     }
 
     public void showResourceWindow(int resource) {
         resource_panel.setText(resource);
+        setDialogSize(resource_window, ws.rw_x_offset, ws.rw_y_offset,
+                ws.rw_width, ws.rw_height);
         resource_window.setVisible(true);
     }
 
@@ -958,8 +960,7 @@ public class Gui extends JFrame {
                 ws.rw_width, ws.rw_height);
 //        resource_window.add(resource_panel);
         resource_window.pack();
-        setDialogSize(resource_window, this.getX() + ws.rw_x_offset,
-                this.getY() + ws.rw_y_offset,
+        setDialogSize(resource_window, ws.rw_x_offset, ws.rw_y_offset,
                 ws.rw_width, ws.rw_height);
     }
 
@@ -998,6 +999,9 @@ public class Gui extends JFrame {
 
     public void showTechDBWindow() {
         tech_db_panel.setTechDBPanel();
+        setDialogSize(tech_db_window, ws.tech_window_x_offset,
+                ws.tech_window_y_offset,
+                ws.tech_window_w, ws.tech_window_h);
         tech_db_window.setVisible(true);
     }
 
@@ -1027,8 +1031,8 @@ public class Gui extends JFrame {
                 ws.tech_window_w, ws.tech_window_h);
         tech_db_window.add(tech_db_panel);
         tech_db_window.pack();
-        setDialogSize(tech_db_window, this.getX() + ws.tech_window_x_offset,
-                this.getY() + ws.tech_window_y_offset,
+        setDialogSize(tech_db_window, ws.tech_window_x_offset,
+                ws.tech_window_y_offset,
                 ws.tech_window_w, ws.tech_window_h);
     }
 
@@ -1316,6 +1320,13 @@ public class Gui extends JFrame {
      */
     public DiplomacyWindow getDiplomacyWindow() {
         return diplomacy_window;
+    }
+
+    /**
+     * @return the color_cycle_count
+     */
+    public int getColorCycleCount() {
+        return color_cycle_count;
     }
 
     private class CityDialog extends JDialog {

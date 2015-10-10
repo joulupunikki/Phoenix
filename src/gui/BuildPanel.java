@@ -97,7 +97,8 @@ public class BuildPanel extends JPanel {
     private JTable queue_table;
     private JButton exit;
     private JTextField[] res_display;
-    private static Object[] build_table_header = {"Unit", "Turns Left"};
+    private static Object[] build_table_header = {"Units Available", "Time"};
+    private static Object[] queue_table_header = {"Build Queue", "Time"};
     private static Object[] city_table_header = {"City", "Building"};
 //    private Object[][] city_table_data;
 //    private Object[][] build_table_data;
@@ -602,7 +603,7 @@ public class BuildPanel extends JPanel {
         }
 
         BuildTableModel queue_model = new BuildTableModel(queue_table_data,
-                build_table_header);
+                queue_table_header);
         queue_table.setModel(queue_model);
 
         //System.out.println("CellRend 0 " + queue_table.getCellRenderer(0, 0));

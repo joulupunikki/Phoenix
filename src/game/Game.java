@@ -194,6 +194,7 @@ public class Game implements Serializable {
             factions[i] = new Faction(this, i);
         }
         diplomacy = new Diplomacy(this);
+        diplomacy.initDiplomacy();
     }
 
     public void initVisibilitySpot(boolean do_reset) {

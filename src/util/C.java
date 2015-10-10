@@ -325,7 +325,10 @@ public class C {
 //    public static final int DELTA = 10;
 //    public static final int ROAD = 11;
 //    public static final int STRUCTURE = 12;
-
+    public static final int NORMAL_TILE_SET = 0;
+    public static final int MEGACITY_TILE_SET = 1;
+    public static final int FROZEN_TILE_SET = 2; // these 2 may
+    public static final int JUNGLE_TILE_SET = 3; // be reversed
     public static final int BARREN_TILE_SET = 4;    // RSW
 
     // Unit types (only needed for units with special abilities)

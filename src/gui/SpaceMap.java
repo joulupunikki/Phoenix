@@ -29,8 +29,10 @@ package gui;
 
 import galaxyreader.JumpGate;
 import galaxyreader.Planet;
+import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import game.Square;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -48,7 +50,10 @@ import java.util.List;
 import javax.swing.JPanel;
 import util.C;
 import util.FN;
+import util.RingCounter;
 import util.Util;
+import util.Util.HexIter;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -62,14 +67,17 @@ public class SpaceMap extends JPanel {
      */
     private static final long serialVersionUID = 1L;
     private static final int MARGIN = 1;
+    private static final int PLANET_PHASES = 16;
     private Gui gui;
     private Game game;
     private int[][] planet_images;
     private int[][] unit_icons;
     private WindowSize ws;
     private IndexColorModel color_index;
-
+    private int cycle_count;
+    private RingCounter planet_phase;
     MouseEvent[] mouse_events;
+    private int[] planet_types;
 
     public SpaceMap(Gui gui) {
         this.gui = gui;
@@ -82,9 +90,32 @@ public class SpaceMap extends JPanel {
         unit_icons = Gui.getUnitIcons();
 
         color_index = gui.getICM();
-
+        planet_phase = new RingCounter(PLANET_PHASES - 1, 0);
         //setUpMouse(gui);
+        setUpPlanetTypes();
 
+    }
+
+    private void setUpPlanetTypes() {
+        planet_types = new int[game.getPlanets().size()];
+        for (int i = 0; i < planet_types.length; i++) {
+            HexIter it = Util.getHexIter(game, i);
+            int ocean = 0;
+            int desert = 0;
+            for (Hex h = it.next(); h != null; h = it.next()) {
+                if (h.getTerrain(C.OCEAN)) {
+                    ocean++;
+                } else if (h.getTerrain(C.DESERT)) {
+                    desert++;
+                }
+            }
+            if (ocean < 0.75 * C.PLANET_MAP_COLUMNS * C.PLANET_MAP_WIDTH) {
+                planet_types[i] = C.GRASS;
+            }
+            if (desert > 0.50 * C.PLANET_MAP_COLUMNS * C.PLANET_MAP_WIDTH) {
+                planet_types[i] = C.DESERT;
+            }
+        }
     }
 
     private void setUpMouse(Gui gui) throws HeadlessException {
@@ -184,16 +215,62 @@ public class SpaceMap extends JPanel {
 
                 if (j < galaxy_grid[0].length - 1 && galaxy_grid[i][j + 1].planet != null) {
                     g.setColor(Color.WHITE);
+                    HexIter it = Util.getHexIter(game, galaxy_grid[i][j + 1].planet.index);
+                    for (Hex h = it.next(); h != null; h = it.next()) {
+                        Structure stru = h.getStructure();
+                        if (stru != null && stru.type == C.PALACE) {
+                            byte[][] pal = gui.getPallette();
+                            int owner_col = Util.getOwnerColor(stru.owner);
+                            int a = 0xff & pal[0][owner_col], b = 0xff & pal[1][owner_col], c = 0xff & pal[2][owner_col];
+                            g.setColor(new Color(c, b, a));
+                            break;
+                        }
+
+                    }
                     g.drawString(galaxy_grid[i][j + 1].planet.name, x, y);
                 }
 
                 if (galaxy_grid[i][j].planet != null) {
+                    int type = galaxy_grid[i][j].planet.tile_set_type;
+                    switch (type) {
+                        case C.NORMAL_TILE_SET:
+                            if (planet_types[galaxy_grid[i][j].planet.index] == C.OCEAN) {
+                                type = 10;
+                            } else if (planet_types[galaxy_grid[i][j].planet.index] == C.DESERT) {
+                                type = 11;
+                            } else {
+                                type = 7;
+                            }
+                            break;
+                        case C.JUNGLE_TILE_SET:
+                            type = 9;
+                            break;
+                        case C.FROZEN_TILE_SET:
+                            type = 8;
+                            break;
+                        case C.MEGACITY_TILE_SET:
+                            type = 0;
+                            break;
+                        case C.BARREN_TILE_SET:
+                            type = 1;
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
+                    int count = gui.getColorCycleCount();
+                    int idx = planet_phase.get();
+                    if (count != cycle_count) {
+                        cycle_count = count;
+                        planet_phase.getSet();
+                        idx = planet_phase.get();
+                    }
 
                     int[] planet_image = null;
+                    idx = type * PLANET_PHASES + ((idx + 7 * galaxy_grid[i][j].planet.index) % PLANET_PHASES);
                     if (ws.is_double) {
-                        planet_image = Util.scale2XImage(planet_images[127], 1024, 32);
+                        planet_image = Util.scale2XImage(planet_images[idx], 1024, 32);
                     } else {
-                        planet_image = planet_images[127];
+                        planet_image = planet_images[idx];
                     }
 //                    planet_image = Util.loadSquare("bin/efsplan.bin", 1024, 1024);
 
@@ -490,13 +567,43 @@ public class SpaceMap extends JPanel {
 
     public void loadPlanetImages() {
 
-        planet_images = new int[C.EFSPLAN_BIN_LENGTH][C.EFSPLAN_BIN_P_SIZE];
-        for (int i = 0; i < planet_images.length; i++) {
+        planet_images = new int[C.EFSPLAN_BIN_LENGTH + 4 * PLANET_PHASES][C.EFSPLAN_BIN_P_SIZE];
+        for (int i = 0; i < C.EFSPLAN_BIN_LENGTH; i++) {
             planet_images[i] = Util.readImageData(FN.S_EFSPLAN_BIN,
                     i * C.EFSPLAN_BIN_P_SIZE,
                     C.EFSPLAN_BIN_P_SIZE, ByteOrder.BIG_ENDIAN);
-
         }
 
+        //make frozen planet phases from normal planet phases
+        int[] transform = UtilG.planet2Ice(gui.getPallette());
+        for (int i = 0; i < PLANET_PHASES; i++) {
+            for (int j = 0; j < C.EFSPLAN_BIN_P_SIZE; j++) {
+                planet_images[C.EFSPLAN_BIN_LENGTH + i][j] = transform[planet_images[7 * PLANET_PHASES + i][j] & 0xff];
+
+            }
+        }
+        //make jungle planet phases from normal planet phases
+        transform = UtilG.planet2Jungle(gui.getPallette());
+        for (int i = 0; i < PLANET_PHASES; i++) {
+            for (int j = 0; j < C.EFSPLAN_BIN_P_SIZE; j++) {
+                planet_images[C.EFSPLAN_BIN_LENGTH + PLANET_PHASES + i][j] = transform[planet_images[7 * PLANET_PHASES + i][j] & 0xff];
+            }
+        }
+
+        //make ocean planet phases from normal planet phases
+        transform = UtilG.planet2Ocean(gui.getPallette());
+        for (int i = 0; i < PLANET_PHASES; i++) {
+            for (int j = 0; j < C.EFSPLAN_BIN_P_SIZE; j++) {
+                planet_images[C.EFSPLAN_BIN_LENGTH + 2 * PLANET_PHASES + i][j] = transform[planet_images[7 * PLANET_PHASES + i][j] & 0xff];
+            }
+        }
+
+        //make desert planet phases from normal planet phases
+        transform = UtilG.planet2Desert(gui.getPallette());
+        for (int i = 0; i < PLANET_PHASES; i++) {
+            for (int j = 0; j < C.EFSPLAN_BIN_P_SIZE; j++) {
+                planet_images[C.EFSPLAN_BIN_LENGTH + 3 * PLANET_PHASES + i][j] = transform[planet_images[7 * PLANET_PHASES + i][j] & 0xff];
+            }
+        }
     }
 }

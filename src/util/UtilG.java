@@ -83,6 +83,263 @@ import static util.Util.scale2XImage;
  */
 public class UtilG {
 
+    public static int[] planet2Desert(byte[][] rgb_data) {
+        int[] ret_val = new int[rgb_data[0].length];
+        double[] d = new double[3];
+        double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];
+        double[][] rgb_g = new double[rgb_data[0].length][rgb_data.length];
+        for (int i = 0; i < rgb_data[0].length; i++) {
+            for (int j = 0; j < rgb_data.length; j++) {
+                rgb_val[i][j] = (rgb_data[2 - j][i] & 0xff); // / 255;
+                rgb_g[i][j] = rgb_val[i][j];
+
+            }
+//            if (rgb_g[i][2] > 100 && rgb_g[i][2] > rgb_g[i][0] && rgb_g[i][2] > rgb_g[i][1]) {
+//                //rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                //rgb_g[i][1] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                rgb_g[i][0] /= 2;
+//                rgb_g[i][1] /= 2;
+//            }
+            if ((i < 48 || i > 63) && (i < 144 || i > 239)) {
+                rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = 0;
+            }
+        }
+
+        int r = 0, g = 1, b = 2;
+        for (int i = 0; i < rgb_val.length; i++) {
+            double[] a = rgb_val[i];
+            System.arraycopy(a, 0, d, 0, a.length);
+            //d[r] = d[g] = d[b] = FastMath.max(d[b], FastMath.max(d[r], d[g]));
+            //if (d[b] < 1.5 * d[r] && d[b] < 1.5 * d[g]) {
+            if (d[b] <= 3 * d[r] && d[b] > d[r]
+                    && d[b] <= 2 * d[g] && d[b] > d[g] && d[b] > 100) {
+                // couldn't bother to invert the boolean expression ...
+            } else {
+                ret_val[i] = i;
+                continue;
+            }
+
+            int index = 0;
+            double shortest = Double.POSITIVE_INFINITY;
+            double distance = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < rgb_val.length; j++) {
+                distance = distBetwPoints(d, rgb_g[j]);
+                if (distance < shortest) {
+                    shortest = distance;
+                    index = j;
+                }
+            }
+            ret_val[i] = index;
+
+        }
+        return ret_val;
+
+    }
+
+    public static int[] planet2Ocean(byte[][] rgb_data) {
+        int[] ret_val = new int[rgb_data[0].length];
+        double[] d = new double[3];
+        double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];
+        double[][] rgb_g = new double[rgb_data[0].length][rgb_data.length];
+        for (int i = 0; i < rgb_data[0].length; i++) {
+            for (int j = 0; j < rgb_data.length; j++) {
+                rgb_val[i][j] = (rgb_data[2 - j][i] & 0xff); // / 255;
+                rgb_g[i][j] = rgb_val[i][j];
+
+            }
+//            if (rgb_g[i][2] > 100 && rgb_g[i][2] > rgb_g[i][0] && rgb_g[i][2] > rgb_g[i][1]) {
+//                //rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                //rgb_g[i][1] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                rgb_g[i][0] /= 2;
+//                rgb_g[i][1] /= 2;
+//            }
+            if ((i < 96 || i > 112)) {
+                rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = 0;
+            }
+        }
+
+        int r = 0, g = 1, b = 2;
+        for (int i = 0; i < rgb_val.length; i++) {
+            double[] a = rgb_val[i];
+            System.arraycopy(a, 0, d, 0, a.length);
+            //d[r] = d[g] = d[b] = FastMath.max(d[b], FastMath.max(d[r], d[g]));
+            //if (d[b] < 1.5 * d[r] && d[b] < 1.5 * d[g]) {
+            if (d[b] > 0 && d[r] > 0 && d[g] > 0) {
+                if (d[b] > 100) {
+                    d[b] -= (d[b] - 100) / 2;
+                }
+                d[g] *= 0.5;
+                d[r] *= 0.5;
+            } else {
+                ret_val[i] = i;
+                continue;
+            }
+
+            int index = 0;
+            double shortest = Double.POSITIVE_INFINITY;
+            double distance = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < rgb_val.length; j++) {
+                distance = distBetwPoints(d, rgb_g[j]);
+                if (distance < shortest) {
+                    shortest = distance;
+                    index = j;
+                }
+            }
+            ret_val[i] = index;
+
+        }
+        return ret_val;
+
+    }
+
+    public static int[] planet2Ocean2(byte[][] rgb_data) {
+        int[] ret_val = new int[rgb_data[0].length];
+        double[] d = new double[3];
+        double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];
+        double[][] rgb_g = new double[rgb_data[0].length][rgb_data.length];
+        for (int i = 0; i < rgb_data[0].length; i++) {
+            for (int j = 0; j < rgb_data.length; j++) {
+                rgb_val[i][j] = (rgb_data[2 - j][i] & 0xff); // / 255;
+                rgb_g[i][j] = rgb_val[i][j];
+
+            }
+//            if (rgb_g[i][2] > 100 && rgb_g[i][2] > rgb_g[i][0] && rgb_g[i][2] > rgb_g[i][1]) {
+//                //rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                //rgb_g[i][1] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                rgb_g[i][0] /= 2;
+//                rgb_g[i][1] /= 2;
+//            }
+//            if ((i < 80 || i > 87) && (i < 64 || i > 71)) {
+//                rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = 0;
+//            }
+        }
+
+        int r = 0, g = 1, b = 2;
+        for (int i = 0; i < rgb_val.length; i++) {
+            double[] a = rgb_val[i];
+            System.arraycopy(a, 0, d, 0, a.length);
+            //d[r] = d[g] = d[b] = FastMath.max(d[b], FastMath.max(d[r], d[g]));
+            //if (d[b] < 1.5 * d[r] && d[b] < 1.5 * d[g]) {
+            if ((d[b] >= d[r] || d[b] >= d[g]) && d[b] > 100) {
+                d[r] *= 0.25;
+                d[g] *= 0.25;
+            }
+
+
+            int index = 0;
+            double shortest = Double.POSITIVE_INFINITY;
+            double distance = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < rgb_val.length; j++) {
+                distance = distBetwPoints(d, rgb_g[j]);
+                if (distance < shortest) {
+                    shortest = distance;
+                    index = j;
+                }
+            }
+            ret_val[i] = index;
+
+        }
+        return ret_val;
+
+    }
+
+    public static int[] planet2Jungle(byte[][] rgb_data) {
+        int[] ret_val = new int[rgb_data[0].length];
+        double[] d = new double[3];
+        double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];
+        double[][] rgb_g = new double[rgb_data[0].length][rgb_data.length];
+        for (int i = 0; i < rgb_data[0].length; i++) {
+            for (int j = 0; j < rgb_data.length; j++) {
+                rgb_val[i][j] = (rgb_data[2 - j][i] & 0xff); // / 255;
+                rgb_g[i][j] = rgb_val[i][j];
+                
+            }
+//            if (rgb_g[i][2] > 1.5 * rgb_g[i][1] && rgb_g[i][2] > 1.5 * rgb_g[i][0]) {
+//                //rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                rgb_g[i][1] = (rgb_g[i][0] + rgb_g[i][1] + rgb_g[i][2]) / 3;
+//                rgb_g[i][0] /= 2;
+//                rgb_g[i][2] /= 2;
+//            }
+            if ((i < 80 || i > 87) && (i < 64 || i > 71)) {
+                rgb_g[i][0] = rgb_g[i][1] = rgb_g[i][2] = 0;
+            }
+        }
+
+        int r = 0, g = 1, b = 2;
+        for (int i = 0; i < rgb_val.length; i++) {
+            double[] a = rgb_val[i];
+            System.arraycopy(a, 0, d, 0, a.length);
+            //d[r] = d[g] = d[b] = FastMath.max(d[b], FastMath.max(d[r], d[g]));
+            //if (d[b] < 1.5 * d[r] && d[b] < 1.5 * d[g]) {
+            if ((d[b] > 1.5 * d[r] && d[b] > 1.5 * d[g]) || d[r] == 0) {
+                ret_val[i] = i;
+                continue;
+            }
+            d[r] *= 0.8;
+            d[g] *= 0.8;
+            d[b] *= 0.8;
+
+            int index = 0;
+            double shortest = Double.POSITIVE_INFINITY;
+            double distance = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < rgb_val.length; j++) {
+                distance = distBetwPoints(d, rgb_g[j]);
+                if (distance < shortest) {
+                    shortest = distance;
+                    index = j;
+                }
+            }
+            ret_val[i] = index;
+
+        }
+        return ret_val;
+
+    }
+
+    public static int[] planet2Ice(byte[][] rgb_data) {
+        int[] ret_val = new int[rgb_data[0].length];
+        double[] d = new double[3];
+        double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];
+        for (int i = 0; i < rgb_data[0].length; i++) {
+            for (int j = 0; j < rgb_data.length; j++) {
+                rgb_val[i][j] = (rgb_data[2 - j][i] & 0xff); // / 255;
+
+            }
+
+        }
+
+        int r = 0, g = 1, b = 2;
+        for (int i = 0; i < rgb_val.length; i++) {
+            double[] a = rgb_val[i];
+            System.arraycopy(a, 0, d, 0, a.length);
+            double tmp = FastMath.max(d[b], FastMath.max(d[r], d[g]));
+//            if (tmp > 0.5) {
+//                tmp += (255 - tmp) / 2;
+//            }
+            if (d[r] > 70 || d[g] > 70 || d[b] > 100) {
+                tmp = FastMath.sqrt(tmp / 255) * 255;
+            }
+            d[r] = d[g] = d[b] = tmp; //FastMath.max(d[b], FastMath.max(d[r], d[g]));
+//            if (d[b] > d[r] && d[b] > d[g]) {
+//                d[r] = d[g] = d[b];
+//            }
+            int index = 0;
+            double shortest = Double.POSITIVE_INFINITY;
+            double distance = Double.POSITIVE_INFINITY;
+            for (int j = 0; j < rgb_val.length; j++) {
+                distance = distBetwPoints(d, rgb_val[j]);
+                if (distance < shortest) {
+                    shortest = distance;
+                    index = j;
+                }
+            }
+            ret_val[i] = index;
+
+        }
+        return ret_val;
+
+    }
+
     public static int[] scaleColorsToDark(double r, byte[][] rgb_data) {
         int[] ret_val = new int[rgb_data[0].length];
         double[][] rgb_val = new double[rgb_data[0].length][rgb_data.length];

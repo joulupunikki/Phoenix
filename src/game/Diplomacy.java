@@ -52,6 +52,16 @@ public class Diplomacy implements Serializable {
         this.game = game;
     }
 
+    public void initDiplomacy() {
+        for (int i = 0; i < C.NR_FACTIONS; i++) {
+            if (i < C.NR_HOUSES) {
+                setDiplomaticState(i, C.NEUTRAL, C.DS_WAR);
+            }
+            setDiplomaticState(i, C.SYMBIOT, C.DS_WAR);
+
+        }
+    }
+
     /**
      * @return the war_matrix
      */
