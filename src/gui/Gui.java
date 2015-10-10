@@ -652,8 +652,8 @@ public class Gui extends JFrame {
      */
     public void openManowitzVol(int vol) {
         manowitz_panel.pressContents(vol);
-        manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
-                this.getY() + ws.manowitz_window_y_offset,
+        setDialogSize(manowitz_window, ws.manowitz_window_x_offset,
+                ws.manowitz_window_y_offset,
                 ws.manowitz_window_w, ws.manowitz_window_h);
         manowitz_window.setVisible(true);
     }
@@ -923,6 +923,7 @@ public class Gui extends JFrame {
         build_city_window.add(build_city_panel);
         build_city_panel.setBounds(0, 0,
                 ws.main_window_width, ws.main_window_height);
+        build_city_window.setUndecorated(true);
         build_city_window.pack();
         setDialogSize(build_city_window, 0,
                 0,
@@ -1043,8 +1044,8 @@ public class Gui extends JFrame {
             manowitz_panel.setNrChapters(vol);
             manowitz_panel.setChapter(vol, chapter);
             manowitz_panel.setState();
-            manowitz_window.setBounds(this.getX() + ws.manowitz_window_x_offset,
-                    this.getY() + ws.manowitz_window_y_offset,
+            setDialogSize(manowitz_window, ws.manowitz_window_x_offset,
+                    ws.manowitz_window_y_offset,
                     ws.manowitz_window_w, ws.manowitz_window_h);
             manowitz_window.setVisible(true);
 //        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
@@ -1080,10 +1081,11 @@ public class Gui extends JFrame {
         manowitz_panel.setBounds(0, 0,
                 ws.manowitz_window_w, ws.manowitz_window_h);
 //        manowitz_window.add(manowitz_panel);
+        manowitz_window.setUndecorated(true);
         manowitz_window.pack();
 //        manowitz_window.setSize(ws.manowitz_window_w, ws.manowitz_window_h);
-        setDialogSize(manowitz_window, this.getX() + ws.manowitz_window_x_offset,
-                this.getY() + ws.manowitz_window_y_offset,
+        setDialogSize(manowitz_window, ws.manowitz_window_x_offset,
+                ws.manowitz_window_y_offset,
                 ws.manowitz_window_w, ws.manowitz_window_h);
     }
 
@@ -1125,8 +1127,7 @@ public class Gui extends JFrame {
         Dimension d_window = dialog.getSize();
         int w_dec_thickness = insets.left + insets.right;
         int h_dec_thickness = insets.top + insets.bottom;
-        //System.out.println("w_dec_thickness = " + w_dec_thickness);
-        //System.out.println("h_dec_thickness = " + h_dec_thickness);
+        System.out.println("w/h_dec_thickness = " + w_dec_thickness + "," + h_dec_thickness);
         dialog.setBounds(this.getX() + x, this.getY() + y, w + w_dec_thickness, h + h_dec_thickness);
     }
 
