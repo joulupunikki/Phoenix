@@ -540,7 +540,7 @@ public class SU extends State {
                 }
                 game.setCurrentPlanetNr(planet.index);
                 setWindow(C.S_PLANET_MAP);
-                gui.setMenus(false);
+                gui.setMenus(null);
                 gui.setMouseCursor(C.S_CURSOR_BOMBARD);
                 gui.setCurrentState(Bomb.get());
                 System.out.println("Bombard");
@@ -548,7 +548,7 @@ public class SU extends State {
             case Land:
                 game.setCurrentPlanetNr(planet.index);
                 setWindow(C.S_PLANET_MAP);
-                gui.setMenus(false);
+                gui.setMenus(null);
                 gui.setMouseCursor(C.S_CURSOR_LAND);
                 gui.setCurrentState(LAND1.get());
                 break;
@@ -665,23 +665,25 @@ public class SU extends State {
     public static void restoreMainWindow() {
         if (main_game_state instanceof PW) {
             setWindow(C.S_PLANET_MAP);
+            gui.setMenus(C.S_PLANET_MAP);
         } else if (main_game_state instanceof SW) {
             setWindow(C.S_STAR_MAP);
+            gui.setMenus(C.S_STAR_MAP);
         }
-        gui.setMenus(true);
+        
     }
 
     public static void setWindow(String window) {
         switch (window) {
             case C.S_PLANET_MAP:
             case C.S_STAR_MAP:
-                gui.setMenus(true);
+                gui.setMenus(window);
                 break;
             case C.S_COMBAT_WINDOW:
                 gui.getCombatWindow().initWindow();
-                gui.setMenus(false);
+                gui.setMenus(null);
             default:
-                gui.setMenus(false);
+                gui.setMenus(null);
                 break;
         }
         JPanel main_windows = gui.getMainWindows();

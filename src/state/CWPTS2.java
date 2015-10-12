@@ -67,7 +67,7 @@ public class CWPTS2 extends State {
 
             if (!Util.getSelectedUnits(game.getSelectedStack()).isEmpty() && game.landStack(((LAND1) LAND1.get()).popLandingPoint())) {
 
-                gui.setMenus(true);
+                gui.setMenus(C.S_PLANET_MAP);
                 gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
                 gui.setCurrentState(PW2.get());
                 SU.setWindow(C.S_PLANET_MAP);

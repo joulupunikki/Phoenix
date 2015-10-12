@@ -105,7 +105,7 @@ public class PW4 extends PW {
             } else {
                 gui.setCurrentState(PW3.get());
             }
-            gui.setMenus(true);
+            gui.setMenus(C.S_PLANET_MAP);
         }
     }
     /**
@@ -372,7 +372,7 @@ public class PW4 extends PW {
         gui.setStop_stack(true);
         game.resolveGroundBattleInit(C.GROUND_COMBAT, -1);
         gui.setCurrentState(PW2.get());
-        gui.setMenus(true);
+        gui.setMenus(C.S_PLANET_MAP);
         gui.getStack_move_timer().stop();
         gui.setStack_moving(false);
         SU.showCombatWindow();
@@ -382,7 +382,7 @@ public class PW4 extends PW {
         gui.setStop_stack(true);
         game.setPath(null);
         gui.setCurrentState(PW2.get());
-        gui.setMenus(true);
+        gui.setMenus(C.S_PLANET_MAP);
         gui.getStack_move_timer().stop();
         gui.setStack_moving(false);
     }

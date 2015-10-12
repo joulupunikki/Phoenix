@@ -142,7 +142,7 @@ public class LAND1 extends State {
             }
         }
         if (game.landStack(p)) {
-            gui.setMenus(true);
+            gui.setMenus(C.S_PLANET_MAP);
             gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
             gui.setCurrentState(PW2.get());
         }

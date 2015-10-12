@@ -98,7 +98,7 @@ public class PW3 extends PW {
 
                 // start stack movement loop
                 gui.setCurrentState(PW4.get());
-                gui.setMenus(false);
+                gui.setMenus(null);
                 gui.startStackMove();
             }
 

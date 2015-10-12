@@ -36,6 +36,7 @@ import game.PBEM;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,6 +47,7 @@ import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -163,6 +165,7 @@ public class Gui extends JFrame {
     //holds the planet map display and star map display and unit info window in a CardLayout    
     private JPanel main_windows;
     //menubar
+    private JPanel menubar_holder;
     private JMenuBar menubar;
     private JMenuBar no_menubar;
     private JMenu file_menu; //file menu
@@ -262,7 +265,9 @@ public class Gui extends JFrame {
         loadHexTiles();
         loadStructureTiles();
         Comp.setGame(game);
-
+        /*
+         * build Gui
+         */
         setUpMenubar();
 
         setUpFileMenu();
@@ -275,7 +280,6 @@ public class Gui extends JFrame {
         if (args.hasOption("wizardmode")) { //game.getEfs_ini().wizard_mode) {
             setUpWizardModeMenu();
         }
-        this.setJMenuBar(menubar);
         /*
          * build gui windows
          */
@@ -306,17 +310,21 @@ public class Gui extends JFrame {
          * collect main windows into card layout
          */
         assembleMainWindows();
-      
         setUpStackMenu();
         setUpCityDialog3(game, ws);
 
+
         // initialize game state
         this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
-        this.setJMenuBar(no_menubar);
         state = MM1.get();
 
         this.pack();
         this.setVisible(true);
+
+        // BUGFIX ? without this, the menubar menus will shift slightly when the
+        // menubar is first switched using setMenus
+        main_menu1.add(menubar_holder);
+        setMenus(C.S_PLANET_MAP);
 
         // set up stack blink and jump route color cycling
         setUpAnimation();
@@ -325,20 +333,15 @@ public class Gui extends JFrame {
 
     private void setUpMenubar() {
         /*
-         * build Gui
-         */
-        /*
          *set up menubar
          */
-        no_menubar = new JMenuBar();
-        no_menubar.setBackground(Color.BLACK);
-        JMenu no_menu = new JMenu(".");
-        no_menu.setBackground(Color.BLACK);
-        no_menubar.add(no_menu);
-        no_menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
         menubar = new JMenuBar();
         menubar.setBackground(Color.BLACK);
         menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        menubar.setBounds(0, 0, ws.main_window_width, 18);
+        menubar_holder = new JPanel(null);
+        menubar_holder.setBounds(0, 0, ws.main_window_width, 18);
+        menubar_holder.add(menubar);
     }
 
     private void setUpAnimation() {
@@ -1851,6 +1854,10 @@ public class Gui extends JFrame {
         String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
         JOptionPane pane = new UtilG.PhoenixJOptionPane(s, JOptionPane.PLAIN_MESSAGE, JOptionPane.DEFAULT_OPTION, null, null, null);
         JDialog dialog = pane.createDialog(this, null);
+        // reposition to conform with existing tests
+        Rectangle r = dialog.getBounds();
+        dialog.setBounds(r.x, r.y - 9, r.width, r.height);
+        // \reposition
         dialog.setVisible(true);
     }
 
@@ -1936,6 +1943,10 @@ public class Gui extends JFrame {
         String s = setLineBreaks(message, (Font) UIManager.get("OptionPane.messageFont"));
         JOptionPane pane = new UtilG.PhoenixJOptionPane(s, JOptionPane.PLAIN_MESSAGE, JOptionPane.YES_NO_OPTION, null, null, JOptionPane.NO_OPTION);
         JDialog dialog = pane.createDialog(this, null);
+        // reposition to conform with existing tests
+        Rectangle r = dialog.getBounds();
+        dialog.setBounds(r.x, r.y - 9, r.width, r.height);
+        // \reposition
         dialog.setVisible(true);
         int reply = JOptionPane.NO_OPTION;
         Object val = pane.getValue();
@@ -2087,17 +2098,21 @@ public class Gui extends JFrame {
         });
     }
 
-    public void setMenus(boolean visible) {
-        if (visible) {
-            this.setJMenuBar(menubar);
+    public final void setMenus(String new_parent) {
+        Container old_parent = menubar_holder.getParent();
+        if (old_parent != null) {
+            old_parent.remove(menubar_holder);
+        }
+        if (new_parent == null) {
+            return;
+        } else if (new_parent.equals(C.S_PLANET_MAP)) {
+            planet_window.add(menubar_holder);
+        } else if (new_parent.equals(C.S_STAR_MAP)) {
+            space_window.add(menubar_holder);
         } else {
-            this.setJMenuBar(no_menubar);
+            throw new AssertionError("Wrong window " + new_parent);
         }
     }
-    // not used
-//    public void showStackWindow() {
-//        stack_window = new StackWindow(this);
-//    }
 
     public void setDragUnit(Unit u, Point p) {
         drag_unit = u;
