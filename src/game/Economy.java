@@ -184,7 +184,7 @@ public class Economy implements Serializable {
 
                 // Feed any city in the hex (if it has the right owner)
                 Structure city = hex.getStructure();
-                if (city != null && city.owner == turn) {      // There's a city of the current faction
+                if (city != null && city.prev_owner == turn) {      // There's a city of the current faction
 
                     int this_city_needs = city.health / 10;    // City consumes 1 food for each complete 10% health
                     food_needed += this_city_needs;
@@ -208,7 +208,7 @@ public class Economy implements Serializable {
                 List<Unit> stack = hex.getStack();
                 StackIterator iter2 = new StackIterator(stack);
                 for (Unit unit = iter2.next(); unit != null; unit = iter2.next()) {    // For each unit in stack (including cargo)
-                    if (unit.owner == turn && unit.type_data.eat && !unit.in_space) {    // Unit needs feeding
+                    if (unit.prev_owner == turn && unit.type_data.eat && !unit.in_space) {    // Unit needs feeding
                         food_needed += 1;
                         if (food_needed > food_available) {
                             unit.turns_starving += 1;
