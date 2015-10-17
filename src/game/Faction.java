@@ -131,6 +131,7 @@ public class Faction implements Serializable {
      */
     public void record(File file) {
         Util.printString(file, " " + Util.getFactionName(number) + "," + number);
+        Util.printString(file, "  " + eliminated + "," + firebirds + "," + tax_rate + "," + tithe_rate + "," + pay_rate + "," + debt);
         research.record(file);
     }
 

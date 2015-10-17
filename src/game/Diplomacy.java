@@ -27,8 +27,10 @@
  */
 package game;
 
+import java.io.File;
 import java.io.Serializable;
 import util.C;
+import util.Util;
 
 /**
  * Diplomacy related data structures and algorithms.
@@ -101,5 +103,9 @@ public class Diplomacy implements Serializable {
     
     public int getDiplomaticState(int faction_a, int faction_b) {
         return getSetDiplomaticState(faction_a, faction_b, -1, false);
+    }
+
+    void record(File file) {
+        Util.printString(file, "diplomacy");
     }
 }

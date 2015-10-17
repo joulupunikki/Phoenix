@@ -147,13 +147,27 @@ public class Phoenix {
             System.exit(1);
         }
         input_log_writer = new PrintWriter(event_log_buf, true);
-        input_log_writer.println("# input logging started at " + (new Date()).toString());
-        input_log_writer.println("# fields (#8): nr time(ms) eventID button/wheel/key clicks screenX screenY source[=text]");
+
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
             private Point prev_xy = new Point(-1, -1);
-
+            private boolean prefix = true;
+            @Override
             public void eventDispatched(AWTEvent event) {
+                //System.out.println("#####Event : " + event.paramString());
+                if (prefix) {
+                    prefix = false;
+                    Long random_seed = Phoenix.start_time;
+                    if (cli_opts.hasOption(C.OPT_RANDOM_SEED)) {
+                        random_seed = Long.getLong(cli_opts.getOptionValue(C.OPT_RANDOM_SEED));
+                    }
+                    if (RobotTester.isRobotTest()) {
+                        random_seed = RobotTester.getRandomSeed();
+                    }
+                    input_log_writer.println(RobotTester.RANDOM_SEED_PREFIX + random_seed);
+                    input_log_writer.println("# input logging started at " + (new Date()).toString());
+                    input_log_writer.println("# fields (#8): nr time(ms) eventID button/wheel/key clicks screenX screenY source[=text]");
+                }
                 int id = event.getID();
                 String details = "" + id;
                 if (event instanceof MouseWheelEvent) { // check this first since ME is super of MWE
@@ -310,7 +324,7 @@ public class Phoenix {
         opts.addOption(null, C.OPT_WIZARD_MODE, false, "Activate wizard mode");
         opts.addOption(null, C.OPT_ROBOT_STOP, true, "Execute Robot test for this number of events then stop "
                 + "Robot and leave game as is");
-
+        opts.addOption(null, C.OPT_RANDOM_SEED, true, "Set argument as random seed");
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
         try {
@@ -320,7 +334,7 @@ public class Phoenix {
             System.exit(0);
         }
         if (ret_val.hasOption(C.OPT_HELP)) {
-            formatter.printHelp("java -jar -Xss32m Phoenix\n       phoenix.sh\n       phoenix.bat"
+            formatter.printHelp("java -jar -Xss32m Phoenix.jar\n       phoenix.sh\n       phoenix.bat"
                     + "\n\nLong options are for debugging", opts);
             System.exit(0);
         }

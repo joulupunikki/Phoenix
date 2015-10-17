@@ -89,7 +89,7 @@ public class SW2 extends SW {
         Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
         Planet planet = galaxy_grid[sel.x][sel.y].parent_planet;
 
-        List<Unit> stack = planet.space_stacks[game.getSelectedFaction().y];
+        List<Unit> stack = Util.getSelectedUnits(planet.space_stacks[game.getSelectedFaction().y]);
         if (stack.get(0).owner != game.getTurn()) {
             return;
         }

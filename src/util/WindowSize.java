@@ -160,6 +160,7 @@ public class WindowSize {
     public int ui_unload_x = 525;
     public int ui_unload_y = 408;
     public int ui_unload_w = 102;
+    public int ui_button_gap = 25;
 
     public int galactic_map_x_pos = 10;
     public int galactic_map_y_pos = 23;
@@ -687,6 +688,7 @@ public class WindowSize {
             ui_unload_x *= 2;
             ui_unload_y *= 2;
             ui_unload_w *= 2;
+            ui_button_gap *= 2;
 
             galactic_map_x_pos *= 2;
             galactic_map_y_pos *= 2;

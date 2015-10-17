@@ -318,11 +318,12 @@ public class SU extends State {
                         + "must send a ship there or buy the information from another party.");
                 return;
             }
-            JPanel main_windows = gui.getMainWindows();
+            //JPanel main_windows = gui.getMainWindows();
             game.setSelectedPointFaction(null, -1, null, null);
             game.setCurrentPlanetNr(galaxy_grid[x][y].planet.index);
-            CardLayout cl = (CardLayout) main_windows.getLayout();
-            cl.show(main_windows, C.S_PLANET_MAP);
+            setWindow(C.S_PLANET_MAP); // FIX: set menubar
+            //CardLayout cl = (CardLayout) main_windows.getLayout();
+            //cl.show(main_windows, C.S_PLANET_MAP);
 //            System.out.println(galaxy_grid[x][y].name + " " + galaxy_grid[x][y].index);
             gui.setCurrentState(PW1.get());
             return;

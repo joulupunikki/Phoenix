@@ -493,6 +493,12 @@ public class Game implements Serializable {
     }
 
     public void endTurn() {
+        setFactionCities(); // FIX #52
+        for (Structure faction_city : faction_cities) {
+            if (faction_city.on_hold_no_res) {
+                faction_city.tryToStartBuild(faction_city.build_queue.getFirst(), unit_types, this);
+            }
+        }
         factions[turn].deleteOldMessages();
         advanceTurn();
         while (!human_ctrl[turn] || factions[turn].isEliminated()) {
@@ -1840,6 +1846,8 @@ public class Game implements Serializable {
         File file = FileUtils.getFile(file_name);
         FileUtils.deleteQuietly(file);
         Util.printString(file, "Year," + year + ",Turn," + turn);
+        regency.record(file);
+        diplomacy.record(file);
         Util.printString(file, " #FACTIONS");
         for (Faction faction : factions) {
             faction.record(file);

@@ -120,6 +120,7 @@ public class RobotTester extends Thread {
     private static final int D_CLICK_BUFFER = 300;
     private static final int D_CLICK_THRESHOLD = 400;
     private static final int D_CLICK_DIVISOR = D_CLICK_THRESHOLD / (D_CLICK_THRESHOLD - D_CLICK_BUFFER);
+    static final String RANDOM_SEED_PREFIX = "# random seed=";
     static final String S_SOURCE_SEP = " #";
     static final String S_SPACE = " ";
     static final int NUMBER_IDX = 0;
@@ -134,6 +135,13 @@ public class RobotTester extends Thread {
     private static String latest_event = null;
     private static volatile boolean stop = false;
     private static volatile boolean delayed_logging = false;
+
+    /**
+     * @return the random_seed
+     */
+    public static long getRandomSeed() {
+        return random_seed;
+    }
     private Robot robot = null;
     private int dx = -1;
     private int dy = -1;
@@ -151,6 +159,7 @@ public class RobotTester extends Thread {
     private int[] prev_event = {-1, -1, -1, -1, -1, -1, -1};
     private int halt_on_event_nr = 0;
     private Gui gui;
+    private static long random_seed;
 
     private RobotTester() { // prevent creation of singleton
     }
@@ -247,6 +256,7 @@ public class RobotTester extends Thread {
         try {
             this.robot = new Robot();
             input_log_buf = Files.newBufferedReader(input_log_file);
+
             success = true;
         } catch (NoSuchFileException ex) {
             System.out.println("Input event log file \"" + file_name + "\" not found.");
@@ -381,7 +391,12 @@ public class RobotTester extends Thread {
                                 stop = true;
                             }
                         } else if (buffer.getFirst().startsWith("#")) {
-                            buffer.removeFirst();
+                            String tmp = buffer.removeFirst();
+                            if (tmp.startsWith(RANDOM_SEED_PREFIX)) {
+                                random_seed = Long.parseLong(tmp.replaceFirst(RANDOM_SEED_PREFIX, ""));
+                                System.out.println(RANDOM_SEED_PREFIX + random_seed);
+                                gui.getGame().getRandom().setSeed(random_seed);
+                            }
                         } else if (buffer.size() > READ_AHEAD) {
                             state = BUFFER_FULL;
                         }

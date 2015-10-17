@@ -28,6 +28,7 @@
 package game;
 
 import dat.EfsIni;
+import java.io.File;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -262,6 +263,7 @@ public class Regency implements Serializable {
                     setRegent(candidate);
                     may_set_offices = true;
                     message += "The claimant loses the election. Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
+                    dropThroneClaim();
                 }  
             }
             for (Faction faction : game.getFactions()) {
@@ -384,6 +386,11 @@ public class Regency implements Serializable {
      */
     public int getCrownedEmperor() {
         return crowned_emperor;
+    }
+
+    void record(File file) {
+        Util.printString(file, "regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + crowned_emperor);
+
     }
 
 }

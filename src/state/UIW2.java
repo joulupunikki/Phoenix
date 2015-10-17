@@ -99,7 +99,8 @@ public class UIW2 extends State {
                                 gui.showInfoWindow("Cannot unload cargo in space.");
                                 zeroDragUnit();
                                 return;
-                            } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
+                            } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4
+                                    && (u.type_data.cargo == 0 || u.cargo_list.size() >= u.type_data.cargo)) {
                                 gui.showInfoWindow("Cannot unload cargo on the ocean.");
                                 zeroDragUnit();
                                 return;

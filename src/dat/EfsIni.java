@@ -182,6 +182,19 @@ public class EfsIni implements Serializable {
             Util.logFFErrorAndExit(FN.S_PHOENIX_INI, -1);
         }
 
+        // for testing, we may have some rather extraordinary settings in
+        // FN.S_PHOENIXTEST_INI so load them if any
+        File test = new File(FN.S_PHOENIXTEST_INI);
+        if (test.exists()) {
+            phoenix_ini = new Properties(phoenix_ini);
+            try (BufferedReader in = new BufferedReader(new FileReader(FN.S_PHOENIXTEST_INI))) {
+                phoenix_ini.load(in);
+            } catch (Exception e) {
+                Util.logEx(null, e);
+                Util.logFFErrorAndExit(FN.S_PHOENIXTEST_INI, -1);
+            }
+        }
+
         return phoenix_ini;
     }
 

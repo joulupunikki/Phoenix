@@ -518,7 +518,8 @@ public class Gui extends JFrame {
 //        this.add(planet_window);
 
         planet_window.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
+            @Override
+            public void mouseClicked(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 state.clickOnPlanetWindow(e);
             }
@@ -530,7 +531,8 @@ public class Gui extends JFrame {
                 ws.planet_map_width, ws.planet_map_height);
 
         planet_map.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
+            @Override
+            public void mouseClicked(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 state.clickOnPlanetMap(e);
             }
@@ -1125,13 +1127,15 @@ public class Gui extends JFrame {
     }
 
     public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
-        Insets insets = this.getInsets();
+        Insets insets_p = this.getInsets();
+        Insets insets_d = dialog.getInsets();
+
         Dimension d_pane = dialog.getContentPane().getSize();
         Dimension d_window = dialog.getSize();
-        int w_dec_thickness = insets.left + insets.right;
-        int h_dec_thickness = insets.top + insets.bottom;
+        int w_dec_thickness = insets_p.left + insets_p.right;
+        int h_dec_thickness = insets_p.top + insets_p.bottom;
         System.out.println("w/h_dec_thickness = " + w_dec_thickness + "," + h_dec_thickness);
-        dialog.setBounds(this.getX() + x, this.getY() + y, w + w_dec_thickness, h + h_dec_thickness);
+        dialog.setBounds(this.getX() + x + insets_p.left, this.getY() + y + insets_p.top, w + w_dec_thickness, h + h_dec_thickness);
     }
 
 //    public int getXOffset() {
@@ -1297,8 +1301,10 @@ public class Gui extends JFrame {
     }
 
     public void showCityDialog(int planet, Structure city) {
-        city_dialog.setBounds(this.getX() + ws.city_window_x,
-                this.getY() + ws.city_window_y,
+//        city_dialog.setBounds(this.getX() + ws.city_window_x,
+//                this.getY() + ws.city_window_y,
+//                ws.city_window_w, ws.city_window_h);
+        setDialogSize(city_dialog, ws.city_window_x, ws.city_window_y,
                 ws.city_window_w, ws.city_window_h);
         city_dialog.setPlanet(planet);
         city_dialog.setCity(city);
@@ -2295,11 +2301,21 @@ public class Gui extends JFrame {
         gui.setStateReferences();
 //        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();
+        Rectangle r = gui.getBounds();
+        System.out.println("JFrame bounds : " + r);
+        System.out.println("Location on screen : " + gui.getLocationOnScreen());
+        //gui.setBounds(0, 24, r.width, r.height);
         Phoenix.setGui(gui);
 //        throw new AssertionError(); // for testing exception handler
         double init_time = ((System.nanoTime() - Phoenix.start_time)) / 1_000_000 / 1e3;
         System.out.println("Startup time = " + init_time + "s");
         System.out.println("Phoenix ready.");
+        Long random_seed = Phoenix.start_time;   
+        if (args.hasOption(C.OPT_RANDOM_SEED)) {
+            random_seed = Long.getLong(args.getOptionValue(C.OPT_RANDOM_SEED));
+        }
+        System.out.println("Random seed = " + random_seed);
+        gui.getGame().getRandom().setSeed(random_seed);
         if (args.hasOption(C.OPT_ROBOT_TEST)) {
             System.out.println(""
                     + "Starting Robot test. Please leave test machine undisturbed until test is\n"

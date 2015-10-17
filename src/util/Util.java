@@ -42,6 +42,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -63,6 +64,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
 /**
@@ -2135,5 +2138,23 @@ public class Util {
                 throw new AssertionError();
         }
         return s;
+    }
+    
+    public static void recordState(String file_name, Game game) {
+        File file = FileUtils.getFile(file_name);
+        FileUtils.deleteQuietly(file);
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(file_name, false);
+        } catch (IOException ex) {
+            Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(1);
+        }
+
+        BufferedWriter bw = new BufferedWriter(fw);
+        PrintWriter pw = new PrintWriter(bw, false);
+        game.record(file_name);
+        pw.flush();
+        pw.close();
     }
 }

@@ -50,6 +50,8 @@ public class FN {
     public static final String S_FLC = "FLC";
     public static final String S_MANOWITZ = "MANOWITZ";
     public static final String S_PHOENIX_INI = "PHOENIX" + F_S + "PHOENIX.INI";
+    public static final String S_PHOENIXTEST_INI = "PHOENIX" + F_S + "PHOENIXTEST.INI";
+
     public static final String S_EFS_INI = "DAT" + F_S + "EFS.INI";
     public static final String S_EFS_INI_TMP = "EFS.INI.TMP";
     public static final String S_BG0_PCX = S_PCX + F_S + "BG0.PCX";

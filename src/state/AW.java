@@ -89,7 +89,8 @@ public class AW extends State {
             if(amounts[i] > 0) {
                 for (Unit u : agora_stack) {
                     if (u.type == C.CARGO_UNIT_TYPE && u.res_relic == i) {
-                        u.amount -= amounts[i];
+                        //u.amount -= amounts[i];
+                        game.getResources().adjustPodResources(u, -amounts[i]);
                         game.getFaction(game.getTurn()).addFirebirds(amounts[i] * sells[i] * (-1));
                         game.getResources().addOneResourceTypeToHex(game.getCurrentPlanetNr(), h.getX(), h.getY(), game.getTurn(), game.getTurn(), i, amounts[i]);
                     }

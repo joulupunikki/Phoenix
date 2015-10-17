@@ -67,7 +67,8 @@ public class AW2 extends State {
             if (amounts[i] > 0) {
                 for (Unit u : sell_stack) {
                     if (u.type == C.CARGO_UNIT_TYPE && u.res_relic == i && u.amount > 0) {
-                        u.amount -= amounts[i];
+                        //u.amount -= amounts[i];
+                        game.getResources().adjustPodResources(u, -amounts[i]);
                         game.getFaction(sell_stack.get(0).owner).addFirebirds(amounts[i] * buys[i]);
                         boolean res_exists = false;
                         for (Unit agora_stack1 : agora_stack) {
