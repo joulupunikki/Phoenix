@@ -67,7 +67,6 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalSliderUI;
 import org.apache.commons.math3.util.FastMath;
-import phoenix.Phoenix;
 import static util.Util.readFile;
 import static util.Util.scale2XImage;
 
@@ -744,7 +743,7 @@ public class UtilG {
             c_list = UtilG.getDescendantsOfType(JComponent.class, chooser);
         }
         guard.stopGuard();
-        System.out.println("# of " + chooser.getClass().getCanonicalName() + " children : " + c_list.size());
+        //System.out.println("# of " + chooser.getClass().getCanonicalName() + " children : " + c_list.size());
         for (JComponent jc : c_list) {
             jc.setBackground(Color.BLACK);
             if (jc instanceof JPanel) {
@@ -891,7 +890,7 @@ public class UtilG {
             Util.logFileFormatError("null", 0, "Incompatible magic number in FLC file");
             return null;
         }
-        System.out.println("FLC Debug: Magic : " + magic + " size : " + wt + "," + ht);
+        //System.out.println("FLC Debug: Magic : " + magic + " size : " + wt + "," + ht);
         decoded = new int[wt * ht];
         //skip header
         s_idx += HEADER_LENGTH;
@@ -899,14 +898,14 @@ public class UtilG {
         int main_chunk = bytesToInt(encoded_data, s_idx + 4, 2);
         
         while (main_chunk != FRAME_TYPE) {
-            System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size);
+            //System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size);
             s_idx += main_size;
             main_size = bytesToInt(encoded_data, s_idx, 4);
             main_chunk = bytesToInt(encoded_data, s_idx + 4, 2);
         }
         int chunks;
         chunks = bytesToInt(encoded_data, s_idx + 6, 2);
-        System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size + " chunks : " + chunks);
+        //System.out.println("  Main chunk : " + Integer.toHexString(main_chunk) + " size : " + main_size + " chunks : " + chunks);
 
         s_idx += FRAME_HEADER_LENGTH;
 
@@ -915,7 +914,7 @@ public class UtilG {
             int chunk_size = bytesToInt(encoded_data, s_idx, 4);
             int chunk_type = bytesToInt(encoded_data, s_idx + 4, 2);
             
-            System.out.println("  Chunk type :" + chunk_type + " size :" + chunk_size);
+            //System.out.println("  Chunk type :" + chunk_type + " size :" + chunk_size);
             if (chunk_type != BYTE_RUN) {
                 s_idx += chunk_size;
                 continue;
@@ -1014,7 +1013,7 @@ public class UtilG {
         if (city == null) {
             Point selected = game.getSelectedPoint();
             Point faction = game.getSelectedFaction();
-            System.out.println(faction);
+            //System.out.println(faction);
             if (selected == null || faction.x != -1) {
                 return;
             }
@@ -1276,7 +1275,7 @@ public class UtilG {
                 descendantsOfType = UtilG.getDescendantsOfType(JComponent.class, this, true);
             }
             for (JComponent jc : descendantsOfType) {
-                System.out.println(jc.getClass() + "\n   " + jc);
+                //System.out.println(jc.getClass() + "\n   " + jc);
                 if (jc instanceof JPanel) {
                     ((JPanel) jc).setOpaque(false);
                 }
@@ -1290,7 +1289,7 @@ public class UtilG {
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
             
-            Phoenix.logger.debug(this.toString());
+            //Phoenix.logger.debug(this.toString());
             //super.paint(g);
             super.paint(g);
         }
@@ -1298,64 +1297,8 @@ public class UtilG {
         public static void setUpPhoenixJOptionPane(Gui gui) {
             pallette = gui.getPallette();
             ws = Gui.getWindowSize();
-        }
-
-//        private JDialog createDialog(Component parentComponent, String title,
-//                int style)
-//                throws HeadlessException {
-//
-//            final JDialog dialog;
-//
-//            Window window = PhoenixJOptionPane.getWindowForComponent(parentComponent);
-//            if (window instanceof Frame) {
-//                dialog = new JDialog((Frame) window, title, true);
-//            } else {
-//                dialog = new JDialog((Dialog) window, title, true);
-//            }
-//            if (window instanceof SwingUtilities.SharedOwnerFrame) {
-//                WindowListener ownerShutdownListener
-//                        = SwingUtilities.getSharedOwnerFrameShutdownListener();
-//                dialog.addWindowListener(ownerShutdownListener);
-//            }
-//            super.initDialog(dialog, style, parentComponent);
-//            return dialog;
-//        }
-
-//        static Window getWindowForComponent(Component parentComponent)
-//                throws HeadlessException {
-//            if (parentComponent == null) {
-//                return getRootFrame();
-//            }
-//            if (parentComponent instanceof Frame || parentComponent instanceof Dialog) {
-//                return (Window) parentComponent;
-//            }
-//            return PhoenixJOptionPane.getWindowForComponent(parentComponent.getParent());
-//
-//        }
-        
+        }      
     }
-
-//    private static class PhoenixJDialog extends JDialog {
-//
-//        private static byte[][] pallette;
-//        private static WindowSize ws;
-//
-//        @Override
-//        public void paint(Graphics g) {
-//            super.paint(g);
-//
-//            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
-//            Graphics2D g2d = (Graphics2D) g;
-//
-//            g2d.drawImage(bi, null, 0, 0);
-//        }
-//
-//        public static void setUpPhoenixJDialog(Gui gui) {
-//            pallette = gui.getPallette();
-//            ws = Gui.getWindowSize();
-//        }
-//
-//    }
 
     public static void setUpUtilG(Gui gui) {
         PhoenixJOptionPane.setUpPhoenixJOptionPane(gui);

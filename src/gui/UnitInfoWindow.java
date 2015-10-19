@@ -267,7 +267,6 @@ public class UnitInfoWindow extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
         Unit u = gui.getInfo_unit();
-        
         if (u != null) {
             if (!u.equals(prev)) {
                 String filename = FN.S_FLC + FN.F_S + u.type_data.art;
@@ -275,13 +274,14 @@ public class UnitInfoWindow extends JPanel {
                 if (flc.exists()) {
                     unit_image = UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150);
                 } else {
-                    unit_image = null;
+                    unit_image = UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150);
                 }
                 prev = u;
             }
-            g2d.drawImage(unit_image, null, ws.sw_flc_x, ws.sw_flc_y);
-
+        } else {
+            unit_image = UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150);
         }
+        g2d.drawImage(unit_image, null, ws.sw_flc_x, ws.sw_flc_y);
     }
 
     public void setStats() {

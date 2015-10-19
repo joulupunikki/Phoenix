@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.ListIterator;
 import javax.swing.JPanel;
 import util.C;
+import util.FN;
 import util.Util;
 import util.WindowSize;
 
@@ -75,6 +76,8 @@ public class PlanetMap extends JPanel {
     int current_faction;
 
     BufferedImage bi;
+    WritableRaster horiz_edge;
+    WritableRaster vert_edge;
 
     public PlanetMap(Gui gui) {
         this.gui = gui;
@@ -84,6 +87,16 @@ public class PlanetMap extends JPanel {
         pallette = gui.getPallette();
         color_scaler = gui.getResources().getColorScaler();
         bi = new BufferedImage(ws.planet_map_width, ws.planet_map_height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
+        int d_x = 10;
+        int d_y = 20;
+        if (ws.is_double) {
+            d_x *= 2;
+            d_y *= 2;
+        }
+        BufferedImage tmp = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+        WritableRaster wr = tmp.getRaster();
+        horiz_edge = wr.createWritableChild(0, 0, ws.planet_map_width, d_y, 0, 0, null);
+        vert_edge = wr.createWritableChild(0, 0, d_x, ws.planet_map_height, 0, 0, null);
     }
 
     public void setGame(Game game) {
@@ -916,43 +929,49 @@ public class PlanetMap extends JPanel {
         if (stack_moving && 0 < stack_move_counter && 20 > stack_move_counter) {
             return;
         }
-        int a_x = wr.getWidth();
-        int a_y = wr.getHeight();
-        int d_x = 10;
-        int d_y = 20;
-        if (ws.is_double) {
-            d_x *= 2;
-            d_y *= 2;
-        }
-        int[] data = {0};
-        for (int i = 0; i < a_x; i++) {
-            for (int j = 0; j < d_y; j++) {
-                wr.setPixel(i, j, data);
 
-            }
+        wr.setRect(0, 0, horiz_edge);
+        wr.setRect(0, 0, vert_edge);
+        wr.setRect(wr.getWidth() - vert_edge.getWidth(), 0, vert_edge);
+        wr.setRect(0, wr.getHeight() - horiz_edge.getHeight(), horiz_edge);
 
-        }
-        for (int i = 0; i < a_x; i++) {
-            for (int j = a_y - d_y; j < a_y; j++) {
-                wr.setPixel(i, j, data);
-
-            }
-
-        }
-        for (int i = 0; i < d_x; i++) {
-            for (int j = d_y; j < a_y - d_y; j++) {
-                wr.setPixel(i, j, data);
-
-            }
-
-        }
-        for (int i = a_x - d_x; i < a_x; i++) {
-            for (int j = d_y; j < a_y - d_y; j++) {
-                wr.setPixel(i, j, data);
-
-            }
-
-        }
+//        int a_x = wr.getWidth();
+//        int a_y = wr.getHeight();
+//        int d_x = 10;
+//        int d_y = 20;
+//        if (ws.is_double) {
+//            d_x *= 2;
+//            d_y *= 2;
+//        }
+//        int[] data = {0};
+//        for (int i = 0; i < a_x; i++) {
+//            for (int j = 0; j < d_y; j++) {
+//                wr.setPixel(i, j, data);
+//
+//            }
+//
+//        }
+//        for (int i = 0; i < a_x; i++) {
+//            for (int j = a_y - d_y; j < a_y; j++) {
+//                wr.setPixel(i, j, data);
+//
+//            }
+//
+//        }
+//        for (int i = 0; i < d_x; i++) {
+//            for (int j = d_y; j < a_y - d_y; j++) {
+//                wr.setPixel(i, j, data);
+//
+//            }
+//
+//        }
+//        for (int i = a_x - d_x; i < a_x; i++) {
+//            for (int j = d_y; j < a_y - d_y; j++) {
+//                wr.setPixel(i, j, data);
+//
+//            }
+//
+//        }
 
         int origin_x = origin.x;
         int origin_y = origin.y;

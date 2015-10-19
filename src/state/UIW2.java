@@ -31,9 +31,9 @@ import galaxyreader.Unit;
 import game.Square;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.util.Iterator;
 import java.util.List;
 import util.C;
+import util.StackIterator;
 
 /**
  * Unit info window unit dragged
@@ -58,8 +58,26 @@ public class UIW2 extends State {
         gui.getMainWindows().repaint();
     }
 
+    /**
+     * Handles dragged unit release on UnitInfoWindow (UIW). We have four rows
+     * and five columns of unit positions in UIW, and the units are presented
+     * left to right, top to bottom, in stack order with cargo listed in order
+     * right after the carrier. So we use a StackIterator and loop first row
+     * wise then column wise and check if the event is situated on that unit
+     * position. Due to the aforementioned ordering the correct stack unit (if
+     * any) should be available currently from the iterator. Now, if the unit
+     * under mouse (UUM) is the dragged unit (DU) then do nothing, else if DU is
+     * carried, disembark if allowed, if UUM is a carrier and has room, embark,
+     * if DU and UUM are of same resource type, open cargo manipulation dialog
+     * if DU is resource and UUM is null, open cargo manipulation dialog.
+     *
+     * stack
+     *
+     * @param e
+     */
+    @Override
     public void releaseOnWindow(MouseEvent e) {
-        System.out.println("e = " + e);
+        //System.out.println("e = " + e);
         Unit drag_unit = gui.getDragUnit();
         Point q = e.getPoint();
         Point faction = game.getSelectedFaction();
@@ -71,18 +89,15 @@ public class UIW2 extends State {
         if (faction.x == -1) {
             stack = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getStack();
             terrain = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getTerrain();
-            System.out.println("terrain = " + terrain[C.OCEAN]);
+            //System.out.println("terrain = " + terrain[C.OCEAN]);
             tile_set = game.getPlanet(game.getCurrentPlanetNr()).tile_set_type;
         } else {
             Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
         }
 
-        boolean is_cargo_listing = false;
-        Iterator<Unit> iterator = stack.listIterator();
-        Iterator<Unit> cargo_it = null;
-        Unit u = iterator.next();
-
+        StackIterator iter = new StackIterator(stack);
+        Unit u = iter.next();
         for (int i = 0; i < C.STACK_WINDOW_UNITS_Y; i++) {
             for (int j = 0; j < C.STACK_WINDOW_UNITS_X; j++) {
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
@@ -90,8 +105,8 @@ public class UIW2 extends State {
 
                 if (dx <= q.x && q.x <= dx + ws.unit_icon_size
                         && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
-                    if (!drag_unit.equals(u)) {
-                        if (drag_unit.carrier != null) {
+                    if (!drag_unit.equals(u)) { // no self referencing
+                        if (drag_unit.carrier != null) { // carried unit
                             if ((faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
                                     || drag_unit.move_type == C.MoveType.LANDER
                                     || drag_unit.move_type == C.MoveType.SPACE))
@@ -104,19 +119,16 @@ public class UIW2 extends State {
                                 gui.showInfoWindow("Cannot unload cargo on the ocean.");
                                 zeroDragUnit();
                                 return;
-                            } else {
+                            } else { // disembark
                                 Unit carrier = drag_unit.carrier;
                                 carrier.disembark(drag_unit);
                                 stack.add(drag_unit);
-//                            drag_unit.carrier = null;
-                                System.out.println("carrier = " + carrier);
-
                             }
                         }
-                        if (u.type_data.cargo > 0) {
-                            if (drag_unit.type_data.can_b_cargo == 1) {
-                                if (u.cargo_list.size() < u.type_data.cargo) {
-                                    if (u.embark(drag_unit)) {
+                        if (u.type_data.cargo > 0) { // if dragged onto a carrier
+                            if (drag_unit.type_data.can_b_cargo == 1) { // and can be cargo
+                                if (u.cargo_list.size() < u.type_data.cargo) { // and there is room
+                                    if (u.embark(drag_unit)) { // then embark unit
                                         stack.remove(drag_unit);
                                         boolean selected = false;
                                         for (Unit unit : stack) {
@@ -128,7 +140,6 @@ public class UIW2 extends State {
                                         if (!selected) {
                                             stack.get(0).selected = true;
                                         }
-//                            drag_unit.carrier = u;
                                     }
                                 } else {
                                     gui.showInfoWindow("Transport is full.");
@@ -138,73 +149,38 @@ public class UIW2 extends State {
                             }
                         }
                         if (drag_unit.type == C.CARGO_UNIT_TYPE && u.type == C.CARGO_UNIT_TYPE
-                                && drag_unit.res_relic == u.res_relic) {
+                                && drag_unit.res_relic == u.res_relic) { // cargo manipulation
                             gui.initCargoWin(drag_unit, u, stack);
                             gui.showCargoWin(true);
                         }
                     }
                     zeroDragUnit();
-//                    gui.setDragUnit(null, null);
-//                    gui.setCurrentState(UIW1.get());
-//                    gui.getMainWindows().repaint();
                     return;
                 }
-
-//                if (iterator.hasNext()) {
-//                    u = iterator.next();
-//                } else {
-//                    return;
-//                }
-                if (is_cargo_listing) {
-                    u = cargo_it.next();
-                    if (!cargo_it.hasNext()) {
-                        cargo_it = null;
-                        is_cargo_listing = false;
-                    }
-                } else if (u.cargo_list.isEmpty()) {
-                    if (iterator.hasNext()) {
-                        u = iterator.next();
-                    } else {
-                        if (drag_unit.carrier != null) {
-                            if (faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
-                                    || drag_unit.move_type == C.MoveType.LANDER
-                                    || drag_unit.move_type == C.MoveType.SPACE)) {
-                                gui.showInfoWindow("Cannot unload cargo in space.");
-                            } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
-                                gui.showInfoWindow("Cannot unload cargo on the ocean.");
-                            } else {
-                                Unit carrier = drag_unit.carrier;
-                                carrier.disembark(drag_unit);
-                                stack.add(drag_unit);
-//                            drag_unit.carrier = null;
-                                System.out.println("carrier = " + carrier);
-
-                            }
-                        } else if (drag_unit.type == C.CARGO_UNIT_TYPE) {
-                            gui.initCargoWin(drag_unit, null, stack);
-                            gui.showCargoWin(true);
+                u = iter.next();
+                if (u == null) {
+                    if (drag_unit.carrier != null) {
+                        if (faction.x != -1 && !(drag_unit.move_type == C.MoveType.JUMP
+                                || drag_unit.move_type == C.MoveType.LANDER
+                                || drag_unit.move_type == C.MoveType.SPACE)) {
+                            gui.showInfoWindow("Cannot unload cargo in space.");
+                        } else if (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4) {
+                            gui.showInfoWindow("Cannot unload cargo on the ocean.");
+                        } else {
+                            Unit carrier = drag_unit.carrier;
+                            carrier.disembark(drag_unit);
+                            stack.add(drag_unit);
                         }
-                        zeroDragUnit();
-//                        gui.setDragUnit(null, null);
-//                        gui.setCurrentState(UIW1.get());
-//                        gui.getMainWindows().repaint();
-                        return;
+                    } else if (drag_unit.type == C.CARGO_UNIT_TYPE) {
+                        gui.initCargoWin(drag_unit, null, stack);
+                        gui.showCargoWin(true);
                     }
-                } else {
-                    cargo_it = u.cargo_list.listIterator();
-                    u = cargo_it.next();
-                    if (cargo_it.hasNext()) {
-                        is_cargo_listing = true;
-                    }
+                    zeroDragUnit();
+                    return;
                 }
-
             }
-
         }
         zeroDragUnit();
-//        gui.setDragUnit(null, null);
-//        gui.setCurrentState(UIW1.get());
-//        gui.getMainWindows().repaint();
     }
 
     private void zeroDragUnit() {

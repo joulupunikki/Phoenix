@@ -154,13 +154,13 @@ public class DiplomacyWindow extends JPanel {
     }
 
     public void enterWindow(int faction) {
-        System.out.println("enterWindow() start : " + contract);
+        //System.out.println("enterWindow() start : " + contract);
         if (contract == null) {
             contract = new Contract();
         }
         clear();
 
-        System.out.println("enterWindow() end : " + contract);
+        //System.out.println("enterWindow() end : " + contract);
         this.faction = faction;
     }
 
@@ -240,7 +240,7 @@ public class DiplomacyWindow extends JPanel {
     }
 
     public void done() {
-        System.out.println("contract in done() " + contract);
+        //System.out.println("contract in done() " + contract);
         if (contract.getTerms().isEmpty()) {
             return;
         }
@@ -427,7 +427,7 @@ public class DiplomacyWindow extends JPanel {
                 if (value > 0) {
                     term = new Contract.Money(value);
                 }
-                System.out.println("I'll forward you to alcoholics anonymous ...");
+                //System.out.println("I'll forward you to alcoholics anonymous ...");
                 break;
 //            case RESOURCES:
 //                System.out.println("A Hawkwood, a Hazat and a Decados went to a bar ...");
@@ -453,7 +453,7 @@ public class DiplomacyWindow extends JPanel {
         switch (ThenWeWill.values()[selection]) {
             case PEACE:
                 term = new Contract.DiplomaticState(C.DS_PEACE);
-                System.out.println("\"Peace in our time ...\"");
+                //System.out.println("\"Peace in our time ...\"");
                 break;
             case MONEY:
                 int max = game.getFaction(game.getTurn()).balanceBudget(false);
@@ -467,7 +467,7 @@ public class DiplomacyWindow extends JPanel {
                 if (value > 0) {
                     term = new Contract.Money(value);
                 }
-                System.out.println("I'll forward you to alcoholics anonymous ...");
+                //System.out.println("I'll forward you to alcoholics anonymous ...");
                 break;
 //            case RESOURCES:
 //                System.out.println("A Hawkwood, a Hazat and a Decados went to a bar ...");
@@ -530,7 +530,7 @@ public class DiplomacyWindow extends JPanel {
 
         public void showDialog(int max) {
             //max = 500000;
-            System.out.println("DGBslider");
+            //System.out.println("DGBslider");
             value = -1;
             slider.setMaximum(max);
             int major = (max - 1) / 2;

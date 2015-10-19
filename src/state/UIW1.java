@@ -28,6 +28,7 @@
 package state;
 
 import galaxyreader.Unit;
+import game.Hex;
 import game.Square;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -101,8 +102,9 @@ public class UIW1 extends State {
         Point p = game.getSelectedPoint();
         boolean[] terrain = null;
         int tile_set = -1;
+        Hex hex = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y);
         if (faction.x == -1) {
-            terrain = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(p.x, p.y).getTerrain();
+            terrain = hex.getTerrain();
             tile_set = game.getPlanet(game.getCurrentPlanetNr()).tile_set_type;
         }
         List<Unit> tmp = new LinkedList<>();
@@ -124,6 +126,7 @@ public class UIW1 extends State {
             c = u.carrier;
             c.disembark(u);
         }
+        game.getHexProc().spotProc(hex, tmp);
         stack.addAll(tmp);
     }
 

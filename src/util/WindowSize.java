@@ -130,9 +130,9 @@ public class WindowSize {
     public int combat_window_stack_display_x = 15;
     public int combat_window_stack_display_x2 = main_window_width - combat_window_stack_display_w - combat_window_stack_display_x;
     public int combat_window_stack_display_y = 260;
-    public int combat_window_fight_button_x = 280;
+    public int combat_window_fight_button_x = 258;
     public int combat_window_fight_button_y = 453;
-    public int combat_window_fight_button_w = 80;
+    public int combat_window_fight_button_w = 124;
     public int combat_window_fight_button_h = 15;
     public int combat_window_bombard_again_button_y = 428;
     public int cw_att_n_x = 127;

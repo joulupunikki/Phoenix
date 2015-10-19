@@ -717,7 +717,7 @@ public class Battle implements Serializable {
         List<Unit> defender = new LinkedList<>();
         for (Unit unit : stack_b) {
 
-            if (unit.type_data.ranged_sp_str > 0 || (bombard) && target[unit.move_type.ordinal()][C.RANGED_SPACE] == 1) {
+            if (unit.type_data.ranged_sp_str > 0 || bombard) {
                 defender.add(unit);
                 unit.health_tmp = unit.health;
             }

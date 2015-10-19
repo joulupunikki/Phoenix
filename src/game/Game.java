@@ -995,7 +995,7 @@ public class Game implements Serializable {
             subMovePointsSpace(selected);
             planet.addStack(selected, selected_faction.y);
             target_hex.minusStack(selected);
-            unSpot(selected);
+            unSpot(Util.xS(selected));
             spotSpace(planet, selected, selected_faction.x);
             setUnitCoords(true, planet.index, planet.x, planet.y, selected);
             // which code-monkey did this ?
@@ -1042,7 +1042,7 @@ public class Game implements Serializable {
             planet.minusStack(selected, selected_faction.y);
             setUnitCoords(false, planet.index, p.x, p.y, selected);
             setSelectedPointFaction(p, -1, null, null);
-            unSpot(selected);
+            unSpot(Util.xS(selected));
             hex_proc.spotProc(target_hex, selected);
             Structure city = target_hex.getStructure();
             if (city != null && city.owner != selected.get(0).owner) {
