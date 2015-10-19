@@ -132,7 +132,13 @@ New in version 0.50.0
 Orbital bombardment and PTS defence fire with Ranged Space capable units implemented. Currently, all PTS units within
 5 hexes will fire on hostiles.
 
-House screen partially implemented. Tax, skim and unit pay may be set. Taxes are collected, and ending your turn is not allowed if your firebirds would go to negative.
+House screen partially implemented. Tax, tithe skim and unit pay may be set. Taxes are collected, units are paid and ending your turn is not allowed if your firebirds would go to negative.
+
+Diplomacy screen partially implemented. Currently, you may conduct diplomacy only between the five great houses. Currently, only peace and firebirds may be selected as contract terms. Sent contracts and replies are viewable in Messages.
+
+Byzantium II screen functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor.
+
+Agora trade implemented. When selected, League agoras display trade button, press this to buy resources. Move cargo pods to League agoras to sell resources. May not trade if at war with League.
 
 New in version 0.11.0
 ---------------------
