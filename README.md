@@ -13,6 +13,7 @@ TOC
 * [1: Getting Phoenix](https://github.com/joulupunikki/Phoenix#1-getting-phoenix)
 * [2: Installing and running](https://github.com/joulupunikki/Phoenix#2-installing-and-running)
 * [3: Changes](https://github.com/joulupunikki/Phoenix#3-changes)
+* [Copyright disclaimer](https://github.com/joulupunikki/Phoenix#copyright-disclaimer)
 
 News
 ====
@@ -129,6 +130,8 @@ See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above and [READ
 
 New in version 0.50.0
 ---------------------
+(Notice: previous published release version was numbered 0.10.2. Published version numbers between 0.10.2 and 0.50.0 do not exist, they were skipped.)
+
 Orbital bombardment and PTS defence fire with Ranged Space capable units implemented. Currently, all PTS units within
 5 hexes will fire on hostiles.
 
