@@ -16,6 +16,7 @@ TOC
 
 News
 ====
+Version 0.50.0 released 19 oct 2015
 
 Contributing policy change to "Yes for predefined tasks" as of 28 apr 2015
 
@@ -93,17 +94,17 @@ See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above.
 2: Installing and running
 =========================
 
-The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar (so far, no java 8 features are used so compiling to java 7 compliance is possible. This may change in the future and everyone is encouraged to move to java 8 if possible.)
+The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar.
 
 Important note:
-Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` or `phoenix.sh` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
+Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` (or `phoenix.sh` on linux) instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
 
 2.1: Precompiled release distribution
 -------------------------------------
-Copy `Phoenix.jar`,`Phoenix.bat`,`phoenix.sh` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. Execute `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -Xss32m -jar Phoenix.jar 2 GALAXY.GAL` or double click on `Phoenix1280x1024.bat`.
+Copy `Phoenix.jar`,`Phoenix.bat`,`phoenix.sh` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. Execute `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -jar -Xss32m Phoenix.jar -d` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
-`C:\Program Files\Java\jdk1.8.0` you would type `"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar Phoenix.jar 1 GALAXY.GAL`.
+`C:\Program Files\Java\jdk1.8.0` you would type `"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar -Xss32m Phoenix.jar`.
 
 2.2: Building release distribution from sources 
 -----------------------------------------------
@@ -125,6 +126,13 @@ See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above and [READ
 
 3: Changes
 ==========
+
+New in version 0.50.0
+---------------------
+Orbital bombardment and PTS defence fire with Ranged Space capable units implemented. Currently, all PTS units within
+5 hexes will fire on hostiles.
+
+House screen partially implemented. Tax, skim and unit pay may be set. Taxes are collected, and ending your turn is not allowed if your firebirds would go to negative.
 
 New in version 0.11.0
 ---------------------
