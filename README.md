@@ -95,13 +95,13 @@ See [Workflow](https://github.com/joulupunikki/Phoenix#workflow) above.
 2: Installing and running
 =========================
 
-The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. It comes precompiled with the "Binary distribution" and (hopefully) easily compilable with the "Source distribution". Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar.
+The main component of Phoenix is the file `Phoenix.jar` which is intended to be a feature complete, less buggy and additional modern wargame feature implementing replacent for `EFS.EXE`. The `Phoenix_XX.YY.ZZ.zip` release package comes with a precompiled binary and (hopefully) easily compilable sources. Java knowledge beyond this document is required to compile with the raw sources from the "Raw database". Java 8 (or higher) jdk or jre is needed to run Phoenix.jar.
 
 Important note:
 Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus probably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` (or `phoenix.sh` on linux) instead of `Phoenix.jar` or from the command line issue eg. `java -Xss32m -jar Phoenix.jar`. For 1280x1024 window click on `Phoenix1280x1024.bat`.
 
-2.1: Precompiled release distribution
--------------------------------------
+2.1: Precompiled binary
+-----------------------
 Copy `Phoenix.jar`,`Phoenix.bat`,`phoenix.sh` and `Phoenix1280x1024.bat` and `PHOENIX` directory to your EFS directory where `EFS.EXE` resides. Execute `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -jar -Xss32m Phoenix.jar -d` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
