@@ -55,8 +55,6 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import util.C;
 import util.FN;
 import util.Util;
@@ -69,7 +67,7 @@ import util.UtilG;
  * @author joulupunikki
  */
 public class Phoenix {
-    public static final Logger logger = LogManager.getLogger();
+//    public static final Logger logger = LogManager.getLogger();
     public static final long start_time;
     private static int event_number = 0;
     private static LinkedList<String> log_buffer = new LinkedList<>();
@@ -104,7 +102,7 @@ public class Phoenix {
      */
     public static void main(String[] args) {
         setLAF();
-        logger.debug("Test log4j logging");
+//        logger.debug("Test log4j logging");
 
         // parse options
         CommandLine cli_opts = parseCLI(args);

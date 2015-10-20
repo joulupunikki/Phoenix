@@ -187,13 +187,13 @@ public class PW4 extends PW {
         boolean stack_moving = true;
         // handle non-combat stacks and agora sales
         if (!Util.anyCombat(moving_stack)) {
-            logger.debug("PW4 non-combat stack");
+//            logger.debug("PW4 non-combat stack");
             boolean agora_sale = false;
             if (city != null && city.owner != faction.x) {
                 if (city.type == C.AGORA && city.owner == C.LEAGUE
                         && game.getDiplomacy().getDiplomaticState(city.owner, faction.x) != C.DS_WAR
                         && Util.anyCargoPods(moving_stack)) {
-                    logger.debug(" + agora sale");
+//                    logger.debug(" + agora sale");
                     agora_sale = true;
                 } else {
                     stop();
@@ -209,11 +209,11 @@ public class PW4 extends PW {
         if (city == null) {
             //1.1: no units in stack 
             if (stack.isEmpty()) {
-                logger.debug("PW4 1.1");
+//                logger.debug("PW4 1.1");
                 tryToMove();
                 //1.2: own units in stack
             } else if (stack.get(0).owner == faction.x) {
-                logger.debug("PW4 1.2");
+//                logger.debug("PW4 1.2");
                 if (stack.get(0).prev_owner != faction.y) {
                     gui.showInfoWindow("Cannot merge loaned unit stacks.");
                     stop();
@@ -222,7 +222,7 @@ public class PW4 extends PW {
                 tryToMove();
                 //1.3:neutral units in stack
             } else if (game.getDiplomacy().getDiplomaticState(faction.x, stack.get(0).owner) != C.DS_WAR) {
-                logger.debug("PW4 1.3");
+//                logger.debug("PW4 1.3");
                 if (!byzIICombatOK(moving_stack)) {
                     return false;
                 }
@@ -233,38 +233,38 @@ public class PW4 extends PW {
                 game.getDiplomacy().setDiplomaticState(faction.x, stack.get(0).owner, C.DS_WAR);
                 //1.3.1: only non ground combatants in stack
                 if (game.isCapture()) {
-                    logger.debug("PW4 1.3.1");
+//                    logger.debug("PW4 1.3.1");
                     game.capture(faction);
                     stop();
                     stack_moving = false;
                     //1.3.2: ground combatants in stack
                 } else {
-                    logger.debug("PW4 1.3.2");
+//                    logger.debug("PW4 1.3.2");
                     combat();
                     stack_moving = false;
                 }
                 //1.4: enemy units in stack
             } else {
-                logger.debug("PW4 1.4");
+//                logger.debug("PW4 1.4");
                 if (!byzIICombatOK(moving_stack)) {
                     return false;
                 }
                 //1.4.1: only non ground combatants in stack
                 if (game.isCapture()) {
-                    logger.debug("PW4 1.4.1");
+//                    logger.debug("PW4 1.4.1");
                     game.capture(faction);
                     stop();
                     stack_moving = false;
                     //1.4.2: ground combatants in stack
                 } else {
-                    logger.debug("PW4 1.4.2");
+//                    logger.debug("PW4 1.4.2");
                     combat();
                     stack_moving = false;
                 }
             }
             //2: own city in hex
         } else if (city.owner == faction.x) {
-            logger.debug("PW4 2");
+//            logger.debug("PW4 2");
             if (city.prev_owner != faction.y) {
                 gui.showInfoWindow("Cannot merge loaned unit stacks.");
                 stop();
@@ -276,7 +276,7 @@ public class PW4 extends PW {
             //3.0: league agora and cargo in moving stack
             if (city.type == C.AGORA && city.owner == C.LEAGUE
                     && Util.anyCargoPods(moving_stack)) {
-                logger.debug("PW4 3.0");
+//                logger.debug("PW4 3.0");
                 stop();
                 saveMainGameState();
                 gui.setCurrentState(AW2.get());
@@ -294,7 +294,7 @@ public class PW4 extends PW {
             game.getDiplomacy().setDiplomaticState(faction.x, stack.get(0).owner, C.DS_WAR);
             //3.1: no units in stack
             if (stack.isEmpty()) {
-                logger.debug("PW4 3.1");
+//                logger.debug("PW4 3.1");
                 game.captureCity(city, faction.x, faction.y);
                 tryToMove();
                 stop();
@@ -304,14 +304,14 @@ public class PW4 extends PW {
             } else {
                 //3.3.1: only non ground combatants in stack
                 if (game.isCapture()) {
-                    logger.debug("PW4 3.3.1");
+//                    logger.debug("PW4 3.3.1");
                     game.capture(faction);
                     game.captureCity(city, faction.x, faction.y);
                     stop();
                     stack_moving = false;
                     //3.3.2: ground combatants in stack
                 } else {
-                    logger.debug("PW4 3.3.2");
+//                    logger.debug("PW4 3.3.2");
                     combat();
                     stack_moving = false;
                 }
@@ -319,13 +319,13 @@ public class PW4 extends PW {
             //3.4 not possible
             //4: at war with city owner
         } else {
-            logger.debug("PW4 4");
+//            logger.debug("PW4 4");
             if (!byzIICombatOK(moving_stack)) {
                 return false;
             }
             //4.1: no units in stack
             if (stack.isEmpty()) {
-                logger.debug("PW4 4.1");
+//                logger.debug("PW4 4.1");
                 game.captureCity(city, faction.x, faction.y);
                 tryToMove();
                 stop();
@@ -335,14 +335,14 @@ public class PW4 extends PW {
             } else {
                 //4.4.1: only non ground combatants in stack
                 if (game.isCapture()) {
-                    logger.debug("PW4 4.4.1");
+//                    logger.debug("PW4 4.4.1");
                     game.capture(faction);
                     game.captureCity(city, faction.x, faction.y);
                     stop();
                     stack_moving = false;
                     //4.4.2: ground combatants in stack
                 } else {
-                    logger.debug("PW4 4.4.2");
+//                    logger.debug("PW4 4.4.2");
                     combat();
                     stack_moving = false;
                 }

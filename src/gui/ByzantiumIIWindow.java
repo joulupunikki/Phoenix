@@ -194,7 +194,10 @@ public class ByzantiumIIWindow extends JPanel {
         drawMinistryDetails(g, C.HOUSE4, C.HOUSE4);
         drawMinistryDetails(g, C.HOUSE5, C.HOUSE5);
 
-        if (regency.getYearsSinceThroneClaim() > -1) {
+        if (regency.getCrownedEmperor() > -1) {
+            UtilG.drawStringGrad((Graphics2D) g, Util.getFactionName(regency.getCrownedEmperor()) + " Victor", ws.font_large,
+                    ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1, false);
+        } else if (regency.getYearsSinceThroneClaim() > -1) {
             UtilG.drawStringGrad((Graphics2D) g, "Emperor declared", ws.font_large,
                     ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1, false);
         }

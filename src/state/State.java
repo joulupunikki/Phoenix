@@ -33,8 +33,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import javax.swing.JCheckBox;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import util.WindowSize;
 
 /**
@@ -43,7 +41,7 @@ import util.WindowSize;
  * @author joulupunikki
  */
 public abstract class State {
-    public static final Logger logger = LogManager.getLogger();
+//    public static final Logger logger = LogManager.getLogger();
     static Gui gui;
     static Game game;
     static WindowSize ws;

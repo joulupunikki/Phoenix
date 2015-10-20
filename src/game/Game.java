@@ -533,7 +533,10 @@ public class Game implements Serializable {
         turn = 0;
         year++;
         Faction.eliminateNoblelessFactions(this);
-        // TODO if(Faction.checkVictoryByElimination(factions);
+        int last_house_standing = Faction.checkVictoryByElimination(factions);
+        if (last_house_standing > -1) {
+            regency.setCrownedEmperor(last_house_standing);
+        }
         regency.purgeEliminatedFromOffices(this);
         regency.advanceThroneClaim(false);
         regency.resolveElections(this);

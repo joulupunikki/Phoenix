@@ -95,7 +95,7 @@
                                     <exclude>junit:junit</exclude>
                                 </excludes>
                             </artifactSet>
-                            <filters>
+<!--                            <filters>
                                 <filter>
                                     <artifact>org.apache.logging.log4j:log4j-api</artifact>
                                     <includes>
@@ -106,11 +106,11 @@
                                     <artifact>org.apache.logging.log4j:log4j-core</artifact>
                                     <includes>
                                         <include>**</include>
-<!--                                        <include>org.apache.logging.log4j.core.impl.Log4jContextFactory</include>
-                                        <include>org.apache.logging.log4j.core.Logger</include>-->
+                                        <include>org.apache.logging.log4j.core.impl.Log4jContextFactory</include>
+                                        <include>org.apache.logging.log4j.core.Logger</include>
                                     </includes>
                                 </filter>
-                            </filters>            
+                            </filters>            -->
                         </configuration>
                     </execution>
                 </executions>

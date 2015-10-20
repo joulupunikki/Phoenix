@@ -232,6 +232,9 @@ public class Regency implements Serializable {
             if (years_since_throne_claim < 2) { // regent elections
 
                 if (candidate > -1) { // a new regent
+                    if (candidate != regent) {
+                        dropThroneClaim();
+                    }
                     setRegent(candidate);
                     may_set_offices = true;
                     message += " Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
@@ -255,8 +258,9 @@ public class Regency implements Serializable {
                                 + " years before the rest of humanity recognizes this claim.";
                     } else { // final vote
                         message += " In the final vote, the claimant " + Util.getFactionName(candidate)
-                                + " has gathered the support necessary to become emperor. The "
-                                + Util.factionNameDisplay(candidate) + " has been crowned the Emperor !";
+                                + " has gathered the support necessary to become emperor. \n\n"
+                                + "All hail The Imperial Majesty, Lord of Lords of "
+                                + Util.factionNameDisplay(candidate) + ", Emperor of the Fading Suns !";
                         crowned_emperor = regent;
                     }
                 } else {
@@ -391,6 +395,13 @@ public class Regency implements Serializable {
     void record(File file) {
         Util.printString(file, "regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + crowned_emperor);
 
+    }
+
+    /**
+     * @param crowned_emperor the crowned_emperor to set
+     */
+    public void setCrownedEmperor(int crowned_emperor) {
+        this.crowned_emperor = crowned_emperor;
     }
 
 }
