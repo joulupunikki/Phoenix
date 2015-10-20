@@ -79,6 +79,9 @@ public class PlanetMap extends JPanel {
     WritableRaster horiz_edge;
     WritableRaster vert_edge;
 
+    static final Color PATH_GREEN = new Color(96, 208, 64);
+    static final Color PATH_RED = new Color(160, 60, 20);
+
     public PlanetMap(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
@@ -537,9 +540,9 @@ public class PlanetMap extends JPanel {
 
                         if (h.getX() == i && h.getY() == j) {
                             if (turn > 1) {
-                                g.setColor(Color.RED);
+                                g.setColor(PATH_RED);
                             } else {
-                                g.setColor(Color.GREEN);
+                                g.setColor(PATH_GREEN);
                             }
 
                             if (end_turn) {
@@ -553,9 +556,9 @@ public class PlanetMap extends JPanel {
                                 g.drawString(s, dx, dy - ws.font_structure_name_gap);
                                 g.drawString(s, dx, dy + ws.font_structure_name_gap);
                                 if (turn > 1) {
-                                    g.setColor(Color.RED);
+                                    g.setColor(PATH_RED);
                                 } else {
-                                    g.setColor(Color.GREEN);
+                                    g.setColor(PATH_GREEN);
                                 }
 
                                 g.drawString(s, dx, dy);
