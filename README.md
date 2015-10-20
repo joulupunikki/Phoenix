@@ -17,7 +17,7 @@ TOC
 
 News
 ====
-Version 0.50.0 released 19 oct 2015
+Version 0.50.0 released 20 oct 2015
 
 Contributing policy change to "Yes for predefined tasks" as of 28 apr 2015
 
@@ -135,13 +135,13 @@ New in version 0.50.0
 Faction relations partially implemented. May be at war or peace. If your action would result in attacking non-hostiles, a confirmation will be required. At game start, all relations are peaceful except: the rebels are permanently at war with the five great houses; the symbiots are permanently at war with everybody.
 
 Orbital bombardment and PTS defence fire with Ranged Space capable units implemented. Currently, all PTS units within
-5 hexes will fire on hostiles.
+5 hexes will fire on hostiles landing or bombarding.
 
 House screen partially implemented. Tax, tithe skim and unit pay may be set. Taxes are collected, units are paid and ending your turn is not allowed if your firebirds would go to negative.
 
 Diplomacy screen partially implemented. Currently, you may conduct diplomacy only between the five great houses. Currently, only peace and firebirds may be selected as contract terms. Sent contracts and replies are viewable in Messages.
 
-Byzantium II screen functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor. To vote, click on vote button is Byzantium II screen, click on house banner to vote for that house, click on abstain button to abstain. To assign ministries, click on ministry banner.
+Byzantium II screen functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor. To vote, click on vote button in Byzantium II screen, click on house banner to vote for that house, click on abstain button to abstain. To assign ministries, click on ministry banner.
 
 Agora trade implemented. When selected, League agoras display trade button, press this to buy resources. Move cargo pods to League agoras to sell resources. May not trade if at war with League.
 
@@ -149,7 +149,7 @@ New in version 0.11.0
 ---------------------
 Note: this is a meta release with no new game functionality.
 
-Convert project from native NetBeans to Apache Maven. Define contributable tasks as issues. Change contribution policy to "Yes for predefined tasks."
+Convert project from native NetBeans to Apache Maven. Define contributable tasks as issues. Change contribution policy to "Yes for predefined tasks." Not released officially.
 
 New in version 0.10.3
 ---------------------
