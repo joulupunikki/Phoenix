@@ -1,3 +1,7 @@
-javac */*.java
-jar cfm Phoenix.jar manifest.mf static.ini */*.class
-mv Phoenix.jar ..
+cp Phoenix/per-developer-pom.xml.STATIC Phoenix/per-developer-pom.xml
+cd math
+mvn clean install -DskipTests
+cd ..
+cd Phoenix
+mvn clean install -DskipTests
+mv target/Phoenix.jar ../..
