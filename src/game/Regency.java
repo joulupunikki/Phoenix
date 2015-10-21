@@ -28,7 +28,7 @@
 package game;
 
 import dat.EfsIni;
-import java.io.File;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -392,8 +392,8 @@ public class Regency implements Serializable {
         return crowned_emperor;
     }
 
-    void record(File file) {
-        Util.printString(file, "regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + crowned_emperor);
+    void record(PrintWriter pw) {
+        pw.println( "regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + crowned_emperor);
 
     }
 

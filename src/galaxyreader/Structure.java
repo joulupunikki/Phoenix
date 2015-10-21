@@ -31,8 +31,8 @@ import dat.UnitType;
 import game.Game;
 import game.Hex;
 import game.Message;
-import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
@@ -370,8 +370,8 @@ public class Structure implements Serializable {
      * Game state printout method, prints the Structure object. A CSV record is
      * produced of the Structure * object's identifying statistics.
      */
-    public void record(File file) {
-        Util.printString(file, "  "
+    public void record(PrintWriter pw) {
+        pw.println( "  "
                 + p_idx + "," + x + "," + y + "," + loyalty + "," + owner + ","
                 + prev_owner + "," + type + "," + health + "," + turns_starving
                 + "," + turns_left);

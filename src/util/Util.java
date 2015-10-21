@@ -2153,7 +2153,7 @@ public class Util {
 
         BufferedWriter bw = new BufferedWriter(fw);
         PrintWriter pw = new PrintWriter(bw, false);
-        game.record(file_name);
+        game.record(pw);
         pw.flush();
         pw.close();
     }

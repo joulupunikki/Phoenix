@@ -42,7 +42,7 @@ import galaxyreader.Structure;
 import galaxyreader.Unit;
 import gui.Resource;
 import java.awt.Point;
-import java.io.File;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
@@ -51,7 +51,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.random.RandomAdaptor;
 import util.C;
 import util.StackIterator;
@@ -1845,19 +1844,17 @@ public class Game implements Serializable {
      *
      * @param file_name
      */
-    public void record(String file_name) {
-        File file = FileUtils.getFile(file_name);
-        FileUtils.deleteQuietly(file);
-        Util.printString(file, "Year," + year + ",Turn," + turn);
-        regency.record(file);
-        diplomacy.record(file);
-        Util.printString(file, " #FACTIONS");
+    public void record(PrintWriter pw) {
+        pw.println( "Year," + year + ",Turn," + turn);
+        regency.record(pw);
+        diplomacy.record(pw);
+        pw.println( " #FACTIONS");
         for (Faction faction : factions) {
-            faction.record(file);
+            faction.record(pw);
         }
-        Util.printString(file, " #PLANETS");
+        pw.println( " #PLANETS");
         for (Planet planet : planets) {
-            planet.record(file);
+            planet.record(pw);
         }
     }
 

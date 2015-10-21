@@ -29,7 +29,7 @@ package game;
 
 import galaxyreader.Structure;
 import galaxyreader.Unit;
-import java.io.File;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -241,12 +241,12 @@ public class Hex implements Comparable<Hex>, Serializable {
      *
      * @param file
      */
-    public void record(File file) {
+    public void record(PrintWriter pw) {
         if (city != null) {
-            city.record(file);
+            city.record(pw);
         }
         for (Unit unit : stack) {
-            unit.record(file);
+            unit.record(pw);
         }
     }
 }

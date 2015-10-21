@@ -47,6 +47,7 @@ import java.util.LinkedList;
 import org.apache.commons.io.FileUtils;
 import util.C;
 import util.FN;
+import util.Util;
 
 /**
  * WARNING: generates OS-level input events. Abnormal termination may lead to
@@ -469,7 +470,7 @@ public class RobotTester extends Thread {
             try {
                 long check_time = System.currentTimeMillis();
                 System.out.println("State file: " + this.state_file.getName());
-                gui.getGame().record(FN.S_GAME_STATE_RECORD_FILE);
+                Util.recordState(FN.S_GAME_STATE_RECORD_FILE, gui.getGame());
                 long expect = FileUtils.checksumCRC32(this.state_file);
                 long result = FileUtils.checksumCRC32(FileUtils.getFile(FN.S_GAME_STATE_RECORD_FILE));
                 System.out.println("Expected end state  CRC32 = " + expect);

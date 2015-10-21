@@ -29,8 +29,8 @@ package galaxyreader;
 
 import game.PlanetGrid;
 import java.awt.Point;
-import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
@@ -351,14 +351,14 @@ public class Planet implements Serializable {
      * Game state printout method, prints the contents of a Planet object. Name,
      * owner, space stacks, hexes.
      */
-    public void record(File file) {
-        Util.printString(file, name + "," + owner + "\n #SPACE_STACKS");
+    public void record(PrintWriter pw) {
+        pw.println( name + "," + owner + "\n #SPACE_STACKS");
         for (List<Unit> stack : space_stacks) {
             for (Unit u : stack) {
-                u.record(file);
+                u.record(pw);
             }
         }
-        Util.printString(file, " #HEXES");
-        planet_grid.record(file);
+        pw.println( " #HEXES");
+        planet_grid.record(pw);
     }
 }

@@ -30,7 +30,7 @@ package game;
 import dat.EfsIni;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
-import java.io.File;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,10 +129,10 @@ public class Faction implements Serializable {
      * Game state printout method, prints out faction information.
      *
      */
-    public void record(File file) {
-        Util.printString(file, " " + Util.getFactionName(number) + "," + number);
-        Util.printString(file, "  " + eliminated + "," + firebirds + "," + tax_rate + "," + tithe_rate + "," + pay_rate + "," + debt);
-        research.record(file);
+    public void record(PrintWriter pw) {
+        pw.println( " " + Util.getFactionName(number) + "," + number);
+        pw.println( "  " + eliminated + "," + firebirds + "," + tax_rate + "," + tithe_rate + "," + pay_rate + "," + debt);
+        research.record(pw);
     }
 
     public boolean isEliminated() {

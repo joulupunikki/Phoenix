@@ -602,7 +602,7 @@ public class Gui extends JFrame {
                     System.out.println("Phoenix: RobotTester not finished in " + robot_wait + " ms, exiting ...");
                     ret_val = 1;
                 } else {
-                    game.record(FN.S_GAME_STATE_RECORD_FILE);
+                    Util.recordState(FN.S_GAME_STATE_RECORD_FILE, game);
                 }
                 System.exit(ret_val);
             }
