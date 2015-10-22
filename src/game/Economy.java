@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 joulupunikki joulupunikki@gmail.communist.invalid.
+ * Copyright (C) 2014 Richard Wein
  *
  *  Disclaimer of Warranties and Limitation of Liability.
  *
