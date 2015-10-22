@@ -1,10 +1,16 @@
 ##### Tools needed
 
 1. Minimum
-  * Apache Maven (3.0.5 tested)
-  * Java 1.8 (actually Java 1.7 may still work)
+  * Apache Maven (3.0.5 or later)
+  * Java 1.8 JDK
 2. Recommended
-  * An IDE with Maven support. NetBeans (8.0.2) and Eclipse (Luna 4.4.2) tested. 
+  * An IDE with Maven support. NetBeans (8.0.2) and Eclipse (Luna 4.4.2) have been tested. 
+
+##### Repositories needed
+1. [math](https://github.com/joulupunikki/math) and of course
+2. [Phoenix](https://github.com/joulupunikki/Phoenix)
+
+You should do a `mvn clean install -DskipTests` of math first, since it is a dependency for phoenix.
 
 ##### To do after cloning
 
@@ -27,6 +33,6 @@ If you have Eclipse you can copy Eclipse project configuration files from ide/ec
 
 ##### Configuration
 
-An important thing to do is to make sure your IDE formats only modified lines on save. Also, the import groups should not have an empty line between them and the default Eclipse import ordering should be removed. All this should be set automatically if you use the project configuration files in ide/eclipse.
+An important thing to do is to make sure your IDE formats only modified lines on save. Also, the import groups should not have an empty line between them and the default Eclipse import ordering should be removed. All this should be set automatically if you use the project configuration files stored in ide/eclipse-directory.
 
 Another important thing is to make sure git handles line endings properly. On a MSWindows machine this can be ensured by executing `git config --local core.autocrlf true` in Phoenix root. On any other OS the proper command is `git config --local core.autocrlf input`.
