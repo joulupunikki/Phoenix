@@ -102,7 +102,7 @@ Due to the large size of the uncompressed save files (10MB) and the fact that ja
 
 2.1: Precompiled binary
 -----------------------
-Unzip the contents of the `Phoenix_XX.YY.ZZ.zip` release package to your EFS directory where `EFS.EXE` resides. Execute `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -jar -Xss32m Phoenix.jar -d` or double click on `Phoenix1280x1024.bat`.
+Unzip the contents of the `Phoenix_XX.YY.ZZ.zip` release package to your EFS directory where `EFS.EXE` resides. Execution: doubleclick on `Phoenix.bat` (on MSWindows) or `phoenix.sh` (on BSD/Linux/OSX) or if you use commandline for a 640x480 window type `java -Xss32m -jar Phoenix.jar`. For a 1280x1024 window type `java -jar -Xss32m Phoenix.jar -d` or double click on `Phoenix1280x1024.bat`.
 
 If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or use absolute path name. Eg. on windows if your java jdk is installed into 
 `C:\Program Files\Java\jdk1.8.0` you would type `"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar -Xss32m Phoenix.jar`.
@@ -113,7 +113,7 @@ Unzip the contents of the `Phoenix_XX.YY.ZZ.zip` release package to your EFS dir
 * On windows, you need to download and unzip Apache Maven version 3.0.5 or later here (src sub-directory in EFS directory.) It is available [here](https://maven.apache.org/download.cgi). As of this writing the latest version is the file `apache-maven-3.3.3-bin.zip`. Then execute `build.bat`.  
 * On linux, maven can be installed with the package manager. Then execute `build.sh`.
 
-If this is your first time using maven, several plugins will be loaded into .m2 sub-directory in you home directory. The math and Phoenix sources will be then compiled. All this might take a minute or two. Afterwards the `Phoenix.jar` in the EFS directory should be replaced with one compiled from sources. Then go to the EFS directory and proceed like in 2.1: Precompiled binary above.
+If this is your first time using maven, several plugins will be loaded into .m2 sub-directory in your home directory as needed while the math and Phoenix sources are being compiled. All this takes about two minutes on an Asus X54C laptop with Intel Celeron B815 CPU at 1.6Ghz and 4GB of RAM. Afterwards the `Phoenix.jar` in the EFS directory should have been automatically replaced with one compiled from sources. Then go to the EFS directory and proceed with execution like in 2.1: Precompiled binary above.
 
 2.3: Repository clone
 ---------------------
