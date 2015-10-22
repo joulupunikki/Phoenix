@@ -109,11 +109,11 @@ If you get an error saying java not found then likely java is not in the path an
 
 2.2: Building release distribution from sources 
 -----------------------------------------------
-Unzip the contents of the `Phoenix_XX.YY.ZZ.zip` release package to your EFS directory where `EFS.EXE` resides. Go to `src` directory.
-* On windows, you need to download and unzip Apache Maven version 3.0.5 or later here (src sub-directory in EFS directory.) It is available [here](https://maven.apache.org/download.cgi). As of this writing the latest version is the file `apache-maven-3.3.3-bin.zip`. Then execute `build.bat`.  
+Unzip the contents of the `Phoenix_XX.YY.ZZ.zip` release package to your EFS directory where `EFS.EXE` resides. Go to `src` directory. You should see `math` and `Phoenix` directories and `build.bat`, `build.sh` and `util.bat` files there.
+* On windows, you need to download and unzip Apache Maven version 3.0.5 or later here. It is available [here](https://maven.apache.org/download.cgi). As of this writing the latest version is the file `apache-maven-3.3.3-bin.zip`. After unzipping you should see eg. `apache-maven-3.3.3` directory in addition to the `math` and `Phoenix` directories. Then execute `build.bat`.  
 * On linux, maven can be installed with the package manager. Then execute `build.sh`.
 
-If this is your first time using maven, several plugins will be loaded into .m2 sub-directory in your home directory as needed while the math and Phoenix sources are being compiled. All this takes about two minutes on an Asus X54C laptop with Intel Celeron B815 CPU at 1.6Ghz and 4GB of RAM. Afterwards the `Phoenix.jar` in the EFS directory should have been automatically replaced with one compiled from sources. Then go to the EFS directory and proceed with execution like in 2.1: Precompiled binary above.
+If this is your first time using maven, then several maven plugins and dependencies will be loaded into `.m2` sub-directory in your home directory as needed while the math and Phoenix sources are being compiled. All this takes about two minutes (and a couple of hundred lines of console output scrolling by too fast to make any sense) on an Asus X54C laptop with Intel Celeron B815 CPU at 1.6Ghz and 4GB of RAM. Afterwards the `Phoenix.jar` in the EFS directory should have been automatically replaced with one compiled from sources. Then go to the EFS directory and proceed with execution like in 2.1: Precompiled binary above.
 
 2.3: Repository clone
 ---------------------
