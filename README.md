@@ -131,18 +131,18 @@ New in version 0.50.0
 ---------------------
 (Notice: previous published release version was numbered 0.10.2. Published version numbers between 0.10.2 and 0.50.0 do not exist, they were skipped.)
 
-Faction relations partially implemented. May be at war or peace. If your action would result in attacking non-hostiles, a confirmation will be required. At game start, all relations are peaceful except: the rebels are permanently at war with the five great houses; the symbiots are permanently at war with everybody.
+**Faction relations** partially implemented. May be at war or peace. If your action would result in attacking non-hostiles, a confirmation will be required. At game start, all relations are peaceful except: the rebels are permanently at war with the five great houses; the symbiots are permanently at war with everybody.
 
-Orbital bombardment and PTS defence fire with Ranged Space capable units implemented. Currently, all PTS units within
+**Orbital bombardment and PTS** defence fire with Ranged Space capable units implemented. Currently, all PTS units within
 5 hexes will fire on hostiles landing or bombarding.
 
-House screen partially implemented. Tax, tithe skim and unit pay may be set. Taxes are collected, units are paid and ending your turn is not allowed if your firebirds would go to negative.
+**House window** partially implemented. Tax, tithe skim and unit pay may be set. Taxes are collected, units are paid and ending your turn is not allowed if your firebirds would go to negative.
 
-Diplomacy screen partially implemented. Currently, you may conduct diplomacy only between the five great houses. Currently, only peace and firebirds may be selected as contract terms. Sent contracts and replies are viewable in Messages.
+**Diplomacy window** partially implemented. Currently, you may conduct diplomacy only between the five great houses. Currently, only peace and firebirds may be selected as contract terms. Sent contracts and replies are viewable in Messages.
 
-Byzantium II screen functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor. To vote, click on vote button in Byzantium II screen, click on house banner to vote for that house, click on abstain button to abstain. To assign ministries, click on ministry banner.
+**Byzantium II window** functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor. To vote, click on vote button in Byzantium II window, click on house banner to vote for that house, click on abstain button to abstain. To assign ministries, click on ministry banner.
 
-Agora trade implemented. When selected, League agoras display trade button, press this to buy resources. Move cargo pods to League agoras to sell resources. May not trade if at war with League.
+**Agora trade** partially implemented. When selected, League agoras display trade button, press this to buy resources. Move cargo pods to League agoras to sell resources. May not trade if at war with League.
 
 New in version 0.11.0
 ---------------------
