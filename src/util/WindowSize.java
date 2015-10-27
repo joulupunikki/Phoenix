@@ -1192,6 +1192,19 @@ public class WindowSize {
         galaxy_window.put(CGW.BUT_W, 105);
         galaxy_window.put(CGW.BUT_H, 18);
         galaxy_window.put(CGW.SQUARE, 9);
+
+        galaxy_window.put(CGW.PMAP_X, 20);
+        galaxy_window.put(CGW.PMAP_Y, 5);
+        galaxy_window.put(CGW.PMAP_W, 600);
+        galaxy_window.put(CGW.PMAP_H, 450);
+
+        galaxy_window.put(CGW.PBUT_X, 518);
+        galaxy_window.put(CGW.PBUT_Y, 460);
+        galaxy_window.put(CGW.PBUT_W, 104);
+        galaxy_window.put(CGW.PBUT_H, 16);
+        galaxy_window.put(CGW.PNAME_X, 22);
+        galaxy_window.put(CGW.PNAME_Y, 473);
+
         if (is_double) {
             galaxy_window.replaceAll(mul2);
         }

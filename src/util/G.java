@@ -117,6 +117,9 @@ public class G {
         R_BUTTON_W, R_WIN_Y, R_WIN_H,
     }
 
+    /**
+     * GalaxyWindow and GlobeWindow coordinates.
+     */
     public enum CGW {
 
         MAP_X,
@@ -128,6 +131,15 @@ public class G {
         BUT_W,
         BUT_H,
         SQUARE, MAP_MARGIN,
+        // Grand Planetary map
+        PMAP_X,
+        PMAP_Y,
+        PMAP_W,
+        PMAP_H,
+        PBUT_X,
+        PBUT_Y,
+        PBUT_W,
+        PBUT_H, PNAME_X, PNAME_Y,
 
     }
 

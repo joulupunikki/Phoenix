@@ -29,6 +29,7 @@ package state;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import static state.SU.setWindow;
 import static state.State.ws;
 import util.C;
 import util.Util;
@@ -67,6 +68,13 @@ public class PW extends MW {
 
     public void clickOnGlobeMap(MouseEvent e) {
 
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            setWindow(C.S_GLOBE_WINDOW);
+            saveMainGameState();
+            gui.getGlobeWindow().initWindow();
+            gui.setCurrentState(GLO.get());
+            return;
+        }
         Point p = e.getPoint();
         int x = p.x / (ws.globe_map_width / C.PLANET_MAP_WIDTH);
         int y = p.y / (ws.globe_map_height / (C.PLANET_MAP_COLUMNS - 1));

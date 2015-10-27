@@ -125,8 +125,9 @@ public class Gui extends JFrame {
     private JButton space_button;
     private ButtonIcon launch_button_enabled;
     private ButtonIcon launch_button_disabled;
-    //holds the starmap background and components
+    private GlobeWindow globe_window;
     private GalaxyWindow galaxy_window;
+    //holds the starmap background and components
     private SpaceWindow space_window;
     private GalacticMap galactic_map;           // gal minimap on space window
     private GalacticMap galactic_map_cw;        // gal minimap on combat window
@@ -305,6 +306,7 @@ public class Gui extends JFrame {
         setUpMessagesWindow();
         setUpByzantiumIIWindow();
         setUpGalaxyWindow();
+        setUpGlobeWindow();
         agora_window = AgoraWindow.getAgoraWindow(this);
         house_window = HouseWindow.getHouseWindow(this);
         diplomacy_window = DiplomacyWindow.getWindow(this);
@@ -412,6 +414,8 @@ public class Gui extends JFrame {
         main_windows.add(house_window, C.S_HOUSE_WINDOW);
         main_windows.add(diplomacy_window, C.S_DIPLOMACY_WINDOW);
         main_windows.add(galaxy_window, C.S_GALAXY_WINDOW);
+        main_windows.add(globe_window, C.S_GLOBE_WINDOW);
+
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
     }
 
@@ -470,6 +474,30 @@ public class Gui extends JFrame {
         unit_info_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
         unit_info_window.setUpWindow();
+    }
+
+    private void setUpGlobeWindow() {
+        /*
+         * create star map display
+         */
+        globe_window = new GlobeWindow(this);
+        globe_window.setLayout(null);
+        globe_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
+        globe_window.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+//                clickOnPlanetMap(e);
+                state.clickOnWindow(e);
+            }
+        });
+
+        globe_window.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+//                handleWheelMove(e);
+                state.wheelRotated(e);
+            }
+        });
     }
 
     private void setUpGalaxyWindow() {
@@ -1371,6 +1399,10 @@ public class Gui extends JFrame {
         return galaxy_window;
     }
 
+    public GlobeWindow getGlobeWindow() {
+        return globe_window;
+    }
+
     private class CityDialog extends JDialog {
 
         /**
@@ -1874,6 +1906,7 @@ public class Gui extends JFrame {
         diplomacy_window.setGame(game);
         resolve_contract_dialog.setGame(game);
         galaxy_window.setGame(game);
+        globe_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

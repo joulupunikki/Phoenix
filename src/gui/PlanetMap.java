@@ -1000,7 +1000,7 @@ public class PlanetMap extends JPanel {
                     // hex tile numbers in efstile*.bin
                     int[] tile_no;
 
-                    tile_no = getTileNo(i, j);
+                    tile_no = getTileNo(i, j, game);
 
                     //skip top j when i % 2 == 0
 //                if (j != origin_y || (i % 2 != 0)) {
@@ -1190,7 +1190,13 @@ public class PlanetMap extends JPanel {
 //        }
     }
 
-    public int[] getTileNo(int u, int v) {
+    /**
+     *
+     * @param u the value of u
+     * @param v the value of v
+     * @param game the value of game
+     */
+    public static int[] getTileNo(int u, int v, Game game) {
         /*
          * room for:
          * basic hex type
@@ -1552,7 +1558,7 @@ public class PlanetMap extends JPanel {
         return tile_no;
     }
 
-    public int processFlags(int flags) {
+    public static int processFlags(int flags) {
 
         int tile_no = 0;
 
