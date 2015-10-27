@@ -167,6 +167,21 @@ public class Phoenix {
                     input_log_writer.println("# fields (#8): nr time(ms) eventID button/wheel/key clicks screenX screenY source[=text]");
                 }
                 int id = event.getID();
+                // On windows certain events always return 0,0 as their getLocationOnScreen()
+                // This causes problems with robottester,  so we skip here everything
+                // except that which may go into input.log
+                switch (id) {
+                    case MouseEvent.MOUSE_DRAGGED:
+                    case MouseEvent.MOUSE_MOVED:
+                    case MouseEvent.MOUSE_PRESSED:
+                    case MouseEvent.MOUSE_RELEASED:
+                    case MouseEvent.MOUSE_WHEEL:
+                    case KeyEvent.KEY_PRESSED:
+                    case KeyEvent.KEY_RELEASED:
+                        break;
+                    default:
+                        return;
+                }
                 String details = "" + id;
                 if (event instanceof MouseWheelEvent) { // check this first since ME is super of MWE
                     // Wheel Events seem to propagate beyond the original source
@@ -179,6 +194,7 @@ public class Phoenix {
                     MouseWheelEvent me = (MouseWheelEvent) event;
                     details += " " + me.getWheelRotation() + " -1 "
                             + getCoordinates(me);
+                    //System.out.println("MWE at : " + getCoordinates(me));
                 } else if (event instanceof MouseEvent) {
                     MouseEvent me = (MouseEvent) event;
                     details += " " + me.getButton() + " " + me.getClickCount()
@@ -278,6 +294,8 @@ public class Phoenix {
                 Point p = Gui.getOrigin();
                 //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
                 if (me.getID() != MouseEvent.MOUSE_WHEEL) {
+                    //System.out.println(me);
+                    //System.out.println("Non-Wheel event");
                     prev_xy = me.getLocationOnScreen();
                 }
                 return ((prev_xy.x - p.x) + " "

@@ -33,7 +33,9 @@ import java.util.function.BiFunction;
 import util.C.GC;
 import util.G.CD;
 import util.G.CDW;
+import util.G.CGW;
 import util.G.CH;
+
 /**
  *
  * @author joulupunikki
@@ -549,7 +551,7 @@ public class WindowSize {
     public HashMap<Enum, Integer> house;
     public HashMap<Enum, Integer> diplomacy_selector;
     public HashMap<Enum, Integer> diplomacy_window;
-
+    public HashMap<Enum, Integer> galaxy_window;
     private final Doubler mul2;
 
     public WindowSize(boolean is_double) {
@@ -559,6 +561,7 @@ public class WindowSize {
         iHouse(is_double);
         iDiplomacy(is_double);
         iDiplomacyWindow(is_double);
+        iGalaxyWindow(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -1172,6 +1175,25 @@ public class WindowSize {
 
         if (is_double) {
             diplomacy_window.replaceAll(mul2);
+        }
+
+    }
+
+    private void iGalaxyWindow(boolean is_double) {
+        galaxy_window = new HashMap<>();
+        galaxy_window.put(CGW.MAP_X, 84);
+        galaxy_window.put(CGW.MAP_Y, 10);
+        galaxy_window.put(CGW.MAP_W, 473);
+        galaxy_window.put(CGW.MAP_H, 433);
+        galaxy_window.put(CGW.MAP_MARGIN, 11);
+
+        galaxy_window.put(CGW.BUT_X, 268);
+        galaxy_window.put(CGW.BUT_Y, 453);
+        galaxy_window.put(CGW.BUT_W, 105);
+        galaxy_window.put(CGW.BUT_H, 18);
+        galaxy_window.put(CGW.SQUARE, 9);
+        if (is_double) {
+            galaxy_window.replaceAll(mul2);
         }
 
     }

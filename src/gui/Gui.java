@@ -125,7 +125,8 @@ public class Gui extends JFrame {
     private JButton space_button;
     private ButtonIcon launch_button_enabled;
     private ButtonIcon launch_button_disabled;
-    //holds the starmap background and components    
+    //holds the starmap background and components
+    private GalaxyWindow galaxy_window;
     private SpaceWindow space_window;
     private GalacticMap galactic_map;           // gal minimap on space window
     private GalacticMap galactic_map_cw;        // gal minimap on combat window
@@ -231,6 +232,7 @@ public class Gui extends JFrame {
     private boolean load_succesfull; // true iff load game ok
 
     public Gui() throws HeadlessException {
+        //this.setUndecorated(true); // Ubuntu unity, see https://github.com/joulupunikki/Phoenix/issues/51
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         CommandLine args = Gui.args;
         pallette = Util.loadPallette(FN.S_EFS_PAL);
@@ -302,6 +304,7 @@ public class Gui extends JFrame {
         setUpXPlayerScreen();
         setUpMessagesWindow();
         setUpByzantiumIIWindow();
+        setUpGalaxyWindow();
         agora_window = AgoraWindow.getAgoraWindow(this);
         house_window = HouseWindow.getHouseWindow(this);
         diplomacy_window = DiplomacyWindow.getWindow(this);
@@ -317,7 +320,7 @@ public class Gui extends JFrame {
         // initialize game state
         this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
         state = MM1.get();
-
+        
         this.pack();
         this.setVisible(true);
 
@@ -408,6 +411,7 @@ public class Gui extends JFrame {
         main_windows.add(agora_window, C.S_AGORA_WINDOW);
         main_windows.add(house_window, C.S_HOUSE_WINDOW);
         main_windows.add(diplomacy_window, C.S_DIPLOMACY_WINDOW);
+        main_windows.add(galaxy_window, C.S_GALAXY_WINDOW);
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
     }
 
@@ -466,6 +470,30 @@ public class Gui extends JFrame {
         unit_info_window.setPreferredSize(new Dimension(ws.main_window_width,
                 ws.main_window_height));
         unit_info_window.setUpWindow();
+    }
+
+    private void setUpGalaxyWindow() {
+        /*
+         * create star map display
+         */
+        galaxy_window = new GalaxyWindow(this);
+        galaxy_window.setLayout(null);
+        galaxy_window.setPreferredSize(new Dimension(ws.main_window_width,
+                ws.main_window_height));
+
+        galaxy_window.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+//                clickOnPlanetMap(e);
+                state.clickOnWindow(e);
+            }
+        });
+
+        galaxy_window.addMouseWheelListener(new MouseAdapter() {
+            public void mouseWheelMoved(MouseWheelEvent e) {
+//                handleWheelMove(e);
+                state.wheelRotated(e);
+            }
+        });
     }
 
     private void setUpSpaceWindow() {
@@ -1339,6 +1367,10 @@ public class Gui extends JFrame {
         return color_cycle_count;
     }
 
+    public GalaxyWindow getGalaxyWindow() {
+        return galaxy_window;
+    }
+
     private class CityDialog extends JDialog {
 
         /**
@@ -1841,6 +1873,7 @@ public class Gui extends JFrame {
         diplomacy_selector.setGame(game);
         diplomacy_window.setGame(game);
         resolve_contract_dialog.setGame(game);
+        galaxy_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
         game.setPath(null);

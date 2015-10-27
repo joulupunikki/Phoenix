@@ -68,16 +68,30 @@ public class SpaceMap extends JPanel {
     private static final long serialVersionUID = 1L;
     private static final int MARGIN = 1;
     private static final int PLANET_PHASES = 16;
+
+    /**
+     * @return the planet_images
+     */
+    static int[][] getPlanet_images() {
+        return planet_images;
+    }
+
+    /**
+     * @return the planet_types
+     */
+    static int[] getPlanet_types() {
+        return planet_types;
+    }
     private Gui gui;
     private Game game;
-    private int[][] planet_images;
+    private static int[][] planet_images;
     private int[][] unit_icons;
     private WindowSize ws;
     private IndexColorModel color_index;
     private int cycle_count;
     private RingCounter planet_phase;
     MouseEvent[] mouse_events;
-    private int[] planet_types;
+    private static int[] planet_types;
 
     public SpaceMap(Gui gui) {
         this.gui = gui;

@@ -150,6 +150,7 @@ public class C {
     public static final int CLOSE_SPACE = 8;
     public static final double DISBAND_REFUND = 0.75;
 
+
     // message types
     public enum Msg {
 
@@ -390,6 +391,7 @@ public class C {
     public static final String S_AGORA_WINDOW = "agora window";
     public static final String S_HOUSE_WINDOW = "house window";
     public static final String S_DIPLOMACY_WINDOW = "diplomacy window";
+    public static final String S_GALAXY_WINDOW = "galaxy_window";
     // command line options
     public static final String OPT_DOUBLE_RES = "d";
     public static final String OPT_NAMED_GALAXY = "g";

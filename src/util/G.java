@@ -117,4 +117,18 @@ public class G {
         R_BUTTON_W, R_WIN_Y, R_WIN_H,
     }
 
+    public enum CGW {
+
+        MAP_X,
+        MAP_Y,
+        MAP_W,
+        MAP_H,
+        BUT_X,
+        BUT_Y,
+        BUT_W,
+        BUT_H,
+        SQUARE, MAP_MARGIN,
+
+    }
+
 }

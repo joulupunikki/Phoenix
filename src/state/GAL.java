@@ -27,55 +27,53 @@
  */
 package state;
 
+import gui.Gui;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import util.C;
-import util.Util;
+import util.G.CGW;
 
 /**
- * Space Window SW, superclass of all Space Windows
+ * Galaxy Window state.
  *
- * @author joulupunikki
+ * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class SW extends MW {
+public class GAL extends State {
 
-//    public void pressNextStackButton() {
-//        SU.pressNextStackButtonSU();
-//    }
-//
-//    public void pressSkipStackButton() {
-//        SU.pressSkipStackButtonSU();
-//    }
-//
-//    public void pressEndTurnButton() {
-//        if (game.getEfs_ini().pbem) {
-//            game.setSelectedPoint(null, -1);
-//            game.setSelectedFaction(-1);
-//            gui.saveGame();
-//            return;
-//        }
-//        game.endTurn();
-//        game.setJumpPath(null);
-//
-//        SU.selectNextUnmovedUnit();
-//    }
-    public void clickOnGalacticMap(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            SU.setWindow(C.S_GALAXY_WINDOW);
-            saveMainGameState();
-            gui.getGalaxyWindow().initWindow();
-            gui.setCurrentState(GAL.get());
-            return;
-        }
-        Point p = e.getPoint();
-        int x = p.x / (ws.galactic_map_width / C.STAR_MAP_WIDTH);
-        int y = p.y / (ws.galactic_map_height / C.STAR_MAP_HEIGHT);
-        x = x - 6;
-        y = y - 5;
+    private static GAL instance = new GAL();
 
-        Point q = Util.forceSpaceMapCoordinates(new Point(x, y));
-
-        game.setSpaceMapOrigin(q);
+    private Map<Enum, Integer> c = Gui.getWindowSize().galaxy_window;
+    private GAL() {
     }
+
+    public static State get() {
+        return instance;
+    }
+
+    @Override
+    public void pressExitButton() {
+        SU.restoreMainWindow();
+        gui.setCurrentState(main_game_state);
+        main_game_state = null;
+    }
+
+    /**
+     *
+     * @param e
+     */
+    @Override
+    public void clickOnWindow(MouseEvent e) {
+        Point p = e.getPoint();
+        p.x -= c.get(CGW.MAP_X) + c.get(CGW.MAP_MARGIN);
+        p.y -= c.get(CGW.MAP_Y);
+        int map_width = c.get(CGW.MAP_W) - 2 * c.get(CGW.MAP_MARGIN);
+        if (0 <= p.x && p.x <= map_width
+                && 0 <= p.y && p.y <= c.get(CGW.MAP_H) + c.get(CGW.MAP_Y)) {
+            SU.setSpaceMapOrigin(p.x * C.STAR_MAP_WIDTH / map_width, p.y * C.STAR_MAP_HEIGHT / c.get(CGW.MAP_H));
+            pressExitButton();
+        }
+    }
+
 
 }

@@ -584,6 +584,11 @@ public class SU extends State {
 //            cl.show(main_windows, C.S_PLANET_MAP);
             setWindow(C.S_PLANET_MAP);
             gui.setCurrentState(PW1.get());
+        } else {
+            setWindow(C.S_GALAXY_WINDOW);
+            saveMainGameState();
+            gui.getGalaxyWindow().initWindow();
+            gui.setCurrentState(GAL.get());
         }
     }
 
