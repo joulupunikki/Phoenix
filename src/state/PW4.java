@@ -408,4 +408,8 @@ public class PW4 extends PW {
     public void clickOnPlanetWindow(MouseEvent e) {
     }
 
+    @Override
+    public void clickOnGlobeMap(MouseEvent e) {
+    }
+
 }

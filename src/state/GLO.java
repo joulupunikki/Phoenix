@@ -69,7 +69,7 @@ public class GLO extends State {
         p.y -= c.get(CGW.PMAP_Y);
         if (0 <= p.x && p.x <= c.get(CGW.PMAP_W)
                 && 0 <= p.y && p.y <= c.get(CGW.PMAP_H)) {
-            SU.setPlanetMapOrigin(p.x * C.PLANET_MAP_WIDTH / c.get(CGW.PMAP_W), p.y * C.PLANET_MAP_COLUMNS / c.get(CGW.MAP_H));
+            SU.setPlanetMapOrigin(p.x * C.PLANET_MAP_WIDTH / c.get(CGW.PMAP_W), p.y * C.PLANET_MAP_COLUMNS / c.get(CGW.MAP_H) - 1);
             pressExitButton();
         }
     }
