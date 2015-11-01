@@ -88,17 +88,30 @@ public class Contract implements Serializable {
 
     public boolean acceptCheck(Game game) throws AssertionError {
         for (Term term : terms) {
-            int a = term.getFactionA();
-            int b = term.getFactionB();
+            int donor = term.getDonor();
+            int recipient = term.getRecipient();
             switch (term.type) {
                 case STATE:
                     break;
                 case MONEY:
-                    if (a == game.getTurn() && 
- game.getFaction(a).balanceBudget(false) - term.amount < 0) {
+                    if (donor == game.getTurn()
+                            && game.getFaction(donor).balanceBudget(false) - term.amount < 0) {
                         return false;
                     }
                     break;
+                case VOTES:
+                    if (donor == game.getTurn()
+                            && game.getRegency().promisedVotes(donor)) {
+                        return false;
+                    }
+                    break;
+                case MINISTRY:
+                    if (donor == game.getTurn()
+                            && game.getDiplomacy().isPromisedMinistry(term.amount)) {
+                        return false;
+                    }
+                    break;
+
                 default:
                     throw new AssertionError();
             }
@@ -109,16 +122,25 @@ public class Contract implements Serializable {
     public void acceptDo(Game game) throws AssertionError {
         resolved = true;
         for (Term term : terms) {
-            int a = term.getFactionA();
-            int b = term.getFactionB();
+            int donor = term.getDonor();
+            int recipient = term.getRecipient();
             switch (term.type) {
                 case STATE:
-                    game.getDiplomacy().setDiplomaticState(a, b, ((DiplomaticState) term).state);
+                    game.getDiplomacy().setDiplomaticState(donor, recipient, ((DiplomaticState) term).state);
                     break;
                 case MONEY:
-                    System.out.println("DBG money " + Util.getFactionName(a) + " " + -term.amount);
-                    game.getFaction(a).addFirebirds(-term.amount);
-                    game.getFaction(b).addFirebirds(term.amount);
+                    System.out.println("DBG money " + Util.getFactionName(donor) + " " + -term.amount);
+                    game.getFaction(donor).addFirebirds(-term.amount);
+                    game.getFaction(recipient).addFirebirds(term.amount);
+                    break;
+                case VOTES:
+                    System.out.println("SetVotes " + donor + "," + recipient);
+                    game.getRegency().setVotes(donor, recipient, -1);
+                    int[] tmp = game.getRegency().getVotes()[donor];
+                    System.out.println(" " + tmp[0] + "," + tmp[1]);
+                    break;
+                case MINISTRY:
+                    game.getDiplomacy().setMinistryPromise(donor, recipient, term.getAmount());
                     break;
                 default:
                     throw new AssertionError();
@@ -163,7 +185,8 @@ public class Contract implements Serializable {
 
         STATE,
         MONEY,
-        RESOURCE,
+        VOTES,
+        MINISTRY,
     }
 
     /**
@@ -174,16 +197,16 @@ public class Contract implements Serializable {
         private static final long serialVersionUID = 1L;
 
         protected Type type;
-        private int faction_a;
-        private int faction_b;
+        private int donor;
+        private int recipient;
         protected int amount;
 
         private Term() {
         }
 
-        public void setFactions(int a, int b) {
-            faction_a = a;
-            faction_b = b;
+        public void setFactions(int donor, int recipient) {
+            this.donor = donor;
+            this.recipient = recipient;
         }
 
         /**
@@ -194,17 +217,17 @@ public class Contract implements Serializable {
         }
 
         /**
-         * @return the faction_a
+         * @return the donor
          */
-        public int getFactionA() {
-            return faction_a;
+        public int getDonor() {
+            return donor;
         }
 
         /**
-         * @return the faction_b
+         * @return the recipient
          */
-        public int getFactionB() {
-            return faction_b;
+        public int getRecipient() {
+            return recipient;
         }
 
         /**
@@ -238,18 +261,39 @@ public class Contract implements Serializable {
         }
 
     }
-    
-    public static class Resource extends Term {
+
+    public static class Votes extends Term {
+
         private static final long serialVersionUID = 1L;
 
-        int resource_type;
-
-        public Resource(int amount, int resource_type) {
-            this.type = Type.RESOURCE;
-            this.amount = amount;
-            this.resource_type = resource_type;
+        public Votes() {
+            this.type = Type.VOTES;
         }
 
     }
+
+    public static class Ministry extends Term {
+
+        private static final long serialVersionUID = 1L;
+
+        public Ministry(int ministry) {
+            this.type = Type.MINISTRY;
+            this.amount = ministry;
+        }
+
+    }
+
+//    public static class Resource extends Term {
+//        private static final long serialVersionUID = 1L;
+//
+//        int resource_type;
+//
+//        public Resource(int amount, int resource_type) {
+//            this.type = Type.RESOURCE;
+//            this.amount = amount;
+//            this.resource_type = resource_type;
+//        }
+//
+//    }
 
 }

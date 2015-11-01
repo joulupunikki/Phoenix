@@ -128,6 +128,10 @@ public class ByzII extends State {
                     gui.showInfoWindow("You may only assign offices once on your first turn as Regent.");
                     return;
                 }
+                if (game.getRegency().isPromisedMinistry(pos)) {
+                    gui.showInfoWindow("You promised that office already!");
+                    return;
+                }
                 break;
 //            case C.IMPERIAL: // regent banner
 //                break;

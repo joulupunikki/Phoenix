@@ -27,6 +27,7 @@
  */
 package state;
 
+import game.Regency;
 import util.C;
 
 /**
@@ -54,6 +55,7 @@ public class MW extends State {
     @Override
     public void pressEndTurnButton() {
         if (game.getTurn() <= C.HOUSE5) {
+            // only the last one may have side effects !!!
             if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
                 gui.showInfoWindow("My Lord, we must cast our votes before the day is done!");
                 return;
@@ -75,6 +77,10 @@ public class MW extends State {
                 return;
             }
         }
+        int[] tmp = game.getRegency().getVotes()[game.getTurn()];
+        System.out.println(" " + tmp[0] + "," + tmp[1]);
+        // pledged votes are cast here
+        game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear(), Regency.VoteCheck.FINAL);
         if (game.getEfs_ini().pbem.pbem) {
             game.setSelectedPoint(null, -1);
             game.setSelectedFaction(-1);

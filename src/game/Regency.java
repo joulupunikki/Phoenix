@@ -33,6 +33,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import state.ByzII;
+import state.ByzII2;
 import util.C;
 import util.Util;
 
@@ -44,18 +45,38 @@ import util.Util;
 public class Regency implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final static int CANDIDATE_IDX = 0;
+    public static final int CANDIDATE_IDX = 0;
     private static final int VOTES_IDX = 1;
     // index to int[] ministers, these are equal to value - 10 of the
     // faction id's in util.C;
     public static final int FLEET = 0;
     public static final int GARRISON = 1;
     public static final int EYE = 2;
-    
+
+    /**
+     * @return the votes
+     */
+    public int[][] getVotes() {
+        return votes;
+    }
+
+    /**
+     * @return the promised_ministries
+     */
+    public int[] getPromisedMinistries() {
+        return promised_ministries;
+    }
+
+    public enum VoteCheck {
+        ADVANCE,
+        NORMAL,
+        FINAL,
+    }
 
     // -1 if unassigned, faction ID otherwise
     private int regent = -1;
     private int[] ministers = {-1, -1, -1};
+    private int[] promised_ministries;
 //    private int garrison = -1;
 //    private int eye = -1;
 //    private int fleet = -1;
@@ -64,14 +85,15 @@ public class Regency implements Serializable {
     private boolean may_set_offices = false;
 
     // vote tally for all the houses + league + church
-    // vote_tally[faction][CANDIDATE_IDX]: -2 iff not voted yet; -1 iff abstained; else candidate faction ID
-    // vote_tally[faction][VOTES_IDX]: number of votes
-    private int[][] vote_tally = new int[C.THE_CHURCH + 1][2]; // {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}};
+    // votes[faction][CANDIDATE_IDX]: -2 iff not voted yet; -1 iff abstained; else candidate faction ID
+    // votes[faction][VOTES_IDX]: number of votes
+    private int[][] votes = new int[C.THE_CHURCH + 1][2]; // {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}};
 
     private int crowned_emperor = -1;
 
     public Regency() {
-        resetVoteTally();
+        resetVotes();
+        resetPromisedMinistries();
     }
 
     /**
@@ -164,7 +186,7 @@ public class Regency implements Serializable {
      * @return
      */
     public boolean needToVote(int faction, EfsIni ini, int year) {
-        return needToVote(faction, ini, year, false);
+        return needToVote(faction, ini, year, VoteCheck.NORMAL);
     }
 
     /**
@@ -172,36 +194,38 @@ public class Regency implements Serializable {
      * @param ini
      * @param faction
      * @param year
-     * @param advance_notice
+     * @param check
      * @return
      */
-    public boolean needToVote(int faction, EfsIni ini, int year, boolean advance_notice) {
+    public boolean needToVote(int faction, EfsIni ini, int year, VoteCheck check) {
         int years_since_throne_claim = this.years_since_throne_claim;
-        if (advance_notice) {
+        if (check == VoteCheck.ADVANCE) {
             years_since_throne_claim++;
         }
         int term_length = ini.regency_term_length;
         if (faction <= C.THE_CHURCH) {
-            if (vote_tally[faction][CANDIDATE_IDX] == -2) {
-                if (years_since_throne_claim < 1 && year != C.STARTING_YEAR && (year - C.STARTING_YEAR) % term_length == 0) {
-                    return true; // regent elections
-                } else if (years_since_throne_claim == 1 || years_since_throne_claim == term_length + 1) {
-                    return true; // thone claim
+            if ((years_since_throne_claim < 1 && year != C.STARTING_YEAR && (year - C.STARTING_YEAR) % term_length == 0)
+                    || years_since_throne_claim == 1 || years_since_throne_claim == term_length + 1) {
+                if (votes[faction][CANDIDATE_IDX] == -2) { // has not voted yet
+                    return true; 
+                }
+                if (check == VoteCheck.FINAL && votes[faction][VOTES_IDX] == -1) { // pledged votes must be cast
+                    votes[faction][VOTES_IDX] = ByzII2.scepterCount();
                 }
             }
         }
         return false;
     }
 
-    public void setVotes(int faction, int candidate, int votes) {
-        vote_tally[faction][CANDIDATE_IDX] = candidate;
-        vote_tally[faction][VOTES_IDX] = votes;
+    public void setVotes(int faction, int candidate, int nr_votes) {
+        votes[faction][CANDIDATE_IDX] = candidate;
+        votes[faction][VOTES_IDX] = nr_votes;
     }
 
-    private void resetVoteTally() {
-        for (int[] vote_tally1 : vote_tally) {
-            vote_tally1[CANDIDATE_IDX] = -2;
-            vote_tally1[VOTES_IDX] = -2;
+    private void resetVotes() {
+        for (int[] voter : votes) {
+            voter[CANDIDATE_IDX] = -2;
+            voter[VOTES_IDX] = -2;
         }
     }
 
@@ -211,9 +235,9 @@ public class Regency implements Serializable {
             String message = "Election results:";
             // count votes
             int[] vote_count = new int[C.NR_HOUSES];
-            for (int[] vote_tally1 : vote_tally) {
-                if (vote_tally1[CANDIDATE_IDX] > -1) {
-                    vote_count[vote_tally1[CANDIDATE_IDX]] += vote_tally1[VOTES_IDX];
+            for (int[] voter : votes) {
+                if (voter[CANDIDATE_IDX] > -1) {
+                    vote_count[voter[CANDIDATE_IDX]] += voter[VOTES_IDX];
                 }
             }
             for (int i = 0; i < C.NR_HOUSES; i++) {
@@ -273,14 +297,19 @@ public class Regency implements Serializable {
             for (Faction faction : game.getFactions()) {
                 faction.addMessage(new Message(message, C.Msg.ELECTION_RESULTS, game.getYear(), null));
             }
-            resetVoteTally();
+            if (may_set_offices) { // enforce ministry promises if any
+                int[] tmp = game.getDiplomacy().getMinistryPromises(regent);
+                System.arraycopy(tmp, 0, promised_ministries, 0, tmp.length);
+            }
+            game.getDiplomacy().zeroMinistryPromises();
+            resetVotes();
         }
         
     }
     
     private boolean haveVotes() {
-        for (int[] vote_tally1 : vote_tally) {
-            if (vote_tally1[0] > -2) {
+        for (int[] faction : votes) {
+            if (faction[CANDIDATE_IDX] > -2 && faction[VOTES_IDX] > -1) {
                 return true;
             }
         }
@@ -402,6 +431,49 @@ public class Regency implements Serializable {
      */
     public void setCrownedEmperor(int crowned_emperor) {
         this.crowned_emperor = crowned_emperor;
+    }
+
+    boolean promisedVotes(int a) {
+        boolean ret_val = false;
+        if (votes[a][CANDIDATE_IDX] > -2) {
+            ret_val = true;
+        }
+        return ret_val;
+    }
+
+    public void enforcePromisedMinistries() {
+        for (int i = 0; i < promised_ministries.length; i++) {
+            switch (promised_ministries[i]) {
+                case C.FLEET:
+                    setFleet(i);
+                    break;
+                case C.THE_SPY:
+                    setEye(i);
+                    break;
+                case C.STIGMATA:
+                    setGarrison(i);
+                    break;
+                default:
+                    break;
+            }
+            if (promised_ministries[i] > -1) {
+                ByzII.setAssets(promised_ministries[i], i);
+            }
+
+        }
+    }
+
+    public boolean isPromisedMinistry(int ministry) {
+        for (int promised_ministry : promised_ministries) {
+            if (promised_ministry == ministry) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final void resetPromisedMinistries() {
+        promised_ministries = new int[]{-1, -1, -1, -1, -1};
     }
 
 }

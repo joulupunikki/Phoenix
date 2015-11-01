@@ -95,6 +95,9 @@ public class ByzantiumIIWindow extends JPanel {
         } else {
             declare_emperor.setVisible(false);
         }
+        if (game.getRegency().isMay_set_offices() && game.getRegency().getRegent() == game.getTurn()) {
+            game.getRegency().enforcePromisedMinistries();
+        }
     }
 
     public void setUpWindow() {

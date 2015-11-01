@@ -29,6 +29,8 @@ package game;
 
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 import util.C;
 
 /**
@@ -43,6 +45,12 @@ public class Diplomacy implements Serializable {
     // holds the diplomatic state between each faction:
     // currently WAR/PEACE
     private int[][] war_matrix;
+//    // elections: votes promised
+//    private int[] vote_mat;
+    // elections: ministries promised
+    private int[][] ministry_mat;
+
+    private List<Contract> sent_contracts;
     private Game game;
 
     private Diplomacy() {
@@ -50,6 +58,9 @@ public class Diplomacy implements Serializable {
 
     public Diplomacy(Game game) {
         war_matrix = new int[C.NR_FACTIONS][C.NR_FACTIONS];
+//        vote_mat = new int[C.THE_CHURCH + 1];
+        ministry_mat = new int[C.NR_HOUSES][C.NR_HOUSES];
+        sent_contracts = new LinkedList<>();
         this.game = game;
     }
 
@@ -60,6 +71,22 @@ public class Diplomacy implements Serializable {
             }
             setDiplomaticState(i, C.SYMBIOT, C.DS_WAR);
 
+        }
+//        zeroVotePromises();
+        zeroMinistryPromises();
+    }
+
+//    private void zeroVotePromises() {
+//        for (int i = 0; i < vote_mat.length; i++) {
+//            vote_mat[i] = -1;
+//        }
+//    }
+
+    public void zeroMinistryPromises() {
+        for (int[] mm : ministry_mat) {
+            for (int i = 0; i < mm.length; i++) {
+                mm[i] = -1;
+            }
         }
     }
 
@@ -96,6 +123,28 @@ public class Diplomacy implements Serializable {
         return war_matrix[faction_a][faction_b];
     }
 
+    private int getSetMinistryPromise(int donor, int recipient, int state, boolean set) {
+        if (set) {
+            switch (state) {
+                case C.FLEET:
+                case C.THE_SPY:
+                case C.STIGMATA:
+                    break;
+                default:
+                    throw new AssertionError("Invalid ministry " + state);
+            }
+            ministry_mat[donor][recipient] = state;
+        }
+        return ministry_mat[donor][recipient];
+    }
+
+//    private int getSetVotePromise(int faction_a, int faction_b, boolean set) {
+//        if (set) {
+//            vote_mat[faction_a] = faction_b;
+//        }
+//        return vote_mat[faction_a];
+//    }
+
     public void setDiplomaticState(int faction_a, int faction_b, int state) {
         getSetDiplomaticState(faction_a, faction_b, state, true);
     }
@@ -104,7 +153,47 @@ public class Diplomacy implements Serializable {
         return getSetDiplomaticState(faction_a, faction_b, -1, false);
     }
 
+    public void setMinistryPromise(int donor, int recipient, int state) {
+        getSetMinistryPromise(donor, recipient, state, true);
+    }
+
+    public int getMinistryPromise(int donor, int recipient) {
+        return getSetMinistryPromise(donor, recipient, -1, false);
+    }
+
+//    public void setVotePromise(int faction_a, int faction_b) {
+//        getSetVotePromise(faction_a, faction_b, true);
+//    }
+//
+//    public int getVotePromise(int faction_a) {
+//        return getSetVotePromise(faction_a, -1, false);
+//    }
+
     void record(PrintWriter pw) {
         pw.println( "diplomacy");
+    }
+
+    /**
+     * @return the sent_contracts
+     */
+    public List<Contract> getSentContracts() {
+        return sent_contracts;
+    }
+
+    public void addSentContract(Contract c) {
+        sent_contracts.add(c);
+    }
+
+    public int[] getMinistryPromises(int faction) {
+        return ministry_mat[faction];
+    }
+
+    boolean isPromisedMinistry(int amount) {
+        for (int n : ministry_mat[game.getTurn()]) {
+            if (n == amount) {
+                return true;
+            }
+        }
+        return false;
     }
 }

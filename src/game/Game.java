@@ -160,6 +160,7 @@ public class Game implements Serializable {
 //        factions = Faction.createFactions();
 
         placeUnits();
+        checkStackSizes();
         placeStructures();
         resetMovePoints();
         resetUnmovedUnits();
@@ -180,6 +181,18 @@ public class Game implements Serializable {
         //printMoveCost();
 //        endTurn();
 //        setMoveCosts();
+    }
+
+    private void checkStackSizes() {
+        for (Planet planet : planets) {
+            HexIter hi = new HexIter(this, planet.index);
+            for (Hex h = hi.next(); h != null; h = hi.next()) {
+                int size = h.getStack().size();
+                if (size > C.STACK_SIZE) {
+                    System.out.println("Stack size " + size + " on " + planet.name + " at (" + h.getX() + "," + h.getY() + ") faction " + Util.getFactionName(h.getStack().get(0).owner));
+                }
+            }
+        }
     }
 
     public void init(Resource gui_resource) {
@@ -524,9 +537,10 @@ public class Game implements Serializable {
         resetMovePoints();
         setMaxSpotRange();
         cargo_pods = Util.getCargoPods(units, this);
-        if (regency.needToVote(turn, efs_ini, year + 1, true)) { // election notice
+        if (regency.needToVote(turn, efs_ini, year + 1, Regency.VoteCheck.ADVANCE)) { // election notice
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
+        diplomacy.getSentContracts().clear();
     }
 
     private void advanceYear() {

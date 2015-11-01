@@ -81,7 +81,7 @@ public class ByzII2 extends State {
         }
     }
 
-    private int scepterCount() {
+    public static int scepterCount() {
         int count = 0;
         List<Unit> units = game.getUnits();
         for (Unit unit : units) {
