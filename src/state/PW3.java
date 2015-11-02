@@ -126,4 +126,8 @@ public class PW3 extends PW {
         SU.pressTradeButtonSU();
     }
 
+    @Override
+    public void razeCity() {
+        SU.razeCitySU();
+    }
 }

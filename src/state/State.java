@@ -166,4 +166,7 @@ public abstract class State {
 
     public void pressUnloadButton() {
     }
+
+    public void razeCity() {
+    }
 }

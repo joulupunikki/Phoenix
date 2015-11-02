@@ -181,6 +181,9 @@ public class Gui extends JFrame {
     private JMenuItem menu_build;
     private JMenuItem menu_research;
     private JMenuItem menu_build_city;
+    private JMenuItem menu_build_road;
+    private JMenuItem menu_raze_city;
+
     private JPopupMenu stack_menu;
     private JMenu messages_menu; // messages menu
     private JMenuItem menu_send_message;
@@ -798,9 +801,30 @@ public class Gui extends JFrame {
                 showBuildCityWindow();
             }
         });
+
+        menu_build_road = new JMenuItem("Build Road");
+
+        menu_build_road.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                showInfoWindow("Not implemented yet.");
+            }
+        });
+
+        menu_raze_city = new JMenuItem("Raze City");
+
+        menu_raze_city.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                state.razeCity();
+            }
+        });
         orders_menu.add(menu_build);
         orders_menu.add(menu_research);
         orders_menu.add(menu_build_city);
+        orders_menu.add(menu_build_road);
+        orders_menu.add(menu_raze_city);
+
         menubar.add(orders_menu);
     }
 
@@ -2112,6 +2136,10 @@ public class Gui extends JFrame {
 
     public void enableBuildCityMenuItem(boolean enabled) {
         menu_build_city.setEnabled(enabled);
+    }
+
+    public void enableRazeCityMenuItem(boolean enabled) {
+        menu_raze_city.setEnabled(enabled);
     }
 
     public void enableLaunchButton(boolean enabled) {

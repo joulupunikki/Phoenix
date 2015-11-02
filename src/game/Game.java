@@ -1521,6 +1521,23 @@ public class Game implements Serializable {
     }
 
     /**
+     * Destroys a city. Cities must be removed thru this method to update
+     * production and consumption data.
+     *
+     * @param p_idx
+     * @param x
+     * @param y
+     */
+    public void destroyCity(int p_idx, int x, int y) {
+        Hex hex = getHexFromPXY(p_idx, x, y);
+        Structure city = hex.getStructure();
+        hex.placeStructure(null);
+        structures.remove(city);
+        // update production/consumption data
+        economy.updateProdConsForCity(city, false);
+    }
+
+    /**
      * Adjust city health to new health. City health must be changed thru this
      * method to update production and consumption data.
      *

@@ -59,32 +59,50 @@ import util.UtilG;
  * @author joulupunikki
  */
 public class SU extends State {
+
+    static void razeCitySU() {
+        if (!gui.showConfirmWindow("Razing a city is irreversible. Are you sure you want to do this?")) {
+            return;
+        }
+        gui.enableRazeCityMenuItem(false);
+        Unit u = game.getSelectedStack().get(0);
+        game.destroyCity(u.p_idx, u.x, u.y);
+        
+    }
 //    public static void click
 
     private SU() {
     }
 
     /**
-     * Does changes to gui state based on what state the UI is in. Updates build
-     * city menu item status.
+     * Does changes to gui state based on what state the UI is in. Updates
+     * build/raze city menu item status.
      *
      * @param s Ui state.
      */
     public static void setStateUpKeep(State s) {
         if (s instanceof PW2 || s instanceof PW3) {
             List<Unit> stack = game.getSelectedStack();
-            boolean enable_build = false;
-            if (stack != null) {
+            boolean have_engineer = false;
+            boolean have_city = false;
+            if (stack != null && !stack.isEmpty()) {
                 for (Unit unit1 : Util.xS(stack)) {
                     if (unit1.type == C.ENGINEER_UNIT_TYPE && unit1.selected && !unit1.in_space) {
-                        enable_build = true;
+                        have_engineer = true;
                         break;
                     }
                 }
+                Unit u = stack.get(0);
+                Hex hex = game.getHexFromPXY(u.p_idx, u.x, u.y);
+                if (hex.getStructure() != null) {
+                    have_city = true;
+                }
             }
-            gui.enableBuildCityMenuItem(enable_build);
+            gui.enableBuildCityMenuItem(have_engineer);
+            gui.enableRazeCityMenuItem(have_engineer && have_city);
         } else {
             gui.enableBuildCityMenuItem(false);
+            gui.enableRazeCityMenuItem(false);
         }
     }
 
