@@ -466,11 +466,14 @@ public class RobotTester extends Thread {
                 + "\nTest time : " + (stop_time - start_time) + "ms\n"
                 + "Mouse/key press/release/wheel events created : " + created_count
         );
+        long check_time = System.currentTimeMillis();
+        Util.recordState(FN.S_GAME_STATE_RECORD_FILE, gui.getGame());
+        System.out.println("State record time : " + (System.currentTimeMillis() - check_time));
         if (this.state_file != null) {
             try {
-                long check_time = System.currentTimeMillis();
+                check_time = System.currentTimeMillis();
                 System.out.println("State file: " + this.state_file.getName());
-                Util.recordState(FN.S_GAME_STATE_RECORD_FILE, gui.getGame());
+                
                 long expect = FileUtils.checksumCRC32(this.state_file);
                 long result = FileUtils.checksumCRC32(FileUtils.getFile(FN.S_GAME_STATE_RECORD_FILE));
                 System.out.println("Expected end state  CRC32 = " + expect);

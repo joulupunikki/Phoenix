@@ -79,6 +79,7 @@ public class HouseWindow extends JPanel {
     private JButton exit;
     private JSlider[] sliders;
     private JTextField[] text_boxes;
+    private LoyaltyPanel loyalty;
     // pointer to map holding gui element coordinates
     private Map<Enum, Integer> c;
 
@@ -135,7 +136,11 @@ public class HouseWindow extends JPanel {
         setUpButtons();
         setUpSliders();
         setUpTextFields();
-
+        loyalty = new LoyaltyPanel();
+        loyalty.setLayout(null);
+        loyalty.setBounds(c.get(CH.LOYALTY_P_X), c.get(CH.LOYALTY_P_Y), c.get(CH.LOYALTY_P_W), c.get(CH.LOYALTY_P_H));
+        loyalty.setOpaque(false);
+        this.add(loyalty);
     }
 
     private void setUpTextFields() {
@@ -210,7 +215,10 @@ public class HouseWindow extends JPanel {
         text_boxes[DEBT].setText("" + debt);
         text_boxes[BANK].setText("" + bank);
         text_boxes[TOTAL].setText("" + total);
-        
+        int tax_loyalty = (game.getEfs_ini().default_tax_rate - sliders[TAX].getValue()) * C.TAX_LOYALTY_HIT;
+        int pay_loyalty = (sliders[UNIT_PAY].getValue() - 100) * C.PAY_LOYALTY_HIT;
+        loyalty.setLoyaltyMods(tax_loyalty, pay_loyalty);
+        loyalty.repaint();
     }
     
     private void renderWindow(Graphics g) {
@@ -259,9 +267,41 @@ public class HouseWindow extends JPanel {
         UtilG.drawStringGrad(g, "Tax", ws.font_large, c.get(CH.TAX_H_X), c.get(CH.TAX_H_Y));
         UtilG.drawStringGrad(g, "Tithe Skim", ws.font_large, c.get(CH.TITHE_SKIM_H_X), c.get(CH.TAX_H_Y) + c.get(CH.BUDGET_H));
         UtilG.drawStringGrad(g, "Unit Pay", ws.font_large, c.get(CH.UNIT_PAY_H_X), c.get(CH.TAX_H_Y) + 2 * c.get(CH.BUDGET_H));
+        UtilG.drawStringGrad(g, "Loyalty+-", ws.font_large, c.get(CH.LOYALTY_H_X), c.get(CH.TAX_H_Y));
 
         UtilG.drawStringGrad(g, "Debt", ws.font_large, c.get(CH.DEBT_H_X), c.get(CH.DEBT_H_Y));
         UtilG.drawStringGrad(g, "Bank", ws.font_large, c.get(CH.DEBT_H_X), c.get(CH.DEBT_H_Y) + c.get(CH.DEBT_H_H));
         UtilG.drawStringGrad(g, "Total", ws.font_large, c.get(CH.DEBT_H_X), c.get(CH.DEBT_H_Y) + 2 * c.get(CH.DEBT_H_H));
     }
+
+    private class LoyaltyPanel extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+        int tax, pay;
+
+        public void setLoyaltyMods(int tax, int pay) {
+            this.tax = tax;
+            this.pay = pay;
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(Color.YELLOW);
+            if (tax < 0) {
+                g.setColor(Color.RED);
+            } else if (tax > 0) {
+                g.setColor(Color.GREEN);
+            }
+            g.drawString(tax + "%", 0, c.get(CH.LOYALTY_P_TAX_Y));
+            g.setColor(Color.YELLOW);
+            if (pay < 0) {
+                g.setColor(Color.RED);
+            } else if (pay > 0) {
+                g.setColor(Color.GREEN);
+            }
+            g.drawString(pay + "%", 0, c.get(CH.LOYALTY_P_PAY_Y));
+        }
+    }
+
 }

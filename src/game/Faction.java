@@ -31,16 +31,19 @@ package game;
 import dat.EfsIni;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import java.awt.Point;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.commons.math3.util.FastMath;
 import util.C;
+import util.Comp;
 import util.Util;
 
 /**
- * Will handle faction data, particularly money
+ * Contains faction data; money, tax, pay, technologies, messages; also does
+ * some processing such as handling rebellions.
  *
  * @author RSW
  */
@@ -61,6 +64,9 @@ public class Faction implements Serializable {
     private int tax_rate;
     private int tithe_rate;
     private int pay_rate;
+    private int old_tax_rate;
+    private int old_tithe_rate;
+    private int old_pay_rate;
     private int debt;
     List<Message> messages = new LinkedList<>();
 //    private boolean[] techs;
@@ -78,11 +84,11 @@ public class Faction implements Serializable {
         firebirds = efs_ini.starting_credits;
         tax_rate = efs_ini.default_tax_rate;
         tithe_rate = efs_ini.default_tithe_rate;
-        pay_rate = 100;
-
+        pay_rate = 75;
+        adjustLoyalty();
 //        initTechs();
         initResearch();
-
+        
     }
 
     public void addMessage(Message m) {
@@ -327,4 +333,199 @@ public class Faction implements Serializable {
                 return -1;
         }
     }
+
+    /**
+     * @return the old_tax_rate
+     */
+    public int getOldTaxRate() {
+        return old_tax_rate;
+    }
+
+    /**
+     * @return the old_tithe_rate
+     */
+    public int getOldTitheRate() {
+        return old_tithe_rate;
+    }
+
+    /**
+     * @return the old_pay_rate
+     */
+    public int getOldPayRate() {
+        return old_pay_rate;
+    }
+
+    public final void adjustLoyalty() {
+        if (old_tax_rate != tax_rate) {           
+            old_tax_rate = tax_rate;
+        }
+        adjustCityLoyalty();
+        old_tithe_rate = tithe_rate;
+        if (old_pay_rate != pay_rate) {            
+            old_pay_rate = pay_rate;
+        }
+        adjustUnitLoyalty();
+    }
+
+    /**
+     * Adjust city loyalty, create rebels, place rebels.
+     */
+    public void adjustCityLoyalty() {
+        List<Structure> cities = game.getStructures();
+        List<Structure> fully_rebel = new LinkedList<>();
+        for (Structure city : cities) {
+            if (city.owner == game.getTurn()) {
+                game.adjustCityLoyalty(city, calculateCityLoyalty(tax_rate, efs_ini));
+                if (city.loyalty < C.LOYALTY_REBEL_LIMIT) {
+                    int rebel_pop = 0;
+                    for (int i = city.health; i > 0; i -= 10) {
+                        float prob = (1 - city.loyalty / C.LOYALTY_REBEL_LIMIT) * C.LOYALTY_REBEL_HIGH_P;
+                        Util.dP(prob);
+                        if (game.getRandom().nextFloat() < prob) {
+                            rebel_pop += 10;
+                        }
+                    }
+                    if (rebel_pop == 0) {
+                        continue;
+                    }
+//                    if (rebel_pop > city.health) {
+//                        rebel_pop = city.health;
+//                    }
+                    game.adjustCityHealth(city, city.health - rebel_pop);
+                    LinkedList<Unit> rebels = new LinkedList<>();
+                    Util.dP(rebel_pop);
+                    for (int i = rebel_pop; i > 0; i -= 10) {
+                        rebels.add(new Unit(city.p_idx, city.x, city.y, C.NEUTRAL, C.NEUTRAL, C.PARTISAN_UNIT_TYPE, 0, -1, -1, game));
+                    }
+                    placeRebels(rebels, Util.FindHexesAround.Hextype.LAND);
+                    if (city.health <= 0) {
+                        fully_rebel.add(city);
+                    }
+                }
+            }
+        }
+        for (Structure city : fully_rebel) { // this here or else ConcurrentModificationException
+            game.destroyCity(city.p_idx, city.x, city.y);
+        }
+    }
+
+    public static int calculateCityLoyalty(int tax_rate, EfsIni efs_ini) {
+        return FastMath.max(0, FastMath.min(100, 100 - (tax_rate - efs_ini.default_tax_rate) * C.TAX_LOYALTY_HIT));
+    }
+
+    /**
+     * Adjust unit loyalty, create rebels, place rebels. Note: AFAIK in all mods
+     * Naval move units can only move on oceans, and non-Naval units can move on
+     * land, so rebels are placed with this feature in mind.
+     */
+    public void adjustUnitLoyalty() {
+        List<Unit> units = game.getUnits();
+        LinkedList<Unit> rebels = new LinkedList<>();
+        for (Unit unit : units) {
+            if (unit.owner == game.getTurn() && canRebel(unit)) {
+                unit.loyalty = pay_rate * C.PAY_LOYALTY_HIT;
+                if (!unit.in_space && unit.loyalty < C.LOYALTY_REBEL_LIMIT) {
+                    if (game.getRandom().nextFloat() < (1 - unit.loyalty / C.LOYALTY_REBEL_LIMIT) * C.LOYALTY_REBEL_HIGH_P) {
+                        rebels.add(unit);
+                    }
+                }
+            }
+        }
+        if (rebels.isEmpty()) {
+            return;
+        }
+        rebels.sort(Comp.unit_xy);
+        rebels.sort(Comp.unit_pidx);
+        LinkedList<Unit> naval = new LinkedList<>();
+        LinkedList<Unit> non_naval = new LinkedList<>();
+        for (Unit rebel : rebels) {
+            if (rebel.move_type == C.MoveType.NAVAL) {
+                naval.add(rebel);
+            } else {
+                non_naval.add(rebel);
+            }
+
+        }
+        placeRebels(naval, Util.FindHexesAround.Hextype.SEA);
+        placeRebels(non_naval, Util.FindHexesAround.Hextype.LAND);
+
+    }
+
+    /**
+     * Place rebels, fill hexes starting from closest available hex. Return true
+     * if all rebels placed, false if we run out of planet hexes before all
+     * rebels are placed.
+     *
+     * @param rebels list of units to place
+     * @return true iff all rebels placed
+     */
+    private boolean placeRebels(LinkedList<Unit> rebels, Util.FindHexesAround.Hextype type) {
+        Hex center = null;
+        Hex target = null;
+        Hex prev_target = null;
+        Util.FindHexesAround hex_finder = null;
+        Point p = new Point(C.NEUTRAL, C.NEUTRAL);
+        int p_idx = -1;
+        int x = -1;
+        int y = -1;
+        while (!rebels.isEmpty()) {
+            Unit unit = rebels.pop();
+            if (unit.y != y || unit.x != x || unit.p_idx != p_idx) {
+                y = unit.y;
+                x = unit.x;
+                p_idx = unit.p_idx;
+                addMessage(new Message("Rebellion on " + game.getPlanet(p_idx).name + " " + x + "," + y + "!", C.Msg.REBELLION, game.getYear(), game.getPlanet(p_idx)));
+            }
+            Hex hex_tmp = game.getHexFromPXY(unit.p_idx, unit.x, unit.y);
+            if (!hex_tmp.equals(center)) {
+                center = hex_tmp;
+                hex_finder = new Util.FindHexesAround(center, C.NEUTRAL, type, game.getPlanet(p_idx).tile_set_type);
+                prev_target = target;
+                target = hex_finder.next();
+            }
+            while (target != null && Util.stackSize(target.getStack()) >= C.STACK_SIZE) {
+                target = hex_finder.next();
+            }
+            prev_target = spot(prev_target, target);
+            if (target == null) {
+                return false;
+            }
+            if (unit.carrier == null) {            
+                if (unit.type_data.cargo > 0 && unit.cargo_list.size() > 0) {
+                    List<Unit> tmp = new LinkedList<>();
+                    tmp.addAll(unit.cargo_list);
+                    for (Unit u : tmp) {
+                        unit.disembark(u);
+                        center.addUnit(u);
+                    }
+                }
+            } else {
+                Unit u = unit.carrier;
+                u.disembark(unit);
+            }
+            center.getStack().remove(unit);
+            game.changeOwnerOfUnit(p, unit);
+            game.relocateUnit(false, unit.p_idx, target.getX(), target.getY(), unit);
+            target.addUnit(unit);
+            game.getUnits().add(unit);
+            //Util.dP(" hex " + target.getX() + "," + target.getY());
+        }
+        spot(target, prev_target);
+        return true;
+    }
+
+    private boolean canRebel(Unit u) {
+        return !(u.type == C.NOBLE_UNIT_TYPE || u.type == C.CARGO_UNIT_TYPE || u.type == C.SCEPTER_UNIT_TYPE);
+    }
+
+    private Hex spot(Hex prev_target, Hex target) {
+        if (prev_target != null && !prev_target.equals(target)) {
+            List<Unit> tmp = prev_target.getStack();
+            //Util.dP("spot " + prev_target.getX() + "," + prev_target.getY() + " " + tmp.size() + " " + Util.getFactionName(tmp.get(0).owner));
+            game.getHexProc().spotProc(prev_target, tmp);
+            prev_target = target;    
+        }
+        return prev_target;
+    }
+    
 }

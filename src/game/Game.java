@@ -525,7 +525,9 @@ public class Game implements Serializable {
         } else {
             turn++;
         }
-
+        if (turn < C.NR_HOUSES) {
+            factions[turn].adjustLoyalty();
+        }
         economy.updateEconomy(turn);    //RSW
 
 //        factions[turn].deleteOldMessages(year);
@@ -1512,6 +1514,7 @@ public class Game implements Serializable {
      */
     public Structure createCity(int owner, int prev_owner, int p_idx, int x, int y, int type, int health) {
         Structure city = new Structure(owner, prev_owner, type, p_idx, x, y, health);
+        city.loyalty = Faction.calculateCityLoyalty(factions[turn].getTaxRate(), efs_ini);
         Hex hex = getHexFromPXY(p_idx, x, y);
         hex.placeStructure(city);
         structures.add(city);
@@ -1800,7 +1803,7 @@ public class Game implements Serializable {
 
         unit.owner = new_owner.x;
         unit.prev_owner = new_owner.y;
-
+        unit.spotted[new_owner.x] = true;
         if (unit.type == C.CARGO_UNIT_TYPE) {
             resources.addToPodLists(unit);    // Ownership of cargo pods is tracked by class Resources
         }

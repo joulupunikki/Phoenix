@@ -1109,6 +1109,15 @@ public class WindowSize {
         house.put(CH.TAX_V_X, 564);
         house.put(CH.TITHE_SKIM_H_X, 423);
         house.put(CH.UNIT_PAY_H_X, 430);
+        house.put(CH.LOYALTY_H_X, 500);
+
+        house.put(CH.LOYALTY_P_X, 510);
+        house.put(CH.LOYALTY_P_Y, 288);
+        house.put(CH.LOYALTY_P_W, 42);
+        house.put(CH.LOYALTY_P_H, 93);
+        house.put(CH.LOYALTY_P_TAX_Y, 15);
+        house.put(CH.LOYALTY_P_PAY_Y, 87);
+
         // leader
         house.put(CH.LEADER_H_W, 230);
         house.put(CH.LEADER_H_X, 20);

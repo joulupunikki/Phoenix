@@ -51,6 +51,7 @@ public class G {
         TAX_H_Y,
         TITHE_SKIM_H_X,
         UNIT_PAY_H_X,
+        LOYALTY_H_X,
         TAX_V_X,
         TAX_V_W,
         SLIDER_X,
@@ -70,6 +71,8 @@ public class G {
 
         // faction relations, lower left
         STATE_X, STATE_Y, STATE_W, STATE_S,
+        // loyalty effect panel
+        LOYALTY_P_X, LOYALTY_P_Y, LOYALTY_P_W, LOYALTY_P_H, LOYALTY_P_TAX_Y, LOYALTY_P_PAY_Y,
     }
 
     /**

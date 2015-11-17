@@ -77,8 +77,9 @@ public class MW extends State {
                 return;
             }
         }
-        int[] tmp = game.getRegency().getVotes()[game.getTurn()];
-        System.out.println(" " + tmp[0] + "," + tmp[1]);
+
+//        int[] tmp = game.getRegency().getVotes()[game.getTurn()];
+//        System.out.println(" " + tmp[0] + "," + tmp[1]);
         // pledged votes are cast here
         game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear(), Regency.VoteCheck.FINAL);
         if (game.getEfs_ini().pbem.pbem) {

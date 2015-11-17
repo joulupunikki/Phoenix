@@ -62,7 +62,7 @@ public class HexProc implements Serializable {
         this.game = game;
     }
 
-    public void proc(Hex hex, int range, int oper) {
+    private void proc(Hex hex, int range, int oper) {
         switch (oper) {
             case C.INIT_SPOT:
                 initSpot(hex);
@@ -75,7 +75,7 @@ public class HexProc implements Serializable {
         }
     }
 
-    public void initSpot(Hex hex) {
+    private void initSpot(Hex hex) {
         hex.spot(faction_a);
         List<Unit> stack = hex.getStack();
         if (stack.isEmpty()) {
@@ -89,7 +89,7 @@ public class HexProc implements Serializable {
         }
     }
 
-    public void spot(Hex hex, int range) {
+    private void spot(Hex hex, int range) {
 //        int faction_a = this.stack_a.get(0).owner;
         int range_a = Unit.spotRange(this.spotting_a);
         if (range_a >= range) {
@@ -133,7 +133,7 @@ public class HexProc implements Serializable {
 
     }
 
-    public void spotStack(int range, int spotting, int faction, List<Unit> stack, Hex hex) {
+    private void spotStack(int range, int spotting, int faction, List<Unit> stack, Hex hex) {
         int final_spot = UnitSpot.finalSpotting(spotting, range);
         for (Unit unit1 : stack) {
             if (unit1.spotted[faction]) {
@@ -222,7 +222,7 @@ public class HexProc implements Serializable {
         hexProc(hex, this.max_spot_range, C.SPOT);
     }
 
-    public void hexProc(Hex hex, int range, int oper) {
+    private void hexProc(Hex hex, int range, int oper) {
         proc(hex, 0, oper);
         Hex radial = hex;
         radial = radial.getN(C.NORTHEAST);

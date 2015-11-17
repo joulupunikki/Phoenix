@@ -331,6 +331,10 @@ public class Messages extends JPanel {
                     case THRONE_CLAIM:
                         val = "* Throne claim *";
                         break;
+                    case REBELLION:
+                        val = "Rebellion !";
+                        break;
+
                     default:
                         throw new AssertionError("Undefined message type");
                 }

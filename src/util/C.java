@@ -149,6 +149,13 @@ public class C {
     public static final int DIRECT_SPACE = 7;
     public static final int CLOSE_SPACE = 8;
     public static final double DISBAND_REFUND = 0.75;
+    public static final int TAX_LOYALTY_HIT = 3;
+    public static final int PAY_LOYALTY_HIT = 1;
+    public static final float LOYALTY_REBEL_LIMIT = 25;
+    public static final float LOYALTY_REBEL_LOW_P = 0.5f;
+    public static final float LOYALTY_REBEL_HIGH_P = 0.98f;
+
+
 
 
     // message types
@@ -162,7 +169,7 @@ public class C {
         ELECTION_RESULTS,
         CONTRACT,
         RESPONSE,
-        THRONE_CLAIM,
+        THRONE_CLAIM, REBELLION,
     }
 
     // movement types
@@ -258,8 +265,8 @@ public class C {
     public static final int[] HARVESTING_CITIES = {FARM, ARBORIUM, WELL, MINE};
 
     // Producing cities
-    public static final int[] PRODUCING_CITIES = {CHEMICALS, BIOPLANT, ELECTRONICS, CERAMSTEEL, WETWARE, FUSORIUM,
-        CYCLOTRON};
+    public static final int[] PRODUCING_CITIES = {CHEMICALS, ELECTRONICS, BIOPLANT, CERAMSTEEL, WETWARE,
+        CYCLOTRON, FUSORIUM};
 
     // Resource production order
     public static final int[] PRODUCTION_ORDER = {FARM, ARBORIUM, WELL, MINE,
@@ -344,6 +351,8 @@ public class C {
     public static final int SPY_UNIT_TYPE = 49;
     public static final int ENGINEER_UNIT_TYPE = 53;
     public static final int CARGO_UNIT_TYPE = 91;    // RSW
+    // Rebelling city pop transform into these
+    public static final int PARTISAN_UNIT_TYPE = 55;
 
     // faction id's
     public static final int HOUSE1 = 0;

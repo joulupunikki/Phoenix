@@ -1025,6 +1025,8 @@ public class UtilG {
             }
         }
         UtilG.drawStringGrad((Graphics2D) g, Structure.getName(city.type), ws.font_large, x + ws.city_name_x, y + ws.city_name_y);
+        UtilG.drawStringGrad((Graphics2D) g, "Loyalty: " + city.loyalty + "%" + " Health: " + city.health + "%", ws.font_large, x + ws.city_loyalty_x, y + ws.city_loyalty_y);
+        // print production/harvest info if any
         boolean harvest;
         switch (city.type) {
             case C.FARM:
@@ -1048,35 +1050,42 @@ public class UtilG {
         }
         ResType[] res_types = game.getEconomy().getResType();
         String upper_prod = "";
+        String real_upper = "";
         String lower_prod = "";
         if (harvest) {
             System.out.println("Harvest");
-            int[] production = game.getEconomy().calculateBaseProduction(city);
+            int[] max_production = game.getEconomy().calculateBaseProduction(city);
+            int[] real_production = game.getEconomy().calculateActualProduction(city);
             int res_count = 0;
-            for (int i = production.length - 1; i >= 0; i--) {
-                if (production[i] > 0) {
+            for (int i = max_production.length - 1; i >= 0; i--) {
+                if (max_production[i] > 0) {
                     res_count++;
                     switch (res_count) {
                         case 1:
                             break;
                         case 2:
                             upper_prod = " and " + upper_prod;
+                            real_upper = " and " + real_upper;
                             break;
                         default:
                             upper_prod = ", " + upper_prod;
+                            real_upper = ", " + real_upper;
                             break;
                     }
-                    upper_prod = production[i] + " " + res_types[i].name + upper_prod;
+                    upper_prod = max_production[i] + " " + res_types[i].name + upper_prod;
+                    real_upper = real_production[i] + " " + res_types[i].name + real_upper;
+
                 }
             }
-            upper_prod = "Harvests " + upper_prod;
+            upper_prod = "Harvests " + real_upper + " out of a max of " + upper_prod;
         } else {
             System.out.println("Refine");
             Prod[] prod_table = game.getEconomy().getProd();
-            upper_prod = "Produces " + prod_table[city.type].make.resource_amount + " " + res_types[prod_table[city.type].make.resource_type].name;
+            upper_prod = "Produces " + prod_table[Util.productionType(city)].make.resource_amount + " ";
+            upper_prod += res_types[prod_table[Util.productionType(city)].make.resource_type].name;
             int res_count = 0;
             for (int j = 2; j >= 0; j--) {
-                if (prod_table[city.type].need[j] != null) {
+                if (prod_table[Util.productionType(city)].need[j] != null) {
                     res_count++;
                     switch (res_count) {
                         case 1:
@@ -1088,7 +1097,7 @@ public class UtilG {
                             lower_prod = ", " + lower_prod;
                             break;
                     }
-                    lower_prod = prod_table[city.type].need[j].resource_amount + " " + res_types[prod_table[city.type].need[j].resource_type].name + lower_prod;
+                    lower_prod = prod_table[Util.productionType(city)].need[j].resource_amount + " " + res_types[prod_table[Util.productionType(city)].need[j].resource_type].name + lower_prod;
                 }
             }
             lower_prod = "Consumes " + lower_prod;

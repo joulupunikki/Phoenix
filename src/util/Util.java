@@ -64,6 +64,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,6 +91,10 @@ public class Util {
         if (C.DEBUG_PRINT == 1) {
             System.out.println(s);
         }
+    }
+
+    public static void dP(Object o) {
+        System.out.println(o);
     }
 
     public static void testHexIter(Game game, int planet) {
@@ -766,9 +771,9 @@ public class Util {
         boolean is_cargo_listing = false;
         Iterator<Unit> iterator = stack.listIterator();
         Iterator<Unit> cargo_it = null;
-//        if (!iterator.hasNext()) {
-//            return;
-//        }
+        if (!iterator.hasNext()) {
+            return;
+        }
 //        System.out.println("p = " + p);
 //        System.out.println("faction = " + faction);
         Unit e = iterator.next();
@@ -2157,5 +2162,71 @@ public class Util {
         game.record(pw);
         pw.flush();
         pw.close();
+    }
+
+    public static class FindHexesAround {
+
+        public enum Hextype {
+
+            LAND,
+            SEA,
+            BOTH,
+        }
+
+        LinkedList<Hex> ret_val = new LinkedList<>();    // list of hexes to be returned
+        Set<Hex> all_hexes = new LinkedHashSet<>();  // set of all visited hexes
+        LinkedList<Hex> queue = new LinkedList<>();  // list of hexes next in line for visit
+        int faction;
+        Hextype type;
+        int tile_set;
+        private FindHexesAround() {
+        }
+
+        public FindHexesAround(Hex hex, int faction, Hextype type, int tile_set) {
+            queue.add(hex);
+            all_hexes.add(hex);
+            this.faction = faction;
+            this.type = type;
+            this.tile_set = tile_set;
+        }
+
+        public Hex next() {
+            while (ret_val.isEmpty() && !queue.isEmpty()) {
+                Hex father = queue.pop();
+                Hex[] neighbours = father.getNeighbours();
+                for (Hex child : neighbours) {
+                    if (child != null && all_hexes.add(child)) {
+                        queue.add(child);
+                        if (checkHexType(child)
+                                || (!child.getStack().isEmpty() && (child.getStack().get(0).prev_owner != faction || child.getStack().size() >= C.STACK_SIZE))
+                                || (child.getStructure() != null && child.getStructure().prev_owner != faction)) {
+                            Util.dP("Perkele");
+                            continue;
+                            
+                        }
+                        Util.dP("Saatana");
+                        ret_val.add(child);
+                    }
+                }
+            }
+            try {
+                return ret_val.pop();
+            } catch (NoSuchElementException e) {
+                return null;
+            }
+        }
+
+        private boolean checkHexType(Hex hex) {
+            if (type == Hextype.BOTH) {
+                Util.dP("Hextype.BOTH");
+                return false;
+            } else if (type == Hextype.LAND) {
+                Util.dP("Hextype.LAND");
+                return hex.getTerrain(C.OCEAN) && tile_set != C.BARREN_TILE_SET;
+            } else {
+                Util.dP("Hextype.OCEAN");
+                return !hex.getTerrain(C.OCEAN) || tile_set == C.BARREN_TILE_SET;
+            }
+        }
     }
 }

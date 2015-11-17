@@ -38,6 +38,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -254,11 +255,12 @@ public class Resources implements Serializable {
             }
         }
         ResPair make = prod_table[prod_type].make;
-        //TODO adjust for loyalty and health
+        //WIP adjust for loyalty and health
+        int amount = (int) FastMath.ceil(city.health * city.loyalty * ((double) make.resource_amount) / 10000);
         if (add) {
-            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] += make.resource_amount; // * (city.health / 100.0) * (city.loyalty / 100.0);
+            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] += amount;
         } else {
-            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] -= make.resource_amount;
+            prod_cons[C.PROD][city.owner][city.p_idx][make.resource_type] -= amount;
         }
     }
 

@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -301,7 +302,13 @@ public class Economy implements Serializable {
 
         resource_amounts = calculateBaseProduction(city);
 
-        //    NOT YET IMPLEMENTED. Will adjust for loyalty and health
+        //  WIP. Will adjust for loyalty and health
+        for (int i = 0; i < resource_amounts.length; i++) {
+            if(resource_amounts[i] > 0) {
+                resource_amounts[i] = (int) FastMath.ceil(city.health * city.loyalty * ((double) resource_amounts[i]) / 10000);
+            }
+            
+        }
         return resource_amounts;
     }
 
