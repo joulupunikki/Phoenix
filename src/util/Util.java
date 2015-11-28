@@ -2200,11 +2200,11 @@ public class Util {
                         if (checkHexType(child)
                                 || (!child.getStack().isEmpty() && (child.getStack().get(0).prev_owner != faction || child.getStack().size() >= C.STACK_SIZE))
                                 || (child.getStructure() != null && child.getStructure().prev_owner != faction)) {
-                            Util.dP("Perkele");
+                            //Util.dP("Perkele");
                             continue;
                             
                         }
-                        Util.dP("Saatana");
+                        //Util.dP("Saatana");
                         ret_val.add(child);
                     }
                 }
@@ -2227,6 +2227,23 @@ public class Util {
                 Util.dP("Hextype.OCEAN");
                 return !hex.getTerrain(C.OCEAN) || tile_set == C.BARREN_TILE_SET;
             }
+        }
+    }
+
+    public static class JPTimer {
+
+        long start;
+        long leg;
+
+        public JPTimer() {
+        }
+
+        public void start() {
+            start = leg = System.nanoTime();
+        }
+
+        public long stop() {
+            return start - System.nanoTime();
         }
     }
 }

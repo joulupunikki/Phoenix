@@ -30,10 +30,12 @@ package util;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import java.util.Comparator;
 
 /**
- * Various Comparator implementations
+ * Various Comparator implementations, for sorting Structures, Units etc. Call
+ * like structures.sort(Comp.city_pidx) to sort structures in planetary order.
  *
  * @author joulupunikki
  */
@@ -43,9 +45,11 @@ public class Comp {
     public static CityType city_type = new CityType();
     public static CityName city_name = new CityName();
     public static CityXY city_xy = new CityXY();
+    public static CityCIdx city_cidx = new CityCIdx();
     public static CityPIdx city_pidx = new CityPIdx();
 
     public static UnitXY unit_xy = new UnitXY();
+    public static UnitCIdx unit_cidx = new UnitCIdx();
     public static UnitPIdx unit_pidx = new UnitPIdx();
     public static UnitInSpace unit_in_space = new UnitInSpace();
     public static UnitResRelic unit_res_relic = new UnitResRelic();
@@ -93,7 +97,7 @@ public class Comp {
     }
 
     /**
-     * Sorts by unit x,y coordinates.
+     * Sorts by city x,y coordinates.
      */
     public static class CityXY implements Comparator<Structure> {
 
@@ -109,7 +113,31 @@ public class Comp {
     }
 
     /**
-     * Sorts by unit planet index.
+     * Sorts by city continent index.
+     */
+    public static class CityCIdx implements Comparator<Structure> {
+
+        private int prev_o1_pidx = -1;
+        private int prev_o2_pidx = -1;
+        private Hex[][] o1_map;
+        private Hex[][] o2_map;
+
+        public int compare(Structure o1, Structure o2) {
+            if (o1.p_idx != prev_o1_pidx) {
+                prev_o1_pidx = o1.p_idx;
+                o1_map = game.getPlanetGrid(o1.p_idx).getMapArray();
+            }
+            if (o2.p_idx != prev_o2_pidx) {
+                prev_o2_pidx = o2.p_idx;
+                o2_map = game.getPlanetGrid(o2.p_idx).getMapArray();
+            }
+            return o1_map[o1.x][o1.y].getLandNr() - o2_map[o2.x][o2.y].getLandNr();
+        }
+
+    }
+
+    /**
+     * Sorts by city planet index.
      */
     public static class CityPIdx implements Comparator<Structure> {
 
@@ -133,6 +161,31 @@ public class Comp {
             }
 
         }
+    }
+
+    /**
+     * Sorts by unit continent index.
+     */
+    public static class UnitCIdx implements Comparator<Unit> {
+
+        private int prev_o1_pidx = -1;
+        private int prev_o2_pidx = -1;
+        private Hex[][] o1_map;
+        private Hex[][] o2_map;
+
+
+        public int compare(Unit o1, Unit o2) {
+            if (o1.p_idx != prev_o1_pidx) {
+                prev_o1_pidx = o1.p_idx;
+                o1_map = game.getPlanetGrid(o1.p_idx).getMapArray();
+            }
+            if (o2.p_idx != prev_o2_pidx) {
+                prev_o2_pidx = o2.p_idx;
+                o2_map = game.getPlanetGrid(o2.p_idx).getMapArray();
+            }
+            return o1_map[o1.x][o1.y].getLandNr() - o2_map[o2.x][o2.y].getLandNr();
+        }
+
     }
 
     /**

@@ -35,7 +35,7 @@ Copyright (C) 2015 joulupunikki joulupunikki@gmail.communist.invalid.
     </Console>
   </Appenders>
   <Loggers>
-    <Root level="OFF">
+    <Root level="Debug">
       <AppenderRef ref="Console"/>
     </Root>
   </Loggers>

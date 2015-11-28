@@ -154,6 +154,7 @@ public class C {
     public static final float LOYALTY_REBEL_LIMIT = 25;
     public static final float LOYALTY_REBEL_LOW_P = 0.5f;
     public static final float LOYALTY_REBEL_HIGH_P = 0.98f;
+    public static final String OPT_DISABLE_AI = "disableai";
 
 
 

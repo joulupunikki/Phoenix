@@ -149,7 +149,7 @@ public class PlanetMap extends JPanel {
         drawSelectedStack(g);
         //drawFlags(g);
 
-        //drawHexTypes(g);
+        drawHexTypes(g);
 //        drawMoveCosts(g);
     }
 
@@ -268,21 +268,23 @@ public class PlanetMap extends JPanel {
 
                     boolean[] terrain_type = planet_grid.getHex(i, j).getTerrain();
 
-                    int n = 0;
-                    for (int k = 0; k < terrain_type.length; k++) {
-                        if (terrain_type[k] == true) {
-                            dx = x + x_offset;
-                            dy = 5 + y + dip + y_offset + 9 * n++;
-
-                            if (ws.is_double) {
-                                dx *= 2;
-                                dy *= 2;
-                            }
-                            g.setColor(Color.RED);
-                            g.setFont(new Font("Arial", Font.PLAIN, 15));
-                            g.drawString(Util.terrainTypeAbbrev(k), dx, dy);
-                        }
-                    }
+//                    int n = 0;
+//                    for (int k = 0; k < terrain_type.length; k++) {
+//                        if (terrain_type[k] == true) {
+//                            dx = x + x_offset;
+//                            dy = 5 + y + dip + y_offset + 9 * n++;
+//
+//                            if (ws.is_double) {
+//                                dx *= 2;
+//                                dy *= 2;
+//                            }
+//                            g.setColor(Color.RED);
+//                            g.setFont(new Font("Arial", Font.PLAIN, 15));
+//                            g.drawString(Util.terrainTypeAbbrev(k), dx, dy);
+//                            //g.drawString("" + i + "," + j, dx, dy);
+//                            //g.drawString("" + planet_grid.getHex(i, j).getLandNr(), dx, dy);
+//                        }
+//                    }
 
                     dx = x + x_offset;
                     dy = y + dip + y_offset;
@@ -292,6 +294,9 @@ public class PlanetMap extends JPanel {
                         dy *= 2;
                     }
 
+                    g.setColor(Color.RED);
+                    g.setFont(new Font("Arial", Font.PLAIN, 10));
+                    g.drawString("" + planet_grid.getHex(i, j).getLandNr() + "," + i + "," + j, dx, dy);
 //                        for (int k = 0; k < name.length(); k++) {
 //                            String t = name.substring(k, k + 1);
 //                            g.setFont(ws.font_structure_name_bg);

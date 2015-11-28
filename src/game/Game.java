@@ -28,6 +28,9 @@
  */
 package game;
 
+import ai.AI;
+import ai.RebelAI;
+import ai.SymbiotAI;
 import com.github.joulupunikki.math.random.XorShift1024Star;
 import dat.Damage;
 import dat.EfsIni;
@@ -41,10 +44,12 @@ import galaxyreader.JumpGate;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import gui.Gui;
 import gui.Resource;
 import java.awt.Point;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -68,6 +73,8 @@ public class Game implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
+    //***** these variables are used for interfacing with the GUI and the Game object
+    //***** they can be considered part of the GUI state
     //coordinates of currently selected hex/square/stack  
     private Point selected_point;
     //faction of selected space stack, x == owner, y == prev_owner
@@ -81,8 +88,7 @@ public class Game implements Serializable {
     private JumpGate jump_path;
 //    private PlanetGrid[] planet_grids;
     private int current_planet;
-    //faction whose turn it is
-//    private int current_faction;    // Not used? RSW
+    //***** these variables are purely Game object state
     //game year
     private int year;
     //turn ie the current faction id
@@ -125,6 +131,8 @@ public class Game implements Serializable {
     private HexProc hex_proc;
     private Diplomacy diplomacy;
 
+    private AI[] ai;
+
     public Game(String galaxy_file, int current_planet) {
 
         random = RandomAdaptor.createAdaptor(new XorShift1024Star(1L));
@@ -141,7 +149,8 @@ public class Game implements Serializable {
         planet_map_origin = new Point(0, 0);
         space_map_origin = new Point(0, 0);
 
-        planets = galaxy.getPlanets();
+        planets = new ArrayList<>(galaxy.getPlanets().size());
+        planets.addAll(galaxy.getPlanets());
         jump_gates = galaxy.getJumpGates();
         units = galaxy.getUnits();
         structures = galaxy.getStructures();
@@ -173,6 +182,16 @@ public class Game implements Serializable {
 
         battle = new Battle();
 
+        initAI();
+    }
+
+    private void initAI() {
+        for (Planet planet : planets) {
+            planet.planet_grid.setAIDataStructures(planet);
+        }
+        ai = new AI[C.NR_FACTIONS];
+        ai[C.NEUTRAL] = new RebelAI(this);
+        ai[C.SYMBIOT] = new SymbiotAI(this);
 //        for (int i = 0; i < str_build.length; i++) {
 //            System.out.println("str_build = " + str_build[i].name);
 //        }
@@ -543,6 +562,9 @@ public class Game implements Serializable {
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
         diplomacy.getSentContracts().clear();
+        if (!human_ctrl[turn] && ai[turn] != null && !Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI)) {
+            ai[turn].doTurn();
+        }
     }
 
     private void advanceYear() {
@@ -834,6 +856,7 @@ public class Game implements Serializable {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeStructure(e);
                     } else {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeResource(e);
+                        iterator.remove(); // FIX #53
                     }
                 }
                 e.y = y;
