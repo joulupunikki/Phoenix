@@ -30,6 +30,7 @@ package game;
 
 import ai.AI;
 import ai.RebelAI;
+import ai.StaticThreads;
 import ai.SymbiotAI;
 import com.github.joulupunikki.math.random.XorShift1024Star;
 import dat.Damage;
@@ -185,10 +186,12 @@ public class Game implements Serializable {
         initAI();
     }
 
-    private void initAI() {
-        for (Planet planet : planets) {
-            planet.planet_grid.setAIDataStructures(planet);
+    public void initAI() {
+        for (Planet planet : planets) { // fast serial
+            planet.planet_grid.serialSetAIDataStructures(planet);
         }
+        StaticThreads.dispatchStaticAIWorker(planets); // slow parallel
+
         ai = new AI[C.NR_FACTIONS];
         ai[C.NEUTRAL] = new RebelAI(this);
         ai[C.SYMBIOT] = new SymbiotAI(this);
@@ -563,6 +566,13 @@ public class Game implements Serializable {
         }
         diplomacy.getSentContracts().clear();
         if (!human_ctrl[turn] && ai[turn] != null && !Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI)) {
+            while (!StaticThreads.isStaticDone()) {
+                try {
+                    System.out.println("Waiting for static AI.");
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                }
+            }
             ai[turn].doTurn();
         }
     }

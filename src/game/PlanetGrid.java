@@ -54,7 +54,7 @@ public class PlanetGrid implements Serializable {
     private Hex[][] map_array;
     //***** AI support data structures
     // every continent has all its hexes in one LinkedHashMap
-    private ArrayList<LinkedHashMap<Hex, Hex>> continent_maps;
+    private transient ArrayList<LinkedHashMap<Hex, Hex>> continent_maps;
     // intra continent hex distances, triangular 2-D byte array
     /*
      notice: map height == 32, width == 44 hexes, and straight line max hex
@@ -64,7 +64,7 @@ public class PlanetGrid implements Serializable {
      distance > 127, for the unlikely event that such a continent occurs, the
      hex distance for such hexes will be set to -128.
      */
-    private byte[][] land_hex_dist;
+    private transient volatile byte[][] intra_cont_hex_dist = null;
 
     public PlanetGrid() {
 
@@ -155,21 +155,31 @@ public class PlanetGrid implements Serializable {
     }
 
     /**
-     * Create per Galaxy static AI support data structures.
-     *
+     * Create per Galaxy static AI support data structures, slow calculations
+     * not suitable for serial execution (will delay game initialization).
+      *
      * @param planet
      */
-    public void setAIDataStructures(Planet planet) {
-        defineContinents(planet);
+    public void parallelSetAIDataStructures(Planet planet) {
         defineIntraContinentHexDist();
     }
 
+    /**
+     * Create per Galaxy static AI support data structures, fast calculations
+     * suitable for serial execution.
+     *
+     * @param planet
+     */
+    public void serialSetAIDataStructures(Planet planet) {
+        defineContinents(planet);
+    }
+
     private void defineIntraContinentHexDist() {
-        land_hex_dist = new byte[C.PLANET_MAP_COLUMNS * C.PLANET_MAP_WIDTH][];
-        for (int i = 0; i < land_hex_dist.length; i++) {
-            land_hex_dist[i] = new byte[i + 1];
-            for (int j = 0; j < land_hex_dist[i].length; j++) {
-                land_hex_dist[i][j] = -1;
+        byte tmp_dists[][] = new byte[C.PLANET_MAP_COLUMNS * C.PLANET_MAP_WIDTH][];
+        for (int i = 0; i < tmp_dists.length; i++) {
+            tmp_dists[i] = new byte[i + 1];
+            for (int j = 0; j < tmp_dists[i].length; j++) {
+                tmp_dists[i][j] = -1;
 
             }
         }
@@ -200,7 +210,7 @@ public class PlanetGrid implements Serializable {
                 if (father2.getLandNr() != father.getLandNr()) {
                     continue;
                 }
-                setIntraContHexDist(father.getHexIdx(), father2.getHexIdx(), dist);
+                initIntraContHexDist(father.getHexIdx(), father2.getHexIdx(), dist, tmp_dists);
                 Hex[] neighbours2 = father2.getNeighbours();
                 for (Hex child2 : neighbours2) {
                     if (child2 != null && all_hexes2.add(child2)) {
@@ -211,6 +221,7 @@ public class PlanetGrid implements Serializable {
 
             }
         }
+        intra_cont_hex_dist = tmp_dists;
     }
 
     /**
@@ -263,7 +274,7 @@ public class PlanetGrid implements Serializable {
         int count = 0;
         for (LinkedHashMap<Hex, Hex> continent_map : continent_maps) {
             for (Map.Entry<Hex, Hex> entrySet : continent_map.entrySet()) {
-                entrySet.getValue().setLandNr(count);
+                entrySet.getValue().setHexIdx().setLandNr(count); // method chaining
             }
             count++;
         }
@@ -369,14 +380,28 @@ public class PlanetGrid implements Serializable {
     }
 
     public byte getIntraContHexDist(Hex a, Hex b) {
-        return getIntraContHexDist(a.getX() + a.getY() * C.PLANET_MAP_WIDTH, b.getX() + b.getY() * C.PLANET_MAP_WIDTH);
+        return getIntraContHexDist(a.getHexIdx(), b.getHexIdx());
+        //return getIntraContHexDist(a.getX() + a.getY() * C.PLANET_MAP_WIDTH, b.getX() + b.getY() * C.PLANET_MAP_WIDTH);
     }
 
     public byte getIntraContHexDist(int a, int b) {
         if (a >= b) {
-            return land_hex_dist[a][b];
+            return intra_cont_hex_dist[a][b];
         } else {
-            return land_hex_dist[b][a];
+            return intra_cont_hex_dist[b][a];
+        }
+    }
+
+    public byte[][] getIntraContHexDist() {
+        return intra_cont_hex_dist;
+    }
+
+    private void initIntraContHexDist(int a, int b, int dist, byte[][] array) {
+        if (a >= b) {
+            if (dist > 127) {
+                dist = -128;
+            }
+            array[a][b] = (byte) dist;
         }
     }
 
@@ -385,8 +410,12 @@ public class PlanetGrid implements Serializable {
             if (dist > 127) {
                 dist = -128;
             }
-            land_hex_dist[a][b] = (byte) dist;
+            intra_cont_hex_dist[a][b] = (byte) dist;
         }
+    }
+
+    public void setIntraContHexDist(byte[][] b) {
+        intra_cont_hex_dist = b;
     }
 
 }

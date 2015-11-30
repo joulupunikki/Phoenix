@@ -1800,6 +1800,7 @@ public class Gui extends JFrame {
                     ObjectInputStream s = new ObjectInputStream(gis)) {
                 Game tmp = (Game) s.readObject();
                 game = tmp;
+                game.initAI();
                 //System.out.println("after read object");
 //                space_map.setGame(game);
 //                planet_map.setGame(game);
