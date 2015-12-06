@@ -6,20 +6,470 @@ and open the template in the editor.
 -->
 <html>
     <head>
+        <link rel="stylesheet" href="style.css" type="text/css"/>
+
+        <STYLE>
+            body {
+                counter-reset: h2counter;
+            }
+            h1 {
+                counter-reset: h2counter;
+            }
+            h2:before {
+                content: counter(h2counter) "\0000a0\0000a0";
+                counter-increment: h2counter;
+            }
+            h2.zero:before {
+                content: counter(h2counter) "\0000a0\0000a0";
+                counter-increment: h2counter h3counter -1;
+            }
+            h2.nocount:before {
+                content: "";
+            }
+            h2 {
+                counter-reset: h3counter;
+            }
+            h3:before {
+                content: counter(h2counter) "." counter(h3counter) "\0000a0\0000a0";
+                counter-increment: h3counter;
+            }
+            h3 {
+                counter-reset: h4counter;
+            }
+            h4:before {
+                content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "\0000a0\0000a0";
+                counter-increment: h4counter;
+            }
+            h4 {
+                counter-reset: h5counter;
+            }
+            h5:before {
+                content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "\0000a0\0000a0";
+                counter-increment: h5counter;
+            }
+            span {
+                display: inline-block;
+                vertical-align:top;
+            }
+            p {
+                margin-left: 20px;
+                max-width: 800px;
+            }
+            table {
+                max-width: 800px;
+            }
+            ol {
+                max-width: 800px;
+            }
+            ul {
+                max-width: 800px;
+            }
+        </STYLE>        
         <title>Phoenix</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <body>
-        <h1>Phoenix</h1>
-        <div>A java clone/remake/patch of the game <a href="http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns">Emperor of the Fading Suns (EFS)</a>. This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.</div>
-        <nav>
-            <ul>
-                <li> <a href="https://github.com/joulupunikki/Phoenix/releases">Download on GitHub</a> </li>
-                <li> <a href="https://github.com/joulupunikki/Phoenix">Project repository on GitHub</a> </li>
-                <li> <a href="https://www.youtube.com/watch?v=-5CJ0Of43C8">Youtube video of Phoenix 0.50.0 running</a> </li>                
-            </ul>
-        </nav>
+    <body style="background-color:lightblue">
+        <h1><A id="Top"></A>Phoenix</h1>
+        <p>
+        <FONT SIZE=2>This software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+        OR CONDITIONS OF ANY KIND, either express or implied. See <A HREF="#Copyright">Appendix A. Copyright notices</A><BR></font>
+        <p>
+        <table>
+            <tr>
+                <td><p>            
+                    <A HREF="#Copyright">Appendix A. Copyright notices</A><BR>
+                    <ol>
+                        <li><A HREF="#Whatis">What is Phoenix?</A><BR></li>
+                        <li><A HREF="#System">System Requirements</A><BR></li>
+                        <li><A HREF="#Obtain">How do I obtain Phoenix?</A><BR></li>
+                        <li><A HREF="#Install">How do I install Phoenix?</A><BR></li>
+                        <li><A HREF="#Mods">How do mods (Nova etc.) work with Phoenix?</A><BR></li>
+                        <li><A HREF="#Differ">How does Phoenix differ from standard EFS.EXE?</A><BR></li>
+                        <li><A HREF="#Background">Background information</A><BR></li>
+                        <li><A HREF="#Who">Who made Phoenix ?</A><BR></li>
+                        <li><A HREF="#Web">Phoenix on the web</A><BR></li>
+                        <li><A HREF="#Versions">Phoenix version history</A><BR></li>
+                    </ol>
+                </td>
+                <td style="vertical-align:top">
+                    <a href="http://www.apache.org"><img src="http://i.imgur.com/rp4zRlw.jpg" alt="Powered by Apache"><img></a>
+                </td>
+            </tr>
+        </table>
+            
+
+
+
+        <h2><A id="Whatis"></A>What is Phoenix ?  <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+            Phoenix is an unofficial patch for/a remake of the space <a href="https://en.wikipedia.org/wiki/Turn-based_strategy">TBS</a>
+        <a href="http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns">Emperor of the Fading Suns (EFS)</a>.
+        A six minute video of <a href="https://www.youtube.com/watch?v=-5CJ0Of43C8">Phoenix 0.50.0</a> is on youtube.
+        Phoenix is best summed by the first sentences from the first public post three years ago : "I am interested 
+        in trying to make an exe replacement using java. Exe replacement meaning i would try to recreate efs.exe 
+        functionality using existing datafiles, minus the bugs, plus some modern wargame features."
+        <p>
+            The creators of the Nova mod stated: "Since we do not have access to the game's source code, we cannot 
+            possibly fix ALL of the flaws." Phoenix is an attempt to fix the flaws that remain after all avenues short of
+            fully fixing the executable have been exhausted.
+        <h2><A id="System"></A>System Requirements   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+        (Notice: having java enabled in a web browser can be a security risk, unless you need to run applets you
+        can ensure Oracle java on browsers is disabled by following the instructions 
+        <a href="http://java.com/en/download/help/disable_browser.xml">here</a>.)
+        <ul>
+            <li>Software: EFS1.4 installed. Java 8 jdk/jre. (Phoenix save files are incompatible with EFS.EXE save files.)</li>
+            <li>Hardware: Java 8 capable (Oracle java available for Linux/Mac/Solaris/Windows). 
+                640x480 mode runs well enough on an Asus X54C/K54C laptop with Celeron B815 1.6Ghz dual core and 4GB DDR3 ram.</li>
+        </ul>
+
+        <h2><A id="Obtain"></A>How do I obtain Phoenix?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+        People who just want to try Phoenix should get the latest release distribution package named
+        Phoenix_X.Y.Z.zip, where X.Y.Z are version numbers, downloadable at <a href="https://github.com/joulupunikki/Phoenix/releases">Phoenix releases</a> on 
+        GitHub. This zip file contains a precompiled jar and also buildable release sources for those 
+        who are suspicious of running random binaries found on the Internet.
+
+        <h2><A id="Install"></A>How do I install Phoenix?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2> 
+        <p>
+            Unzip the contents of the `<code>Phoenix_X.Y.Z.zip</code>` release package to your EFS directory where `<code>EFS.EXE</code>` resides. 
+            Execution: doubleclick on `<code>Phoenix.bat</code>` (on MSWindows) or `<code>phoenix.sh</code>` (on BSD/Linux/OSX) or if you use 
+            commandline for a 640x480 window type `<code>java -Xss32m -jar Phoenix.jar</code>`. For a 1280x1024 window type 
+            `<code>java -jar -Xss32m Phoenix.jar -d</code>` or double click on `<code>Phoenix1280x1024.bat</code>`.
+        <p>
+            If you get an error saying java not found then likely java is not in the path and you need either to put java into the path or 
+            use absolute path name. Eg. on windows if your java jdk is installed into 
+            `<code>C:\Program Files\Java\jdk1.8.0</code>` you would type 
+        `<code>"C:\Program Files\Java\jdk1.8.0\bin\java.exe" -jar -Xss32m Phoenix.jar</code>`
+
+        <h2><A id="Mods"></A>How do mods work with Phoenix ?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+        The intent is that all mods which work with EFS1.4 EFS.EXE should work straight out of the box with Phoenix. However, the exact formatting
+        of datafiles which work with EFS.EXE appear broader than what would be expected from studying the EFS1.4 data files. This may result in some
+        surprises as can be seen in the Hyperion 1.4g case below.
+        <ul>
+            <li><b>Nova 2.3</b> starts up normally</li>
+            <li><b>Emperor Wars 3.4e</b> starts up normally, extensive automated java Robot class testing implemented. Certain units (eg. terminators)
+            have more than four (4) attack types, while the standard EFS Gui is capable of showing only four.</li>
+            <li><b>Hyperion 1.4g does not start without modification of UNITSPOT.DAT</b>: In UNITSPOT.DAT line 67 reads
+                ` "desert" "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"` when it should be 
+                ` "desert" "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"` ie there is a dot between the Trd and Air columns 
+                which makes Phoenix fail. Correct this and Hyperion should start.
+                <br><br>
+                <b>Also in relevant Hyperion versions, remember to replace UNIT.DAT with UNIT3.DAT</b> to enable building of advanced units.
+                This must be done before a game is started since Phoenix loads datafiles only once during program start. </li>
+        </ul>
+
+        <h2><A id="Differ"></A>How does Phoenix differ from standard EFS.EXE   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+        The aim is to reproduce 100% of desirable EFS1.4 features and add modern game features such as build queues,
+        ultimately replacing EFS.EXE in EFS games. 
+        <ul>
+            <li>Functionally, a limitation is the exposure of feature details through available materials. Some things, such as the exact way the plague spreads or the exact way rebellions occur, are hard coded deep in EFS.EXE and can only be approximated by running the orginal game multiple times and inspecting the empirical distribution of results.</li> 
+            <li>Graphically, every detail is in plain sight and the open question is how well can they be reproduced with java.  So far, recreating original EFS look and feel has been a success. Font fine tuning seems currently the last obstacle in achieving near 100 % likeness with the original EFS GUI.</li>
+        </ul>
+        <p>
+        A side by side comparison of Phoenix 0.50.0 and EFS1.4 EFS.EXE views of Kish palace in the historical 
+        galaxy can be seen in the image below. The vertical alignment difference of 0.5 hexes 
+        is due to the EFS.EXE centering the view so that visible hexes above/below are 5.5/3.5 
+        whereas in Phoenix this has been set to 5/4.
+        <p>
+            <!--<a href="http://tinypic.com?ref=w0jlmx" target="_blank"><img src="http://i68.tinypic.com/w0jlmx.png" border="0" alt="Image and video hosting by TinyPic"></a>-->
+            <img src="http://i.imgur.com/D6nCxwa.png" alt="comparison of Phoenix and EFS.EXE views of Kish"><img>
+        <p>     
+
+        <h2><A id="Background"></A>Background information   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <p>
+        Phoenix was not started in a vacuum. It is being built on the knowledge contained in the existing faqs, mods, tools and forum posts.
+        In fall 2012 the only essential information unknown to the public community regarding the GALAXY.GAL file format was the planet map terrain data.
+        <h3>Reasons for trying to "just" patch existing EFS vs. doing a full remake</h3>
+        <ul>
+            <li> I am not a proven game designer, and trying to create a new game concept from scratch as you go probably would fail, all previous EFS remake attempts seem to have suffered from this to a degree. </li>
+            <li> You can use existing EFS1.4 resources: graphics, dat files, galaxy. </li>
+            <li> You can use existing community resources: most mods should work straight out of the box </li>
+            <li> EFS must be a good game concept because after twenty years it is still played and even modded actively, even with all the bugs and lack of modern wargame features. </li>
+            <li> The existing manuals and web tutorials could be used </li>
+            <li> The existing playerbase could perhaps seriously consider using it, if it fixes the worst bugs, like the crashes, and adds the most needed missing features, like build queues, and removes the annoying features, like the omnipresent "are you sure" queries and the clickfest of events and completed builds at the start of every turn.</li>
+        </ul> 
+
+
+        <h3>Reasons for using java</h3> <ul>
+            <li> It is the language I know best. </li>
+            <li> It has automatic memory management, null-pointer/array index checking, these alone make some serious and subtle bugs hard to introduce. </li>
+            <li> Minor compatibility problems across Linux, Windows etc.</li>
+        </ul>
+
+        <h3>Things to avoid (or lessons learned from previous game remake attempts)</h3> <ol>
+            <li> Talking the project to death. The first EFS remake attempts from early 2000 suffered most from this. </li>
+            <li> Going for the best space TBS game ever. </li>
+            <li> Code slowly becoming too unstable to run. </li>
+        </ol>
+<p>
+        1 and 2 are simply avoided by going for "EFS1.5 patch" instead of "EFS2.0", the existing EFS1.4 is the blueprint which must be implementented, only one must do a less buggy and more modern implementation. Not much to talk or design, just do.
+<p>
+        Using java helps avoid 3, but lack of testing was a bit of a problem until last summer when automated high level testing using java Robot class was implemented. Basically, you play a game, testing features, the mouse and keyboard input and game state are recorded as you play, and the recorded game can be replayed (and features tested) automatically. Currently, there is almost an hours worth of tests in over twenty recorded games. Prior to implementing this testing, I have not been too confident to announce Phoenix outside of forums or threads dedicated to EFS.
+
+        <h2><A id="Web"></A>Phoenix on the web   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+<p>
+        The <a href="https://github.com/joulupunikki/Phoenix">Phoenix project</a> is hosted on github.
+        <p>
+            <a href="https://github.com/joulupunikki/Phoenix/releases">Release downloads</a> on github.
+        <p>
+            A six minute video of <a href="https://www.youtube.com/watch?v=-5CJ0Of43C8">Phoenix 0.50.0</a> is on youtube. 
+            Almost all EFS.EXE features implemented in Phoenix 0.50.0 are exhibited, with the notable exception of buy/sell resources from/to League agoras.
+
+        <h2><A id="Who"></A>Who made Phoenix patch ?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2> 
+<p>
+        <a href="mailto:joulupunikki@gmail.communist.invalid">joulupunikki</a> has done most of the work, 
+        with first proof of concept GUI code produced in early spring 2010 and major parts done between fall 2012 and present (fall 2015).
+        <p>
+            Richard Wein (co-creator of the Nova mod) 
+            has done almost all of the hard work regarding resource harvesting and production, and the special 
+            cargo pod related data structures in early 2014.
+
+
+        <h2 class="zero"><A id="Versions"></A>Phoenix version history   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <h3>In the pipeline for the next release (version 0.51)</h3>
+        <h4>Planned</h4>
+        <ul>
+            <li>If symbiot AI = useful => release single player mission/demo with players starting as Al-Malik regent, with fleet and garrison offices, and tasked with the conquest of Absolution, Chernobog and Daishan.</li>
+        </ul>
+        <h4>Under construction</h4>
+        <ul>
+            <li>Symbiot AI</li>
+        </ul>
+        <h4>Completed</h4>
+        <ul>
+            <li>Tax, pay change effects on loyalty; resulting rebellions</li>
+            <li>Raze city</li>
+            <li>Add promise votes, ministry to contracts</li>
+            <li>Grand planetary map</li>
+            <li>Grand galactic map</li>
+        </ul>
+
+        <h3>New in version 0.50.0</h3>
+        <p>
+        (Notice: previous published release version was numbered 0.10.2. Published version numbers between 0.10.2 and 0.50.0 do not exist, they were skipped.)
+        <p>
+            <b> Faction relations</b> partially implemented. May be at war or peace. If your action would result in attacking non-hostiles, a confirmation will be required. At game start, all relations are peaceful except: the rebels are permanently at war with the five great houses; the symbiots are permanently at war with everybody.
+        <p>
+            <b> Orbital bombardment and PTS</b> defence fire with Ranged Space capable units implemented. Currently, all PTS units within
+            5 hexes will fire on hostiles landing or bombarding.
+        <p>
+            <b> House window</b> partially implemented. Tax, tithe skim and unit pay may be set. Taxes are collected, units are paid and ending your turn is not allowed if your firebirds would go to negative.
+        <p>
+            <b> Diplomacy window</b> partially implemented. Currently, you may conduct diplomacy only between the five great houses. Currently, only peace and firebirds may be selected as contract terms. Sent contracts and replies are viewable in Messages.
+        <p>
+            <b> Byzantium II window</b> functionally complete. Regent elections are held and resolved, regents are appointed, regent must ensure all ministeries are occupied and newly elected regents may shuffle offices. Regent may declare emperor, and if they win two emperorship elections they are crowned emperor. To vote, click on vote button in Byzantium II window, click on house banner to vote for that house, click on abstain button to abstain. To assign ministries, click on ministry banner.
+        <p>
+            <b> Agora trade</b> partially implemented. When selected, League agoras display trade button, press this to buy resources. Move cargo pods to League agoras to sell resources. May not trade if at war with League.
+
+        <h3>New in version 0.11.0</h3>
+        <p>
+        Note: this is a meta release with no new game functionality.
+        <p>
+            Convert project from native NetBeans to Apache Maven. Define contributable tasks as issues. Change contribution policy to "Yes for predefined tasks." Not released officially.
+
+        <h3>New in version 0.10.3</h3>
+        <p>
+        Bugfix portability problems. Automate release building. Not released officially, integrated into 0.11.0.
+
+        <h3>New in version 0.10.2</h3>
+        <p>
+        A bit of rewording in documentation. See version 0.10.1 below for details of documentation/packaging fixes.
+
+        <h3>New in version 0.10.1</h3>
+<p>
+        Notice: this is a quick bugfix release. To browse the new features in the 0.10 series please see New in version 0.10.0 below.
+        <p>
+            Documentation changes: Change "Usage" heading to "Installing and running". Add "Getting Phoenix" heading.
+        <p>
+            Documentation and packaging Bugfix: README.md did not have a "Getting Phoenix" heading. Also, the git database does not contain the explicit files necessary to build the sources as instructed in "Installing and running, Source distribution". As a result, users who cloned or otherwise got copy of the GitHub git database and read README.md or README.txt had mismatching package contents and documentation. On Windows especially, it was not possible to build a runnable `Phoenix.jar` following the instructions in the provided documentation unless one knew some details about building.
+
+        <h3>New in version 0.10.0</h3>
+<p>
+        City capture with planetside units implemented.
+        <p>
+            City building by engineers implemented. Road building not yet possible.
+        <p>
+            PBEM with mandatory security implemented. Includes passwords and datafile integrity checking. Password revocation feature also included. If at least three factions are human controlled then at the start of a players turn, instead of entering the password, password revocation sequence of the current player may be initiated by pressing the "password revocation" button. Dialog will be then displayed querying the revocation action which may be either password zeroing or setting faction to computer control. After that the revocation sequence is initiated by saving the game. The revocation sequence is like a full year of pbem game except that instead of playing their turn each human player other than the one who is the target of the revocation will be asked for their password to confirm the revocation. When the last player gives their consent by giving their password the sequence completes and the password of the target player will be zeroed and thus when the target player's turn comes he will be asked for a new password. Or if computer control was selected as revocation action the target player's faction will be permanently set to computer control. PBEM game resumes normally from this point onwards.
+        <p>
+            Messages partially implemented. Selecting "messages"->"read messages" from menubar will bring up messages window. Messages accumulated since the end of your previous turn will be listed in a table. Double click on the "message" column to show message details. Read messages are displayed in light gray color. Currently only combat reports are viewable. The "location" column will show the planet (and possibly coordinates on planet) where the message originates. Click on the "location" column to goto the message origin.
+        <p>
+            When units are at shoreline, loading and unloading of cargo at ocean shores works more or less as in original EFS. You can currently load air units as normal cargo.
+        <p>
+            Cargo transfer dialog implemented. In stack window/unit info window drag and drop cargo pods onto each other to join them and to empty slots to split them.
+        <p>
+            Galaxy name parameter for command line must be either GALAXY.GAL or GAL\"galaxyname" so you can have a GAL directory containing galaxy files.
+        <p>
+        <h3>New in version 0.9.1</h3>
+<p>
+        Notice: this is a quick bugfix release. To browse the new features in the 0.9 series please see New in version 0.9.0 below.
+        <p>
+            There is a bug(*) in Hyperion 1.4g which prevents Phoenix from loading DAT/UNITSPOT.DAT. In UNITSPOT.DAT line 67 reads `     "desert"  "2.0 1.0 2.2.0.0 1.0 0.5 2.0 0.5 1.0 1.0"` when it should be `     "desert"  "2.0 1.0 2.0 2.0 1.0 0.5 2.0 0.5 1.0 1.0"` ie there is a dot between the Trd and Air columns which makes Phoenix choke. Correct this and Hyperion should start.
+        <p>
+            Also in Hyperion 1.4g remember to replace UNIT.DAT with UNIT3.DAT to enable building of advanced units. This must be done before a game is started since Phoenix loads datafiles only once during program start.
+        <p>
+            (*) Technically, this is a feature, not a bug, since it works with EFS1.4 "EFS.EXE".
+        <p>
+        <h3>New in version 0.9.0</h3>
+<p>
+        Resources implemented. Primary resource harvesting and secondary resource production implemented by RSW. Resource icons and resource amount display added to planet window and build panel. Click on a resource icon in planet window to see resource production and consumption statistics. Resource amount on planet window shown in red if planetary (galactic if universal warehouse on) resource consumption exceeds production. Note that since messages are not fully implemented yet you won't be notified if you lack the necessary resources for secondary production.
+        <p>
+            Food consumption implemented by RSW.
+        <p>
+            Unit building implemented. To build select "orders"->"build units" form menubar or use standard EFS methods. Differs from standard EFS in that on the lower left of the build window you have a list of planets where you have cities. Select planet by  clicking and then on the lower right a list of cities on the planet will be displayed. Select a city by clicking and you will have EFS style selection of buildable units on the upper left and on the upper right you have a build queue. Only units for which you have required technologies will be buildable. If you click on the build button in planet window or city window the planet and city will be pre-selected so that the current city will be used. Double click on units to add to the build queue. Double click on units in the build queue to remove units from the build queue. If resources necessary to build unit are missing the unit will be shown red in the selection of buildable units. If the input unit is missing the unit will be shown in white. It is possible to queue units for which you don't have enough resources or input units. In such a case the city build queue will be put on hold and the first unit in the queue will be shown in gray color. Units will be built on city hex or immediately surrounding hexes if city hex is full. If all hexes are full production will be delayed by one turn. Note that since messages are not fully implemented yet you won't be notified when building is completed.
+        <p>
+            Research and technologies implemented. To research select "orders"->"research" form menubar. Research works more or less as in standard EFS except that all labs are assigned as one. Doubleclick on technologies to assign labs. Note that since messages are not fully implemented yet you won't be notified at beginning of your turn if research is completed.
+        <p>
+            Manowitz archives implemented. Manowitz works as in standard EFS except for the previous button which takes you to the beginning of the previous chapter.
+        <p>
+            PHOENIX/PHOENIX.INI file introduced to contain configurable game parameters beyond those in EFS.INI.
+        <p>
+            Currently Phoenix has a Wizard mode menu to aid in testing. You can get all techs, 999 of all resources on current planet or randomize the RNG.
+        <p>
+            Currently the double red triangle button in planet and space windows goes through cargo pods instead of all faction units.
+        <p>
+        <h3>New in version 0.8.3</h3>
+<p>
+        Added space button to planet window.
+        <p>
+            Changed hex grid color to darker gray.
+        <p>
+            See also New in version 0.8.2
+        <p>
+        <h3>New in version 0.8.2</h3>
+<p>
+        Bugfix: java cmd line options: use -Xss32m instead of -Xss99m to prevent out of memory errors especially during saving and loading. Thanks to RSW.
+        <p>
+            See also New in version 0.8.1
+        <p>
+        <h3>New in version 0.8.1</h3>
+<p>
+        Bugfix: Nova mod datafiles are supported.
+        <p>
+            Bugfix: loading of datafiles will log failures to read files.
+        <p>
+            Bugfix: java: loading and saving games will catch throwables.
+        <p>
+            Errors, exceptions and failures to read data files will be logged to `phoenixlog.txt`. Previous log will be saved to `phoenixlog.txt.1`.
+        <p>
+        <h3>New in version 0.8.0</h3>
+<p>
+        Switched to <a href="http://semver.org">semantic version</a> numbering .
+        <p>
+            Stack selection. On planet/space window click center mouse button on 
+            stack display to open stack selection pop-up menu.
+        <p>
+            Spotting, unseen planets and unexplored hexes implemented. Spotting works like in original EFS except space spotting which simply compares spot and camo values and spots if spot >= camo.
+        <p>
+        <h3>New in version 7:</h3>
+<p>
+        Loading and saving games works, the progress bar displays are a bit off-tune yet.
+        <p>
+            Important note:
+            Due to the large size of the uncompressed save files (10MB) and the fact that java's saving process (serialization) is a recursive function the game will likely choke up (stack overflow) during loading and saving with the default stack size. The default stack size thus propably needs to be increased. On windows this is done automatically by clicking on `Phoenix.bat` instead of `Phoenix.jar` or from the command line issue eg. `java -Xss99m -jar Phoenix.jar` for 1280x960 window click `Phoenix1280x960.bat`
+        <p>
+            Basic space combat works with fighters and bombers aboard carriers participating in combat. Marauder legions and psychic cargo units do not yet participate in combat.
+        <p>
+            Navigable global minimap added to planet window. Click on minimap to navigate.
+        <p>
+            Navigable galactic minimap added to space window. Click on minimap to navigate.
+        <p>
+        <h3>New in version 6:</h3>
+<p>
+        Turns and factions implemented. Game begins with a main menu window where you select which factions are human controlled. Since there is no AI, factions which are unselected are simply skipped during game. During game click on the end turn button to end turn and the green arrows to skip to next unmoved units.
+        <p>
+            Planet to space movement implemented. When only spaceships are selected on planets click on the rocket button to launch into space. Landing spaceships also works. Spaceships can land on dry ocean floor on barren planets.
+        <p>
+            Loading & Unloading cargo works by drag & drop. 
+        <p>
+            Basic ground combat works; note that combat resolution differs from EFS so that you are first presented with a display of units participating in combat and need to click the "Do combat"-button to initiate battle and that there is no display of intermediate results. Instead the final results are immediately displayed. Routed units do not display health on the combat window.
+        <p>
+            Capturing routed units works.
+        <p>
+        <h3>New in version 5:</h3>
+<p>
+        Movement in space works, note its not possible to select a route spanning multiple jump points. PlanetToSpace movement not yet implemented. Right clicking the stack display on the left side of planet and space maps brings up the unit info window, which really doesn't do much yet.
+
+        <h3>New in version 4:</h3>
+<p>
+        Structures added to map.
+        <p> 
+            Units and basic movement is partially implemented. In the space and planet windows right click on the stacks in the maps to select them, then left click on the stack display on the left to select units in a stack. On the planet window with unit(s) selected left click on a map hex to select a destination and calculate a path. With path selected left click on the end point of a path to begin moving units along the path. Click again to stop moving. 
+        <p>
+            Note: turns not implemented yet so units have infinite movement points. Factions not implemented so stacks can be mixed. If the movement would result in a stack having more than 20 units the move fails. 
+        <p>            
+        <h2 class="nocount"><A NAME="Copyright"></A>Appendix A. Copyright notices   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <pre>
+
+ Copyright (C) 2013-2015 joulupunikki joulupunikki@gmail.communist.invalid
+ Portions Copyright (C) 2014 Richard Wein  
+
+ Disclaimer of Warranties and Limitation of Liability.
+
+    The creators and distributors offer this software as-is and
+    as-available, and make no representations or warranties of any
+    kind concerning this software, whether express, implied, statutory,
+    or other. This includes, without limitation, warranties of title,
+    merchantability, fitness for a particular purpose, non-infringement,
+    absence of latent or other defects, accuracy, or the presence or
+    absence of errors, whether or not known or discoverable.
+
+    To the extent possible, in no event will the creators or distributors
+    be liable on any legal theory (including, without limitation,
+    negligence) or otherwise for any direct, special, indirect,
+    incidental, consequential, punitive, exemplary, or other losses,
+    costs, expenses, or damages arising out of the use of this software,
+    even if the creators or distributors have been advised of the
+    possibility of such losses, costs, expenses, or damages.
+
+    The disclaimer of warranties and limitation of liability provided
+    above shall be interpreted in a manner that, to the extent possible,
+    most closely approximates an absolute disclaimer and waiver of
+    all liability.
+        </pre>
+        <pre>
+
+ Phoenix is not associated with, made by, or authorized by Segasoft Inc. or 
+ Holistic Design Inc. or the Apache Software Foundation
+
+ Emperor of the Fading Suns, Fading Suns, and the Fading Suns universe
+ and its distinct characters, logos, and marks are copyright 
+ <a href="http://www.holistic-design.com">Holistic Design Inc.</a> (c) 1996-2015 Holistic Design, Inc. All rights
+ reserved.
+
+ SegaSoft and the SegaSoft logo are trademarks of SegaSoft Inc. (c) 1996 
+ SegaSoft Inc. All rights reserved.
+
+
+
+ Apache Commons CLI
+ Copyright 2001-2015 The Apache Software Foundation
+
+ Apache Commons IO
+ Copyright 2002-2012 The Apache Software Foundation
+
+ Apache Commons Math
+ Copyright 2001-2015 The Apache Software Foundation
+
+ Apache Log4j API
+ Copyright 1999-2015 Apache Software Foundation
+
+ Apache Log4j Core
+ Copyright 1999-2012 Apache Software Foundation
+
+ This product includes software developed at
+ The Apache Software Foundation (http://www.apache.org/).
+
+ ResolverUtil.java
+ Copyright 2005-2006 Tim Fennell
+
+ This product includes adapted parts from SwingUtils by Darryl Burke
+ (https://tips4java.wordpress.com/2008/11/13/swing-utils/).
+        </pre>
+        <A HREF="#Top"><font size="2">(back to top)</font></A>
     </body>
 </html>
 
