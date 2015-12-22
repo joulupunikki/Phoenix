@@ -418,4 +418,8 @@ public class PlanetGrid implements Serializable {
         intra_cont_hex_dist = b;
     }
 
+    public ArrayList<LinkedHashMap<Hex, Hex>> getContinentMaps() {
+        return continent_maps;
+    }
+
 }

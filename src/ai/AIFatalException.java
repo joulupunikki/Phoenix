@@ -27,46 +27,21 @@
  */
 package ai;
 
-import game.Game;
-import util.C;
-import util.Util;
-
 /**
- * Rebel AI base class.
+ * This is thrown if AI goes fatally bonkers at low level, should be handled at
+ * higher AI level.
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class RebelAI extends AI {
+public class AIFatalException extends AIException {
     private static final long serialVersionUID = 1L;
 
-    public enum UTypes {
-
-        PSYCH,
-        CLOSE,
-        DIRECT,
-        INDIRECT,
-        AIR,
-        NESTER,
-        CLOSE_SP,
-        DIRECT_SP,
-        RANGED_SP,
-        CARGO_SP,
-    }
-    public RebelAI(Game game) {
-        super(game, C.NEUTRAL);
-        Util.dP("##### RebelAI init begin");
-        Util.dP("##### RebelAI init end");
+    AIFatalException(String string) {
+        super(string);
     }
 
-    @Override
-    public void doTurn() {
-        //logSuper(C.NEUTRAL, "Start");
-        // list stacks
-        //findAssets(C.NEUTRAL);
-        // list known enemy cities
-
-        // attack enemy cities
-        // attack enemy units
+    AIFatalException() {
+        super();
     }
 
 }

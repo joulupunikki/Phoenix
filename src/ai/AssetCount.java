@@ -27,46 +27,20 @@
  */
 package ai;
 
-import game.Game;
-import util.C;
-import util.Util;
-
 /**
- * Rebel AI base class.
+ * A communication object containing counts of cities, units and ground_combat
+ * units.
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class RebelAI extends AI {
-    private static final long serialVersionUID = 1L;
+public class AssetCount {
+    public int city;
+    public int unit;
+    public int ground_combat;
 
-    public enum UTypes {
-
-        PSYCH,
-        CLOSE,
-        DIRECT,
-        INDIRECT,
-        AIR,
-        NESTER,
-        CLOSE_SP,
-        DIRECT_SP,
-        RANGED_SP,
-        CARGO_SP,
+    public AssetCount(int city, int unit, int ground_combat) {
+        this.city = city;
+        this.unit = unit;
+        this.ground_combat = ground_combat;
     }
-    public RebelAI(Game game) {
-        super(game, C.NEUTRAL);
-        Util.dP("##### RebelAI init begin");
-        Util.dP("##### RebelAI init end");
-    }
-
-    @Override
-    public void doTurn() {
-        //logSuper(C.NEUTRAL, "Start");
-        // list stacks
-        //findAssets(C.NEUTRAL);
-        // list known enemy cities
-
-        // attack enemy cities
-        // attack enemy units
-    }
-
 }

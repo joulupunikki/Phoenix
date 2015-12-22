@@ -7,5 +7,14 @@ Copyright 2002-2012 The Apache Software Foundation
 Apache Commons Math
 Copyright 2001-2015 The Apache Software Foundation
 
+Apache Log4j API
+Copyright 1999-2015 Apache Software Foundation
+
+Apache Log4j Core
+Copyright 1999-2012 Apache Software Foundation
+
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
+
+ResolverUtil.java
+Copyright 2005-2006 Tim Fennell

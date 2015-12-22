@@ -27,46 +27,60 @@
  */
 package ai;
 
-import game.Game;
+import galaxyreader.Structure;
+import galaxyreader.Unit;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import util.C;
-import util.Util;
 
 /**
- * Rebel AI base class.
+ * AI support structure representing a continent. Holds lists of assets on a
+ * continent for each faction.
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class RebelAI extends AI {
+class Continent implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
-    public enum UTypes {
-
-        PSYCH,
-        CLOSE,
-        DIRECT,
-        INDIRECT,
-        AIR,
-        NESTER,
-        CLOSE_SP,
-        DIRECT_SP,
-        RANGED_SP,
-        CARGO_SP,
-    }
-    public RebelAI(Game game) {
-        super(game, C.NEUTRAL);
-        Util.dP("##### RebelAI init begin");
-        Util.dP("##### RebelAI init end");
+    List<List<Structure>> structures;
+    List<List<Unit>> units;
+    List<List<Unit>> ground_troops;
+    public Continent() {
+        structures = new ArrayList<>(C.NR_FACTIONS);
+        units = new ArrayList<>(C.NR_FACTIONS);
+        ground_troops = new ArrayList<>(C.NR_FACTIONS);
+        for (int i = 0; i < C.NR_FACTIONS; i++) {
+            structures.add(new LinkedList<>());
+            units.add(new LinkedList<>());
+            ground_troops.add(new LinkedList<>());
+        }
     }
 
-    @Override
-    public void doTurn() {
-        //logSuper(C.NEUTRAL, "Start");
-        // list stacks
-        //findAssets(C.NEUTRAL);
-        // list known enemy cities
+    public void add(Structure s) {
+        structures.get(s.owner).add(s);
+    }
 
-        // attack enemy cities
-        // attack enemy units
+    public void add(Unit u) {
+        units.get(u.owner).add(u);
+        if (AI.isGroundTroop(u)) {
+            ground_troops.get(u.owner).add(u);
+        }
+    }
+
+    public AssetCount getAssetCount(int faction) {
+        return new AssetCount(structures.get(faction).size(), units.get(faction).size(), ground_troops.get(faction).size());
+    }
+
+    void clear() {
+        for (int i = 0; i < C.NR_FACTIONS; i++) {
+            structures.get(i).clear();
+            units.get(i).clear();
+            ground_troops.get(i).clear();
+        }
+
     }
 
 }

@@ -1282,7 +1282,10 @@ public class Util {
 
         // extract and assign color data from pallette to color channels
         extractPallette(rgb_data[2], rgb_data[1], rgb_data[0], pallette_data);
-
+//        int[] rgb = {2, 1, 0};
+//        for (int i = 0; i < rgb_data[0].length; i++) {  // print pallette in GIMP format
+//            System.out.println("" + (rgb_data[rgb[0]][i] & 0xff) + " " + (rgb_data[rgb[1]][i] & 0xff) + " " + (rgb_data[rgb[2]][i] & 0xff));
+//        }
         return rgb_data;
     }
 
@@ -1699,6 +1702,15 @@ public class Util {
         return move_capable;
     }
 
+    public static boolean movesLeft(List<Unit> stack) {
+        for (Unit u : stack) {
+            if (u.move_points == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void logFileFormatError(String file, int line, String log_msg) {
         try (
                 FileWriter log_stream = new FileWriter(FN.S_LOG_FILE, true);
@@ -2017,6 +2029,12 @@ public class Util {
         }
     }
 
+    public static void selectAll(List<Unit> stack) {
+        for (Unit unit : xS(stack)) {
+            unit.selected = true;
+        }
+    }
+
     public static void foundOrExit(String file_name) {
         File file = new File(file_name);
         if (!file.exists()) {
@@ -2164,6 +2182,11 @@ public class Util {
         pw.close();
     }
 
+    /**
+     * Finds suitable hexes around central hex. Additional paremeters are
+     * faction, hextype (LAND,OCEAN,BOTH), tile_set, max_stack_size,
+     * max_distance.
+     */
     public static class FindHexesAround {
 
         public enum Hextype {
@@ -2176,29 +2199,46 @@ public class Util {
         LinkedList<Hex> ret_val = new LinkedList<>();    // list of hexes to be returned
         Set<Hex> all_hexes = new LinkedHashSet<>();  // set of all visited hexes
         LinkedList<Hex> queue = new LinkedList<>();  // list of hexes next in line for visit
+        LinkedList<Integer> dists = new LinkedList<>(); // distances
         int faction;
         Hextype type;
         int tile_set;
+        int max_stack_size = C.STACK_SIZE;
+        int max_distance = Integer.MAX_VALUE;
         private FindHexesAround() {
         }
 
         public FindHexesAround(Hex hex, int faction, Hextype type, int tile_set) {
             queue.add(hex);
+            dists.add(0);
             all_hexes.add(hex);
             this.faction = faction;
             this.type = type;
             this.tile_set = tile_set;
         }
 
+        public FindHexesAround(Hex hex, int faction, Hextype type, int tile_set, int max_stack_size, int max_distance) {
+            queue.add(hex);
+            dists.add(0);
+            all_hexes.add(hex); 
+            this.faction = faction;
+            this.type = type;
+            this.tile_set = tile_set;
+            this.max_stack_size = max_stack_size;
+            this.max_distance = max_distance;
+        }
+
         public Hex next() {
             while (ret_val.isEmpty() && !queue.isEmpty()) {
                 Hex father = queue.pop();
+                int dist = dists.pop();
                 Hex[] neighbours = father.getNeighbours();
                 for (Hex child : neighbours) {
-                    if (child != null && all_hexes.add(child)) {
+                    if (child != null && all_hexes.add(child) && dist < max_distance) {
                         queue.add(child);
+                        dists.add(dist + 1);
                         if (checkHexType(child)
-                                || (!child.getStack().isEmpty() && (child.getStack().get(0).prev_owner != faction || child.getStack().size() >= C.STACK_SIZE))
+                                || (!child.getStack().isEmpty() && (child.getStack().get(0).prev_owner != faction || child.getStack().size() >= max_stack_size))
                                 || (child.getStructure() != null && child.getStructure().prev_owner != faction)) {
                             //Util.dP("Perkele");
                             continue;
@@ -2218,13 +2258,13 @@ public class Util {
 
         private boolean checkHexType(Hex hex) {
             if (type == Hextype.BOTH) {
-                Util.dP("Hextype.BOTH");
+//                Util.dP("Hextype.BOTH");
                 return false;
             } else if (type == Hextype.LAND) {
-                Util.dP("Hextype.LAND");
+//                Util.dP("Hextype.LAND");
                 return hex.getTerrain(C.OCEAN) && tile_set != C.BARREN_TILE_SET;
             } else {
-                Util.dP("Hextype.OCEAN");
+//                Util.dP("Hextype.OCEAN");
                 return !hex.getTerrain(C.OCEAN) || tile_set == C.BARREN_TILE_SET;
             }
         }

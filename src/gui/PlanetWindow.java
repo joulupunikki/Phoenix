@@ -39,9 +39,11 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
+import java.util.EnumMap;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -358,8 +360,12 @@ public class PlanetWindow extends JPanel {
         build.setEnabled(enable_build);
 
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
-        year_display.setText(
-                "A.D. " + game.getYear());
+        String year_string = "A.D. " + game.getYear();
+        EnumMap gui_opt = gui.getGuiOpt();
+        if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.FACTION)).isSelected()) {
+            year_string += " " + Util.getFactionName(game.getTurn()).substring(0, 3);
+        }
+        year_display.setText( year_string);
         money_display.setText("" + game.getFaction(game.getTurn()).getFirebirds());
         drawResAmounts();
     }

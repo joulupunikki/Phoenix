@@ -30,7 +30,10 @@ package game;
 import galaxyreader.Galaxy;
 import galaxyreader.Planet;
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import util.C;
 
 /**
@@ -44,7 +47,8 @@ public class GalaxyGrid implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private Square[][] galaxy_grid;
-
+    //planet pair jump distances
+    private int[][] jump_dist;
     public GalaxyGrid(Galaxy galaxy) {
 
         List<Planet> planets = galaxy.getPlanets();
@@ -128,5 +132,41 @@ public class GalaxyGrid implements Serializable {
 //    }
     public Square[][] getGalaxyGrid() {
         return galaxy_grid;
+    }
+
+    void defineJumpDist(List<Planet> planets) {
+        int tmp_dists[][] = new int[planets.size()][planets.size()];
+        Set<Planet> all_planets = new LinkedHashSet<>();  // set of all visited hexes
+        LinkedList<Planet> queue = new LinkedList<>();
+        all_planets.add(planets.get(0));
+        queue.add(planets.get(0));
+        while (!queue.isEmpty()) {
+            Planet father = queue.pop();
+            for (Planet child : father.neighbours) {
+                if (child != null && all_planets.add(child)) {
+                    queue.add(child);
+                }
+            }
+
+            Set<Planet> all_planets2 = new LinkedHashSet<>();  // set of all visited hexes
+            LinkedList<Planet> queue2 = new LinkedList<>();
+            LinkedList<Integer> dist_q = new LinkedList<>();
+            all_planets2.add(father);
+            queue2.add(father);
+            dist_q.add(0);
+            while (!queue2.isEmpty()) {
+                Planet father2 = queue2.pop();
+                int dist = dist_q.pop();
+                tmp_dists[father.index][father2.index] = dist;
+                for (Planet child2 : father2.neighbours) {
+                    if (child2 != null && all_planets2.add(child2)) {
+                        queue2.add(child2);
+                        dist_q.add(dist + 1);
+                    }
+                }
+
+            }
+        }
+        jump_dist = tmp_dists;
     }
 }

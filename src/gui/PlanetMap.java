@@ -41,9 +41,11 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import util.C;
 import util.FN;
@@ -296,7 +298,15 @@ public class PlanetMap extends JPanel {
 
                     g.setColor(Color.RED);
                     g.setFont(new Font("Arial", Font.PLAIN, 10));
-                    g.drawString("" + planet_grid.getHex(i, j).getLandNr() + "," + i + "," + j, dx, dy);
+                    String s = "";
+                    EnumMap gui_opt = gui.getGuiOpt();
+                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.LAND_NR)).isSelected()) {
+                        s += planet_grid.getHex(i, j).getLandNr() + " ";
+                    }
+                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.HEX_XY)).isSelected()) {
+                        s += i + "," + j;
+                    }
+                    g.drawString(s, dx, dy);
 //                        for (int k = 0; k < name.length(); k++) {
 //                            String t = name.substring(k, k + 1);
 //                            g.setFont(ws.font_structure_name_bg);

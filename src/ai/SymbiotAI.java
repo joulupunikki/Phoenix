@@ -30,6 +30,8 @@ package ai;
 import dat.UnitType;
 import galaxyreader.Unit;
 import game.Game;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import util.C;
 import util.Util;
 
@@ -46,7 +48,7 @@ import util.Util;
  */
 public class SymbiotAI extends AI {
     private static final long serialVersionUID = 1L;
-
+    private static final Logger logger = LogManager.getLogger(SymbiotAI.class);
     public enum UTypes {
 
         PSYCH,
@@ -62,7 +64,7 @@ public class SymbiotAI extends AI {
     }
 
     public SymbiotAI(Game game) {
-        super(game);
+        super(game, C.SYMBIOT);
         Util.dP("##### SymbiotAI init begin");
         classifyUnits();
         Util.dP("##### SymbiotAI init end");
@@ -70,16 +72,32 @@ public class SymbiotAI extends AI {
 
     @Override
     public void doTurn() {
-        logSuper(C.SYMBIOT);
-        // list stacks, cities
-        findAssets(C.SYMBIOT);
-        // symbiots are no retreat, no surrender
-        for (Unit unit : units) {
-            unit.loyalty = SYMBIOT_LOYALTY;
+        TaskForce.zeroExceptionCounter();
+        try {
+            logSuper(C.SYMBIOT, "Start");
+            // list stacks, cities, own enemies
+            findAssets(C.SYMBIOT);
+            // symbiots are no retreat, no surrender
+            for (Unit unit : units) {
+                unit.loyalty = SYMBIOT_LOYALTY;
+            }
+            // if enemy cities on same continent as own units, conquer
+            conquerGalaxy(C.SYMBIOT);
+            /* find ground units with no targets available, find available transports
+             assign ground units to transports, set task force destination, start moving task force
+             */
+            createTaskForces();
+            moveTaskForces();
+            // attack enemy cities
+            // attack enemy units
+            logSuper(C.SYMBIOT, "End");
+        } catch (AIException ex) {
+            logger.debug("", ex);
         }
-        conquerAllUnits(C.SYMBIOT);
-        // attack enemy cities
-        // attack enemy units
+        int ex_count = TaskForce.getExceptionCounter();
+        if (ex_count > 0) {
+            logger.debug(" ******** Exceptions: " + ex_count + " ********");
+        }
     }
     private static final int SYMBIOT_LOYALTY = 100;
 

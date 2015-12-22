@@ -14,6 +14,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Currently, an ugly duckling of a test package for game ai.
+ * Currently, an ugly duckling of a test package for game ai. The intent is to
+ * produce a challenging (crossing fingers), efficient (crossing more fingers)
+ * and generally decent (all fingers crossed) AI.
  */
 package ai;

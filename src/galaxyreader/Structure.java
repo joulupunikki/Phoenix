@@ -71,6 +71,7 @@ public class Structure implements Serializable {
     public int health; //short - RSW
     int sect; //short
     int Flags; //UINT
+    public short task_force = 0x0;
     int unit_health; //short 
     int temp_count;  //short 
     int temp_count2; //short 

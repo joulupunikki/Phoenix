@@ -515,6 +515,12 @@ public class Game implements Serializable {
         return human_ctrl;
     }
 
+    public void doAITurn() {
+        if (ai[turn] != null) {
+            ai[turn].doTurn();
+        }
+    }
+
     public int getYear() {
         return year;
     }
@@ -580,6 +586,7 @@ public class Game implements Serializable {
     private void advanceYear() {
         turn = 0;
         year++;
+        Util.dP("     ***** year " + year + " *****");
         Faction.eliminateNoblelessFactions(this);
         int last_house_standing = Faction.checkVictoryByElimination(factions);
         if (last_house_standing > -1) {
@@ -746,6 +753,10 @@ public class Game implements Serializable {
             }
 
         }
+        for (Planet p : planets) {
+            p.setNeighbours(planets);
+        }
+        galaxy_grid.defineJumpDist(planets);
     }
 
     public void printMoveCost() {
@@ -1529,10 +1540,13 @@ public class Game implements Serializable {
     public void captureCity(Structure city, int new_owner, int new_prev_owner) {
         //subtract prod_cons for old owner
         economy.updateProdConsForCity(city, false);
+        getFaction(city.owner).addMessage(new Message("City lost to " + Util.getFactionName(new_owner) + "!",
+                C.Msg.CITY_LOST, getYear(), city));
         city.owner = new_owner;
         city.prev_owner = new_prev_owner;
         //add prod_cons for new owner
         economy.updateProdConsForCity(city, true);
+
     }
 
     /**

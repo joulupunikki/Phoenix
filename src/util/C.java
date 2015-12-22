@@ -170,7 +170,7 @@ public class C {
         ELECTION_RESULTS,
         CONTRACT,
         RESPONSE,
-        THRONE_CLAIM, REBELLION,
+        THRONE_CLAIM, REBELLION, CITY_LOST,
     }
 
     // movement types
@@ -348,6 +348,8 @@ public class C {
     public static final int TORP_BMBR_UNIT_TYPE = 18;    // RSW
     public static final int SUBMARINE_UNIT_TYPE = 23;
     public static final int SCEPTER_UNIT_TYPE = 28;
+    public static final int NESTER_UNIT_TYPE = 44;
+
     public static final int NOBLE_UNIT_TYPE = 45;
     public static final int SPY_UNIT_TYPE = 49;
     public static final int ENGINEER_UNIT_TYPE = 53;
