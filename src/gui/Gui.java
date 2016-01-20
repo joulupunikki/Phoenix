@@ -910,7 +910,18 @@ public class Gui extends JFrame {
         menu_group_finder.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_group_finder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showInfoWindow("Not implemented yet.");
+                C.MoveType[] move_types = C.MoveType.values();
+                int[] unit_manifest = new int[move_types.length];
+                for (Unit unit : game.getUnits()) {
+                    if (unit.owner == game.getTurn()) {
+                        ++unit_manifest[unit.move_type.ordinal()];
+                    }
+                }
+                String s_units = "";
+                for (int i = 0; i < unit_manifest.length; i++) {
+                    s_units += move_types[i] + " " + unit_manifest[i];
+                }
+                showInfoWindow(s_units);
             }
         });
         menu_city_info = new JMenuItem("City Info");
@@ -1888,7 +1899,6 @@ public class Gui extends JFrame {
                     ObjectInputStream s = new ObjectInputStream(gis)) {
                 Game tmp = (Game) s.readObject();
                 game = tmp;
-                game.initAI();
                 //System.out.println("after read object");
 //                space_map.setGame(game);
 //                planet_map.setGame(game);
@@ -2022,6 +2032,8 @@ public class Gui extends JFrame {
         globe_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
+        game.initAI(false);
+//        game.AIAfterLoad();
         game.setPath(null);
         game.setJumpPath(null);
     }
@@ -2495,7 +2507,8 @@ public class Gui extends JFrame {
         System.out.println("Phoenix ready.");
         Long random_seed = Phoenix.start_time;   
         if (args.hasOption(C.OPT_RANDOM_SEED)) {
-            random_seed = Long.getLong(args.getOptionValue(C.OPT_RANDOM_SEED));
+            System.out.println(args.getOptionValue(C.OPT_RANDOM_SEED));
+            random_seed = Long.parseLong(args.getOptionValue(C.OPT_RANDOM_SEED)); // Fix #65
         }
         System.out.println("Random seed = " + random_seed);
         gui.getGame().getRandom().setSeed(random_seed);

@@ -2045,7 +2045,7 @@ public class Util {
 
     /**
      * Return a substack consisting of the selected units of a stack, and thus
-     * may be empty.
+     * may be empty, units which are cargo are lumped with their carriers.
      *
      * @param stack
      * @return

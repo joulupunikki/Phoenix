@@ -423,6 +423,8 @@ public class Battle implements Serializable {
                     skip = true;
                     //System.out.println("owner");
                 }
+            } else if (hex.getStructure() != null && unit_b.prev_owner != hex.getStructure().prev_owner) { // fix #63
+                skip = true;
             }
         }
 
@@ -964,6 +966,7 @@ public class Battle implements Serializable {
         if (!queue_pts) {
             return;
         }
+        pts_queue.clear(); // fix #64
         Set<Hex> pts_area = Util.getHexesWithinRadiusOf(h, game.getEfs_ini().pts_fire_range);
         pts_area.remove(h);
         for (Hex next : pts_area) {
@@ -975,6 +978,7 @@ public class Battle implements Serializable {
                     for (Unit unit : stack) {
                         if (unit.type_data.ranged_sp_str > 0) {
                             pts_queue.add(next);
+                            System.out.println("PTS QUEUE add (" + next.getX() + "," + next.getY() + ")");
                             break;
                         }
                     }

@@ -208,13 +208,16 @@ public class Planet implements Serializable {
 
     public void setNeighbours(List<Planet> planets) {
         neighbours = new Planet[jump_routes.size()];
+        System.out.print(name + " ");
         for (int i = 0; i < neighbours.length; i++) {
 
             neighbours[i] = planets.get(jump_routes.get(i).planet_1_index);
             if (neighbours[i].index == this.index) {
                 neighbours[i] = planets.get(jump_routes.get(i).planet_2_index);
             }
+            System.out.print(neighbours[i].name + " ");
         }
+        System.out.println("");
     }
 
     /**

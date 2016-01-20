@@ -48,8 +48,8 @@ public class JumpGate implements Serializable {
     private int x2;
     private int y2;
     int flags; // UINT
-    int planet_1_index;
-    int planet_2_index;
+    public int planet_1_index;
+    public int planet_2_index;
 
     /**
      * Creates a jump gate object. Reads in coordinates of the jump gate's end

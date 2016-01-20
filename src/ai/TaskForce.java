@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import state.SU;
 import util.C;
 import util.Util;
 
@@ -50,18 +51,13 @@ import util.Util;
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class TaskForce implements Serializable {
+public class TaskForce extends TaskForceSuper implements Serializable {
 
-    private static long tf_id_count = 0;
-    private static Game game;
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LogManager.getLogger(TaskForce.class);
+    private static final int TF_SIZE = 1;
+    private static final int MAX_AI_PLAN_STEPS = 256;
     private static int exception_counter = 0;
-
-    static void init(Game game_ref) {
-        tf_id_count = 0;
-        game = game_ref;
-    }
 
     /**
      * @return the exception_counter
@@ -88,9 +84,7 @@ public class TaskForce implements Serializable {
     Unit t;
     Unit c;
     private STATE state;
-    private final int TF_SIZE = 1;
-    private final int MAX_AI_PLAN_STEPS = 256;
-
+    private String s_state_log;
     private enum STATE {
 
         MOVING_TO_PICKUP,
@@ -105,13 +99,17 @@ public class TaskForce implements Serializable {
         MOVES_LEFT,
         NO_MOVES_LEFT;
     }
-    public TaskForce(Game game, int target_p_idx, Hex target) {
-        tf_id = tf_id_count++;
+    public TaskForce(Game game, int target_p_idx, Hex target, long tf_id) {
+        this.game = game;
+        this.gal_grid = game.getGalaxyMap();
+        if (game == null) {
+            throw new NullPointerException("Game reference in super is null.");
+        }
+        this.tf_id = tf_id;
         ground_stacks = new LinkedList<>();
         ground_forces = new LinkedList<>();
         transports = new ArrayList<>(C.STACK_SIZE);
         escorts = new ArrayList<>(C.STACK_SIZE);
-        this.game = game;
         this.target_p_idx = target_p_idx;
         this.target_hex = target;
         logger.debug("TaskForce " + tf_id + " created: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
@@ -148,7 +146,7 @@ public class TaskForce implements Serializable {
     public void initPlan() {
         t = transports.get(0);
         faction = t.owner;
-        printFirstCargoInWaiting();
+//        printFirstCargoInWaiting();
         c = ground_stacks.get(0).get(0);
         if (!t.in_space && t.p_idx == c.p_idx && t.x == c.x && t.y == c.y) {
             state = STATE.AT_PICKUP;
@@ -165,12 +163,14 @@ public class TaskForce implements Serializable {
      */
     public boolean executePlan() {
         boolean pass = true;
+        s_state_log = "";
+        RuntimeException caught_ex = null;
         String loc = "space";
         if (!transports.get(0).in_space) {
             loc = transports.get(0).x + "," + transports.get(0).y;
         }
         logger.debug("----> " + tf_id + " execute plan: start at " + game.getPlanet(t.p_idx).name + " " + loc);
-        printFirstCargoInWaiting();
+//        printFirstCargoInWaiting();
         if (Util.movesLeft(transports)) {
             Util.selectAll(transports);
             int steps = 1;
@@ -189,13 +189,19 @@ public class TaskForce implements Serializable {
                     pass = false;
                     logger.debug("  XXX AIException: " + ex.getMessage());
                 }
+            } catch (RuntimeException ex) {
+                caught_ex = ex;
             }
             Util.unSelectAll(transports);
-            printFirstCargoInWaiting();
+//            printFirstCargoInWaiting();
+            loc = "space";
             if (!t.in_space) {
                 loc = t.x + "," + t.y;
             }
-            logger.debug("<---- execute plan: steps " + steps + " end at " + game.getPlanet(t.p_idx).name + " " + loc);
+            logger.debug("<---- execute plan: steps " + steps + " " + s_state_log + " end at " + game.getPlanet(t.p_idx).name + " " + loc);
+            if (caught_ex != null) {
+                throw caught_ex;
+            }
         }
         return pass;
     }
@@ -223,8 +229,12 @@ public class TaskForce implements Serializable {
             game.setSelectedPoint(new Point(t.x, t.y), faction);
             game.setSelectedFaction(faction);
             setSelected();
+            System.out.println(" transport/cargo: " + t.p_idx + "  " + c.p_idx);
             if (t.p_idx == c.p_idx) {
-                // FIXME pts fire
+                // start PTS defence fire if any
+                if (handlePTS(game.getHexFromPXY(c.p_idx, c.x, c.y))) {
+                    return SUB_STATE.NO_MOVES_LEFT;
+                }
                 if (!game.landStack(new Point(c.x, c.y))) { // FIXME this may fail due to a traffic jam
 
                     Hex cargo_hex = game.getHexFromPXY(c.p_idx, c.x, c.y);
@@ -271,10 +281,13 @@ public class TaskForce implements Serializable {
 //                game.subMovePointsSpace(transports);
                 return SUB_STATE.FINISHED;
             } else {
-                Planet planet = game.getPlanet(c.p_idx);
+                // FIXED find next planet on path to target
+                Planet planet = game.getPlanet(gal_grid.nextInRoutingTable(t.p_idx, c.p_idx));
+                logger.debug("  start->" + game.getPlanet(t.p_idx).name + " dest->" + game.getPlanet(target_p_idx).name + " next->" + game.getPlanet(planet.index).name);
                 if (!game.moveSpaceStack(new Point(planet.x, planet.y))) { // FIXME this may fail due to a traffic jam
                     throw new AIException("move from " + game.getPlanet(t.p_idx).name + " to " + planet.name + " failed");
                 }
+                System.out.println(" transport/cargo: " + t.p_idx + "  " + c.p_idx);
                 // need to set these or will try to draw empty stack
                 game.setCurrentPlanetNr(t.p_idx);
                 game.setSelectedPoint(new Point(t.x, t.y), faction);
@@ -326,9 +339,11 @@ public class TaskForce implements Serializable {
                 Util.FindHexesAround finder = new Util.FindHexesAround(target_hex, faction, Util.FindHexesAround.Hextype.LAND, game.getPlanet(target_p_idx).tile_set_type);
                 Hex land = finder.next();
                 if (land == null) {
-
+                    throw new AIException("no landing space at " + game.getPlanet(t.p_idx).name + " stack " + game.getSelectedStack());
                 }
-                // FIXME pts fire
+                if (handlePTS(land)) {
+                    return SUB_STATE.NO_MOVES_LEFT;
+                }
                 if (!game.landStack(new Point(land.getX(), land.getY()))) { // FIXME this may fail due to a traffic jam
                     throw new AIException("landing failed at " + game.getPlanet(t.p_idx).name + " stack " + game.getSelectedStack());
                 }
@@ -337,7 +352,8 @@ public class TaskForce implements Serializable {
 //                game.subMovePointsSpace(transports);
                 return SUB_STATE.FINISHED;
             } else {
-                Planet planet = game.getPlanet(target_p_idx);
+                // FIXED find next planet on path to target
+                Planet planet = game.getPlanet(gal_grid.nextInRoutingTable(t.p_idx, target_p_idx));
                 if (!game.moveSpaceStack(new Point(planet.x, planet.y))) { // FIXME this may fail due to a traffic jam
                     throw new AIException("move from " + game.getPlanet(t.p_idx).name + " to " + planet.name + " failed");
                 }
@@ -355,6 +371,32 @@ public class TaskForce implements Serializable {
         }
     }
 
+    private boolean handlePTS(Hex land) {
+        game.startBombardOrPTS(land, true);
+        List<Hex> pts_queue = game.getBattle().getPTSQueue();
+        System.out.println("PTS queue len = " + pts_queue.size());
+        while (!pts_queue.isEmpty() && !Util.getSelectedUnits(game.getSelectedStack()).isEmpty()) {
+            Hex pts_hex = pts_queue.remove(0);
+            //TODO spy PTS units should be able to fire, eg. ballistic submarines in Hyperion ?
+            if (!SU.byzIICombatOK(pts_hex.getStack(), false)) {
+                continue;
+            }
+            // since we are landing, do not try to bomb landing hex
+            game.startBombardOrPTS(pts_hex, false);
+            pts_hex.spot(game.getTurn());
+            System.out.println("PTS combat (" + pts_hex.getX() + "," + pts_hex.getY() + ") vs (" + land.getX() + "," + land.getY() + ")");
+            game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
+            game.resolveGroundBattleFight();
+            game.resolveGroundBattleFinalize();
+        }
+        if (Util.getSelectedUnits(game.getSelectedStack()).isEmpty()) {
+            logger.debug("  Task Force lost to PTS fire.");
+            finished();
+            return true;
+        }
+        return false;
+    }
+
     private boolean pickUp() throws AIException {
         if (t.in_space) {
             throw new AIFatalException("pickup attempt in space");
@@ -370,24 +412,25 @@ public class TaskForce implements Serializable {
             if (cap == 0) {
                 break;
             }
-            if (u.type_data.non_combat == 0 && (u.move_type == C.MoveType.FOOT
-                    || u.move_type == C.MoveType.HOVER
-                    || u.move_type == C.MoveType.TREAD
-                    || u.move_type == C.MoveType.WHEEL)) {
+//            if (u.type_data.non_combat == 0 && (u.move_type == C.MoveType.FOOT
+//                    || u.move_type == C.MoveType.HOVER
+//                    || u.move_type == C.MoveType.TREAD
+//                    || u.move_type == C.MoveType.WHEEL)) {
+            if (AI.isGroundTroop(u)) {
                 tmp.add(u);
                 cap--;
             }
         }
-        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
+//        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
         hex.minusStack(tmp);
-        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
+//        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
         String s_cargo = " ";
-        for (Unit t : transports) {
+        for (Unit transport : transports) {
             for (Iterator<Unit> iterator = tmp.iterator(); iterator.hasNext();) {
-                if (t.cargo_list.size() < t.type_data.cargo) {
+                if (transport.cargo_list.size() < transport.type_data.cargo) {
                     Unit u = iterator.next();
                     s_cargo += u.type_data.abbrev + " ";
-                    t.embark(u);
+                    transport.embark(u);
                     iterator.remove();
                 } else {
                     break;
@@ -405,16 +448,16 @@ public class TaskForce implements Serializable {
         List<Unit> stack = game.getHexFromPXY(t.p_idx, t.x, t.y).getStack();
         Unit[] cargo_array = new Unit[4];
         String s_cargo = " ";
-        for (Unit t : transports) {
-            cargo_array = t.cargo_list.toArray(cargo_array);
-            for (Unit c : cargo_array) {
-                if (c == null) {
+        for (Unit transport : transports) {
+            cargo_array = transport.cargo_list.toArray(cargo_array);
+            for (Unit u : cargo_array) {
+                if (u == null) {
                     break;
                 }
-                s_cargo += c.type_data.abbrev + " ";
-                t.disembark(c);
-                stack.add(c);
-                c.task_force = 0;
+                s_cargo += u.type_data.abbrev + " ";
+                transport.disembark(u);
+                stack.add(u);
+                u.task_force = 0;
             }
         }
         logger.debug("  dropped : " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
@@ -457,6 +500,7 @@ public class TaskForce implements Serializable {
 
     private boolean executePlan1() throws AIException {
         logger.debug("  state " + state);
+        s_state_log += state + " ";
         switch (state) {
             case MOVING_TO_PICKUP:
                 switch (moveToPickup()) {

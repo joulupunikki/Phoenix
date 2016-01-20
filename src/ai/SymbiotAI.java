@@ -75,21 +75,22 @@ public class SymbiotAI extends AI {
         TaskForce.zeroExceptionCounter();
         try {
             logSuper(C.SYMBIOT, "Start");
-            // list stacks, cities, own enemies
+            // list stacks, cities, own, enemies
             findAssets(C.SYMBIOT);
             // symbiots are no retreat, no surrender
             for (Unit unit : units) {
                 unit.loyalty = SYMBIOT_LOYALTY;
             }
             // if enemy cities on same continent as own units, conquer
-            conquerGalaxy(C.SYMBIOT);
+            conquerContinents(C.SYMBIOT);
+            // if no enemy cities known, send warships to closest unmapped planets
+            createTaskForceScouts();
+            moveTaskForceScouts();
             /* find ground units with no targets available, find available transports
              assign ground units to transports, set task force destination, start moving task force
              */
             createTaskForces();
             moveTaskForces();
-            // attack enemy cities
-            // attack enemy units
             logSuper(C.SYMBIOT, "End");
         } catch (AIException ex) {
             logger.debug("", ex);

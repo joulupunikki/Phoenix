@@ -28,10 +28,8 @@
  */
 package game;
 
-import ai.AI;
-import ai.RebelAI;
+import ai.AIObject;
 import ai.StaticThreads;
-import ai.SymbiotAI;
 import com.github.joulupunikki.math.random.XorShift1024Star;
 import dat.Damage;
 import dat.EfsIni;
@@ -132,7 +130,7 @@ public class Game implements Serializable {
     private HexProc hex_proc;
     private Diplomacy diplomacy;
 
-    private AI[] ai;
+    private AIObject ai;
 
     public Game(String galaxy_file, int current_planet) {
 
@@ -183,26 +181,23 @@ public class Game implements Serializable {
 
         battle = new Battle();
 
-        initAI();
+        initAI(true);
     }
 
-    public void initAI() {
+    public void initAI(boolean dynamic) {
+        if (Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI)) {
+            return;
+        }
         for (Planet planet : planets) { // fast serial
             planet.planet_grid.serialSetAIDataStructures(planet);
         }
         StaticThreads.dispatchStaticAIWorker(planets); // slow parallel
+        if (!dynamic) {
+            return;
+        }
+        ai = new AIObject();
+        ai.adAI(this, C.SYMBIOT);
 
-        ai = new AI[C.NR_FACTIONS];
-        ai[C.NEUTRAL] = new RebelAI(this);
-        ai[C.SYMBIOT] = new SymbiotAI(this);
-//        for (int i = 0; i < str_build.length; i++) {
-//            System.out.println("str_build = " + str_build[i].name);
-//        }
-        //Damage.printDamage(damage);
-        //Target.printTarget(target);
-        //printMoveCost();
-//        endTurn();
-//        setMoveCosts();
     }
 
     private void checkStackSizes() {
@@ -516,8 +511,8 @@ public class Game implements Serializable {
     }
 
     public void doAITurn() {
-        if (ai[turn] != null) {
-            ai[turn].doTurn();
+        if (ai.isAIcontrolled(turn)) {
+            ai.doTurn(turn);
         }
     }
 
@@ -571,7 +566,7 @@ public class Game implements Serializable {
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
         diplomacy.getSentContracts().clear();
-        if (!human_ctrl[turn] && ai[turn] != null && !Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI)) {
+        if (!Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
             while (!StaticThreads.isStaticDone()) {
                 try {
                     System.out.println("Waiting for static AI.");
@@ -579,7 +574,7 @@ public class Game implements Serializable {
                 } catch (InterruptedException ex) {
                 }
             }
-            ai[turn].doTurn();
+            ai.doTurn(turn);
         }
     }
 
@@ -750,13 +745,15 @@ public class Game implements Serializable {
             if (p1 != null && p2 != null) {
                 p1.jump_routes.add(jg);
                 p2.jump_routes.add(jg);
+                jg.planet_1_index = p1.index;
+                jg.planet_2_index = p2.index;
             }
 
         }
         for (Planet p : planets) {
             p.setNeighbours(planets);
         }
-        galaxy_grid.defineJumpDist(planets);
+        galaxy_grid.defineJumpRouteTables(planets);
     }
 
     public void printMoveCost() {
