@@ -28,9 +28,11 @@
 package gui;
 
 import dat.UnitType;
+import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import game.Hex;
 import game.Message;
 import game.PBEM;
 import java.awt.BorderLayout;
@@ -65,6 +67,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -98,6 +102,7 @@ import util.Comp;
 import util.FN;
 import util.StackIterator;
 import util.Util;
+import util.Util.HexIter;
 import util.UtilG;
 import util.WindowSize;
 
@@ -153,6 +158,7 @@ public class Gui extends JFrame {
     private JDialog manowitz_window;
     // resource info panel
     private ResourcePanel resource_panel;
+    private OptionsPanel options_panel;
     private JDialog resource_window;
     // for reading messages
     private Messages messages_window;
@@ -200,6 +206,9 @@ public class Gui extends JFrame {
     private JMenuItem menu_all_resources;
     private JMenuItem menu_create_unit;
     private JMenuItem menu_randomize_rng;
+    private JMenuItem menu_do_ai_turn;
+    private JMenuItem toggle_ai;
+    private JMenuItem show_all;
     private JMenuItem house_menu; // house menu
     private JMenuItem diplomacy_menu; // diplomacy_selector menu
     private JMenuItem byzantium_ii_menu; // bydantium II menu
@@ -234,6 +243,9 @@ public class Gui extends JFrame {
     private CityDialog city_dialog;
     private CargoPanel.Win cargo_win;
     private boolean load_succesfull; // true iff load game ok
+    private JMenuItem menu_group_finder;
+    private JMenuItem menu_city_info;
+
 
     public Gui() throws HeadlessException {
         //this.setUndecorated(true); // Ubuntu unity, see https://github.com/joulupunikki/Phoenix/issues/51
@@ -314,6 +326,7 @@ public class Gui extends JFrame {
         house_window = HouseWindow.getHouseWindow(this);
         diplomacy_window = DiplomacyWindow.getWindow(this);
         resolve_contract_dialog = ResolveContract.getWindow(this);
+        options_panel = OptionsPanel.getWindow(this);
         /*
          * collect main windows into card layout
          */
@@ -685,7 +698,7 @@ public class Gui extends JFrame {
         });
         menu_options.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                showInfoWindow("Not implemented yet");
+                options_panel.setWindowVisiblity(true);
             }
         });
         menu_restart.addActionListener(new ActionListener() {
@@ -767,10 +780,29 @@ public class Gui extends JFrame {
                 game.getRandom().setSeed(System.currentTimeMillis());
             }
         });
+        menu_do_ai_turn = new JMenuItem("Do AI turn.");
+        menu_do_ai_turn.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_do_ai_turn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                game.doAITurn();
+            }
+        });
+        toggle_ai = new JMenuItem("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
+        toggle_ai.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        toggle_ai.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                game.setFactionPlayer(C.SYMBIOT, !game.getHumanControl()[C.SYMBIOT]);
+                toggle_ai.setText("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
+            }
+        });
         wizard_menu.add(menu_all_tech);
         wizard_menu.add(menu_all_resources);
         wizard_menu.add(menu_create_unit);
         wizard_menu.add(menu_randomize_rng);
+        wizard_menu.add(menu_do_ai_turn);
+        wizard_menu.add(toggle_ai);
+//        wizard_menu.add(show_all);
+
         menubar.add(wizard_menu);
     }
 
@@ -866,7 +898,63 @@ public class Gui extends JFrame {
                 openManowitzVol(5);
             }
         });
-
+        menu_group_finder = new JMenuItem("Group Finder");
+        menu_group_finder.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_group_finder.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                C.MoveType[] move_types = C.MoveType.values();
+                int[] unit_manifest = new int[move_types.length];
+                for (Unit unit : game.getUnits()) {
+                    if (unit.owner == game.getTurn()) {
+                        ++unit_manifest[unit.move_type.ordinal()];
+                    }
+                }
+                String s_units = "";
+                for (int i = 0; i < unit_manifest.length; i++) {
+                    s_units += move_types[i] + " " + unit_manifest[i] + "\n";
+                }
+                showInfoWindow(s_units);
+            }
+        });
+        menu_city_info = new JMenuItem("City Info");
+        menu_city_info.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_city_info.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String city_string = "";
+                LinkedList<Structure> cities = new LinkedList<>();
+                for (Planet planet : game.getPlanets()) {
+                    cities.clear();
+                    HexIter hi = Util.getHexIter(game, planet.index);
+                    Hex hex = hi.next();
+                    while (hex != null) {
+                        Structure s = hex.getStructure();
+                        if (s != null && s.owner == game.getTurn()) {
+                            if (s.type == C.RUINS || s.type == C.ALIEN_RUINS || s.type == C.MONASTERY) {
+                                cities.addLast(s);
+                            } else {
+                                cities.addFirst(s);
+                            }
+                        }
+                        hex = hi.next();
+                    }
+                    if (!cities.isEmpty()) {
+                        city_string += planet.name + "\n";
+                        boolean start = true;
+                        for (Structure city : cities) {
+                            if (start) {
+                                city_string += "--> ";
+                                start = false;
+                            } else {
+                                city_string += ", ";
+                            }
+                            city_string += game.getStrBuild(city.type).name;
+                        }
+                        city_string += "\n";
+                    }
+                }
+                showInfoWindow(city_string);
+            }
+        });
         archives_menu.add(menu_vol1);
 //        archives_menu.addSeparator();
         archives_menu.add(menu_vol2);
@@ -874,6 +962,9 @@ public class Gui extends JFrame {
         archives_menu.add(menu_vol4);
 //        archives_menu.addSeparator();
         archives_menu.add(menu_vol5);
+        archives_menu.add(menu_group_finder);
+        archives_menu.add(menu_city_info);
+        
         menubar.add(archives_menu);
     }
 
@@ -1933,6 +2024,8 @@ public class Gui extends JFrame {
         globe_window.setGame(game);
         State.setGameRef(game);
         Comp.setGame(game);
+        game.initAI(false);
+//        game.AIAfterLoad();
         game.setPath(null);
         game.setJumpPath(null);
     }
@@ -2406,7 +2499,8 @@ public class Gui extends JFrame {
         System.out.println("Phoenix ready.");
         Long random_seed = Phoenix.start_time;   
         if (args.hasOption(C.OPT_RANDOM_SEED)) {
-            random_seed = Long.getLong(args.getOptionValue(C.OPT_RANDOM_SEED));
+            System.out.println(args.getOptionValue(C.OPT_RANDOM_SEED));
+            random_seed = Long.parseLong(args.getOptionValue(C.OPT_RANDOM_SEED)); // Fix #65
         }
         System.out.println("Random seed = " + random_seed);
         gui.getGame().getRandom().setSeed(random_seed);
@@ -2416,6 +2510,13 @@ public class Gui extends JFrame {
                     + "finished. If Robot test terminates abnormally, test machine OS may be left\n"
                     + "in unresponsive state.");
             RobotTester.startRobotTester(args.getOptionValue(C.OPT_ROBOT_TEST), args.getOptionValue(C.OPT_GAME_STATE_FILE), gui, gui.getX(), gui.getY());
+        } else if (getMainArgs().hasOption(C.OPT_AI_TEST)) {// do automated AI testing
+            gui.game.setFactionPlayer(C.HOUSE1, true);
+            gui.game.setFactionPlayer(C.SYMBIOT, false);
+            gui.game.setFactionPlayer(C.STIGMATA, true);
+            gui.game.beginGame();
+            SU.selectNextUnmovedUnit();
+            gui.game.endTurn();
         }
     }
 
@@ -2513,5 +2614,9 @@ public class Gui extends JFrame {
 
     public void showResolveContractDialog(Message msg) {
         resolve_contract_dialog.enterDialog(msg);
+    }
+
+    public EnumMap getGuiOpt() {
+        return options_panel.getGuiOpt();
     }
 }

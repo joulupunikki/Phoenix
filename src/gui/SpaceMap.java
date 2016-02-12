@@ -35,6 +35,7 @@ import game.Game;
 import game.Hex;
 import game.Square;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
@@ -46,7 +47,9 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.nio.ByteOrder;
+import java.util.EnumMap;
 import java.util.List;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import util.C;
 import util.FN;
@@ -339,6 +342,14 @@ public class SpaceMap extends JPanel {
                 if (galaxy_grid[i][j].stack_owner > -1) {
                     g.drawRect(x, y, dx, dy);
                 }
+                g.setColor(Color.RED);
+                g.setFont(new Font("Arial", Font.PLAIN, 10));
+                String s = "";
+                EnumMap gui_opt = gui.getGuiOpt();
+                if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.HEX_XY)).isSelected()) {
+                    s += i + "," + j;
+                }
+                g.drawString(s, x, y);
 
                 /*
                  * draw grid squares

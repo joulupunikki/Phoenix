@@ -61,6 +61,11 @@ public class Hex implements Comparable<Hex>, Serializable {
     private Structure city;
     private Structure resource = null;
 
+    //***** ai support data
+    private transient int land_nr = -1;
+    private transient int hex_idx;
+    private byte recon_time = 127;
+    private short terr_flags;
     public Hex() {
         neighbours = new Hex[6];
         flags = 0;
@@ -74,6 +79,7 @@ public class Hex implements Comparable<Hex>, Serializable {
         flags = 0;
         this.x = x;
         this.y = y;
+        //this.hex_idx = x + y * C.PLANET_MAP_WIDTH;
         stack = new LinkedList<>();
 //        stack = null;
         city = null;
@@ -108,6 +114,17 @@ public class Hex implements Comparable<Hex>, Serializable {
 
     public void setTerrain(boolean[] terrain) {
         this.terrain = terrain;
+        terr_flags = 0x0000;
+        for (boolean u : terrain) {
+            terr_flags <<= 1;
+            if (u) {
+                terr_flags |= 0x0001;
+            }
+        }
+    }
+
+    public short getTerrFlags() {
+        return terr_flags;
     }
 
     public boolean[] getTerrain() {
@@ -248,5 +265,31 @@ public class Hex implements Comparable<Hex>, Serializable {
         for (Unit unit : stack) {
             unit.record(pw);
         }
+    }
+
+    /**
+     * @return the land_nr
+     */
+    public int getLandNr() {
+        return land_nr;
+    }
+
+    /**
+     * @param land_nr the land_nr to set
+     */
+    public void setLandNr(int land_nr) {
+        this.land_nr = land_nr;
+    }
+
+    /**
+     * @return the hex_idx
+     */
+    public int getHexIdx() {
+        return hex_idx;
+    }
+
+    public Hex setHexIdx() {
+        this.hex_idx = x + y * C.PLANET_MAP_WIDTH;
+        return this;
     }
 }

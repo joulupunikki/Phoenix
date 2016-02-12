@@ -28,6 +28,8 @@
  */
 package game;
 
+import ai.AIObject;
+import ai.StaticThreads;
 import com.github.joulupunikki.math.random.XorShift1024Star;
 import dat.Damage;
 import dat.EfsIni;
@@ -41,10 +43,12 @@ import galaxyreader.JumpGate;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import gui.Gui;
 import gui.Resource;
 import java.awt.Point;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -68,6 +72,8 @@ public class Game implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
+    //***** these variables are used for interfacing with the GUI and the Game object
+    //***** they can be considered part of the GUI state
     //coordinates of currently selected hex/square/stack  
     private Point selected_point;
     //faction of selected space stack, x == owner, y == prev_owner
@@ -81,8 +87,7 @@ public class Game implements Serializable {
     private JumpGate jump_path;
 //    private PlanetGrid[] planet_grids;
     private int current_planet;
-    //faction whose turn it is
-//    private int current_faction;    // Not used? RSW
+    //***** these variables are purely Game object state
     //game year
     private int year;
     //turn ie the current faction id
@@ -125,6 +130,8 @@ public class Game implements Serializable {
     private HexProc hex_proc;
     private Diplomacy diplomacy;
 
+    private AIObject ai;
+
     public Game(String galaxy_file, int current_planet) {
 
         random = RandomAdaptor.createAdaptor(new XorShift1024Star(1L));
@@ -141,7 +148,8 @@ public class Game implements Serializable {
         planet_map_origin = new Point(0, 0);
         space_map_origin = new Point(0, 0);
 
-        planets = galaxy.getPlanets();
+        planets = new ArrayList<>(galaxy.getPlanets().size());
+        planets.addAll(galaxy.getPlanets());
         jump_gates = galaxy.getJumpGates();
         units = galaxy.getUnits();
         structures = galaxy.getStructures();
@@ -173,14 +181,23 @@ public class Game implements Serializable {
 
         battle = new Battle();
 
-//        for (int i = 0; i < str_build.length; i++) {
-//            System.out.println("str_build = " + str_build[i].name);
-//        }
-        //Damage.printDamage(damage);
-        //Target.printTarget(target);
-        //printMoveCost();
-//        endTurn();
-//        setMoveCosts();
+        initAI(true);
+    }
+
+    public void initAI(boolean dynamic) {
+        if (!Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI)) {
+            return;
+        }
+        for (Planet planet : planets) { // fast serial
+            planet.planet_grid.serialSetAIDataStructures(planet);
+        }
+        StaticThreads.dispatchStaticAIWorker(planets); // slow parallel
+        if (!dynamic) {
+            return;
+        }
+        ai = new AIObject();
+        ai.adAI(this, C.SYMBIOT);
+
     }
 
     private void checkStackSizes() {
@@ -493,6 +510,12 @@ public class Game implements Serializable {
         return human_ctrl;
     }
 
+    public void doAITurn() {
+        if (ai.isAIcontrolled(turn)) {
+            ai.doTurn(turn);
+        }
+    }
+
     public int getYear() {
         return year;
     }
@@ -514,7 +537,7 @@ public class Game implements Serializable {
         }
         factions[turn].deleteOldMessages();
         advanceTurn();
-        while (!human_ctrl[turn] || factions[turn].isEliminated()) {
+        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 1000 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
             advanceTurn();
         }
     }
@@ -543,11 +566,22 @@ public class Game implements Serializable {
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
         diplomacy.getSentContracts().clear();
+        if (Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
+            while (!StaticThreads.isStaticDone()) {
+                try {
+                    System.out.println("Waiting for static AI.");
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                }
+            }
+            ai.doTurn(turn);
+        }
     }
 
     private void advanceYear() {
         turn = 0;
         year++;
+        //Util.dP("     ***** year " + year + " *****");
         Faction.eliminateNoblelessFactions(this);
         int last_house_standing = Faction.checkVictoryByElimination(factions);
         if (last_house_standing > -1) {
@@ -711,9 +745,15 @@ public class Game implements Serializable {
             if (p1 != null && p2 != null) {
                 p1.jump_routes.add(jg);
                 p2.jump_routes.add(jg);
+                jg.planet_1_index = p1.index;
+                jg.planet_2_index = p2.index;
             }
 
         }
+        for (Planet p : planets) {
+            p.setNeighbours(planets);
+        }
+        galaxy_grid.defineJumpRouteTables(planets);
     }
 
     public void printMoveCost() {
@@ -834,6 +874,7 @@ public class Game implements Serializable {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeStructure(e);
                     } else {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeResource(e);
+                        iterator.remove(); // FIX #53
                     }
                 }
                 e.y = y;
@@ -1496,10 +1537,13 @@ public class Game implements Serializable {
     public void captureCity(Structure city, int new_owner, int new_prev_owner) {
         //subtract prod_cons for old owner
         economy.updateProdConsForCity(city, false);
+        getFaction(city.owner).addMessage(new Message("City lost to " + Util.getFactionName(new_owner) + "!",
+                C.Msg.CITY_LOST, getYear(), city));
         city.owner = new_owner;
         city.prev_owner = new_prev_owner;
         //add prod_cons for new owner
         economy.updateProdConsForCity(city, true);
+
     }
 
     /**

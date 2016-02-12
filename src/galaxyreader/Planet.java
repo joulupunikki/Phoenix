@@ -70,6 +70,7 @@ public class Planet implements Serializable {
     public PlanetGrid planet_grid;
     public List<JumpGate> jump_routes;
     public boolean[] spotted;
+    public Planet[] neighbours;
 
     /**
      * Creates a planet object. Reads in positional coordinates, name, owner and
@@ -203,6 +204,20 @@ public class Planet implements Serializable {
 
     public void minusStack(List<Unit> stack, int faction) {
         space_stacks[faction].removeAll(stack);
+    }
+
+    public void setNeighbours(List<Planet> planets) {
+        neighbours = new Planet[jump_routes.size()];
+        //System.out.print(name + " ");
+        for (int i = 0; i < neighbours.length; i++) {
+
+            neighbours[i] = planets.get(jump_routes.get(i).planet_1_index);
+            if (neighbours[i].index == this.index) {
+                neighbours[i] = planets.get(jump_routes.get(i).planet_2_index);
+            }
+            //System.out.print(neighbours[i].name + " ");
+        }
+        //System.out.println("");
     }
 
     /**

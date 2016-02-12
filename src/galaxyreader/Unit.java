@@ -77,10 +77,10 @@ public class Unit implements Serializable {
     int dest_y;      //UCHAR 
     int move_cost;   //int 
     int t_flags;     //UCHAR 
-    int ai_orders;   //char 
-    int ai_data;     //char 
-    int ai_data2;    //short 
-    int wait_level;  //UCHAR 
+    public byte ai_orders;   //char
+    public int task_force;  //byte -> int because taskforce id stored in units   //char
+    public short ai_data2;    //short
+    public byte wait_level;  //UCHAR
 
     /*
      * the following Lists are 
@@ -141,7 +141,7 @@ public class Unit implements Serializable {
         this.move_cost = 0;
         this.t_flags = 0;
         this.ai_orders = 0;
-        this.ai_data = 0;
+        this.task_force = 0;
         this.ai_data2 = 0;
         this.wait_level = 0;
         this.unit_list = null;
@@ -204,10 +204,14 @@ public class Unit implements Serializable {
         move_cost = 0; //GalaxyReader.readInt(fc, count.getSet(4));   
         t_flags = 0; //GalaxyReader.readByte(fc, count.getSet(1));     
         ai_orders = GalaxyReader.readByte(fc, count.getSet(1));
-        ai_data = GalaxyReader.readByte(fc, count.getSet(1));
+        task_force = GalaxyReader.readByte(fc, count.getSet(1));
 // if ((orig_version >= 961025) || (save_version >= 961027)) {
         ai_data2 = GalaxyReader.readShort(fc, count.getSet(2));
         wait_level = GalaxyReader.readByte(fc, count.getSet(1));
+        ai_orders = 0;
+        task_force = 0;
+        ai_data2 = 0;
+        wait_level = 0;
 // }
         /*
          * the following Lists are 
@@ -319,7 +323,7 @@ public class Unit implements Serializable {
         move_cost = 0;
         t_flags = 0;
         ai_orders = 0;
-        ai_data = 0;
+        task_force = 0;
         ai_data2 = 0;
         wait_level = 0;
 

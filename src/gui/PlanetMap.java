@@ -41,9 +41,11 @@ import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
+import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import util.C;
 import util.FN;
@@ -149,7 +151,7 @@ public class PlanetMap extends JPanel {
         drawSelectedStack(g);
         //drawFlags(g);
 
-        //drawHexTypes(g);
+        drawHexTypes(g);
 //        drawMoveCosts(g);
     }
 
@@ -268,21 +270,23 @@ public class PlanetMap extends JPanel {
 
                     boolean[] terrain_type = planet_grid.getHex(i, j).getTerrain();
 
-                    int n = 0;
-                    for (int k = 0; k < terrain_type.length; k++) {
-                        if (terrain_type[k] == true) {
-                            dx = x + x_offset;
-                            dy = 5 + y + dip + y_offset + 9 * n++;
-
-                            if (ws.is_double) {
-                                dx *= 2;
-                                dy *= 2;
-                            }
-                            g.setColor(Color.RED);
-                            g.setFont(new Font("Arial", Font.PLAIN, 15));
-                            g.drawString(Util.terrainTypeAbbrev(k), dx, dy);
-                        }
-                    }
+//                    int n = 0;
+//                    for (int k = 0; k < terrain_type.length; k++) {
+//                        if (terrain_type[k] == true) {
+//                            dx = x + x_offset;
+//                            dy = 5 + y + dip + y_offset + 9 * n++;
+//
+//                            if (ws.is_double) {
+//                                dx *= 2;
+//                                dy *= 2;
+//                            }
+//                            g.setColor(Color.RED);
+//                            g.setFont(new Font("Arial", Font.PLAIN, 15));
+//                            g.drawString(Util.terrainTypeAbbrev(k), dx, dy);
+//                            //g.drawString("" + i + "," + j, dx, dy);
+//                            //g.drawString("" + planet_grid.getHex(i, j).getLandNr(), dx, dy);
+//                        }
+//                    }
 
                     dx = x + x_offset;
                     dy = y + dip + y_offset;
@@ -292,6 +296,17 @@ public class PlanetMap extends JPanel {
                         dy *= 2;
                     }
 
+                    g.setColor(Color.RED);
+                    g.setFont(new Font("Arial", Font.PLAIN, 10));
+                    String s = "";
+                    EnumMap gui_opt = gui.getGuiOpt();
+                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.LAND_NR)).isSelected()) {
+                        s += planet_grid.getHex(i, j).getLandNr() + " ";
+                    }
+                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.HEX_XY)).isSelected()) {
+                        s += i + "," + j;
+                    }
+                    g.drawString(s, dx, dy);
 //                        for (int k = 0; k < name.length(); k++) {
 //                            String t = name.substring(k, k + 1);
 //                            g.setFont(ws.font_structure_name_bg);

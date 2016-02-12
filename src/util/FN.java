@@ -49,8 +49,9 @@ public class FN {
     public static final String S_PCX = "PCX";
     public static final String S_FLC = "FLC";
     public static final String S_MANOWITZ = "MANOWITZ";
-    public static final String S_PHOENIX_INI = "PHOENIX" + F_S + "PHOENIX.INI";
-    public static final String S_PHOENIXTEST_INI = "PHOENIX" + F_S + "PHOENIXTEST.INI";
+    public static final String S_PHOENIX = "PHOENIX";
+    public static final String S_PHOENIX_INI = S_PHOENIX + F_S + "PHOENIX.INI";
+    public static final String S_PHOENIXTEST_INI = S_PHOENIX + F_S + "PHOENIXTEST.INI";
     public static final String S_BLANK_FLC = "BLANK.FLC";
 
     public static final String S_EFS_INI = "DAT" + F_S + "EFS.INI";
@@ -97,6 +98,8 @@ public class FN {
     // filenames of buttons 1-16 in array slots 1-16 (slot 0 is unused)
     public static final int EFSBUT_NR = 16;
     public static final String[] S_EFSBUT_BIN;
+    public static final String STATIC_AI_SAVE_BIN = S_PHOENIX + F_S + "static_ai_save.bin";
+    //public static final String STATIC_AI_SAVE_BIN = S_PHOENIX + F_S + "static_ai_save.bin";
     static {
         S_EFSBUT_BIN = initEfsBut();
     }

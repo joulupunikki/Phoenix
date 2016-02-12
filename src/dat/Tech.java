@@ -119,7 +119,7 @@ public class Tech implements Serializable {
 //            int terrain_type = 0;
             Pattern mark_begin = Pattern.compile("^\\{");
             Pattern mark_end = Pattern.compile("^\\}");
-            Pattern comment = Pattern.compile("^//");
+            Pattern comment = Pattern.compile("^//|^[\\s]*$"); // fix #57
 
             while (s != null) {
                 //System.out.println("s = " + s);

@@ -146,4 +146,18 @@ public class G {
 
     }
 
+    public enum OW {
+
+        WIN_X,
+        WIN_Y,
+        WIN_W,
+        WIN_H,
+        COL1_X,
+        COL1_Y,
+        EXIT_X,
+        EXIT_Y,
+        EXIT_W,
+        EXIT_H, BOX_W, BOX_H,
+    }
+
 }

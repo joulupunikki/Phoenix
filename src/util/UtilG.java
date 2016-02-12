@@ -1053,7 +1053,7 @@ public class UtilG {
         String real_upper = "";
         String lower_prod = "";
         if (harvest) {
-            System.out.println("Harvest");
+            //System.out.println("Harvest");
             int[] max_production = game.getEconomy().calculateBaseProduction(city);
             int[] real_production = game.getEconomy().calculateActualProduction(city);
             int res_count = 0;
@@ -1079,7 +1079,7 @@ public class UtilG {
             }
             upper_prod = "Harvests " + real_upper + " out of a max of " + upper_prod;
         } else {
-            System.out.println("Refine");
+            //System.out.println("Refine");
             Prod[] prod_table = game.getEconomy().getProd();
             upper_prod = "Produces " + prod_table[Util.productionType(city)].make.resource_amount + " ";
             upper_prod += res_types[prod_table[Util.productionType(city)].make.resource_type].name;

@@ -1,8 +1,8 @@
 /*
  * Copyright (C) 2015 joulupunikki joulupunikki@gmail.communist.invalid.
- *
+ * 
  *  Disclaimer of Warranties and Limitation of Liability.
- *
+ * 
  *     The creators and distributors offer this software as-is and
  *     as-available, and make no representations or warranties of any
  *     kind concerning this software, whether express, implied, statutory,
@@ -10,7 +10,7 @@
  *     merchantability, fitness for a particular purpose, non-infringement,
  *     absence of latent or other defects, accuracy, or the presence or
  *     absence of errors, whether or not known or discoverable.
- *
+ * 
  *     To the extent possible, in no event will the creators or distributors
  *     be liable on any legal theory (including, without limitation,
  *     negligence) or otherwise for any direct, special, indirect,
@@ -18,53 +18,55 @@
  *     costs, expenses, or damages arising out of the use of this software,
  *     even if the creators or distributors have been advised of the
  *     possibility of such losses, costs, expenses, or damages.
- *
+ * 
  *     The disclaimer of warranties and limitation of liability provided
  *     above shall be interpreted in a manner that, to the extent possible,
  *     most closely approximates an absolute disclaimer and waiver of
  *     all liability.
- *
+ * 
  */
-package util;
+package ai;
 
-import java.io.Serializable;
+import game.Game;
+import util.C;
+import util.Util;
 
 /**
- * This is used in reading of planet maps in GALAXY.GAL files.
+ * Rebel AI base class.
  *
- * @author joulupunikki
+ * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class RingCounter implements Serializable {
-
+public class RebelAI extends AI {
     private static final long serialVersionUID = 1L;
 
-    private int counter;
-    private int length;
+    public enum UTypes {
 
-    public RingCounter(int length, int start_val) {
-        if (length < 1) {
-            this.length = 1;
-        } else {
-            this.length = length;
-        }
-
-        if (start_val > length) {
-            counter = 1;
-        } else {
-            counter = start_val;
-        }
+        PSYCH,
+        CLOSE,
+        DIRECT,
+        INDIRECT,
+        AIR,
+        NESTER,
+        CLOSE_SP,
+        DIRECT_SP,
+        RANGED_SP,
+        CARGO_SP,
+    }
+    public RebelAI(Game game) {
+        super(game, C.NEUTRAL);
+        Util.dP("##### RebelAI init begin");
+        Util.dP("##### RebelAI init end");
     }
 
-    public int getSet() {
-        int ret_val = counter;
-        counter++;
-        if (counter > length) {
-            counter = 0;
-        }
-        return ret_val;
+    @Override
+    public void doTurn() {
+        //logSuper(C.NEUTRAL, "Start");
+        // list stacks
+        //findAssets(C.NEUTRAL);
+        // list known enemy cities
+
+        // attack enemy cities
+        // attack enemy units
     }
 
-    public int get() {
-        return counter;
-    }
 }

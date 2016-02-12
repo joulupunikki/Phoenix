@@ -327,4 +327,51 @@ public class PathFind {
             System.out.println("");
         }
     }
+
+    public static LinkedList<Hex> findPath(Game game, PlanetGrid planet_grid, Hex destination, Hex source) {
+        int current_planet = game.getCurrentPlanetNr();
+        double[][][] terr_cost = game.getTerrCost();
+        int tile_set = game.getPlanet(current_planet).tile_set_type;
+        List<Unit> stack = source.getStack();
+        List<Unit> selected = new LinkedList<>();
+        for (Unit unit : stack) {
+            if (unit.selected) {
+                selected.add(unit);
+            }
+        }
+        long time = System.currentTimeMillis();
+        PathFind.setMoveCosts(planet_grid, terr_cost, tile_set, Util.stackSize(selected), selected.get(0).owner, selected.get(0).prev_owner, destination);
+        UnitType[][] unit_types = game.getUnitTypes();
+        LinkedList<Hex> path = null;
+        double min_max_path_cost = Double.POSITIVE_INFINITY;
+        for (ListIterator<Unit> it = selected.listIterator(); it.hasNext();) {
+            Unit e = it.next();
+            int unit_type = e.type;
+            int t_lvl = e.t_lvl;
+            C.MoveType move_type = unit_types[unit_type][t_lvl].move_type;
+            LinkedList<Hex> tmp_path = PathFind.shortestPath(planet_grid, source, destination, move_type.ordinal());
+            if (tmp_path == null) {
+                continue;
+            }
+            double max_path_cost = Double.NEGATIVE_INFINITY;
+            int path_cost = 0;
+            for (ListIterator<Unit> it2 = selected.listIterator(); it2.hasNext();) {
+                Unit u = it2.next();
+                int move_points_u = unit_types[u.type][u.t_lvl].move_pts;
+                path_cost = PathFind.pathCost(tmp_path, u, game);
+                if (path_cost == Integer.MAX_VALUE) {
+                    break;
+                }
+                double tmp_cost = 1.0 * path_cost / move_points_u;
+                if (tmp_cost > max_path_cost) {
+                    max_path_cost = tmp_cost;
+                }
+            }
+            if (path_cost != Integer.MAX_VALUE && min_max_path_cost > max_path_cost) {
+                min_max_path_cost = max_path_cost;
+                path = tmp_path;
+            }
+        }
+        return path;
+    }
 }

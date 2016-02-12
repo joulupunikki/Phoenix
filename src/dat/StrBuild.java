@@ -126,7 +126,7 @@ public class StrBuild implements Serializable {
 
             Pattern mark_begin = Pattern.compile("^\\{");
             Pattern mark_end = Pattern.compile("^\\}");
-            Pattern comment = Pattern.compile("^//");
+            Pattern comment = Pattern.compile("^//|^[\\s]*$"); //fix #57
 //            Pattern reserved = Pattern.compile("Reserved");
 
             while (s != null) {
