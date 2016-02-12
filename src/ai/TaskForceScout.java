@@ -64,7 +64,7 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
 
     boolean finished;
     int faction;
-    long tf_id;
+    int tf_id;
 
     Unit scout;
     int target_p_idx;
@@ -77,7 +77,7 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
         IN_SPACE;
     }
 
-    public TaskForceScout(Game game, int target_p_idx, long tf_id) {
+    public TaskForceScout(Game game, int target_p_idx, int tf_id) {
         this.game = game;
         this.gal_grid = game.getGalaxyMap();
         this.tf_id = tf_id;
@@ -87,6 +87,7 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
 
     public void add(Unit scout) {
         this.scout = scout;
+        scout.task_force = tf_id;
     }
 
     public void initPlan() {

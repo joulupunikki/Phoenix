@@ -78,7 +78,7 @@ public class Unit implements Serializable {
     int move_cost;   //int 
     int t_flags;     //UCHAR 
     public byte ai_orders;   //char
-    public byte task_force;     //char
+    public int task_force;  //byte -> int because taskforce id stored in units   //char
     public short ai_data2;    //short
     public byte wait_level;  //UCHAR
 

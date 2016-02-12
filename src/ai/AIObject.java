@@ -66,4 +66,7 @@ public class AIObject implements Serializable {
         ai[faction].doTurn();
     }
 
+    public boolean isMapped(int faction, int p_idx) {
+        return ai[faction].isMapped(p_idx);
+    }
 }

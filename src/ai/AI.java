@@ -10,7 +10,7 @@
  *     merchantability, fitness for a particular purpose, non-infringement,
  *     absence of latent or other defects, accuracy, or the presence or
  *     absence of errors, whether or not known or discoverable.
- * 
+ *
  *     To the extent possible, in no event will the creators or distributors
  *     be liable on any legal theory (including, without limitation,
  *     negligence) or otherwise for any direct, special, indirect,
@@ -27,6 +27,7 @@
  */
 package ai;
 
+import dat.UnitType;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
@@ -75,9 +76,37 @@ public abstract class AI implements Serializable {
         }
         return false;
     }
+    /**
+     * Return true iff Unit u is in task force number tf_id, tf_id of zero
+     * indicates no task force.
+     *
+     * @param u
+     * @param tf_id
+     * @return
+     */
+    static boolean isInTaskForce(Unit u, int tf_id) {
+        return u.task_force == tf_id;
+    }
+    /**
+     * Return first instance of Unit which is in task force number tf_id, null
+     * if none found in stack.
+     *
+     * @param stack
+     * @param tf_id
+     * @return
+     */
+    static Unit haveInTaskForce(List<Unit> stack, int tf_id) {
+        for (Unit u : stack) {
+            if (isInTaskForce(u, tf_id)) {
+                return u;
+            }
+        }
+        return null;
+    }
 
     int faction;
     Game game;
+    List<UnitType> buildable_units;
     List<Planet> planets;
     List<List<Continent>> continents;
     List<List<Continent>> oceans;
@@ -99,13 +128,14 @@ public abstract class AI implements Serializable {
     Set<Structure> free_enemy_structures;
     GalaxyGrid galaxy_grid;
     KnownGalaxy known_galaxy;
-    private long task_force_id;
+    private int task_force_id; // long -> int because taskforce id stored in Units
 
     public AI(Game game, int faction) {
         logger.debug("Hey");
         Util.dP("##### AI init begin");
         this.game = game;
         this.faction = faction;
+        buildable_units = new ArrayList<>();
         all_units = game.getUnits();
         planets = game.getPlanets();
         all_structures = game.getStructures();
@@ -207,7 +237,7 @@ public abstract class AI implements Serializable {
         logger.debug("  task forces scouts left: " + s_task);
     }
 
-    public long nextTfID() {
+    public int nextTfID() {
         return ++task_force_id;
     }
 
@@ -818,6 +848,10 @@ public abstract class AI implements Serializable {
      */
     protected boolean considerPeaceOffer(int firebirds) {
         return false;
+    }
+
+    boolean isMapped(int p_idx) {
+        return known_galaxy.isMapped(p_idx);
     }
 
 }

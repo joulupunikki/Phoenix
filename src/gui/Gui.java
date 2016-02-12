@@ -795,14 +795,6 @@ public class Gui extends JFrame {
                 toggle_ai.setText("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
             }
         });
-//        show_all = new JMenuItem("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
-//        show_all.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
-//        show_all.addActionListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                game.setFactionPlayer(C.SYMBIOT, !game.getHumanControl()[C.SYMBIOT]);
-//                show_all.setText("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
-//            }
-//        });
         wizard_menu.add(menu_all_tech);
         wizard_menu.add(menu_all_resources);
         wizard_menu.add(menu_create_unit);
@@ -919,7 +911,7 @@ public class Gui extends JFrame {
                 }
                 String s_units = "";
                 for (int i = 0; i < unit_manifest.length; i++) {
-                    s_units += move_types[i] + " " + unit_manifest[i];
+                    s_units += move_types[i] + " " + unit_manifest[i] + "\n";
                 }
                 showInfoWindow(s_units);
             }
@@ -2518,6 +2510,13 @@ public class Gui extends JFrame {
                     + "finished. If Robot test terminates abnormally, test machine OS may be left\n"
                     + "in unresponsive state.");
             RobotTester.startRobotTester(args.getOptionValue(C.OPT_ROBOT_TEST), args.getOptionValue(C.OPT_GAME_STATE_FILE), gui, gui.getX(), gui.getY());
+        } else if (getMainArgs().hasOption(C.OPT_AI_TEST)) {// do automated AI testing
+            gui.game.setFactionPlayer(C.HOUSE1, true);
+            gui.game.setFactionPlayer(C.SYMBIOT, false);
+            gui.game.setFactionPlayer(C.STIGMATA, true);
+            gui.game.beginGame();
+            SU.selectNextUnmovedUnit();
+            gui.game.endTurn();
         }
     }
 

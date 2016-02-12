@@ -174,6 +174,7 @@ public class Comp {
         private Hex[][] o2_map;
 
 
+        @Override
         public int compare(Unit o1, Unit o2) {
             if (o1.p_idx != prev_o1_pidx) {
                 prev_o1_pidx = o1.p_idx;
@@ -183,7 +184,15 @@ public class Comp {
                 prev_o2_pidx = o2.p_idx;
                 o2_map = game.getPlanetGrid(o2.p_idx).getMapArray();
             }
-            return o1_map[o1.x][o1.y].getLandNr() - o2_map[o2.x][o2.y].getLandNr();
+            int c1_idx = -1;
+            if (!o1.in_space) {
+                c1_idx = o1_map[o1.x][o1.y].getLandNr();
+            }
+            int c2_idx = -1;
+            if (!o2.in_space) {
+                c2_idx = o2_map[o2.x][o2.y].getLandNr();
+            }
+            return c1_idx - c2_idx;
         }
 
     }

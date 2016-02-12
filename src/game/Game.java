@@ -185,7 +185,7 @@ public class Game implements Serializable {
     }
 
     public void initAI(boolean dynamic) {
-        if (Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI)) {
+        if (!Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI)) {
             return;
         }
         for (Planet planet : planets) { // fast serial
@@ -537,7 +537,7 @@ public class Game implements Serializable {
         }
         factions[turn].deleteOldMessages();
         advanceTurn();
-        while (!human_ctrl[turn] || factions[turn].isEliminated()) {
+        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 1000 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
             advanceTurn();
         }
     }
@@ -566,7 +566,7 @@ public class Game implements Serializable {
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
         diplomacy.getSentContracts().clear();
-        if (!Gui.getMainArgs().hasOption(C.OPT_DISABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
+        if (Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
             while (!StaticThreads.isStaticDone()) {
                 try {
                     System.out.println("Waiting for static AI.");
@@ -581,7 +581,7 @@ public class Game implements Serializable {
     private void advanceYear() {
         turn = 0;
         year++;
-        Util.dP("     ***** year " + year + " *****");
+        //Util.dP("     ***** year " + year + " *****");
         Faction.eliminateNoblelessFactions(this);
         int last_house_standing = Faction.checkVictoryByElimination(factions);
         if (last_house_standing > -1) {

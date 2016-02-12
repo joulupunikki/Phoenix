@@ -74,7 +74,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     }
 
     int faction;
-    long tf_id;
+    int tf_id;
     LinkedList<List<Unit>> ground_stacks;
     List<Unit> ground_forces;
     List<Unit> transports;
@@ -99,7 +99,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
         MOVES_LEFT,
         NO_MOVES_LEFT;
     }
-    public TaskForce(Game game, int target_p_idx, Hex target, long tf_id) {
+    public TaskForce(Game game, int target_p_idx, Hex target, int tf_id) {
         this.game = game;
         this.gal_grid = game.getGalaxyMap();
         if (game == null) {
@@ -116,18 +116,18 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     }
 
     public void addTransport(Unit u) {
-        u.task_force = 1;
+        u.task_force = tf_id;
         transports.add(u);
     }
 
     public void addEscort(Unit u) {
-        u.task_force = 1;
+        u.task_force = tf_id;
         escorts.add(u);
     }
 
     public void add(List<Unit> stack) {
         for (Unit u : stack) {
-            u.task_force = 1;
+            u.task_force = tf_id;
         }
         Unit u = stack.get(0);
         ground_stacks.add(game.getHexFromPXY(u.p_idx, u.x, u.y).getStack());
@@ -416,7 +416,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
 //                    || u.move_type == C.MoveType.HOVER
 //                    || u.move_type == C.MoveType.TREAD
 //                    || u.move_type == C.MoveType.WHEEL)) {
-            if (AI.isGroundTroop(u)) {
+            if (AI.isGroundTroop(u) && AI.isInTaskForce(u, tf_id)) {
                 tmp.add(u);
                 cap--;
             }
@@ -461,8 +461,8 @@ public class TaskForce extends TaskForceSuper implements Serializable {
             }
         }
         logger.debug("  dropped : " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
-        if (AI.haveGroundTroop(ground_stacks.get(0))) {
-            c = ground_stacks.get(0).get(0);
+        c = AI.haveInTaskForce(ground_stacks.get(0), tf_id);
+        if (c != null) {
             logger.debug("  more cargo at " + game.getPlanet(c.p_idx).name + " " + c.x + "," + c.y);
             if (Util.movesLeft(transports)) {
                 return SUB_STATE.MOVES_LEFT;

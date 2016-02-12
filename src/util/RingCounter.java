@@ -27,12 +27,16 @@
  */
 package util;
 
+import java.io.Serializable;
+
 /**
  * This is used in reading of planet maps in GALAXY.GAL files.
  *
  * @author joulupunikki
  */
-public class RingCounter {
+public class RingCounter implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private int counter;
     private int length;

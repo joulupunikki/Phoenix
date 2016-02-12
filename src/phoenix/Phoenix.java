@@ -341,8 +341,8 @@ public class Phoenix {
         opts.addOption(null, C.OPT_ROBOT_STOP, true, "Execute Robot test for this number of events then stop "
                 + "Robot and leave game as is");
         opts.addOption(null, C.OPT_RANDOM_SEED, true, "Set argument as random seed");
-        opts.addOption(null, C.OPT_DISABLE_AI, false, "Disable AI");
-
+        opts.addOption(null, C.OPT_ENABLE_AI, false, "Enable AI");
+        opts.addOption(null, C.OPT_AI_TEST, false, "Do AI test run");
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
         try {

@@ -182,14 +182,14 @@ public class GalaxyGrid implements Serializable {
         }
         jump_dist = tmp_jump_dists;
         routing_table = tmp_routing_table;
-        for (int i = 0; i < routing_table.length; i++) {
-            System.out.print(planets.get(i).name + ": ");
-            for (int j = 0; j < routing_table.length; j++) {
-                System.out.print(planets.get(j).name + "->" + planets.get(routing_table[i][j]).name + " ");
-
-            }
-            System.out.println("");
-        }
+//        for (int i = 0; i < routing_table.length; i++) {
+//            System.out.print(planets.get(i).name + ": ");
+//            for (int j = 0; j < routing_table.length; j++) {
+//                System.out.print(planets.get(j).name + "->" + planets.get(routing_table[i][j]).name + " ");
+//
+//            }
+//            System.out.println("");
+//        }
     }
 
     public int getJumpDistance(int a_idx, int b_idx) {
