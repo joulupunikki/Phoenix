@@ -372,7 +372,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     }
 
     private boolean handlePTS(Hex land) {
-        game.startBombardOrPTS(land, true);
+        game.startBombardOrPTS(land, true, -1);
         List<Hex> pts_queue = game.getBattle().getPTSQueue();
         System.out.println("PTS queue len = " + pts_queue.size());
         while (!pts_queue.isEmpty() && !Util.getSelectedUnits(game.getSelectedStack()).isEmpty()) {
@@ -382,7 +382,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                 continue;
             }
             // since we are landing, do not try to bomb landing hex
-            game.startBombardOrPTS(pts_hex, false);
+            game.startBombardOrPTS(pts_hex, false, -1);
             pts_hex.spot(game.getTurn());
             System.out.println("PTS combat (" + pts_hex.getX() + "," + pts_hex.getY() + ") vs (" + land.getX() + "," + land.getY() + ")");
             game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);

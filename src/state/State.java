@@ -169,4 +169,7 @@ public abstract class State {
 
     public void razeCity() {
     }
+
+    public void buildRoad() {
+    }
 }

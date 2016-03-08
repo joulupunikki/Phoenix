@@ -256,7 +256,7 @@ public class UnitStats {
                     attack4_stat.setText("" + acc + "/" + str);
                     break;
                 default:
-                    throw new AssertionError("Unit with over 4 attack types", null);
+                    System.out.println("Unit with over 4 attack types");
             }
         }
 

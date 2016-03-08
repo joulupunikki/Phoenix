@@ -110,7 +110,7 @@ public class LAND1 extends State {
             gui.showInfoWindow("Cannot land on ruins.");
             return;
         }
-        if (!target_stack.isEmpty() && target_stack.get(0).owner == faction.x && target_stack.get(0).owner != faction.y) {
+        if (!target_stack.isEmpty() && target_stack.get(0).owner == faction.x && target_stack.get(0).prev_owner != faction.y) { // fix #70
             gui.showInfoWindow("Cannot merge loaned stacks.");
             return;
         }
@@ -125,7 +125,7 @@ public class LAND1 extends State {
                 
         // start PTS defence fire if any
         if (SU.byzIICombatOK(stack, false)) {
-            game.startBombardOrPTS(target_hex, true);
+            game.startBombardOrPTS(target_hex, true, -1);
             List<Hex> pts_queue = game.getBattle().getPTSQueue();
             if (!pts_queue.isEmpty()) {
                 // save state so we can land in state.CWPTS2 after PTS
@@ -133,7 +133,7 @@ public class LAND1 extends State {
                 landing_point = p;
                 Hex pts_hex = pts_queue.remove(0);
                 // since we are landing, do not try to bomb landing hex
-                game.startBombardOrPTS(pts_hex, false);
+                game.startBombardOrPTS(pts_hex, false, -1);
                 pts_hex.spot(game.getTurn());
                 game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
                 gui.setMouseCursor(C.S_CURSOR_SCEPTOR);

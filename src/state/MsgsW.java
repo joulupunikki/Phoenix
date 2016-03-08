@@ -87,6 +87,7 @@ public class MsgsW extends State {
 //                        current_cmbt_report = report;
                         SU.showCombatReplay();
                         break;
+                    case RESPONSE:
                     case CONTRACT:
                         gui.showResolveContractDialog(msg);
                         break;

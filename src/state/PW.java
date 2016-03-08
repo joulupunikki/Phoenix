@@ -27,6 +27,7 @@
  */
 package state;
 
+import game.Hex;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import static state.SU.setWindow;
@@ -98,4 +99,13 @@ public class PW extends MW {
         }
 
     }
+
+    @Override
+    public void buildRoad() {
+        Point p = game.getSelectedPoint();
+        Hex h = game.getHexFromPXY(game.getCurrentPlanetNr(), p.x, p.y);
+        h.getTerrain()[C.ROAD] = true;
+        gui.enableBuildRoadMenuItem(false);
+    }
+
 }

@@ -56,7 +56,7 @@ public class CWPTS2 extends State {
         if (!Util.getSelectedUnits(game.getSelectedStack()).isEmpty() && !pts_queue.isEmpty()) {
             Hex pts_hex = pts_queue.remove(0);
             pts_hex.spot(game.getTurn());
-            game.startBombardOrPTS(pts_hex, false);
+            game.startBombardOrPTS(pts_hex, false, -1);
             game.resolveGroundBattleInit(C.PTS_COMBAT, pts_hex.getStack().get(0).owner);
             SU.showCombatWindowPTS();
             return;

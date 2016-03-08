@@ -57,9 +57,10 @@ public class CWB2 extends State {
         Hex target = game.getBattle().getRangedSpaceTarget();
         game.resolveGroundBattleFinalize();
         gui.getCombatWindow().setFightText("Do Combat");
-        gui.getCombatWindow().toggleButtons(false, true, false);       
-        game.startBombardOrPTS(target, true);
-        game.resolveGroundBattleInit(C.BOMBARD_COMBAT, game.getBattle().getRangedSpaceTarget().getStack().get(0).owner);
+        gui.getCombatWindow().toggleButtons(false, true, false);
+        int target_faction = target.getStack().get(0).owner;
+        game.startBombardOrPTS(target, true, target_faction);
+        game.resolveGroundBattleInit(C.BOMBARD_COMBAT, target_faction);
         gui.setCurrentState(CWB1.get());
         game.subMovePointsSpace(game.getCombatStack("a"));
         SU.showCombatWindowBombard();

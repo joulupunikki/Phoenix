@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Set;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -55,6 +56,14 @@ public class Battle implements Serializable {
     private static final long serialVersionUID = 1L;
     private List<Unit> combat_stack_a;
     private List<Unit> combat_stack_b;
+    private List<Unit> defender_defence = new LinkedList<>();
+    private List<Unit> defender_offence = new LinkedList<>();
+    private List<Unit> defender_normal = new LinkedList<>();
+    private List<Unit> defender_persons = new LinkedList<>();
+    private List<Unit> attacker_offence = new LinkedList<>();
+    private List<Unit> attacker_defence = new LinkedList<>();
+    private List<Unit> attacker_normal = new LinkedList<>();
+    private List<Unit> attacker_assassins = new LinkedList<>();
     private LinkedList<Hex> path;
     private String combat_type;
     private int attacked_faction;
@@ -71,6 +80,7 @@ public class Battle implements Serializable {
     private Hex ranged_space_target;
     // pts defence fire queue against landing or bombardment
     private List<Hex> pts_queue;
+    private int city_damage;
 
     public Battle() {
         
@@ -92,6 +102,7 @@ public class Battle implements Serializable {
     public void perBattleInit(LinkedList<Hex> path, int current_planet) {
         this.path = path;
         this.current_planet = current_planet;
+        this.city_damage = 0;
     }
 
     public List<Unit> getCombatStack(String stack) {
@@ -292,7 +303,7 @@ public class Battle implements Serializable {
 
     /**
      * Handles one round of attacks by an attacker stack against a defender
-     * stack.
+     * stack. Handles assassinations and agility bonus for unspotted units.
      *
      * @param attacker the attacking stack
      * @param defender the defending stack
@@ -305,35 +316,78 @@ public class Battle implements Serializable {
             return;
         }
 
-        int count = attacker.size(); // > defender.size() ? attacker.size() : defender.size();
-//        for (int i = 0; i < count; i++) {
-//            damage[i] = 0;
-//        }
-        ListIterator<Unit> atk_it = attacker.listIterator();
-        ListIterator<Unit> def_it = defender.listIterator();
-        Unit atk = atk_it.next();
-        Unit def = def_it.next();
-        int def_indx = 0;
-        for (int i = 0; i < count; i++) {
-
-            int to_hit = getAtkAcc(atk_type, atk) - def.type_data.ag;
-            if (random.nextInt(20) + to_hit > 9) {
-//                damage[def_indx] += getDam(atk, def, atk_type);
-                def.health_tmp -= getDam(atk, def, atk_type);
+        int count = attacker.size();
+        attacker_assassins.clear();
+        attacker_normal.clear();
+        defender_normal.clear();
+        defender_persons.clear();
+        for (Unit unit : attacker) {
+            if (unit.type == C.SPY_UNIT_TYPE) {
+                attacker_assassins.add(unit);
+            } else {
+                attacker_normal.add(unit);
             }
-//            if (!atk_it.hasNext()) {
-//                atk_it = attacker.listIterator();
-//            }
-            if (!atk_it.hasNext()) {
+        }
+        for (Unit unit : defender) {
+            if (unit.type_data.rank >= C.PERSONNEL_UNIT_MIN_RANK) {
+                defender_persons.add(unit);
+            } else {
+                defender_normal.add(unit);
+            }
+        }
+//        ListIterator<Unit> atk_it = attacker.listIterator();
+//        ListIterator<Unit> def_it = defender.listIterator();
+        ListIterator<Unit> atk_norm = attacker_normal.listIterator();
+        ListIterator<Unit> def_norm = defender_normal.listIterator();
+        ListIterator<Unit> atk_assa = attacker_assassins.listIterator();
+        ListIterator<Unit> def_pers = defender_persons.listIterator();
+        ListIterator<Unit> def_all = defender.listIterator();
+
+        Unit atk = null;
+        Unit def = null;
+//        if (atk_assa.hasNext()) {
+//            atk = atk_assa.next();
+//        } else {
+//            atk = atk_norm.next();
+//        }
+//        if (def_pers.hasNext()) {
+//            def = def_pers.next();
+//        } else {
+//            def = def_norm.next();
+//        }
+        for (int i = 0; i < count; i++) {
+            if (atk_assa.hasNext()) {
+                atk = atk_assa.next();
+                if (def_pers.hasNext()) {
+                    def = def_pers.next();
+                } else if (def_norm.hasNext()) {
+                    def = def_norm.next();
+                } else if (!def_all.hasNext()) {
+                    def_all = defender.listIterator();
+                    def = def_all.next();
+                }
+            } else if (atk_norm.hasNext()) {
+                atk = atk_norm.next();
+                if (def_norm.hasNext()) {
+                    def = def_norm.next();
+                } else if (def_pers.hasNext()) {
+                    def = def_pers.next();
+                } else if (!def_all.hasNext()) {
+                    def_all = defender.listIterator();
+                    def = def_all.next();
+                }
+            } else {
                 return;
             }
-            atk = atk_it.next();
-            if (!def_it.hasNext()) {
-                def_it = defender.listIterator();
-                def_indx = -1;
+            int to_hit = getAtkAcc(atk_type, atk) - def.type_data.ag;
+            if (!def.spotted[atk.owner]) {
+                to_hit -= C.UNSPOTTED_AG_BONUS;
             }
-            def = def_it.next();
-            def_indx++;
+            if (random.nextInt(20) + to_hit > 9) { // nextInt(20) returns 0<= x < 20
+                def.health_tmp -= getDam(atk, def, atk_type);
+            } else if (combat_type.equals(C.BOMBARD_COMBAT) && atk.in_space && random.nextBoolean()) { // orbital bombardment city damage
+                city_damage += FastMath.min(10, (atk.type_data.ranged_sp_str + 9) / 10);
+            }
         }
 
     }
@@ -812,8 +866,8 @@ public class Battle implements Serializable {
         CombatReport report = new CombatReport(combat_stack_a.size(), combat_stack_b.size());
         //record combat report combat preconditions combatReportPre()
         combatReportPre(report);
-        spotAllUnits();
         doCombat(combat_stack_a, combat_stack_b);
+        spotAllUnits();
         assignDamage(combat_stack_a, combat_stack_b);
         //record combat report combat postconditions, send message combatReportPost()
         combatReportPost(report);
@@ -837,6 +891,11 @@ public class Battle implements Serializable {
                 cancelRout(stack_a, stack_b);
                 break;
             case C.BOMBARD_COMBAT:
+                Structure s = ranged_space_target.getStructure();
+                if (s != null && s.health < 1) {
+                    game.destroyCity(s.p_idx, s.x, s.y);
+                }
+            // no break !!!
             case C.PTS_COMBAT:
                 stack_b = ranged_space_target.getStack();
                 cancelRout(stack_a, stack_b);
@@ -877,13 +936,10 @@ public class Battle implements Serializable {
      */
     public void doCombat(List<Unit> attacker, List<Unit> defender) {
 
+        city_damage = 0;
         int[] defender_damage = new int[C.STACK_SIZE];
-        List<Unit> defender_defence = new LinkedList<>();
-        List<Unit> defender_offence = new LinkedList<>();
 
         int[] attacker_damage = new int[C.STACK_SIZE];
-        List<Unit> attacker_offence = new LinkedList<>();
-        List<Unit> attacker_defence = new LinkedList<>();
 
         int combat_loop_iter = -1;
         int[] combat_phases = null;
@@ -939,7 +995,12 @@ public class Battle implements Serializable {
 
             }
         }
-
+        if (combat_type.equals(C.BOMBARD_COMBAT)) {
+            Structure s = ranged_space_target.getStructure();
+            if (s != null) {
+                s.health -= city_damage;
+            }
+        }
     }
 
     public String getCombatType() {
@@ -961,7 +1022,7 @@ public class Battle implements Serializable {
      * @param h
      * @param queue_pts
      */
-    public void startBombardOrPTS(Hex h, boolean queue_pts) {
+    public void startBombardOrPTS(Hex h, boolean queue_pts, int target_faction) {
         ranged_space_target = h;
         if (!queue_pts) {
             return;
@@ -974,7 +1035,7 @@ public class Battle implements Serializable {
             if (!stack.isEmpty()) {
                 int fac_a = stack.get(0).owner;
                 int fac_b = game.getTurn();
-                if (fac_a != fac_b && game.getDiplomacy().getDiplomaticState(fac_a, fac_b) == C.DS_WAR) {
+                if ((target_faction == -1 || target_faction == fac_a) && fac_a != fac_b && game.getDiplomacy().getDiplomaticState(fac_a, fac_b) == C.DS_WAR) {
                     for (Unit unit : stack) {
                         if (unit.type_data.ranged_sp_str > 0) {
                             pts_queue.add(next);

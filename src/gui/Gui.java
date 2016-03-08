@@ -838,8 +838,7 @@ public class Gui extends JFrame {
 
         menu_build_road.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                showInfoWindow("Not implemented yet.");
+                state.buildRoad();
             }
         });
 
@@ -1057,7 +1056,21 @@ public class Gui extends JFrame {
     }
 
     public void showTechWindow() {
-        tech_panel.setTechData();
+        showTechWindow(-1, -1, null, null);
+    }
+
+    /**
+     * When donor < 0, this will prime tech window for setting lab research targets.
+     * When donor >= 0, this will prime tech window for selecting swapped techs
+     * in contracts.
+     *
+     * @param donor
+     * @param recipient
+     * @param selected
+     */
+    public void showTechWindow(int donor, int recipient, List<Integer> in_contract, int[] selected) {
+        tech_panel.setTechData(donor, recipient, in_contract);
+        tech_panel.setSwapTech(selected);
         tech_panel.setLabsCost();
         tech_panel.setRPAvailable();
         tech_panel.setLabResearches();
@@ -2229,6 +2242,10 @@ public class Gui extends JFrame {
 
     public void enableBuildCityMenuItem(boolean enabled) {
         menu_build_city.setEnabled(enabled);
+    }
+
+    public void enableBuildRoadMenuItem(boolean enabled) {
+        menu_build_road.setEnabled(enabled);
     }
 
     public void enableRazeCityMenuItem(boolean enabled) {

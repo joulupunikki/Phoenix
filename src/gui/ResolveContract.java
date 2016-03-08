@@ -103,8 +103,11 @@ public class ResolveContract extends JPanel {
     public void enterDialog(Message msg) {
         message = msg;
         contract = message.getContract();
-        if (message.getContract().isResolved()) {
-
+        accept.setEnabled(true);
+        reject.setEnabled(true);
+        if (contract.isResolved()) {
+            accept.setEnabled(false); // fix #68
+            reject.setEnabled(false);
         }
         dialog.setVisible(true);
     }
@@ -159,9 +162,11 @@ public class ResolveContract extends JPanel {
                     gui.showInfoWindow("My Lord, we cannot satisfy all the terms of the Contract!");
                     return;
                 }
-                game.getFaction(contract.getSender()).addMessage(new Message(""
+                Message message = new Message(""
                         + Util.factionNameDisplay(game.getTurn())
-                        + " sent Us the following message: \"We accept Your offer.\"", C.Msg.RESPONSE, game.getYear(), null));
+                        + " sent Us the following message: \"We accept the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
+                message.setContract(contract);
+                game.getFaction(contract.getSender()).addMessage(message);
                 self.setWindowVisiblity(false);
             }
         });
@@ -177,9 +182,11 @@ public class ResolveContract extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 contract.reject();
-                game.getFaction(contract.getSender()).addMessage(new Message(""
+                Message message = new Message(""
                         + Util.factionNameDisplay(game.getTurn())
-                        + " sent Us the following message: \"We reject Your offer.\"", C.Msg.RESPONSE, game.getYear(), null));
+                        + " sent Us the following message: \"We reject the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
+                message.setContract(contract);
+                game.getFaction(contract.getSender()).addMessage(message);
                 self.setWindowVisiblity(false);
             }
         });
@@ -189,13 +196,17 @@ public class ResolveContract extends JPanel {
     private void renderWindow(Graphics g) {
         drawBackground(g);
         drawDetails(g);
+
     }
 
     private void drawDetails(Graphics gg) {
         Graphics2D g = (Graphics2D) gg;
         drawContractHeaders(g);
-        DiplomacyWindow.drawContract(g, message.getContract(), ws, game.getTurn());
+        DiplomacyWindow.drawContract(game, g, message.getContract(), ws, game.getTurn());
         drawLeader(g);
+        if (message.getType() == C.Msg.RESPONSE) {
+            drawRespose(g);
+        }
     }
 
     private void drawBackground(Graphics g) {
@@ -220,8 +231,16 @@ public class ResolveContract extends JPanel {
     }
 
     private void drawLeader(Graphics2D g) {
-        String s = Util.factionNameDisplay(contract.getSender());
+        int message_sender = contract.getSender();
+        if (message.getType() == C.Msg.RESPONSE) {
+            message_sender = contract.getReceiver();
+        }
+        String s = Util.factionNameDisplay(message_sender);
         int x = UtilG.center(g, c2.get(G.CH.LEADER_H_X), c2.get(G.CH.LEADER_H_W), ws.font_large, s);
         UtilG.drawStringGrad(g, s, ws.font_large, x, c2.get(G.CH.LEADER_H_Y));
+    }
+
+    private void drawRespose(Graphics2D g) {
+        UtilG.drawStringGrad(g, message.getMsgTxt(), ws.font_large, c.get(CDW.R_RESPONCE_X), c.get(CDW.R_RESPONCE_Y));
     }
 }

@@ -114,7 +114,7 @@ public class UIW1 extends State {
                     if ((faction.x != -1 && !(c.move_type == C.MoveType.JUMP
                             || c.move_type == C.MoveType.LANDER
                             || c.move_type == C.MoveType.SPACE))
-                            || (terrain[C.OCEAN] == true && tile_set != 4)) {
+                            || (faction.x == -1 && terrain[C.OCEAN] == true && tile_set != 4)) { // fix #69
                         continue;
                     }
                     tmp.add(c);

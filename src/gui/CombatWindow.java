@@ -67,6 +67,7 @@ public class CombatWindow extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
+    private static final int UNSPOTTED_COLOR_SHIFT = 2;
     // pointer to GUI
     private Gui gui;
     private Game game;
@@ -234,6 +235,7 @@ public class CombatWindow extends JPanel {
         int[] skull = Util.loadSquare(FN.S_SKULL_BIN, 0, C.SKULL_SIDE * C.SKULL_SIDE);
         int[] flag = Util.loadSquare(FN.S_FLAG_BIN, 0, C.SKULL_SIDE * C.SKULL_SIDE);
         List<Unit> attacker = game.getCombatStack("a");
+        List<Unit> defender = game.getCombatStack("b");
         ListIterator<Unit> it = attacker.listIterator();
 
         BufferedImage bi_att_u = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
@@ -248,7 +250,9 @@ public class CombatWindow extends JPanel {
                     break loop_att;
                 }
                 int color = Util.getOwnerColor(e.owner);
-
+                if (!e.spotted[defender.get(0).owner]) {
+                    color += UNSPOTTED_COLOR_SHIFT;
+                }
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr_att_u, color);
                 Util.drawUnitIconEdges(wr_att_u, ws);
@@ -303,7 +307,6 @@ public class CombatWindow extends JPanel {
 
         }
 
-        List<Unit> defender = game.getCombatStack("b");
         it = defender.listIterator();
 
         bi_att = new BufferedImage(ws.combat_window_stack_display_w, ws.combat_window_stack_display_h, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
@@ -321,7 +324,9 @@ public class CombatWindow extends JPanel {
                     break loop_def;
                 }
                 int color = Util.getOwnerColor(e.owner);
-
+                if (!e.spotted[attacker.get(0).owner]) {
+                    color += UNSPOTTED_COLOR_SHIFT;
+                }
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr_att_u, color);
                 Util.drawUnitIconEdges(wr_att_u, ws);

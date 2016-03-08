@@ -84,6 +84,8 @@ public class SU extends State {
             List<Unit> stack = game.getSelectedStack();
             boolean have_engineer = false;
             boolean have_city = false;
+            boolean have_land = false;
+            boolean have_road = false;
             if (stack != null && !stack.isEmpty()) {
                 for (Unit unit1 : Util.xS(stack)) {
                     if (unit1.type == C.ENGINEER_UNIT_TYPE && unit1.selected && !unit1.in_space) {
@@ -96,12 +98,20 @@ public class SU extends State {
                 if (hex.getStructure() != null) {
                     have_city = true;
                 }
+                if (!hex.getTerrain(C.OCEAN) || game.getPlanet(u.p_idx).tile_set_type == C.BARREN_TILE_SET) {
+                    have_land = true;
+                }
+                if (hex.getTerrain(C.ROAD)) {
+                    have_road = true;
+                }
             }
             gui.enableBuildCityMenuItem(have_engineer);
             gui.enableRazeCityMenuItem(have_engineer && have_city);
+            gui.enableBuildRoadMenuItem(have_land && !have_road);
         } else {
             gui.enableBuildCityMenuItem(false);
             gui.enableRazeCityMenuItem(false);
+            gui.enableBuildRoadMenuItem(false);
         }
     }
 

@@ -48,6 +48,7 @@ public class Contract implements Serializable {
     private List<Term> terms;
     private boolean resolved;
     private int sender;
+    private int receiver;
 
     public Contract() {
         terms = new LinkedList<>();
@@ -92,6 +93,7 @@ public class Contract implements Serializable {
             int recipient = term.getRecipient();
             switch (term.type) {
                 case STATE:
+                case TECH: // TODO ?
                     break;
                 case MONEY:
                     if (donor == game.getTurn()
@@ -142,6 +144,9 @@ public class Contract implements Serializable {
                 case MINISTRY:
                     game.getDiplomacy().setMinistryPromise(donor, recipient, term.getAmount());
                     break;
+                case TECH:
+                    game.getFaction(recipient).getResearch().receiveTech(term.getAmount());
+                    break;
                 default:
                     throw new AssertionError();
             }
@@ -173,6 +178,20 @@ public class Contract implements Serializable {
         this.sender = sender;
     }
 
+    /**
+     * @return the receiver
+     */
+    public int getReceiver() {
+        return receiver;
+    }
+
+    /**
+     * @param receiver the receiver to set
+     */
+    public void setReceiver(int receiver) {
+        this.receiver = receiver;
+    }
+
 //    @Override
 //    public String toString() {
 //        String s = "";
@@ -187,6 +206,7 @@ public class Contract implements Serializable {
         MONEY,
         VOTES,
         MINISTRY,
+        TECH,
     }
 
     /**
@@ -283,6 +303,16 @@ public class Contract implements Serializable {
 
     }
 
+    public static class Tech extends Term {
+
+        private static final long serialVersionUID = 1L;
+
+        public Tech(int tech) {
+            this.type = Type.TECH;
+            this.amount = tech;
+        }
+
+    }
 //    public static class Resource extends Term {
 //        private static final long serialVersionUID = 1L;
 //

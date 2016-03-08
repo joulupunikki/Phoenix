@@ -116,6 +116,14 @@ public class Research implements Serializable {
         }
     }
 
+    public void receiveTech(int tech) {
+        if (researched == tech) {
+            points[researched] = game.getGameResources().getTech()[researched].stats[C.TECH_COST];
+        } else {
+            techs[tech] = true;
+        }
+    }
+
     /**
      * Update list of units which can be built in cities.
      *

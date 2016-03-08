@@ -1185,6 +1185,9 @@ public class WindowSize {
         diplomacy_window.put(CDW.R_ACCEPT_W, 95);
         diplomacy_window.put(CDW.R_ACCEPT_H, 16);
         diplomacy_window.put(CDW.R_BUTTON_W, 123);
+        diplomacy_window.put(CDW.R_RESPONCE_X, 10);
+        diplomacy_window.put(CDW.R_RESPONCE_Y, 350 - y);
+
 
         if (is_double) {
             diplomacy_window.replaceAll(mul2);

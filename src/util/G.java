@@ -117,7 +117,7 @@ public class G {
         R_ACCEPT_Y,
         R_ACCEPT_W,
         R_ACCEPT_H,
-        R_BUTTON_W, R_WIN_Y, R_WIN_H,
+        R_BUTTON_W, R_WIN_Y, R_WIN_H, R_RESPONCE_Y, R_RESPONCE_X,
     }
 
     /**

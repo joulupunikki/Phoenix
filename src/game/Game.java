@@ -1947,8 +1947,8 @@ public class Game implements Serializable {
      * @param h
      * @param queue_pts
      */
-    public void startBombardOrPTS(Hex h, boolean queue_pts) {
-        battle.startBombardOrPTS(h, queue_pts);
+    public void startBombardOrPTS(Hex h, boolean queue_pts, int target_faction) {
+        battle.startBombardOrPTS(h, queue_pts, target_faction);
 
     }
 

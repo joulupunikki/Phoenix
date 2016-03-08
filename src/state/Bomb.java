@@ -120,7 +120,7 @@ public class Bomb extends State {
         game.getDiplomacy().setDiplomaticState(faction.x, target_stack.get(0).owner, C.DS_WAR);
         game.subMovePointsSpace(selected);
         target_hex.spot(faction.x);
-        game.startBombardOrPTS(target_hex, true);
+        game.startBombardOrPTS(target_hex, true, target_stack.get(0).owner);
         game.resolveGroundBattleInit(C.BOMBARD_COMBAT, target_stack.get(0).owner);
         gui.setMouseCursor(C.S_CURSOR_SCEPTOR);
         SU.showCombatWindowBombard();

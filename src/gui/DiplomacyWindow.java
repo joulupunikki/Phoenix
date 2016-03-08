@@ -82,13 +82,15 @@ public class DiplomacyWindow extends JPanel {
 
     private static final int MAX_MONEY_DEMAND = 50000;
 
+    public static final int MAX_TERMS = 3;
 
     public enum IfYouWill {
 
         PEACE("Sign A Peace Treaty With Us", null, null),
         MONEY("Compensate Us With ", "Firebirds", null),
         VOTES("Give Us all Your votes for the next election", null, null),
-        MINISTRY("Give Us ", "If You are Elected", "Ministry");
+        MINISTRY("Give Us ", "If You are Elected", "Ministry"),
+        TECH("Give Us ", "Technology", null);
 //        RESOURCES("Compensate Us With ", "Resources"),
 //        UNITS("Compensate Us With ", "Units"),
 //        CITIES("Compensate Us With ", "Cities");
@@ -109,7 +111,8 @@ public class DiplomacyWindow extends JPanel {
         PEACE("Sign A Peace Treaty With You", null, null),
         MONEY("Compensate You With ", "Firebirds", null),
         VOTES("Give You all Our votes for the next election", null, null),
-        MINISTRY("Give You ", "If We are Elected", "Ministry");
+        MINISTRY("Give You ", "If We are Elected", "Ministry"),
+        TECH("Give You ", "Technology", null);
 //        RESOURCES("Compensate You With ", "Resources"),
 //        UNITS("Compensate You With ", "Units"),
 //        CITIES("Compensate You With ", "Cities");
@@ -175,14 +178,11 @@ public class DiplomacyWindow extends JPanel {
     }
 
     public void enterWindow(int faction) {
-        //System.out.println("enterWindow() start : " + contract);
+        this.faction = faction; // fix #71
         if (contract == null) {
             contract = new Contract();
         }
         clear();
-
-        //System.out.println("enterWindow() end : " + contract);
-        this.faction = faction;
     }
 
     public void showIfYouMenu(Point p) {        
@@ -219,47 +219,193 @@ public class DiplomacyWindow extends JPanel {
         });
     }
 
+    public int clickedInRects(Point p, int x, int y, int w, int h, int n, int d) {
+        int horiz = 1;
+        int vert = 0;
+        if (n < 0) {
+            horiz = 0;
+            vert = 1;
+            n *= -1;
+        }
+        for (int i = 0; i < n; i++) {
+            if (x + horiz * i * d <= p.x
+                    && p.x <= x + w + horiz * i * d
+                    && y + vert * i * d <= p.y
+                    && p.y <= y + h + vert * i * d) {
+                System.out.println(" term " + i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public void doClick(MouseEvent e) {
         Point p = e.getPoint();
         List<Contract.Term> terms = contract.getTerms();
-        if (c.get(G.CDW.GIVE_X) <= p.x && p.x <= c.get(G.CDW.GIVE_X) + c.get(G.CDW.GIVE_W)
-                && c.get(G.CDW.GIVE_Y) <= p.y && p.y <= c.get(G.CDW.GIVE_Y) + c.get(G.CDW.GIVE_H)) {
+        int click_in = -1;
+        if ((click_in = clickedInRects(p, c.get(G.CDW.GIVE_X), c.get(G.CDW.GIVE_Y), c.get(G.CDW.GIVE_W), c.get(G.CDW.GIVE_H), -MAX_TERMS, c.get(G.CDW.ROW_H))) > -1) {
+            // if clicked on existing term ...
             int term_count = 0;
-            for (Contract.Term term : terms) {
-                if_you_items[term.getType().ordinal()].setEnabled(false);
-                term_count++;
+            int idx = 0;
+            for (Term term : terms) {
+                if (term.getDonor() != game.getTurn()) {
+                    if (click_in == term_count) {
+                        break;
+                    }
+                    term_count++;
+                }
+                idx++;
             }
-            if (term_count < 3) {
-                showIfYouMenu(p);
+            if (idx < terms.size()) {
+                // ... remove term
+                Term t = terms.get(idx);
+                switch (t.getType()) {
+                    case VOTES:
+                        System.out.println("Remove votes other");
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case MINISTRY:
+                        non_promised_ministries.add(t.getAmount());
+                        break;
+                    case MONEY:
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case STATE:
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case TECH:
+                        break;
+                    default:
+                        break;
+                }
+                terms.remove(idx);
             }
-        } else if (c.get(G.CDW.GIVE_X) <= p.x && p.x <= c.get(G.CDW.GIVE_X) + c.get(G.CDW.GIVE_W)
-                && c.get(G.CDW.TAKE_Y) <= p.y && p.y <= c.get(G.CDW.TAKE_Y) + c.get(G.CDW.GIVE_H)) {
+            setAvailableTerms(terms);
+            // ask for new term
+            showIfYouMenu(p);
+        } else if ((click_in = clickedInRects(p, c.get(G.CDW.GIVE_X), c.get(G.CDW.TAKE_Y), c.get(G.CDW.GIVE_W), c.get(G.CDW.GIVE_H), -MAX_TERMS, c.get(G.CDW.ROW_H))) > -1) {
+            // if clicked on existing term ...
             int term_count = 0;
-            for (Contract.Term term : terms) {
-                then_we_items[term.getType().ordinal()].setEnabled(false);
-                term_count++;
+            int idx = 0;
+            for (Term term : terms) {
+                if (term.getDonor() == game.getTurn()) {
+                    if (click_in == term_count) {
+                        break;
+                    }
+                    term_count++;
+                }
+                idx++;
             }
-            if (term_count < 3) {
-                showThenWeMenu(p);
+            if (idx < terms.size()) {
+                // ... remove term
+                Term t = terms.get(idx);
+                switch (terms.get(idx).getType()) {
+                    case VOTES:
+                        System.out.println("Remove votes self");
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case MINISTRY:
+                        non_promised_ministries.add(t.getAmount());
+                        break;
+                    case MONEY:
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case STATE:
+                        setTermAvailability(t.getType(), true);
+                        break;
+                    case TECH:
+                        break;
+                    default:
+                        break;
+                }
+                terms.remove(idx);
+            }
+            setAvailableTerms(terms);
+            // ask for a new term
+            showThenWeMenu(p);
+        }
+//        if (c.get(G.CDW.GIVE_X) <= p.x && p.x <= c.get(G.CDW.GIVE_X) + c.get(G.CDW.GIVE_W)
+//                && c.get(G.CDW.GIVE_Y) <= p.y && p.y <= c.get(G.CDW.GIVE_Y) + c.get(G.CDW.GIVE_H)) {
+//            int term_count = 0;
+//            for (Contract.Term term : terms) {
+//                if (term.getType() != Contract.Type.TECH) {
+//                    if_you_items[term.getType().ordinal()].setEnabled(false);
+//                }
+//                if (term.getDonor() != game.getTurn()) {
+//                    term_count++;
+//                }
+//            }
+//            if (term_count < 3) {
+//                showIfYouMenu(p);
+//            }
+//        } else if (c.get(G.CDW.GIVE_X) <= p.x && p.x <= c.get(G.CDW.GIVE_X) + c.get(G.CDW.GIVE_W)
+//                && c.get(G.CDW.TAKE_Y) <= p.y && p.y <= c.get(G.CDW.TAKE_Y) + c.get(G.CDW.GIVE_H)) {
+//            int term_count = 0;
+//            for (Contract.Term term : terms) {
+//                if (term.getType() != Contract.Type.TECH) {
+//                    then_we_items[term.getType().ordinal()].setEnabled(false);
+//                }
+//                if (term.getDonor() == game.getTurn()) {
+//                    term_count++;
+//                }
+//            }
+//            if (term_count < 3) {
+//                showThenWeMenu(p);
+//            }
+//        }
+    }
+
+    private void setAvailableTerms(List<Contract.Term> terms) {
+        setTermAvailability(Contract.Type.MINISTRY, true);
+        for (Term t : terms) {
+            switch (t.getType()) {
+                case VOTES:
+                    System.out.println("DBG no votes");
+                    setTermAvailability(t.getType(), false);
+                    break;
+                case MINISTRY:
+                    non_promised_ministries.remove(new Integer(t.getAmount()));
+                    break;
+                case MONEY:
+                    setTermAvailability(t.getType(), false);
+                    break;
+                case STATE:
+                    setTermAvailability(t.getType(), false);
+                    break;
+                case TECH:
+                    // this is handled elsewhere
+                    break;
+                default:
+                    throw new AssertionError();
             }
         }
+        if (non_promised_ministries.isEmpty()) {
+            setTermAvailability(Contract.Type.MINISTRY, false);
+        }
+    }
+
+    private void setTermAvailability(Contract.Type type, boolean available) {
+        if_you_items[type.ordinal()].setEnabled(available);
+        then_we_items[type.ordinal()].setEnabled(available);
     }
 
     public void clear() {
         contract.clear();
+        // reset all diplomacy choices
         for (int i = 0; i < if_you_items.length; i++) {
             if_you_items[i].setEnabled(true);
         }
         for (int i = 0; i < then_we_items.length; i++) {
             then_we_items[i].setEnabled(true);
         }
+        non_promised_ministries.clear();
+        non_promised_ministries.addAll(all_ministries);
+        // if not at war, can't ask/offer peace
         if (game.getDiplomacy().getDiplomaticState(game.getTurn(), faction) != C.DS_WAR) {
             if_you_items[IfYouWill.PEACE.ordinal()].setEnabled(false);
             then_we_items[ThenWeWill.PEACE.ordinal()].setEnabled(false);
         }
-        non_promised_ministries.clear();
-        non_promised_ministries.addAll(all_ministries);
-
+        // search for promised votes and ministries in pending contracts of sender
         for (Contract con : game.getDiplomacy().getSentContracts()) {
             for (Term term : con.getTerms()) {
                 if (term.getDonor() == game.getTurn()) {
@@ -271,25 +417,59 @@ public class DiplomacyWindow extends JPanel {
                         case MINISTRY:
                             non_promised_ministries.remove(new Integer(term.getAmount()));
                             break;
-
+                        case MONEY:
+                            break;
+                        case STATE:
+                            break;
+                        case TECH:
+                            break;
+                       default:
+                            throw new AssertionError();
+                    }
+                }
+                if (term.getDonor() == faction) {
+                    switch (term.getType()) {
+                        case VOTES:
+                            System.out.println("DBG no votes");
+                            if_you_items[IfYouWill.VOTES.ordinal()].setEnabled(false);
+                            break;
+                        case MINISTRY:
+                            non_promised_ministries.remove(new Integer(term.getAmount()));
+                            break;
+                        case MONEY:
+                            break;
+                        case STATE:
+                            break;
+                        case TECH:
+                            break;
                         default:
                             throw new AssertionError();
                     }
                 }
             }
         }
-        if (game.getRegency().getVotes()[game.getTurn()][Regency.CANDIDATE_IDX] > -1) {
+        // search for promised votes and ministries for sender and for receiver
+        // those that are made with sender
+        if (game.getRegency().getVotes()[game.getTurn()][Regency.CANDIDATE_IDX] > -1
+                || game.getRegency().getVotes()[faction][Regency.CANDIDATE_IDX] == game.getTurn()) {
             then_we_items[ThenWeWill.VOTES.ordinal()].setEnabled(false);
+            if_you_items[IfYouWill.VOTES.ordinal()].setEnabled(false);
         }
-
         int[] promises = game.getDiplomacy().getMinistryPromises(game.getTurn());
         for (int i = 0; i < promises.length; i++) {
             if (promises[i] > -1) {
                 non_promised_ministries.remove(new Integer(promises[i]));
             }
         }
+        promises = game.getDiplomacy().getMinistryPromises(faction);
+        for (int i = 0; i < promises.length; i++) {
+            if (promises[i] == game.getTurn()) {
+                non_promised_ministries.remove(new Integer(promises[i]));
+            }
+        }
         if (non_promised_ministries.isEmpty()) {
             then_we_items[ThenWeWill.MINISTRY.ordinal()].setEnabled(false);
+            if_you_items[IfYouWill.MINISTRY.ordinal()].setEnabled(false);
         }
     }
 
@@ -343,6 +523,7 @@ public class DiplomacyWindow extends JPanel {
                                 
                     }
                     contract.setSender(game.getTurn());
+                    contract.setReceiver(receiver);
                     Message msg = new Message(null, C.Msg.CONTRACT, game.getYear(), null);
                     msg.setContract(contract);
                     game.getDiplomacy().addSentContract(contract);
@@ -370,7 +551,7 @@ public class DiplomacyWindow extends JPanel {
     private void drawDetails(Graphics gg) {
         Graphics2D g = (Graphics2D) gg;
         drawLeader(g);
-        drawContract(g, contract, ws, faction);
+        drawContract(game, g, contract, ws, faction);
         drawContractHeaders(g);
 
     }
@@ -384,7 +565,7 @@ public class DiplomacyWindow extends JPanel {
         UtilG.drawStringGrad(g, s, ws.font_large, x, +c.get(CDW.GIVE_H_Y) - c.get(CDW.GIVE_Y) + c.get(CDW.TAKE_Y));
     }
 
-    static void drawContract(Graphics2D g, Contract contract, WindowSize ws, int other_party) throws AssertionError {
+    static void drawContract(Game game, Graphics2D g, Contract contract, WindowSize ws, int other_party) throws AssertionError {
         Map<Enum, Integer> c = ws.diplomacy_window;
         List<Term> terms = contract.getTerms();
         int count_a = 0;
@@ -405,7 +586,9 @@ public class DiplomacyWindow extends JPanel {
                     case MINISTRY:
                         s = IfYouWill.MINISTRY.text + Util.getFactionName(term.getAmount()) + " " + IfYouWill.MINISTRY.text2;
                         break;
-
+                    case TECH:
+                        s = IfYouWill.TECH.text + game.getGameResources().getTech()[term.getAmount()].name + " " + IfYouWill.TECH.text2;
+                        break;
                     default:
                         throw new AssertionError();
                 }
@@ -426,6 +609,9 @@ public class DiplomacyWindow extends JPanel {
                         break;
                     case MINISTRY:
                         s = ThenWeWill.MINISTRY.text + Util.getFactionName(term.getAmount()) + " " + ThenWeWill.MINISTRY.text2;
+                        break;
+                    case TECH:
+                        s = ThenWeWill.TECH.text + game.getGameResources().getTech()[term.getAmount()].name + " " + ThenWeWill.TECH.text2;
                         break;
                     default:
                         throw new AssertionError();
@@ -495,6 +681,7 @@ public class DiplomacyWindow extends JPanel {
         switch (IfYouWill.values()[selection]) {
             case PEACE:
                 term = new Contract.DiplomaticState(C.DS_PEACE);
+                //if_you_items[IfYouWill.PEACE.ordinal()].setEnabled(false);
                 break;
             case MONEY:
                 detail_dialog.showDialog(MAX_MONEY_DEMAND);
@@ -502,6 +689,7 @@ public class DiplomacyWindow extends JPanel {
                 if (value > 0) {
                     term = new Contract.Money(value);
                 }
+                //if_you_items[IfYouWill.MONEY.ordinal()].setEnabled(false);
                 //System.out.println("I'll forward you to alcoholics anonymous ...");
                 break;
             case VOTES:
@@ -509,6 +697,18 @@ public class DiplomacyWindow extends JPanel {
                 break;
             case MINISTRY:
                 term = new Contract.Ministry(selectMinistry(false));
+                break;
+            case TECH:
+                LinkedList<Integer> techs_in_contract = new LinkedList<>();
+                for (Term term1 : contract.getTerms()) {
+                    if (term1.getType() == Contract.Type.TECH && term1.getDonor() == faction) {
+                        techs_in_contract.add(term1.getAmount());
+                    }
+                }
+                int tech_nr = selectTech(false, techs_in_contract);
+                if (tech_nr > -1) {
+                    term = new Contract.Tech(tech_nr);
+                }
                 break;
 //            case RESOURCES:
 //                System.out.println("A Hawkwood, a Hazat and a Decados went to a bar ...");
@@ -528,14 +728,25 @@ public class DiplomacyWindow extends JPanel {
         }
     }
 
+    private int selectTech(boolean donor, LinkedList<Integer> techs_in_contract) {
+        int[] promised_tech = {-1};
+        if (donor) {
+            gui.showTechWindow(game.getTurn(), faction, techs_in_contract, promised_tech);
+        } else {
+            gui.showTechWindow(faction, game.getTurn(), techs_in_contract, promised_tech);
+        }
+        return promised_tech[0];
+    }
+
     private int selectMinistry(boolean donor) {
         int promised_ministry = -1;
         List<Integer> ministry_list = new LinkedList<>();
-        if (donor) {
-            ministry_list.addAll(non_promised_ministries);
-        } else {
-            ministry_list.addAll(all_ministries);
-        }
+        ministry_list.addAll(non_promised_ministries);
+//        if (donor) {
+//            ministry_list.addAll(non_promised_ministries);
+//        } else {
+//            ministry_list.addAll(all_ministries);
+//        }
 //        ministry_list.add(C.FLEET);
 //        ministry_list.add(C.THE_SPY);
 //        ministry_list.add(C.STIGMATA);
@@ -621,6 +832,18 @@ public class DiplomacyWindow extends JPanel {
                 break;
             case MINISTRY:
                 term = new Contract.Ministry(selectMinistry(true));
+                break;
+            case TECH:
+                LinkedList<Integer> techs_in_contract = new LinkedList<>();
+                for (Term term1 : contract.getTerms()) {
+                    if (term1.getType() == Contract.Type.TECH && term1.getDonor() == game.getTurn()) {
+                        techs_in_contract.add(term1.getAmount());
+                    }
+                }
+                int tech_nr = selectTech(true, techs_in_contract);
+                if (tech_nr > -1) {
+                    term = new Contract.Tech(tech_nr);
+                }
                 break;
 //            case RESOURCES:
 //                System.out.println("A Hawkwood, a Hazat and a Decados went to a bar ...");

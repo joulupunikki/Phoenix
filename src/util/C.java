@@ -156,7 +156,8 @@ public class C {
     public static final float LOYALTY_REBEL_HIGH_P = 0.98f;
     public static final String OPT_ENABLE_AI = "enableai";
     public static final String OPT_AI_TEST = "ai_test";
-
+    public static final int PERSONNEL_UNIT_MIN_RANK = 6;
+    public static final int UNSPOTTED_AG_BONUS = 3;
 
 
 

@@ -86,6 +86,10 @@ public class TechPanel extends JPanel {
     // number of labs, set in setLabsCost()
     private int nr_labs;
 
+    private int[] swap_tech;
+    private Research donor_res = null;
+    private Research recipient_res = null;
+    private List<Integer> in_contract = null;
     private JButton tech_db;
     private JButton exit;
     private JButton archive;
@@ -161,10 +165,14 @@ public class TechPanel extends JPanel {
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                gui.hideTechWindow();
+                exitWindow();
             }
         });
+    }
+
+    private void exitWindow() {
+        swap_tech = null;
+        gui.hideTechWindow();
     }
 
     public void setUpArchiveButton() {
@@ -186,6 +194,10 @@ public class TechPanel extends JPanel {
                 gui.showManowitz(tech.stats[C.TECH_VOL], tech.stats[C.TECH_CH]);
             }
         });
+    }
+
+    public void setSwapTech(int[] swap_tech) {
+        this.swap_tech = swap_tech;
     }
 
     public void addTechInfo() {
@@ -365,7 +377,18 @@ public class TechPanel extends JPanel {
 
                 }
                 if (e.getClickCount() == 2) {
+                    // if select tech for swapping in contracts
+                    if (swap_tech != null) {
+                        int clicked = (Integer) tech_table.getValueAt(row, 0);
+                        if (!donor_res.techs[clicked] || recipient_res.techs[clicked] || row == 0
+                                || in_contract.contains(clicked)) {
+                            return;
+                        }
+                        swap_tech[0] = clicked;
 
+                        exitWindow();
+                        return;
+                    }
                     // if category allready reseached && != "nothing"
                     int cost = ((Integer) tech_table.getValueAt(row, 1)).intValue();
                     if (cost == -1 && row != 0) {
@@ -373,10 +396,10 @@ public class TechPanel extends JPanel {
                     }
 
                     // set researched technology && do research
-                    int tech_no = ((Integer) tech_table.getValueAt(row, 0)).intValue();
+                    int tech_no = ((Integer) tech_table.getValueAt(row, 0));
                     game.setResearch(tech_no);
                     game.getFaction(game.getTurn()).getResearch().doResearch();
-                    setTechData();
+                    setTechData(-1, -1, null);
                     setRPAvailable();
                     if (row != 0 && game.getFaction(game.getTurn()).getResearch().techs[tech_no]) {
                         tech_table.setRowSelectionInterval(0, 0);
@@ -392,9 +415,16 @@ public class TechPanel extends JPanel {
         });
     }
 
-    public void setTechData() {
+    public void setTechData(int donor, int recipient, List<Integer> in_contract) {
+        this.in_contract = in_contract;
         tech_info.setText("");
         Research research = game.getFaction(game.getTurn()).getResearch();
+        donor_res = null;
+        recipient_res = null;
+        if (donor > -1) {
+            donor_res = game.getFaction(donor).getResearch();
+            recipient_res = game.getFaction(recipient).getResearch();
+        }
         boolean[] owned_tech = research.techs;
         int researched = research.researched;
         Tech[] techs = game.getGameResources().getTech();
@@ -431,10 +461,14 @@ public class TechPanel extends JPanel {
             if (techs[i].stats[C.TECH0] >= 800) {
                 continue;
             }
-            if (!owned_tech[i] && owned_tech[techs[i].stats[C.TECH0]]
-                    && owned_tech[techs[i].stats[C.TECH1]]
+            if (donor_res == null) {
+                if (!owned_tech[i] && owned_tech[techs[i].stats[C.TECH0]]
+                        && owned_tech[techs[i].stats[C.TECH1]]
                     && owned_tech[techs[i].stats[C.TECH2]]) {
 //                category_lists.get(techs[i].stats[C.TECH_VOL] - 1).add(new Integer(i));
+                    category_lists.get(cat_nr).add(new Integer(i));
+                }
+            } else if (donor_res.techs[i] && !recipient_res.techs[i] && !in_contract.contains(i)) {
                 category_lists.get(cat_nr).add(new Integer(i));
             }
         }
@@ -550,7 +584,11 @@ public class TechPanel extends JPanel {
                 int row, int column) {
             Color c_b = Color.BLACK;
             Color c_f = C.COLOR_GOLD;
-            if (row != 0 && ((Integer) table.getValueAt(row, 1)).intValue() == -1) {
+            if (donor_res == null && row != 0 && ((Integer) table.getValueAt(row, 1)).intValue() == -1) {
+                c_f = Color.BLUE;
+            } else if (donor_res != null && (!donor_res.techs[((Integer) table.getValueAt(row, 0))]
+                    || recipient_res.techs[((Integer) table.getValueAt(row, 0))]
+                    || in_contract.contains((Integer) table.getValueAt(row, 0)))) {
                 c_f = Color.BLUE;
             }
             if (game.getFaction(game.getTurn()).getResearch().researched

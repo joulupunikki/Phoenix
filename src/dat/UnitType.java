@@ -128,10 +128,11 @@ public class UnitType implements Serializable {
         this.index = index;
         this.t_lvl = t_lvl;
         int stats_end;
+        Util.debugPrint("Line: " + s);
         /*
          * accepts alphanum, -, ' and .
          */
-        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z_ ,\\(\\)\\[\\]\\!\\*\\-'\\.\\&]+\"");
+        Pattern unit_type = Pattern.compile("\"[0-9a-zA-Z_ ,\\(\\)\\[\\]\\!\\*\\-'\\.\\&\t]+\"");
 
         Matcher m = unit_type.matcher(s);
 
@@ -157,7 +158,7 @@ public class UnitType implements Serializable {
         //skip "stats"
         m.find();
         m.find();
-
+        Util.debugPrint("Interval: " + (m.start() + 1) + "," + (m.end() - 1));
         //last one is a big string of one text and dozens of integer values
         String stats = s.substring(m.start() + 1, m.end() - 1);
         Util.debugPrint("Stats: " + stats);
@@ -422,7 +423,8 @@ public class UnitType implements Serializable {
                             index = Integer.parseInt(s.substring(start + 1, end));
                             Util.debugPrint("index: " + index);
                         } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
+                            Util.logFileFormatError(FN.S_UNIT_DAT, line_nr, "comments must begin with //"); // fix #66
+                            //Util.logFFErrorAndExit(file_name, line_nr);
                         }
                     }
                 }
