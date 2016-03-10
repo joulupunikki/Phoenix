@@ -120,6 +120,11 @@ public class Bomb extends State {
         game.getDiplomacy().setDiplomaticState(faction.x, target_stack.get(0).owner, C.DS_WAR);
         game.subMovePointsSpace(selected);
         target_hex.spot(faction.x);
+        // TODO shield effect code here
+        if (game.isShielded(target_hex, game.getCurrentPlanetNr())) {
+            System.out.println("Shield");
+            gui.showInfoWindow("Shield generator prevents bombardment!");
+        }
         game.startBombardOrPTS(target_hex, true, target_stack.get(0).owner);
         game.resolveGroundBattleInit(C.BOMBARD_COMBAT, target_stack.get(0).owner);
         gui.setMouseCursor(C.S_CURSOR_SCEPTOR);

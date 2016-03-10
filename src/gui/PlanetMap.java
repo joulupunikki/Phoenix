@@ -45,6 +45,7 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Set;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import util.C;
@@ -76,7 +77,7 @@ public class PlanetMap extends JPanel {
     Hex[][] hex_grid;
     Hex current_hex;
     int current_faction;
-
+    Set<Hex> shielded_hexes;
     BufferedImage bi;
     WritableRaster horiz_edge;
     WritableRaster vert_edge;
@@ -139,6 +140,8 @@ public class PlanetMap extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
 
         drawHexGrid(g);
+
+        drawShield(g);
 
         drawStructureNames(g);
 
@@ -1836,6 +1839,7 @@ public class PlanetMap extends JPanel {
                 //skip top j when i % 2 == 0
 //                if ((i != 0 || (j % 2 != game.getMapOrigin().x % 2))) {
                 if (j % 2 != game.getMapOrigin().x % 2 || i != 9) {
+
                     g.drawPolyline(x_p, y_p, x_p.length);
                 }
 //                }
@@ -1843,6 +1847,90 @@ public class PlanetMap extends JPanel {
             }
 
             y += 20;
+        }
+
+    }
+
+    public void drawShield(Graphics g) {
+        Structure shield = game.getPlanet(game.getCurrentPlanetNr()).getShield();
+        if (shield != null && game.getEfs_ini().shield_radius > -1) {
+            shielded_hexes = Util.getHexesWithinRadiusOf(game.getHexFromPXY(shield.p_idx, shield.x, shield.y), game.getEfs_ini().shield_radius);
+        } else {
+            return;
+        }
+        Point origin = game.getMapOrigin();
+        g.setColor(gui.getColorCycleColor());
+        int origin_x = origin.x;
+        int origin_y = origin.y;
+
+        int x = 0;
+        int y = 0;
+        int counter = 0;
+        //need to roll-over i to 0 when i = 43, see end of loop
+        for (int i = origin_x; counter < 13; i++) {
+            y = 0;
+
+            for (int j = origin_y; j < origin_y + 10; j++) {
+                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                    int dip = 0;
+
+                    if (i % 2 == 0) {
+                        dip = +20;
+                    }
+                    current_hex = hex_grid[i][j];
+                    if (shielded_hexes.isEmpty()) {
+                        return;
+                    }
+                    if (shielded_hexes.remove(current_hex) && current_hex.isSpotted(current_faction)) {
+                        int[] x_p = {x + 11, x + 0, x + 11, x + 38, x + 49, x + 38, x + 11};
+                        int[] y_p = {y + 40, y + 20, y + 0, y + 0, y + 20, y + 40, y + 40};
+//                        int[] x_p = {x + 10, x + 0, x + 10, x + 37, x + 48, x + 37};
+//                        int[] y_p = {y + 39, y + 19, y + 0, y + 0, y + 19, y + 39};
+
+                        if (j - origin_y == 9) {
+                            y_p[0] = y + 39;
+                        }
+
+                        for (int k = 0; k < x_p.length; k++) {
+                            x_p[k] += x;
+                            y_p[k] += y + dip;
+
+                        }
+
+                        // if window is double size scale hexagon
+                        if (ws.is_double) {
+                            for (int k = 0; k < x_p.length; k++) {
+                                x_p[k] = x_p[k] * 2;
+                                y_p[k] = y_p[k] * 2;
+                            }
+                        }
+
+//                g.drawPolygon(x_p, y_p, 6);
+                        //skip top j when i % 2 == 0
+//                if ((i != 0 || (j % 2 != game.getMapOrigin().x % 2))) {
+                        if (i % 2 != game.getMapOrigin().x % 2 || j - origin_y != 9) {
+
+                            g.drawPolyline(x_p, y_p, x_p.length);
+                            for (int k = 0; k < x_p.length; k++) {
+                                y_p[k]--;
+                            }
+                            g.drawPolyline(x_p, y_p, x_p.length);
+                        }
+                    }
+                }
+                y += 20;
+
+            }
+
+            x += 19;
+
+            // need to roll-over i to 0 when i = 43
+            if (i == C.PLANET_MAP_WIDTH - 1) {
+                i = -1;
+
+            }
+            counter++;
+
         }
 
     }

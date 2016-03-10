@@ -943,6 +943,7 @@ public class Battle implements Serializable {
 
         int combat_loop_iter = -1;
         int[] combat_phases = null;
+        boolean defender_shielded = false;
 
         switch (combat_type) {
             case C.GROUND_COMBAT:
@@ -955,6 +956,11 @@ public class Battle implements Serializable {
                 break;
             case C.BOMBARD_COMBAT:
             case C.PTS_COMBAT:
+                Unit u = defender.get(0);
+                Hex target_hex = game.getHexFromPXY(u.p_idx, u.x, u.y);
+                if (game.isShielded(target_hex, u.p_idx)) {
+                    defender_shielded = true;
+                }
                 combat_loop_iter = 1;
                 combat_phases = C.PTS_COMBAT_PHASES;
                 break;
@@ -973,7 +979,9 @@ public class Battle implements Serializable {
 //                System.out.println("attacker_defence = " + attacker_defence);
                 defender_defence.clear();
                 defender_offence.clear();
-                chooseDefence(defender, defender_defence, phase);
+                if (!defender_shielded) {
+                    chooseDefence(defender, defender_defence, phase);
+                }
                 chooseOffence(defender, defender_offence, phase);
 //                System.out.println("defender_defence = " + defender_defence);
 //                System.out.println("defender_offence = " + defender_offence);

@@ -1905,7 +1905,7 @@ public class Util {
         // Find the neighbours of the given hex, and then the neighbours of those neighbours, etc.
         // To avoid adding the same hex more than once, use Set instead of List, as that leaves it
         // to the JRE to avoid duplicates
-        Set<Hex> ret_val = new LinkedHashSet<>();    // Set of hexes to be returned
+        Set<Hex> ret_val = new LinkedHashSet<>(1 + (radius + 1) * radius * 3);    // Set of hexes to be returned
         LinkedList<Hex> queue = new LinkedList<>();
         LinkedList<Integer> queueR = new LinkedList<>();
 

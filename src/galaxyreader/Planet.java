@@ -71,6 +71,7 @@ public class Planet implements Serializable {
     public List<JumpGate> jump_routes;
     public boolean[] spotted;
     public Planet[] neighbours;
+    private Structure shield;
 
     /**
      * Creates a planet object. Reads in positional coordinates, name, owner and
@@ -375,5 +376,19 @@ public class Planet implements Serializable {
         }
         pw.println( " #HEXES");
         planet_grid.record(pw);
+    }
+
+    /**
+     * @return the shield
+     */
+    public Structure getShield() {
+        return shield;
+    }
+
+    /**
+     * @param shield the shield to set
+     */
+    public void setShield(Structure shield) {
+        this.shield = shield;
     }
 }

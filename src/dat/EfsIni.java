@@ -88,7 +88,7 @@ public class EfsIni implements Serializable {
 //    public int health_check_for_plague = 0;
     public int health_loss_for_famine = -1;
 //    public int immune_plague_bonus = 0;
-//    public int shield_radius = 0;
+    public int shield_radius = 0;
 //    public int move_pause = 0;     // in ms
     public int city_heal_rate = -1;
     public int unit_heal_in_city = -1;
@@ -144,7 +144,7 @@ public class EfsIni implements Serializable {
         unit_heal_in_city = Integer.parseInt((efs_ini.getProperty("unit_heal_in_city")).trim());
         unit_heal = Integer.parseInt((efs_ini.getProperty("unit_heal")).trim());
         health_loss_for_famine = Integer.parseInt((efs_ini.getProperty("health_loss_for_famine")).trim());
-
+        shield_radius = Integer.parseInt((efs_ini.getProperty("shield_radius")).trim());
         //phoenix.ini values
         lab_points = Integer.parseInt((phoenix_ini.getProperty("lab_points")).trim());
         lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());

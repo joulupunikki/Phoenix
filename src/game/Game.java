@@ -56,6 +56,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Set;
 import org.apache.commons.math3.random.RandomAdaptor;
 import util.C;
 import util.StackIterator;
@@ -872,6 +873,9 @@ public class Game implements Serializable {
 //                    System.out.println("(x,y): " + e.x + "," + y);
                     if (e.type < 26) {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeStructure(e);
+                        if (e.type == C.SHIELD) {
+                            planets.get(e.p_idx).setShield(e);
+                        }
                     } else {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeResource(e);
                         iterator.remove(); // FIX #53
@@ -1564,6 +1568,9 @@ public class Game implements Serializable {
         structures.add(city);
         // update production/consumption data
         economy.updateProdConsForCity(city, true);
+        if (city.type == C.SHIELD) {
+            planets.get(p_idx).setShield(city);
+        }
         return city;
     }
 
@@ -1579,6 +1586,9 @@ public class Game implements Serializable {
         Hex hex = getHexFromPXY(p_idx, x, y);
         Structure city = hex.getStructure();
         hex.placeStructure(null);
+        if (city.type == C.SHIELD) {
+            planets.get(p_idx).setShield(null);
+        }
         structures.remove(city);
         // update production/consumption data
         economy.updateProdConsForCity(city, false);
@@ -1957,5 +1967,23 @@ public class Game implements Serializable {
      */
     public Diplomacy getDiplomacy() {
         return diplomacy;
+    }
+    
+    /**
+     * Return true iff Hex hex on Planet p_idx is under shield effect.
+     *
+     * @param hex
+     * @param p_idx
+     * @return
+     */
+    public boolean isShielded(Hex hex, int p_idx) {
+        Structure shield = planets.get(p_idx).getShield();
+        if (shield != null && getEfs_ini().shield_radius > -1) {
+            Set<Hex> shielded_hexes = Util.getHexesWithinRadiusOf(getHexFromPXY(shield.p_idx, shield.x, shield.y), getEfs_ini().shield_radius);
+            if (shielded_hexes.contains(hex)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
