@@ -53,6 +53,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -84,6 +85,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
@@ -120,6 +122,10 @@ public class Gui extends JFrame {
     private static final int DEFAULT_WINDOW_HEIGHT = 480;
     private static Gui gui = null;
     private static CommandLine args;
+
+    public static int[][] getUnitIconsDark() {
+        return unit_icons_dark;
+    }
     //holds the space map
     private SpaceMap space_map;
     //holds the planet map
@@ -223,6 +229,7 @@ public class Gui extends JFrame {
     private byte[][] pallette;
     private static IndexColorModel color_index;
     private static int[][] unit_icons;
+    private static int[][] unit_icons_dark;
     private static int[][][] hex_tiles;
     private static int[][][] structures;
     private Timer stack_move_timer;
@@ -261,6 +268,7 @@ public class Gui extends JFrame {
             ws = new WindowSize(false);
         }
         resources = new Resource(this);
+        unit_icons_dark = UtilG.makeDarkUnitIcons(resources.getColorScaler(), unit_icons);
         // load galaxy
         String galaxy_file_name = FN.S_GALAXY_GAL;
         if (args.hasOption(C.OPT_NAMED_GALAXY)) {
@@ -826,7 +834,8 @@ public class Gui extends JFrame {
         });
 
         menu_build_city = new JMenuItem("Build City");
-
+        menu_build_city.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_B, 0));
         menu_build_city.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 
@@ -835,7 +844,8 @@ public class Gui extends JFrame {
         });
 
         menu_build_road = new JMenuItem("Build Road");
-
+        menu_build_road.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_R, 0));
         menu_build_road.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 state.buildRoad();
@@ -1409,46 +1419,46 @@ public class Gui extends JFrame {
             switch (sel) {
                 case C.S_ALL:
                     if (u.move_points > 0) {
-                        u.selected = true;
+                        u.setSelected(true);
                     } else {
-                        u.selected = false;
+                        u.setSelected(false);
                     }
                     break;
                 case C.S_COMBAT:
                     if (u.move_points > 0 && UnitType.isAttackCapable(u)) {
-                        u.selected = true;
+                        u.setSelected(true);
                     } else {
-                        u.selected = false;
+                        u.setSelected(false);
                     }
                     if (u.carrier != null) {
-                        u.selected = u.carrier.selected;
+                        u.setSelected(u.carrier.isSelected());
                     }
                     break;
                 case C.S_BOMBARD:
                     if (u.move_points > 0 && u.type_data.ranged_sp_str > 0) {
-                        u.selected = true;
+                        u.setSelected(true);
                     } else {
-                        u.selected = false;
+                        u.setSelected(false);
                     }
                     break;
                 case C.S_NONCOMBAT:
                     if (u.move_points > 0 && !UnitType.isAttackCapable(u)) {
-                        u.selected = true;
+                        u.setSelected(true);
                     } else {
-                        u.selected = false;
+                        u.setSelected(false);
                     }
                     if (u.carrier != null) {
-                        u.selected = u.carrier.selected;
+                        u.setSelected(u.carrier.isSelected());
                     }
                     break;
                 case C.S_TRANSPORT:
                     if (u.move_points > 0 && u.type_data.cargo > 0) {
-                        u.selected = true;
+                        u.setSelected(true);
                     } else {
-                        u.selected = false;
+                        u.setSelected(false);
                     }
                     if (u.carrier != null) {
-                        u.selected = u.carrier.selected;
+                        u.setSelected(u.carrier.isSelected());
                     }
                     break;
                 default:

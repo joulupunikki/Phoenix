@@ -667,7 +667,7 @@ public class Battle implements Serializable {
 
         List<Unit> attacker = new LinkedList<>();
         for (Unit unit : stack_a) {
-            if (unit.selected && unit.type_data.non_combat == 0
+            if (unit.isSelected() && unit.type_data.non_combat == 0
                     && unit.type_data.move_type != C.MoveType.JUMP
                     && unit.type_data.move_type != C.MoveType.SPACE) {
                 attacker.add(unit);
@@ -732,7 +732,7 @@ public class Battle implements Serializable {
         List<Unit> attacker = new LinkedList<>();
         for (Unit unit : stack_a) {
             // if you change this change checkMoveLeftSpace also
-            if (unit.selected && unit.type_data.non_combat == 0) {
+            if (unit.isSelected() && unit.type_data.non_combat == 0) {
                 selectSpaceFightersB(unit, attacker, true);
             }
         }
@@ -762,7 +762,7 @@ public class Battle implements Serializable {
 
         List<Unit> attacker = new LinkedList<>();
         for (Unit unit : stack_a) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 attacker.add(unit);
                 unit.health_tmp = unit.health;
             }

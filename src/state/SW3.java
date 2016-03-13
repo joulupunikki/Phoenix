@@ -114,10 +114,10 @@ public class SW3 extends SW {
                     boolean jump_capable = false;
                     List<Unit> stack = planet.space_stacks[game.getSelectedFaction().y];
                     for (Unit unit : stack) {
-                        if (unit.selected && unit.move_points > 0
+                        if (unit.isSelected() && unit.move_points > 0
                                 && (unit.move_type == C.MoveType.JUMP || unit.move_type == C.MoveType.LANDER)) {
                             jump_capable = true;
-                        } else if (unit.selected) {
+                        } else if (unit.isSelected()) {
                             jump_capable = false;
                             break;
                         }

@@ -176,7 +176,7 @@ public class PlanetMap extends JPanel {
         int t_lvl = 0;
         List<Unit> stack = planet_grid.getHex(sel.x, sel.y).getStack();
         for (Unit e : stack) {
-            if (e.selected) {
+            if (e.isSelected()) {
                 unit_type = e.type;
                 t_lvl = e.t_lvl;
             }
@@ -451,7 +451,7 @@ public class PlanetMap extends JPanel {
         List<Unit> stack = planet_grid.getHex(sel.x, sel.y).getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }

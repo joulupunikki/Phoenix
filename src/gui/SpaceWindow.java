@@ -75,6 +75,7 @@ public class SpaceWindow extends JPanel {
 
         setUpInfoText();
         setUpButtons();
+        CustomSwingActions.setUpKeyBindings(this);
     }
 
     public void setGame(Game game) {
@@ -120,6 +121,26 @@ public class SpaceWindow extends JPanel {
                 gui.getCurrentState().pressNextStackButton();
             }
         });
+
+//        next_stack.addKeyListener(new KeyListener() {
+//            @Override
+//            public void keyTyped(KeyEvent e) {
+//                System.out.println("KeyTyped");
+//                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+//                    System.out.println("KeyEvent.VK_SPACE");
+//                    gui.getCurrentState().pressNextStackButton();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//            }
+//
+//            @Override
+//            public void keyReleased(KeyEvent e) {
+//            }
+//        });
 
         setUpSkipStack();
     }

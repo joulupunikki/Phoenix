@@ -361,7 +361,7 @@ public class UnitInfoWindow extends JPanel {
                     continue;
                 }
                 int color = Util.getOwnerColor(e.owner);
-                if (e.selected) {
+                if (e.isSelected()) {
                     color += 3;
                 }
 //                System.out.println("color = " + color);
@@ -424,7 +424,7 @@ public class UnitInfoWindow extends JPanel {
         int[] pixel_data = new int[1];
         Graphics2D g2d = (Graphics2D) g;
         int color = Util.getOwnerColor(u.owner);
-        if (u.selected) {
+        if (u.isSelected()) {
             color += 3;
         }
 //                System.out.println("color = " + color);

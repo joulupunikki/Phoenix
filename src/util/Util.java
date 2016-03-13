@@ -694,9 +694,14 @@ public class Util {
         }
         Color bg = Color.BLACK;
         Color fg = Color.WHITE;
+        if (e.is_sentry) {
+            fg = Color.LIGHT_GRAY;
+        }
+        Color text_color = fg;
         if (e.owner != e.prev_owner) { // ministry units on loan
-            bg = Color.WHITE;
-            fg = Color.BLACK;
+            Color tmp = bg;
+            bg = fg;
+            fg = tmp;
         }
         g.setColor(bg);
         g.fillRect(x + side - (int) (ws.font_unit_icon_size * width * 0.6) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset,
@@ -706,12 +711,22 @@ public class Util {
         g.drawString("" + move, x + side - (int) (ws.font_unit_icon_size * width * 0.65) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset + (int) (ws.font_unit_icon_size * 0.9));
 
         int health = e.health;
-        if (health > 66) {
-            g.setColor(Color.GREEN);
-        } else if (health > 33) {
-            g.setColor(Color.YELLOW);
+        if (e.is_sentry) {
+            if (health > 66) {
+                g.setColor(UtilG.DARK_GREEN);
+            } else if (health > 33) {
+                g.setColor(UtilG.DARK_YELLOW);
+            } else {
+                g.setColor(UtilG.DARK_RED);
+            }
         } else {
-            g.setColor(Color.RED);
+            if (health > 66) {
+                g.setColor(Color.GREEN);
+            } else if (health > 33) {
+                g.setColor(Color.YELLOW);
+            } else {
+                g.setColor(Color.RED);
+            }
         }
 
         g.fillRect(x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset, (int) Math.ceil((side - 2.0 * ws.font_unit_icon_offset) * health / 100), ws.health_bar_width);
@@ -725,12 +740,12 @@ public class Util {
         g.drawString("" + ((char) (tech_lvl + e.t_lvl)), x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset);
 
         if (e.carrier != null) {
-            g.setColor(Color.WHITE);
+            g.setColor(text_color);
             g.drawString("+", x + 2 * ws.font_unit_icon_offset, y + 8 * ws.font_unit_icon_offset);
         }
 
         if (e.type == C.CARGO_UNIT_TYPE) {    // For resource pod, add resource type string (first 2 characters) to icon - RSW
-            g.setColor(Color.WHITE);
+            g.setColor(text_color);
             String str = game.getResTypes()[e.res_relic].name;
 //            g.drawString(str.substring(0,2), x + 10 * ws.font_unit_icon_offset, y + 17 * ws.font_unit_icon_offset);
             g.drawString(str.substring(0, 2), x + (int) (side * 0.35), y + (int) (side * 0.6));
@@ -746,6 +761,7 @@ public class Util {
 
         WindowSize ws = Gui.getWindowSize();
         int[][] unit_icons = Gui.getUnitIcons();
+        int[][] unit_icons_dark = Gui.getUnitIconsDark();
         BufferedImage bi = new BufferedImage(ws.unit_icon_size, ws.unit_icon_size, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         WritableRaster wr = bi.getRaster();
         int[] pixel_data = new int[1];
@@ -780,15 +796,18 @@ public class Util {
         for (int i = 0; i < 7; i++) {
             int cols = i == 6 ? 2 : 3;
             for (int j = 0; j < cols; j++) {
-
+                int[][] icons = unit_icons;
                 int color = Util.getOwnerColor(e.owner);
-                if (e.selected) {
+                if (e.isSelected()) {
                     color += 3;
+                } else if (e.is_sentry) {
+                    color -= 2;
+                    icons = unit_icons_dark;
                 }
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr, color);
-                Util.drawUnitIconEdges(wr, ws);
-                Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+                Util.drawUnitIconEdges(wr, ws, e);
+                Util.writeUnit(pixel_data, e.type, icons, wr, ws);
 
                 Graphics2D g2d = (Graphics2D) g;
                 int dx = ws.unit_icon_size * j + ws.stack_display_x_offset;
@@ -913,8 +932,17 @@ public class Util {
     }
 
     public static void drawUnitIconEdges(WritableRaster wr, WindowSize ws) {
+        drawUnitIconEdges(wr, ws, null);
+    }
+
+    public static void drawUnitIconEdges(WritableRaster wr, WindowSize ws, Unit unit) {
         int[] light = {27};
         int[] dark = {18};
+
+        if (unit != null && unit.is_sentry) {
+            light[0] -= 5;
+            dark[0] -= 1;
+        }
 
         int width = wr.getWidth();
         int thickness = 1;
@@ -1010,7 +1038,6 @@ public class Util {
             }
         }
     }
-
     public static void writeUnitPixel(int x, int y, int t_idx, int[] pixel_data, int[][] unit_pics, int unit_nr, WritableRaster wr, WindowSize ws) {
 
         pixel_data[0] = unit_pics[unit_nr][t_idx];
@@ -1028,7 +1055,6 @@ public class Util {
         }
 
     }
-
     /**
      * Get faction color.
      *
@@ -1682,7 +1708,7 @@ public class Util {
         List<Unit> stack = planet_grid.getHex(sel.x, sel.y).getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }
@@ -2025,13 +2051,13 @@ public class Util {
 
     public static void unSelectAll(List<Unit> stack) {
         for (Unit unit : xS(stack)) {
-            unit.selected = false;
+            unit.setSelected(false);
         }
     }
 
     public static void selectAll(List<Unit> stack) {
         for (Unit unit : xS(stack)) {
-            unit.selected = true;
+            unit.setSelected(true);
         }
     }
 
@@ -2053,7 +2079,7 @@ public class Util {
     public static List<Unit> getSelectedUnits(List<Unit> stack) {
         List<Unit> selected = new LinkedList<>();
         for (Unit u : stack) {
-            if (u.selected) {
+            if (u.isSelected()) {
                 selected.add(u);
             }
         }

@@ -377,7 +377,7 @@ public abstract class AI implements Serializable {
             if (unit.owner == faction) {
                 units.add(unit);
                 addToContinents(unit);
-                unit.selected = false;
+                unit.setSelected(false);
             } else if (unit.spotted[faction]) {
                 enemy_units.add(unit);
                 addToContinents(unit);
@@ -400,7 +400,7 @@ public abstract class AI implements Serializable {
                     || unit.move_type == C.MoveType.TREAD
                     || unit.move_type == C.MoveType.HOVER)) {
                 units_land_battle.add(unit);
-                unit.selected = true;
+                unit.setSelected(true);
             } else if (unit.move_type == C.MoveType.AIR) {
                 units_recon.add(unit);
             } else if (unit.move_type == C.MoveType.JUMP || unit.move_type == C.MoveType.LANDER) {
@@ -610,7 +610,7 @@ public abstract class AI implements Serializable {
                     || u.move_type == C.MoveType.WHEEL
                     || u.move_type == C.MoveType.TREAD
                     || u.move_type == C.MoveType.HOVER)) {
-                u.selected = selected;
+                u.setSelected(selected);
             }
         }
     }

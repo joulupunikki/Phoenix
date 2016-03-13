@@ -94,7 +94,7 @@ public class Unit implements Serializable {
 
     // original code
     public boolean in_space;
-    boolean is_sentry;
+    public boolean is_sentry;
     boolean is_cargo;     // I don't think this is used. RSW
     boolean on_loan;
     public boolean[] spotted;
@@ -358,7 +358,7 @@ public class Unit implements Serializable {
         if (cargo_list.size() < this.type_data.cargo) {
             u.carrier = this;
             cargo_list.add(u);
-            u.selected = this.selected;
+            u.setSelected(this.isSelected());
             rv = true;
         }
         return rv;
@@ -414,6 +414,25 @@ public class Unit implements Serializable {
                 + p_idx + "," + x + "," + y + "," + loyalty + "," + owner + ","
                 + prev_owner + "," + type + "," + t_lvl + "," + move_points + ","
                 + res_relic + "," + amount + "," + health);
+    }
+
+    /**
+     * @return the selected
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * Selecting always cancels sentry.
+     *
+     * @param selected the selected to set
+     */
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if (selected) {
+            this.is_sentry = false;
+        }
     }
 
     public static class CompMoveType implements Comparator<Unit> {

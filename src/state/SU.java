@@ -70,6 +70,34 @@ public class SU extends State {
     }
 //    public static void click
 
+    public static void pressSentryButtonSU() {
+        List<Unit> selected = game.getSelectedStack();
+        if (selected == null || selected.get(0).owner != game.getTurn()) {
+            System.out.println("Not sentried");
+            return;
+        }
+        List<Unit> sentried = new LinkedList<>();
+        for (Unit unit : selected) {
+            if (unit.isSelected()) {
+                unit.setSelected(false);
+                unit.is_sentry = true;
+                sentried.add(unit);
+            }
+        }
+
+        game.getUnmovedUnits().removeAll(sentried);
+        int units_left = 0;
+        for (Unit unit : selected) {
+            if (!unit.is_sentry && unit.move_points > 0) {
+                unit.setSelected(true);
+                units_left++;
+            }
+        }
+        if (units_left == 0) {
+            selectNextUnmovedUnit();
+        }
+    }
+
     private SU() {
     }
 
@@ -88,7 +116,7 @@ public class SU extends State {
             boolean have_road = false;
             if (stack != null && !stack.isEmpty()) {
                 for (Unit unit1 : Util.xS(stack)) {
-                    if (unit1.type == C.ENGINEER_UNIT_TYPE && unit1.selected && !unit1.in_space) {
+                    if (unit1.type == C.ENGINEER_UNIT_TYPE && unit1.isSelected() && !unit1.in_space) {
                         have_engineer = true;
                         break;
                     }
@@ -107,7 +135,7 @@ public class SU extends State {
             }
             gui.enableBuildCityMenuItem(have_engineer);
             gui.enableRazeCityMenuItem(have_engineer && have_city);
-            gui.enableBuildRoadMenuItem(have_land && !have_road);
+            gui.enableBuildRoadMenuItem(have_engineer && have_land && !have_road); // Fix #72
         } else {
             gui.enableBuildCityMenuItem(false);
             gui.enableRazeCityMenuItem(false);
@@ -230,7 +258,7 @@ public class SU extends State {
                 for (Unit unit : stack) {
                     if (unit.spotted[game.getTurn()]) {
                         spotted.add(unit);
-                        if (unit.selected) {
+                        if (unit.isSelected()) {
                             selected = true;
                         }
                     }
@@ -389,7 +417,7 @@ public class SU extends State {
             List<Unit> stack = galaxy_grid[x][y].parent_planet.space_stacks[owner];
             if (isSpotted(stack)) {
                 game.setSelectedPointFaction(new Point(x, y), owner, null, null);
-                stack.get(0).selected = true;
+                stack.get(0).setSelected(true);
                 gui.setCurrentState(SW2.get());
             }
             return;
@@ -502,7 +530,7 @@ public class SU extends State {
             game.setSelectedPointFaction(new Point(x, y), selected_faction, null, null);
             game.setSelectedFaction(controller, selected_faction);
         }
-        galaxy_grid[x][y].parent_planet.space_stacks[game.getSelectedFaction().y].get(0).selected = true;
+        galaxy_grid[x][y].parent_planet.space_stacks[game.getSelectedFaction().y].get(0).setSelected(true);
 
         gui.setCurrentState(SW2.get());
 
@@ -524,7 +552,7 @@ public class SU extends State {
         boolean stp_capable = true;
         boolean ranged_capable = true;
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 if (unit.move_points == 0) {
                     stp_capable = false;
                 }
@@ -781,9 +809,9 @@ public class SU extends State {
     }
 
     public static void selectUnit(Unit unit, boolean select) {
-        unit.selected = select;
+        unit.setSelected(select);
         for (Unit unit1 : unit.cargo_list) {
-            unit1.selected = select;
+            unit1.setSelected(select);
         }
     }
 
@@ -826,12 +854,12 @@ public class SU extends State {
                             selectUnit(u, true);
                         } else {
 //                            u.selected = !u.selected;
-                            selectUnit(u, !u.selected);
+                            selectUnit(u, !u.isSelected());
                             //System.out.println("u.selected = " + u.selected);
 
                             boolean is_selected = false;
                             for (Unit unit : stack) {
-                                if (unit.selected) {
+                                if (unit.isSelected()) {
                                     is_selected = true;
                                 }
                             }
@@ -969,11 +997,11 @@ public class SU extends State {
             //System.out.println("stack = " + stack);
         }
         for (Unit unit : stack) {
-            unit.selected = false;
+            unit.setSelected(false);
         }
-        pod.selected = true;
+        pod.setSelected(true);
         if (pod.in_space) {
-            pod.carrier.selected = true;
+            pod.carrier.setSelected(true);
 //            p = q;
         }
         //System.out.println("p = " + p);
@@ -1052,7 +1080,9 @@ public class SU extends State {
 
         StackIterator si = new StackIterator(stack);
         for (Unit u = si.next(); u != null; u = si.next()) {
-            u.selected = true;
+            if (!u.is_sentry) {
+                u.setSelected(true);
+            }
         }
 
         centerMapOnUnit(unit);
@@ -1103,7 +1133,9 @@ public class SU extends State {
         Unit e = iterator.next();
 
         while (e != null) {
-            e.selected = true;
+            if (!e.is_sentry) {
+                e.setSelected(true);
+            }
             e = iterator.next();
         }
 
@@ -1171,7 +1203,7 @@ public class SU extends State {
         // if all units can be cargo and have at least 1 move left
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : origin_stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }
@@ -1253,7 +1285,7 @@ public class SU extends State {
             game.setSelectedPoint(null, -1);
             gui.setCurrentState(PW1.get());
         } else {
-            origin_hex.getStack().get(0).selected = true;
+            origin_hex.getStack().get(0).setSelected(true);
         }
         return true;
     }
@@ -1285,7 +1317,7 @@ public class SU extends State {
         List<Unit> stack = game.getSelectedStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }

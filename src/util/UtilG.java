@@ -83,6 +83,10 @@ import static util.Util.scale2XImage;
  */
 public class UtilG {
 
+    public static Color DARK_GREEN = new Color(0, 128, 0);
+    public static Color DARK_YELLOW = new Color(128, 128, 0);
+    public static Color DARK_RED = new Color(128, 0, 0);
+
     public static int[] planet2Desert(byte[][] rgb_data) {
         int[] ret_val = new int[rgb_data[0].length];
         double[] d = new double[3];
@@ -1106,6 +1110,19 @@ public class UtilG {
         if (lower_prod.length() > 1) {
             UtilG.drawStringGradRes((Graphics2D) g, lower_prod, ws.font_bcw_2, x + ws.city_harvest_x, y + ws.city_harvest_y2);
         }
+    }
+
+    public static int[][] makeDarkUnitIcons(int[] scaler, int[][] unit_icons) {
+        int[][] tmp = new int[92][32 * 32];
+        for (int i = 0; i < unit_icons.length; i++) {
+            for (int j = 0; j < unit_icons[i].length; j++) {
+                tmp[i][j] = scaler[unit_icons[i][j] & 0xff]; // signed byte strikes again ?
+                if (unit_icons[i][j] == 0) {
+                    tmp[i][j] = 0;
+                }
+            }
+        }
+        return tmp;
     }
 
     public static class DarkTheme extends DefaultMetalTheme {

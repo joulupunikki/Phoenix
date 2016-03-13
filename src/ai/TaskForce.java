@@ -245,16 +245,16 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                         Unit move = null;
                         int rank = Integer.MAX_VALUE;
                         for (Unit u : cargo_hex.getStack()) {
-                            u.selected = false;
+                            u.setSelected(false);
                             if (u.type_data.rank < rank && (u.move_type == C.MoveType.FOOT
                                     || u.move_type == C.MoveType.HOVER
                                     || u.move_type == C.MoveType.TREAD
                                     || u.move_type == C.MoveType.WHEEL)) {
                                 if (move != null) {
-                                    move.selected = false;
+                                    move.setSelected(false);
                                 }
                                 move = u;
-                                move.selected = true;
+                                move.setSelected(true);
                                 rank = u.type_data.rank;
                             }
                         }
@@ -304,10 +304,10 @@ public class TaskForce extends TaskForceSuper implements Serializable {
 
     private void setSelected() {
         for (Unit u : game.getSelectedStack()) {
-            u.selected = false;
+            u.setSelected(false);
         }
         for (Unit u : transports) {
-            u.selected = true;
+            u.setSelected(true);
         }
     }
 

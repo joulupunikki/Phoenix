@@ -95,6 +95,7 @@ public class PlanetWindow extends JPanel {
         setUpInfoText();
         setUpButtons();
         setUpResDisplay();
+        CustomSwingActions.setUpKeyBindings(this);
 //        setUpCoordinateListener(); // for testing positions on panel
     }
 
@@ -334,7 +335,7 @@ public class PlanetWindow extends JPanel {
                     }
 
                     for (Unit unit : stack) {
-                        if (unit.selected) {
+                        if (unit.isSelected()) {
                             if ((unit.move_type == C.MoveType.JUMP
                                     || unit.move_type == C.MoveType.LANDER
                                     || unit.move_type == C.MoveType.SPACE)

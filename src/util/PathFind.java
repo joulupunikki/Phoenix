@@ -335,7 +335,7 @@ public class PathFind {
         List<Unit> stack = source.getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }

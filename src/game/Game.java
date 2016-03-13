@@ -418,7 +418,7 @@ public class Game implements Serializable {
         boolean rv = true;
         for (Unit unit : stack) {
             // if you change this change selectSpaceFighters also
-            if (unit.selected && unit.type_data.non_combat == 0
+            if (unit.isSelected() && unit.type_data.non_combat == 0
                     && unit.move_points < 1) {
                 rv = false;
                 break;
@@ -711,7 +711,7 @@ public class Game implements Serializable {
     public void resetUnmovedUnits() {
         unmoved_units.clear();
         for (Unit u : units) {
-            if (u.owner == turn) {
+            if (u.owner == turn && !u.is_sentry) {
 //                System.out.println("u.owner = " + u.owner);
                 unmoved_units.add(u);
                 u.routed = false;
@@ -973,7 +973,7 @@ public class Game implements Serializable {
         List<Unit> stack2 = hex2.getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }
@@ -1009,7 +1009,7 @@ public class Game implements Serializable {
         List<Unit> stack2 = destination.space_stacks[selected_faction.y];
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }
@@ -1044,7 +1044,7 @@ public class Game implements Serializable {
         List<Unit> stack = target_hex.getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }
@@ -1091,7 +1091,7 @@ public class Game implements Serializable {
         List<Unit> stack2 = target_hex.getStack();
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }

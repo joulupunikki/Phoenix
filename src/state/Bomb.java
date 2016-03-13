@@ -72,7 +72,7 @@ public class Bomb extends State {
         stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction.y];
         List<Unit> selected = new LinkedList<>();
         for (Unit unit : stack) {
-            if (unit.selected) {
+            if (unit.isSelected()) {
                 selected.add(unit);
             }
         }

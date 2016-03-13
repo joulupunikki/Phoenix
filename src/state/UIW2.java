@@ -132,13 +132,13 @@ public class UIW2 extends State {
                                         stack.remove(drag_unit);
                                         boolean selected = false;
                                         for (Unit unit : stack) {
-                                            if (unit.selected == true) {
+                                            if (unit.isSelected() == true) {
                                                 selected = true;
                                                 break;
                                             }
                                         }
                                         if (!selected) {
-                                            stack.get(0).selected = true;
+                                            stack.get(0).setSelected(true);
                                         }
                                     }
                                 } else {

@@ -144,9 +144,9 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
 
     private void setSelected() {
         for (Unit u : game.getSelectedStack()) {
-            u.selected = false;
+            u.setSelected(false);
         }
-        scout.selected = true;
+        scout.setSelected(true);
     }
 
     private void finished() {
