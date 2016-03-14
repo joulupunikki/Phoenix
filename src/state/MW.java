@@ -48,6 +48,11 @@ public class MW extends State {
         SU.pressSkipStackButtonSU();
     }
 
+    @Override
+    public void pressSentryButton() {
+        SU.pressSentryButtonSU();
+    }
+
     /**
      * Invoked when End Turn button is pressed. Note: be careful when adding
      * checks than have side-effects.

@@ -32,7 +32,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
-import state.SU;
 
 /**
  * Holds keyboard shortcut custom Swing Actions.
@@ -50,23 +49,43 @@ public class CustomSwingActions {
 //    };
 
     static final String S_WAIT = "wait";
-    static final AbstractAction WAIT = new AbstractAction() {
-        private static final long serialVersionUID = 1L;
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SU.pressNextStackButtonSU();
-        }
-    };
+    private static AbstractActionKBD WAIT;
     static final String S_SENTRY = "sentry";
-    static final AbstractAction SENTRY = new AbstractAction() {
-        private static final long serialVersionUID = 1L;
+    private static AbstractActionKBD SENTRY;
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("SENTRY");
-            SU.pressSentryButtonSU();
+    private CustomSwingActions() {
+    }
+
+    private static abstract class AbstractActionKBD extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+        protected Gui gui;
+
+        public void setGui(Gui gui) {
+            this.gui = gui;
         }
-    };
+    }
+
+    static void setUpActions(Gui gui) {
+        WAIT = new AbstractActionKBD() {
+            private static final long serialVersionUID = 1L;
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressNextStackButton();
+            }
+        };
+        WAIT.setGui(gui);
+        SENTRY = new AbstractActionKBD() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("SENTRY");
+                gui.getCurrentState().pressSentryButton();
+            }
+        };
+        SENTRY.setGui(gui);
+    }
 
     static void setUpKeyBindings(JComponent jcomp) {
         //        this.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), CustomSwingActions.S_SPACE);

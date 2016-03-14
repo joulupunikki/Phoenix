@@ -2510,8 +2510,15 @@ public class Gui extends JFrame {
         main_menu.setDefaultHumanControl();
     }
 
+    void setUpCustomSwingActions() {
+        CustomSwingActions.setUpActions(gui);
+        CustomSwingActions.setUpKeyBindings(planet_window);
+        CustomSwingActions.setUpKeyBindings(space_window);
+    }
+
     private static void createAndShowGUI() {
         gui = new Gui();
+        gui.setUpCustomSwingActions();
         gui.setStateReferences();
 //        gui.setDefaultUncaughtExceptionHandler();
         gui.setUpMainMenu();

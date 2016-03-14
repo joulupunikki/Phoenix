@@ -172,4 +172,7 @@ public abstract class State {
 
     public void buildRoad() {
     }
+
+    public void pressSentryButton() {
+    }
 }

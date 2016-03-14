@@ -397,6 +397,10 @@ public class PW4 extends PW {
     }
 
     @Override
+    public void pressSentryButton() {
+    }
+
+    @Override
     public void pressEndTurnButton() {
     }
 

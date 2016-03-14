@@ -75,7 +75,7 @@ public class SpaceWindow extends JPanel {
 
         setUpInfoText();
         setUpButtons();
-        CustomSwingActions.setUpKeyBindings(this);
+        //CustomSwingActions.setUpKeyBindings(this);
     }
 
     public void setGame(Game game) {
