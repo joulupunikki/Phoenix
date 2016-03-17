@@ -196,7 +196,15 @@ public class Game implements Serializable {
         if (!dynamic) {
             return;
         }
+//        if (!Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI)) {
+//            return;
+//        }
         ai = new AIObject();
+        ai.adAI(this, C.LEAGUE);
+        ai.adAI(this, C.CHURCH);
+        if (!Gui.getMainArgs().hasOption(C.OPT_AI_TEST)) {
+            return;
+        }
         ai.adAI(this, C.SYMBIOT);
 
     }
@@ -439,6 +447,7 @@ public class Game implements Serializable {
 
         Unit u = iter.next();
         while (u != null) {
+            Util.recordFinancialLoss(this, u, captor_faction.x);
             changeOwnerOfUnit(captor_faction, u);
             u.spotted[turn] = true;
             u = iter.next();
@@ -530,6 +539,15 @@ public class Game implements Serializable {
     }
 
     public void endTurn() {
+        endTurnHousekeeping();
+        advanceTurn();
+        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 1000 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
+            endTurnHousekeeping();
+            advanceTurn();
+        }
+    }
+
+    private void endTurnHousekeeping() {
         setFactionCities(); // FIX #52
         for (Structure faction_city : faction_cities) {
             if (faction_city.on_hold_no_res) {
@@ -537,10 +555,6 @@ public class Game implements Serializable {
             }
         }
         factions[turn].deleteOldMessages();
-        advanceTurn();
-        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 1000 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
-            advanceTurn();
-        }
     }
 
     public void advanceTurn() {
@@ -1562,7 +1576,7 @@ public class Game implements Serializable {
      */
     public Structure createCity(int owner, int prev_owner, int p_idx, int x, int y, int type, int health) {
         Structure city = new Structure(owner, prev_owner, type, p_idx, x, y, health);
-        city.loyalty = Faction.calculateCityLoyalty(factions[turn].getTaxRate(), efs_ini);
+        city.loyalty = Faction.calculateCityLoyalty(factions[turn].getTaxRate(), efs_ini, this);
         Hex hex = getHexFromPXY(p_idx, x, y);
         hex.placeStructure(city);
         structures.add(city);

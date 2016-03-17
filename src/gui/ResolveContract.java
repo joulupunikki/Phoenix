@@ -155,20 +155,10 @@ public class ResolveContract extends JPanel {
         accept.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                if (contract.acceptCheck(game)) {
-                    contract.acceptDo(game);
-                } else {
-                    gui.showInfoWindow("My Lord, we cannot satisfy all the terms of the Contract!");
-                    return;
-                }
-                Message message = new Message(""
-                        + Util.factionNameDisplay(game.getTurn())
-                        + " sent Us the following message: \"We accept the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
-                message.setContract(contract);
-                game.getFaction(contract.getSender()).addMessage(message);
+                tryToAccept(gui, contract, game);
                 self.setWindowVisiblity(false);
             }
+
         });
         this.add(accept);
 
@@ -181,18 +171,40 @@ public class ResolveContract extends JPanel {
         reject.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                contract.reject();
-                Message message = new Message(""
-                        + Util.factionNameDisplay(game.getTurn())
-                        + " sent Us the following message: \"We reject the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
-                message.setContract(contract);
-                game.getFaction(contract.getSender()).addMessage(message);
+                reject(contract, game);
                 self.setWindowVisiblity(false);
             }
+
         });
         this.add(reject);
     }
-    
+
+    public static boolean tryToAccept(Gui gui, Contract contract, Game game) {
+        if (contract.acceptCheck(game)) {
+            contract.acceptDo(game);
+        } else {
+            if (gui != null) {
+                gui.showInfoWindow("My Lord, we cannot satisfy all the terms of the Contract!");
+            }
+            return false;
+        }
+        Message response_message = new Message(""
+                + Util.factionNameDisplay(game.getTurn())
+                + " sent Us the following message: \"We accept the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
+        response_message.setContract(contract);
+        game.getFaction(contract.getSender()).addMessage(response_message);
+        return true;
+    }
+
+    public static void reject(Contract contract, Game game) {
+        contract.reject();
+        Message message = new Message(""
+                + Util.factionNameDisplay(game.getTurn())
+                + " sent Us the following message: \"We reject the offer.\"", C.Msg.RESPONSE, game.getYear(), null);
+        message.setContract(contract);
+        game.getFaction(contract.getSender()).addMessage(message);
+    }
+
     private void renderWindow(Graphics g) {
         drawBackground(g);
         drawDetails(g);

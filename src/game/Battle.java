@@ -443,10 +443,21 @@ public class Battle implements Serializable {
                 unit.health = unit.health_tmp;
             }
         }
-        for (Unit unit : dead_list) {         // Put dead units on a temporary list and then delete them,
+        for (Unit unit : dead_list) {             // Put dead units on a temporary list and then delete them,
+            recordFinancialLoss(unit);
             game.deleteUnitInCombat(unit);    // so we don't remove units from the stack or cargo list we're iterating over
         }
     }
+
+    private void recordFinancialLoss(Unit unit) {
+
+        int perpetrator = combat_stack_a.get(0).owner;
+        if (unit.owner == perpetrator) {
+            perpetrator = combat_stack_b.get(0).owner;
+        }
+        Util.recordFinancialLoss(game, unit, perpetrator);
+    }
+
 
     public boolean isSkip(Hex[] neighbours, int r_pos, Unit unit_b, int tile_set) {
         boolean skip = false;

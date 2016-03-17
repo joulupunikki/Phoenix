@@ -1176,6 +1176,8 @@ public class WindowSize {
         diplomacy_window.put(CDW.GIVE_H, 19);
         diplomacy_window.put(CDW.ROW_H, 28);
         diplomacy_window.put(CDW.TAKE_Y, 154);
+        diplomacy_window.put(CDW.DMG_X, 298);
+        diplomacy_window.put(CDW.DMG_Y, 260);
 
         diplomacy_window.put(CDW.R_WIN_Y, 90);
         int y = diplomacy_window.get(CDW.R_WIN_Y) - 1;

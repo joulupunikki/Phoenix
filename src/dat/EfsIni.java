@@ -111,7 +111,7 @@ public class EfsIni implements Serializable {
 //    // [Church]
 //    public int excommunicate_expire = 0;
 //    public int excommunicate_turns = 0;
-//    public int excom_peasant_loyalty_hit = 0;
+    public int excom_peasant_loyalty_hit = 0;
 //    public int sign_holy_writ = 0;
 //    public int default_sect = 0;
 
@@ -145,6 +145,8 @@ public class EfsIni implements Serializable {
         unit_heal = Integer.parseInt((efs_ini.getProperty("unit_heal")).trim());
         health_loss_for_famine = Integer.parseInt((efs_ini.getProperty("health_loss_for_famine")).trim());
         shield_radius = Integer.parseInt((efs_ini.getProperty("shield_radius")).trim());
+        excom_peasant_loyalty_hit = Integer.parseInt((efs_ini.getProperty("excom_peasant_loyalty_hit")).trim());
+
         //phoenix.ini values
         lab_points = Integer.parseInt((phoenix_ini.getProperty("lab_points")).trim());
         lab_cost = Integer.parseInt((phoenix_ini.getProperty("lab_cost")).trim());

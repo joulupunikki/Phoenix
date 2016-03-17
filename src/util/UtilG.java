@@ -49,6 +49,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.nio.ByteOrder;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -83,9 +84,15 @@ import static util.Util.scale2XImage;
  */
 public class UtilG {
 
-    public static Color DARK_GREEN = new Color(0, 128, 0);
-    public static Color DARK_YELLOW = new Color(128, 128, 0);
-    public static Color DARK_RED = new Color(128, 0, 0);
+    public static final Color DARK_GREEN = new Color(0, 128, 0);
+    public static final Color DARK_YELLOW = new Color(128, 128, 0);
+    public static final Color DARK_RED = new Color(128, 0, 0);
+
+    public static final DecimalFormat FORMAT_k100 = new DecimalFormat("##0.0");
+
+//    static {
+//        FORMAT_k100.setDecimalSeparatorAlwaysShown(true);
+//    }
 
     public static int[] planet2Desert(byte[][] rgb_data) {
         int[] ret_val = new int[rgb_data[0].length];

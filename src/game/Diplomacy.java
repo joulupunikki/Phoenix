@@ -49,6 +49,10 @@ public class Diplomacy implements Serializable {
 //    private int[] vote_mat;
     // elections: ministries promised
     private int[][] ministry_mat;
+    // damages caused in firebirds due to hostile actions
+    private int[][] compensation_matrix;
+
+    private int[] agora_prices;
 
     private List<Contract> sent_contracts;
     private Game game;
@@ -60,6 +64,8 @@ public class Diplomacy implements Serializable {
         war_matrix = new int[C.NR_FACTIONS][C.NR_FACTIONS];
 //        vote_mat = new int[C.THE_CHURCH + 1];
         ministry_mat = new int[C.NR_HOUSES][C.NR_HOUSES];
+        compensation_matrix = new int[C.NR_FACTIONS][C.NR_FACTIONS];
+        agora_prices = new int[C.NR_RESOURCES];
         sent_contracts = new LinkedList<>();
         this.game = game;
     }
@@ -74,6 +80,14 @@ public class Diplomacy implements Serializable {
         }
 //        zeroVotePromises();
         zeroMinistryPromises();
+        compensation_matrix = new int[C.NR_FACTIONS][C.NR_FACTIONS];
+        setAgoraPrices();
+    }
+
+    private void setAgoraPrices() {
+        for (int i = 0; i < agora_prices.length; i++) {
+            agora_prices[i] = game.getResTypes()[i].price;;
+        }
     }
 
 //    private void zeroVotePromises() {
@@ -195,5 +209,38 @@ public class Diplomacy implements Serializable {
             }
         }
         return false;
+    }
+
+    /**
+     * @param villain
+     * @param victim
+     * @return the compensation_matrix
+     */
+    public int getCompensationMatrix(int villain, int victim) {
+        return compensation_matrix[villain][victim];
+    }
+
+    /**
+     * @param villain
+     * @param victim
+     * @param amount
+     */
+    public void addToCompensationMatrix(int villain, int victim, int amount) {
+        compensation_matrix[villain][victim] += amount;
+    }
+
+    /**
+     * @param villain
+     * @param victim
+     */
+    public void zeroCompensationMatrix(int villain, int victim) {
+        compensation_matrix[villain][victim] = 0;
+    }
+
+    /**
+     * @return the agora_prices
+     */
+    public int[] getAgora_prices() {
+        return agora_prices;
     }
 }

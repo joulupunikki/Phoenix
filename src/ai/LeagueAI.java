@@ -27,52 +27,52 @@
  */
 package ai;
 
+import game.Contract;
+import game.Faction;
 import game.Game;
-import java.io.Serializable;
+import game.Message;
+import gui.ResolveContract;
 import util.C;
+import util.Util;
 
 /**
- * Acts as a bridge between Game and AI. Persistently stores certain static AI
- * variables.
+ * League AI base class.
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class AIObject implements Serializable {
-
+public class LeagueAI extends AI {
     private static final long serialVersionUID = 1L;
-    private AI[] ai;
 
-    public AIObject() {
-        ai = new AI[C.NR_FACTIONS];
+
+    public enum UTypes {
+
+        PSYCH,
+        CLOSE,
+        DIRECT,
+        INDIRECT,
+        AIR,
+        NESTER,
+        CLOSE_SP,
+        DIRECT_SP,
+        RANGED_SP,
+        CARGO_SP,
     }
-    
-    public void adAI(Game game, int faction) {
-        switch (faction) {
-            case C.LEAGUE:
-                ai[faction] = new LeagueAI(game);
-                break;
-            case C.CHURCH:
-                ai[faction] = new ChurchAI(game);
-                break;
-            case C.SYMBIOT:
-                ai[faction] = new SymbiotAI(game);
-                break;
-            case C.NEUTRAL: // rebels
-                break;
-            default:
-                throw new AssertionError();
-        }
+    public LeagueAI(Game game) {
+        super(game, C.LEAGUE);
+        Util.dP("##### LeagueAI init begin");
+        Util.dP("##### LeagueAI init end");
     }
 
-    public boolean isAIcontrolled(int faction) {
-        return ai[faction] != null;
+    @Override
+    public void doTurn() {
+        considerPeaceOffers();
+        //logSuper(C.NEUTRAL, "Start");
+        // list stacks
+        //findAssets(C.NEUTRAL);
+        // list known enemy cities
+
+        // attack enemy cities
+        // attack enemy units
     }
 
-    public void doTurn(int faction) {
-        ai[faction].doTurn();
-    }
-
-    public boolean isMapped(int faction, int p_idx) {
-        return ai[faction].isMapped(p_idx);
-    }
 }

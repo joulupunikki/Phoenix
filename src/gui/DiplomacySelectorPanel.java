@@ -168,6 +168,14 @@ public class DiplomacySelectorPanel extends JPanel {
             Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW1_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW1_Y), ws.banner100_side, ws.banner100_side);
             count++;
         }
+        count = 0;
+        for (int i = C.LEAGUE; i <= C.VAU; i++) {
+            if (i == C.SYMBIOT) {
+                i++;
+            }
+            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW2_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW2_Y), ws.banner100_side, ws.banner100_side);
+            count++;
+        }
         g2d.drawImage(bi, null, 0, 0);
         UtilG.drawFrameRectIn(g, 0, 0, c.get(CD.WIN_W), c.get(CD.WIN_H));
     }
@@ -209,6 +217,13 @@ public class DiplomacySelectorPanel extends JPanel {
                 
             }
  
+        }
+        faction = DiplomacyWindow.clickedInRects(p, c.get(G.CD.ROW2_X), c.get(G.CD.ROW2_Y), ws.banner100_side, ws.banner100_side, 3, c.get(G.CD.ROW_W));
+        if (faction > -1) {
+            faction += C.LEAGUE;
+            if (faction == C.SYMBIOT) {
+                faction++;
+            }
         }
         return faction;
     }

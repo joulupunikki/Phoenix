@@ -219,7 +219,7 @@ public class DiplomacyWindow extends JPanel {
         });
     }
 
-    public int clickedInRects(Point p, int x, int y, int w, int h, int n, int d) {
+    public static int clickedInRects(Point p, int x, int y, int w, int h, int n, int d) {
         int horiz = 1;
         int vert = 0;
         if (n < 0) {
@@ -405,6 +405,14 @@ public class DiplomacyWindow extends JPanel {
             if_you_items[IfYouWill.PEACE.ordinal()].setEnabled(false);
             then_we_items[ThenWeWill.PEACE.ordinal()].setEnabled(false);
         }
+        if (faction > C.HOUSE5) { // non-house
+            non_promised_ministries.clear();
+            if_you_items[IfYouWill.TECH.ordinal()].setEnabled(false);
+            then_we_items[ThenWeWill.TECH.ordinal()].setEnabled(false);
+            if_you_items[IfYouWill.VOTES.ordinal()].setEnabled(false);
+            then_we_items[ThenWeWill.VOTES.ordinal()].setEnabled(false);
+            return;
+        }
         // search for promised votes and ministries in pending contracts of sender
         for (Contract con : game.getDiplomacy().getSentContracts()) {
             for (Term term : con.getTerms()) {
@@ -553,7 +561,12 @@ public class DiplomacyWindow extends JPanel {
         drawLeader(g);
         drawContract(game, g, contract, ws, faction);
         drawContractHeaders(g);
+        drawDamages(g);
 
+    }
+
+    private void drawDamages(Graphics2D g) {
+        UtilG.drawStringGrad(g, "Damages: " + UtilG.FORMAT_k100.format(0.001 * game.getDiplomacy().getCompensationMatrix(game.getTurn(), faction)) + " kFB", ws.font_large, c.get(CDW.DMG_X), c.get(CDW.DMG_Y));
     }
 
     private void drawContractHeaders(Graphics2D g) {

@@ -69,6 +69,9 @@ public class FN {
     public static final String S_HOUSE3_BIN = S_BIN + F_S + "HOUSE3.BIN";
     public static final String S_HOUSE4_BIN = S_BIN + F_S + "HOUSE4.BIN";
     public static final String S_HOUSE5_BIN = S_BIN + F_S + "HOUSE5.BIN";
+    public static final String S_BNRLEG_BIN = S_BIN + F_S + "BNRLEG.BIN";
+    public static final String S_BNRCHU_BIN = S_BIN + F_S + "BNRCHU.BIN";
+    public static final String S_BNRVAU_BIN = S_BIN + F_S + "BNRVAU.BIN";
 
     public static final String S_EFS_PAL = "EFS.PAL";
     public static final String S_GALAXY_GAL = "GALAXY.GAL";

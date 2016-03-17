@@ -88,7 +88,6 @@ public class Faction implements Serializable {
         adjustLoyalty();
 //        initTechs();
         initResearch();
-        
     }
 
     public void addMessage(Message m) {
@@ -375,7 +374,7 @@ public class Faction implements Serializable {
         List<Structure> fully_rebel = new LinkedList<>();
         for (Structure city : cities) {
             if (city.owner == game.getTurn()) {
-                game.adjustCityLoyalty(city, calculateCityLoyalty(tax_rate, efs_ini));
+                game.adjustCityLoyalty(city, calculateCityLoyalty(tax_rate, efs_ini, game));
                 if (city.loyalty < C.LOYALTY_REBEL_LIMIT) {
                     int rebel_pop = 0;
                     for (int i = city.health; i > 0; i -= 10) {
@@ -409,8 +408,12 @@ public class Faction implements Serializable {
         }
     }
 
-    public static int calculateCityLoyalty(int tax_rate, EfsIni efs_ini) {
-        return FastMath.max(0, FastMath.min(100, 100 - (tax_rate - efs_ini.default_tax_rate) * C.TAX_LOYALTY_HIT));
+    public static int calculateCityLoyalty(int tax_rate, EfsIni efs_ini, Game game) {
+        int excom_penalty = 0;
+        if (game.getDiplomacy().getDiplomaticState(game.getTurn(), C.CHURCH) == C.DS_WAR) {
+            excom_penalty = game.getEfs_ini().excom_peasant_loyalty_hit;
+        }
+        return FastMath.max(0, FastMath.min(100, 100 - (tax_rate - efs_ini.default_tax_rate) * C.TAX_LOYALTY_HIT - excom_penalty));
     }
 
     /**

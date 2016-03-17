@@ -69,6 +69,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.math3.util.FastMath;
 
 /**
  * A motley crew of utilities, candidate for separation.
@@ -184,6 +185,28 @@ public class Util {
             name += "the ";
         }
         return name + Util.getFactionName(faction);
+    }
+
+    public static void recordFinancialLoss(Game game, Unit unit, int perpetrator) {
+        if (unit.owner == perpetrator) {
+            return;
+        }
+        int loss = 0;
+        int[] prices = game.getDiplomacy().getAgora_prices();
+        int[] resources = unit.type_data.reqd_res;
+        loss += 2 * FastMath.abs(unit.type_data.crd_trn);
+        switch (unit.type) {
+            case C.CARGO_UNIT_TYPE:
+                loss += unit.amount * prices[unit.res_relic];
+                break;
+            default:
+                for (int i = 0; i < prices.length; i++) {
+                    loss += prices[i] * resources[i];
+                }
+                break;
+        }
+        System.out.println("Unit damages : " + Util.getFactionName(perpetrator) + " for " + Util.getFactionName(unit.owner) + " " + unit.type_data.abbrev + " " + loss + " FB");
+        game.getDiplomacy().addToCompensationMatrix(perpetrator, unit.owner, loss);
     }
 
     /**

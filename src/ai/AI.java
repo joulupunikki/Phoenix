@@ -31,10 +31,14 @@ import dat.UnitType;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import game.Contract;
+import game.Faction;
 import game.GalaxyGrid;
 import game.Game;
 import game.Hex;
+import game.Message;
 import game.PlanetGrid;
+import gui.ResolveContract;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -239,6 +243,47 @@ public abstract class AI implements Serializable {
 
     public int nextTfID() {
         return ++task_force_id;
+    }
+
+    /**
+     *
+     */
+    protected void considerPeaceOffers() {
+        Faction f_ref = game.getFaction(faction);
+        for (Message message : f_ref.getMessages()) {
+            Contract contract = message.getContract();
+            if (contract == null) {
+                continue;
+            }
+            boolean sue_for_peace = false;
+            boolean pay_enough_compensation = false;
+            boolean decline = false;
+            for (Contract.Term term : contract.getTerms()) {
+                switch (term.getType()) {
+                    case STATE:
+                        sue_for_peace = true;
+                        break;
+                    case MONEY:
+                        if (term.getRecipient() == faction && term.getAmount() >= game.getDiplomacy().getCompensationMatrix(term.getDonor(), term.getRecipient())) {
+                            pay_enough_compensation = true;
+                        }
+                        break;
+                    default:
+                        decline = true;
+                        break;
+                }
+                if (decline) {
+                    break;
+                }
+            }
+            if (!(!decline && sue_for_peace && pay_enough_compensation && ResolveContract.tryToAccept(null, contract, game))) {
+                ResolveContract.reject(contract, game);
+            } else {
+                // reset compensation counter
+                game.getDiplomacy().zeroCompensationMatrix(contract.getSender(), contract.getReceiver());
+            }
+        }
+        f_ref.getMessages();
     }
 
     private enum Task_Loop {

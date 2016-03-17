@@ -87,10 +87,10 @@ public class Resource {
         banners_100[C.HOUSE3] = Util.loadSquares(FN.S_HOUSE3_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.HOUSE4] = Util.loadSquares(FN.S_HOUSE4_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.HOUSE5] = Util.loadSquares(FN.S_HOUSE5_BIN, 1, BANNER_100_SIZE)[0];
-        banners_100[C.LEAGUE] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
-        banners_100[C.THE_CHURCH] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.LEAGUE] = Util.loadSquares(FN.S_BNRLEG_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.THE_CHURCH] = Util.loadSquares(FN.S_BNRCHU_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.SYMBIOT] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
-        banners_100[C.VAU] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
+        banners_100[C.VAU] = Util.loadSquares(FN.S_BNRVAU_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.IMPERIAL] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.FLEET] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
         banners_100[C.STIGMATA] = Util.loadSquares(FN.S_HOUSE1_BIN, 1, BANNER_100_SIZE)[0];
