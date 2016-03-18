@@ -972,53 +972,64 @@ public class SU extends State {
 
     public static void pressEndTurnButtonSU() {
     }
-
     public static void pressSkipStackButtonSU() {
-        LinkedList<Unit> pods = (LinkedList) game.getCargoPods();
-        if (pods.isEmpty()) {
-            gui.showInfoWindow("You have moved all of your units.");
-            return;
-        }
-        Unit pod = pods.pop();
-        Point p = new Point(pod.x, pod.y);
-        //System.out.println("p = " + p);
-        //System.out.println("pod x y " + pod.x + " " + pod.y);
-        List<Unit> stack = null;
-        int faction = -1;
-        Point q = null;
-        if (!pod.in_space) {
-            stack = game.getPlanetGrid(pod.p_idx).getHex(p.x, p.y).getStack();
-        } else {
-            Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
-            faction = pod.prev_owner;
-            q = game.resolveSpaceStack(p, faction);
-            stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
-            //System.out.println("q = " + q);
-            //System.out.println("stack = " + stack);
-        }
-        for (Unit unit : stack) {
-            unit.setSelected(false);
-        }
-        pod.setSelected(true);
-        if (pod.in_space) {
-            pod.carrier.setSelected(true);
-//            p = q;
-        }
-        //System.out.println("p = " + p);
-        game.setSelectedPoint(p, faction);
-        //System.out.println(game.getSelectedPoint());
-        game.setSelectedFaction(faction);
-        game.setCurrentPlanetNr(pod.p_idx);
-        centerMapOnUnit(pod);
+        iterateOverUnmovedUnits(false);
     }
 
+//    public static void deprecated_pressSkipStackButtonSU() {
+//        LinkedList<Unit> pods = (LinkedList) game.getCargoPods();
+//        if (pods.isEmpty()) {
+//            gui.showInfoWindow("You have moved all of your units.");
+//            return;
+//        }
+//        Unit pod = pods.pop();
+//        Point p = new Point(pod.x, pod.y);
+//        //System.out.println("p = " + p);
+//        //System.out.println("pod x y " + pod.x + " " + pod.y);
+//        List<Unit> stack = null;
+//        int faction = -1;
+//        Point q = null;
+//        if (!pod.in_space) {
+//            stack = game.getPlanetGrid(pod.p_idx).getHex(p.x, p.y).getStack();
+//        } else {
+//            Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
+//            faction = pod.prev_owner;
+//            q = game.resolveSpaceStack(p, faction);
+//            stack = galaxy_grid[q.x][q.y].parent_planet.space_stacks[faction];
+//            //System.out.println("q = " + q);
+//            //System.out.println("stack = " + stack);
+//        }
+//        for (Unit unit : stack) {
+//            unit.setSelected(false);
+//        }
+//        pod.setSelected(true);
+//        if (pod.in_space) {
+//            pod.carrier.setSelected(true);
+////            p = q;
+//        }
+//        //System.out.println("p = " + p);
+//        game.setSelectedPoint(p, faction);
+//        //System.out.println(game.getSelectedPoint());
+//        game.setSelectedFaction(faction);
+//        game.setCurrentPlanetNr(pod.p_idx);
+//        centerMapOnUnit(pod);
+//    }
+
     public static void pressNextStackButtonSU() {
+        iterateOverUnmovedUnits(true);
+    }
+
+    /**
+     *
+     * @param wait the value of wait
+     */
+    public static void iterateOverUnmovedUnits(boolean wait) {
         Point p = game.getSelectedPoint();
         Point faction = game.getSelectedFaction();
         int current_planet = game.getCurrentPlanetNr();
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
-        if (unmoved_units.isEmpty()) {
+        if (!wait && unmoved_units.isEmpty()) {
             gui.showInfoWindow("You have moved all of your units.");
             return;
         }
@@ -1037,6 +1048,10 @@ public class SU extends State {
                 unmoved_units.remove(u);
 //                System.out.println("Remove");
             }
+            if (wait) {
+                unmoved_units.addAll(stack);
+            }
+
         }
 
         if (unmoved_units.isEmpty()) {
