@@ -1029,9 +1029,11 @@ public class SU extends State {
         int current_planet = game.getCurrentPlanetNr();
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
-        if (!wait && unmoved_units.isEmpty()) {
-            gui.showInfoWindow("You have moved all of your units.");
-            return;
+        if (!wait) {
+            if (unmoved_units.isEmpty()) {
+                checkNothingSelected();
+                return;
+            }
         }
         if (p != null) {
             List<Unit> stack = null;
@@ -1055,7 +1057,7 @@ public class SU extends State {
         }
 
         if (unmoved_units.isEmpty()) {
-            gui.showInfoWindow("You have moved all of your units.");
+            checkNothingSelected();
             return;
         }
 
@@ -1107,7 +1109,7 @@ public class SU extends State {
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
         if (unmoved_units.isEmpty()) {
-            gui.showInfoWindow("You have moved all of your units.");
+            checkNothingSelected();
             return;
         }
 
@@ -1155,6 +1157,32 @@ public class SU extends State {
         }
 
         centerMapOnUnit(unit);
+    }
+
+    private static boolean checkNothingSelected() {
+        boolean nothing_selected = true;
+        List<Unit> selected_stack = game.getSelectedStack();
+        if (selected_stack == null) {
+            gui.showInfoWindow("You have moved all of your units.");
+            return nothing_selected;
+        }
+        for (Unit unit : selected_stack) {
+            if (unit.selected) {
+                nothing_selected = false;
+                break;
+            }
+        }
+        if (nothing_selected) {
+            if (gui.getCurrentState() instanceof PW) {
+                gui.setCurrentState(PW1.get());
+            } else {
+                gui.setCurrentState(SW1.get());
+            }
+            game.setSelectedPoint(null, -1);
+            game.setSelectedFaction(-1);
+        }
+        gui.showInfoWindow("You have moved all of your units.");
+        return nothing_selected;
     }
 
     public static void centerMapOnUnit(Unit unit) {

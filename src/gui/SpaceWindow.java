@@ -66,6 +66,7 @@ public class SpaceWindow extends JPanel {
     JButton end_turn;
     JButton next_stack;
     JButton skip_stack;
+    private JButton sentry;
 
     public SpaceWindow(Gui gui) {
         this.gui = gui;
@@ -143,6 +144,7 @@ public class SpaceWindow extends JPanel {
 //        });
 
         setUpSkipStack();
+        setUpSentry();
     }
 
     public void setUpSkipStack() {
@@ -164,6 +166,29 @@ public class SpaceWindow extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gui.getCurrentState().pressSkipStackButton();
+            }
+        });
+    }
+
+    public void setUpSentry() {
+        IndexColorModel color_index = gui.getICM();
+        String file_name = FN.S_EFSBUT_BIN[8];
+        ButtonIcon sentry_default = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, 0, color_index, ws);
+        int file_offset = 2;
+        ButtonIcon sentry_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, file_name, file_offset, color_index, ws);
+        sentry = new JButton();
+        sentry.setBorder(null);
+        sentry.setIcon(sentry_default);
+
+        sentry.setPressedIcon(sentry_pressed);
+        this.add(sentry);
+        sentry.setBounds(ws.unit_order_buttons_x, ws.unit_order_buttons_y + ws.unit_order_buttons_h,
+                ws.unit_order_buttons_w, ws.unit_order_buttons_h);
+        sentry.setEnabled(true);
+        sentry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressSentryButton();
             }
         });
     }
