@@ -43,7 +43,7 @@ import util.C;
  *
  * @author joulupunikki
  */
-public class Bomb extends State {
+public class Bomb extends STP {
 
     private static Bomb instance = new Bomb();
 

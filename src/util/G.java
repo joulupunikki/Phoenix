@@ -160,4 +160,12 @@ public class G {
         EXIT_H, BOX_W, BOX_H,
     }
 
+    /**
+     * Combat Strategy Selector coordinates
+     */
+    public enum SS {
+        WIN_X, WIN_Y, WIN_W, WIN_H, BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, ROW_H, HEADER_X, HEADER_Y
+
+    }
+
 }

@@ -45,7 +45,7 @@ import util.Util;
  *
  * @author joulupunikki
  */
-public class LAND1 extends State {
+public class LAND1 extends STP {
 
     private static LAND1 instance = new LAND1();
 

@@ -28,6 +28,7 @@
 package gui;
 
 import dat.UnitType;
+import galaxyreader.Unit;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,11 +37,40 @@ import util.WindowSize;
 
 /**
  * Holds unit stat displays for stack window and build panel. Divided into left
- * panel, right panel and attack panel.
+ * panel, right panel and attack panel. Also holds current top display values.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class UnitStats {
+
+    public static class Top {
+
+        private String xp;
+
+        public String getXp() {
+            return xp;
+        }
+
+        public void setValues(Unit u) {
+            if (u == null) {
+                xp = "";
+                return;
+            }
+            setXp(u.experience);
+        }
+
+        private void setXp(int xp_int) {
+            switch (xp_int) {
+                case 0:
+                case 1:
+                case 2:
+                    xp = Unit.XP.values()[xp_int].name();
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+        }
+    }
 
     public static class Left extends JPanel {
 

@@ -43,6 +43,7 @@ import galaxyreader.JumpGate;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import gui.CombatStrategyPanel;
 import gui.Gui;
 import gui.Resource;
 import java.awt.Point;
@@ -338,6 +339,11 @@ public class Game implements Serializable {
     }
 
     public void resolveGroundBattleInit(String combat_type, int defender_owner) {
+        resolveGroundBattleInit(combat_type, defender_owner, CombatStrategyPanel.Strategy.NORMAL);
+    }
+
+    public void resolveGroundBattleInit(String combat_type, int defender_owner, CombatStrategyPanel.Strategy strategy) {
+        battle.setStrategy(strategy);
         battle.perBattleInit(path, current_planet);
         battle.resolveGroundBattleInit(combat_type, defender_owner);
     }

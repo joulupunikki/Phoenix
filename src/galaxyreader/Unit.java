@@ -105,6 +105,30 @@ public class Unit implements Serializable {
 
     public int turns_starving;    // RSW added
 
+    public void promote() {
+        if (this.experience < XP.ELITE.ordinal()) {
+            this.experience++;
+        }
+    }
+
+    public enum XP {
+        GREEN("Green", 0.8),
+        EXPERT("Expert", 1.0),
+        ELITE("Elite", 1.2);
+
+        String title;
+        double mod;
+
+        private XP(String title, double mod) {
+            this.title = title;
+            this.mod = mod;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+    }
+
     /**
      * For testing purposes only, doesn't set all unit details.
      *

@@ -36,6 +36,7 @@ import util.G.CDW;
 import util.G.CGW;
 import util.G.CH;
 import util.G.OW;
+import util.G.SS;
 
 /**
  *
@@ -554,6 +555,8 @@ public class WindowSize {
     public HashMap<Enum, Integer> diplomacy_window;
     public HashMap<Enum, Integer> galaxy_window;
     public HashMap<Enum, Integer> options_window;
+    public HashMap<Enum, Integer> strategy_selector;
+
 
     private final Doubler mul2;
 
@@ -566,6 +569,7 @@ public class WindowSize {
         iDiplomacyWindow(is_double);
         iGalaxyWindow(is_double);
         iOptionsWindow(is_double);
+        iStrategy(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -1248,6 +1252,28 @@ public class WindowSize {
 
         if (is_double) {
             options_window.replaceAll(mul2);
+        }
+    }
+
+    private void iStrategy(boolean is_double) {
+        strategy_selector = new HashMap<>();
+        strategy_selector.put(SS.WIN_X, 160);
+        strategy_selector.put(SS.WIN_Y, 160);
+        int x = strategy_selector.get(SS.WIN_X);
+        int y = strategy_selector.get(SS.WIN_Y);
+
+        strategy_selector.put(SS.WIN_W, 320);
+        strategy_selector.put(SS.WIN_H, 170);
+        strategy_selector.put(SS.BUTTON_X, 178 - x);
+        strategy_selector.put(SS.BUTTON_Y, 208 - y);
+        strategy_selector.put(SS.BUTTON_W, 284);
+        strategy_selector.put(SS.BUTTON_H, 16);
+        strategy_selector.put(SS.ROW_H, 25);
+        strategy_selector.put(SS.HEADER_X, 207 - x);
+        strategy_selector.put(SS.HEADER_Y, 191 - y);
+
+        if (is_double) {
+            diplomacy_selector.replaceAll(mul2);
         }
 
     }

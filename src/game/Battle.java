@@ -30,6 +30,7 @@ package game;
 import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
+import gui.CombatStrategyPanel;
 import java.awt.Point;
 import java.io.Serializable;
 import java.util.Collections;
@@ -54,6 +55,16 @@ public class Battle implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
+    // combat orders modifiers TODO make these moddable
+    private static final double ASSAULT_STR = 1.2;
+    private static final double ASSAULT_ARMOR = 0.8;
+    private static final double FEINT_STR = 0.8;
+    private static final double FEINT_ARMOR = 1.2;
+    private static final double ASSAULT_MOD = ASSAULT_STR / ASSAULT_ARMOR;
+    private static final double FEINT_MOD = FEINT_STR / FEINT_ARMOR;
+    // xp modifiers TODO make these moddable
+    private static final double ELITE_MOD = 1.2;
+    private static final double GREEN_MOD = 0.8;
     private List<Unit> combat_stack_a;
     private List<Unit> combat_stack_b;
     private List<Unit> defender_defence = new LinkedList<>();
@@ -81,6 +92,7 @@ public class Battle implements Serializable {
     // pts defence fire queue against landing or bombardment
     private List<Hex> pts_queue;
     private int city_damage;
+    private CombatStrategyPanel.Strategy strategy;
 
     public Battle() {
         
@@ -230,7 +242,54 @@ public class Battle implements Serializable {
 
     public int getDam(Unit atk, Unit def, int atk_type) {
         int dmg = 0;
+        // the strength/armor ratio, start with armor effect
         double ratio = 1.0 / def.type_data.armor;
+        System.out.println("A/D ratio " + atk.type_data.abbrev + " -> " + def.type_data.abbrev + " after armor: " + ratio);
+        // adjust for combat orders
+        switch (strategy) {
+            case ASSAULT:
+                ratio *= ASSAULT_MOD;
+                break;
+            case FEINT:
+                ratio *= FEINT_MOD;
+                break;
+            case NORMAL:
+                break;
+            default:
+                throw new AssertionError();
+        }
+        System.out.println("A/D ratio after orders (" + strategy.toString() + "): " + ratio);
+        // adjust for attacker xp
+        if (game.getEfs_ini().experience_combat_effect) {
+            switch (Unit.XP.values()[atk.experience]) {
+                case ELITE:
+                    ratio *= ELITE_MOD;
+                    break;
+                case GREEN:
+                    ratio *= GREEN_MOD;
+                    break;
+                case EXPERT:
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            System.out.println("A/D ratio after atk xp (" + atk.experience + "): " + ratio);
+            // adjust for defender xp
+            switch (Unit.XP.values()[def.experience]) {
+                case ELITE:
+                    ratio /= ELITE_MOD;
+                    break;
+                case GREEN:
+                    ratio /= GREEN_MOD;
+                    break;
+                case EXPERT:
+                    break;
+                default:
+                    throw new AssertionError();
+            }
+            System.out.println("A/D ratio after def xp (" + def.experience + "): " + ratio);
+        }
+        // adjust for attack strength
         switch (atk_type) {
             case C.WATER:
                 ratio *= atk.type_data.water_str;
@@ -247,8 +306,8 @@ public class Battle implements Serializable {
             case C.CLOSE:
                 ratio *= atk.type_data.close_str;
                 break;
-            case C.PSYCH:
-                ratio = atk.type_data.psy_str * 1.0 / def.type_data.psy_def;
+            case C.PSYCH: // swap psydef for armor
+                ratio *= atk.type_data.psy_str * 1.0 / def.type_data.psy_def * def.type_data.armor;
                 break;
             case C.RANGED_SPACE:
                 ratio *= atk.type_data.ranged_sp_str;
@@ -262,9 +321,9 @@ public class Battle implements Serializable {
             default:
                 throw new AssertionError();
         }
-
+        System.out.println("A/D ratio FINAL: " + ratio);
         int dmg_index = -1;
-
+        // find damage index ... were you drunk when you did this ?
         if (ratio < 3) {
             if (ratio < .25) {
                 dmg_index = 0;
@@ -929,6 +988,18 @@ public class Battle implements Serializable {
         }
 //        removeDead(game.getUnits());
 //        removeDead(game.getUnmovedUnits());
+        if (game.getEfs_ini().experience_combat_effect) {
+            for (Unit unit : combat_stack_a) {
+                if (random.nextInt(64) < 16) {
+                    unit.promote();
+                }
+            }
+            for (Unit unit : combat_stack_b) {
+                if (random.nextInt(64) < 16) {
+                    unit.promote();
+                }
+            }
+        }
         combat_stack_a = null;
         combat_stack_b = null;
         combat_type = null;
@@ -1065,6 +1136,20 @@ public class Battle implements Serializable {
                 }
             }
         }
+    }
+
+    /**
+     * @return the strategy
+     */
+    public CombatStrategyPanel.Strategy getStrategy() {
+        return strategy;
+    }
+
+    /**
+     * @param strategy the strategy to set
+     */
+    public void setStrategy(CombatStrategyPanel.Strategy strategy) {
+        this.strategy = strategy;
     }
 
 }

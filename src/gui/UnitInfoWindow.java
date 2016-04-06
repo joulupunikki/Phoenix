@@ -78,6 +78,7 @@ public class UnitInfoWindow extends JPanel {
     JTextField camo_name;
     JTextField camo_stat;
 
+    UnitStats.Top top_stats;
     UnitStats.Left left_stats;
     UnitStats.Right right_stats;
     UnitStats.Attack attack_stats;
@@ -238,7 +239,7 @@ public class UnitInfoWindow extends JPanel {
         s = "" + u.loyalty + "%";
         offset += ws.sw_tp_h;
         UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
-        s = "" + u.experience;
+        s = "" + Unit.XP.values()[u.experience].getTitle();
         offset += ws.sw_tp_h;
         UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x2, ws.sw_tp_y2 + offset);
         s = "" + u.move_points;
@@ -288,6 +289,7 @@ public class UnitInfoWindow extends JPanel {
     public void setStats() {
         Unit u = gui.getInfo_unit();
 
+        top_stats.setValues(null);
         left_stats.setValues(null);
         right_stats.setValues(null);
         attack_stats.setValues(null);
@@ -296,6 +298,7 @@ public class UnitInfoWindow extends JPanel {
             return;
         }
 
+        top_stats.setValues(u);
         left_stats.setValues(u.type_data);
         right_stats.setValues(u.type_data);
         attack_stats.setValues(u.type_data);
@@ -303,6 +306,8 @@ public class UnitInfoWindow extends JPanel {
     }
 
     public void setUpStatDisplay() {
+
+        top_stats = new UnitStats.Top();
 
         left_stats = new UnitStats.Left(gui);
         left_stats.setBounds(ws.sw_lsp_x, ws.sw_lsp_y, ws.sw_lsp_w, ws.sw_lsp_h);
@@ -376,6 +381,15 @@ public class UnitInfoWindow extends JPanel {
 
                 g.setColor(C.COLOR_GOLD);
                 g.setFont(ws.font_abbrev);
+
+                if (e.experience > 0) {
+                    if (e.experience == 1) {
+                        g.setColor(Color.LIGHT_GRAY);
+                    }
+                    g.drawString("  " + Unit.XP.values()[e.experience].getTitle(), dx + ws.unit_icon_size + ws.carry_symbol_x,
+                            dy + (int) 2.8 * ws.font_default_size);
+                    g.setColor(C.COLOR_GOLD);
+                }
 
                 if (e.type == C.CARGO_UNIT_TYPE) {
                     g.drawString(game.getResTypes()[e.res_relic].name, dx + ws.unit_icon_size + ws.carry_symbol_x,

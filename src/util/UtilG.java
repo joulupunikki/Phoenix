@@ -639,7 +639,7 @@ public class UtilG {
         }
         g2d.setFont(f);
         int line_height = f.getSize();
-        GradientPaint gp = new GradientPaint(0, y - line_height + 1, bright, 0, y, dark, true);
+        GradientPaint gp = new GradientPaint(0, y - line_height / 2 - 2, bright, 0, y - line_height / 2 + 3, dark, false);
         if (border > 0) {
             drawStringBorder(g2d, s, Color.BLACK, x, y, border);
         }

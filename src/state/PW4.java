@@ -30,6 +30,7 @@ package state;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Hex;
+import gui.CombatStrategyPanel;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
@@ -369,12 +370,23 @@ public class PW4 extends PW {
     }
 
     private void combat() {
-        gui.setStop_stack(true);
-        game.resolveGroundBattleInit(C.GROUND_COMBAT, -1);
-        gui.setCurrentState(PW2.get());
         gui.setMenus(C.S_PLANET_MAP);
+        gui.setStop_stack(true);
         gui.getStack_move_timer().stop();
         gui.setStack_moving(false);
+        CombatStrategyPanel.Strategy[] strategy = {CombatStrategyPanel.Strategy.NORMAL};
+        if (game.getEfs_ini().combat_strategy_selection) {
+            gui.showCombatStrategySelectorDialog(strategy);
+            if (strategy[0] == CombatStrategyPanel.Strategy.CANCEL) {
+                gui.setCurrentState(PW2.get());
+                game.setPath(null);
+                return;
+            }
+        }
+        gui.setMenus(null);
+        game.resolveGroundBattleInit(C.GROUND_COMBAT, -1, strategy[0]);
+        gui.setCurrentState(PW2.get());
+        gui.setMenus(C.S_PLANET_MAP);
         SU.showCombatWindow();
     }
 

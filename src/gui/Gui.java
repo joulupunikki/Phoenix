@@ -172,6 +172,7 @@ public class Gui extends JFrame {
     private BuildCityPanel build_city_panel;
     private JDialog build_city_window;
     private DiplomacySelectorPanel diplomacy_selector;
+    private CombatStrategyPanel strategy_selector;
     private ResolveContract resolve_contract_dialog;
     private XPlayerScreen x_player_screen;
     private PBEMGui pbem_gui;
@@ -310,6 +311,7 @@ public class Gui extends JFrame {
          * build gui windows
          */
         diplomacy_selector = DiplomacySelectorPanel.getWindow(this);
+        strategy_selector = CombatStrategyPanel.getWindow(this);
         setUpBuildWindow();
         setUpTechWindow();
         setUpTechDBWindow();
@@ -2075,6 +2077,11 @@ public class Gui extends JFrame {
 
     public void showDiplomacySelectorWindow() {
         diplomacy_selector.setWindowVisiblity(true);
+    }
+
+    public void showCombatStrategySelectorDialog(CombatStrategyPanel.Strategy[] strategy) {
+        strategy_selector.setResponseArray(strategy);
+        strategy_selector.setWindowVisiblity(true);
     }
 
     public String setLineBreaks(String text, Font font) {
