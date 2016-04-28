@@ -64,7 +64,7 @@ public class LAND1 extends STP {
         return instance;
     }
 
-    public void clickOnPlanetMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
         Point p = SU.getPlanetMapClickPoint(e);
         if (e.getButton() == MouseEvent.BUTTON1) {
             clickOnPlanetMapButton1(p);

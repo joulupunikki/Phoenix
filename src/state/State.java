@@ -64,7 +64,7 @@ public abstract class State {
     public void wheelRotated(MouseWheelEvent e) {
     }
 
-    public void clickOnPlanetMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
     }
 
     public void clickOnPlanetWindow(MouseEvent e) {
@@ -73,8 +73,8 @@ public abstract class State {
     public void clickOnSpaceWindow(MouseEvent e) {
     }
 
-    public void clickOnSpaceMap(MouseEvent e) {
-    }
+//    public void clickOnSpaceMap(MouseEvent e) {
+//    }
 
     public void clickOnByzantiumIIWindow(MouseEvent e) {
     }
@@ -175,4 +175,17 @@ public abstract class State {
 
     public void pressSentryButton() {
     }
+
+    public void pressNextButton() {
+
+    }
+
+    public void pressPrevButton() {
+
+    }
+
+    public void pressGoButton() {
+
+    }
+
 }

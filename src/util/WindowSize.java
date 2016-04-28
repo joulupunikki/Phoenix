@@ -35,6 +35,7 @@ import util.G.CD;
 import util.G.CDW;
 import util.G.CGW;
 import util.G.CH;
+import util.G.GF;
 import util.G.OW;
 import util.G.SS;
 
@@ -556,6 +557,8 @@ public class WindowSize {
     public HashMap<Enum, Integer> galaxy_window;
     public HashMap<Enum, Integer> options_window;
     public HashMap<Enum, Integer> strategy_selector;
+    public HashMap<Enum, Integer> group_finder;
+
 
 
     private final Doubler mul2;
@@ -570,6 +573,7 @@ public class WindowSize {
         iGalaxyWindow(is_double);
         iOptionsWindow(is_double);
         iStrategy(is_double);
+        iGroupFInder(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -1275,6 +1279,25 @@ public class WindowSize {
         if (is_double) {
             diplomacy_selector.replaceAll(mul2);
         }
+
+    }
+
+    private void iGroupFInder(boolean is_double) {
+        group_finder = new HashMap<>();
+        group_finder.put(GF.BUTTON_X, 144);
+        group_finder.put(GF.BUTTON_Y, 459);
+        group_finder.put(GF.BUTTON_W, 101);
+        group_finder.put(GF.BUTTON_H, 14);
+        group_finder.put(GF.BUTTON2_X, 272);
+        group_finder.put(GF.BUTTON3_X, 399);
+        group_finder.put(GF.GAL_MAP_X, 9);
+        group_finder.put(GF.GAL_MAP_Y, 9);
+        group_finder.put(GF.PLAN_MAP_X, 15);
+        group_finder.put(GF.PLAN_MAP_Y, 129);
+        group_finder.put(GF.PLAN_NAME_Y, 111);
+        group_finder.put(GF.PLAN_NAME_H, 14);
+
+
 
     }
 

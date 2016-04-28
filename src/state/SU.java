@@ -712,9 +712,17 @@ public class SU extends State {
     }
 
     public static void showUnitInfoWindow() {
+        gui.setUnitInfoWindowMode(false);
         setWindow(C.S_UNIT_INFO);
         saveMainGameState();
         gui.setCurrentState(UIW1.get());
+    }
+
+    public static void showGroupFinder() {
+        gui.setUnitInfoWindowMode(true);
+        setWindow(C.S_UNIT_INFO);
+        saveMainGameState();
+        gui.setCurrentState(GF1.get());
     }
 
     public static void showMessagesWindow() {

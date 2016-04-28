@@ -183,7 +183,7 @@ public class UIW2 extends State {
         zeroDragUnit();
     }
 
-    private void zeroDragUnit() {
+    protected void zeroDragUnit() {
         gui.setDragUnit(null, null);
         gui.setCurrentState(UIW1.get());
         gui.getMainWindows().repaint();

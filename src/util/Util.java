@@ -78,6 +78,12 @@ import org.apache.commons.math3.util.FastMath;
  */
 public class Util {
 
+    public static void Assert(boolean necessary_condition) {
+        if (!necessary_condition) {
+            throw new AssertionError("Invariant fails in calling method.");
+        }
+    }
+
     public static void printString(File file, String s) {
         try {
             FileUtils.writeStringToFile(file, s + FN.L_S, true);
@@ -236,19 +242,56 @@ public class Util {
 
         }
 
+        public void setPos(int i, int j) {
+            Util.Assert(0 <= i && i < map_array.length && 0 <= j && j < map_array[i].length);
+            this.i = i;
+            this.j = j;
+        }
+
+        public void setPosLast() {
+            this.i = map_array.length - 1;
+            this.j = map_array[i].length - 1;
+        }
+
         public Hex next() {
             Hex next = null;
 
             if (i >= map_array.length) {
                 return next;
             }
+            if (i < 0) { // if prev has gone past start
+                i = j = 0;
+            }
             next = map_array[i][j];
+            //System.out.println(" " + i + "," + j);
             j++;
             if (j >= map_array[i].length) {
                 j = 0;
                 i++;
             }
             return next;
+        }
+        
+        public Hex prev() {
+            Hex prev = null;
+
+            if (i < 0) {
+                return prev;
+            }
+            if (i >= map_array.length) { // if next has gone past end
+                setPosLast();
+            }
+            System.out.println(" " + i + "," + j);
+            prev = map_array[i][j];
+            j--;
+            if (j < 0) {
+                i--;
+                if (i >= 0) {
+                    j = map_array[i].length - 1;
+                }
+
+            }
+            return prev;
         }
     }
 

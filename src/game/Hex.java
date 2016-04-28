@@ -36,6 +36,7 @@ import java.util.List;
 import util.C;
 
 /**
+ * A planetary map hex.
  *
  * @author joulupunikki
  */

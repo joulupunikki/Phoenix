@@ -45,6 +45,7 @@ import java.awt.image.WritableRaster;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -52,12 +53,15 @@ import javax.swing.JTextField;
 import state.State;
 import util.C;
 import util.FN;
+import util.G.GF;
 import util.StackIterator;
 import util.Util;
 import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Displays detailed information of the selected stack. Also functions as the
+ * Group Finder.
  *
  * @author joulupunikki
  */
@@ -73,6 +77,10 @@ public class UnitInfoWindow extends JPanel {
     JButton disband_button;
     JButton unload_button;
     JButton exit_button;
+
+//    private LinkedList<Unit> stacks;
+    private JButton planet_name;
+
     JTextField spot_name;
     JTextField spot_stat;
     JTextField camo_name;
@@ -92,13 +100,22 @@ public class UnitInfoWindow extends JPanel {
     JTextField attack4_type;
     JTextField attack4_stat;
     Unit prev;
+    private Point selected_point;
+    private int current_planet;
+    private int selected_faction;
     BufferedImage unit_image;
     BufferedImage bi;
 
+    private JButton prev_button;
+    private JButton next_button;
+    private JButton go_button;
+    private Map<Enum, Integer> c;
     public UnitInfoWindow(Gui gui) {
         this.gui = gui;
         game = gui.getGame();
         ws = gui.getWindowSize();
+        c = ws.group_finder;
+//        stacks = new LinkedList<>();
     }
 
     public void setGame(Game game) {
@@ -112,6 +129,84 @@ public class UnitInfoWindow extends JPanel {
         byte[][] pallette = gui.getPallette();
         bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
     }
+
+    /**
+     * Set mode, true for Group Finder, false for Unit Info.
+     *
+     * @param mode
+     */
+    public void setMode(boolean mode) {
+        prev_button.setVisible(mode);
+        next_button.setVisible(mode);
+        go_button.setVisible(mode);
+    }
+
+    public void saveSelectedStack() {
+        selected_point = game.getSelectedPoint();
+        current_planet = game.getCurrentPlanetNr();
+        selected_faction = game.getSelectedFaction().y;
+    }
+    
+    public void restoreSelectedStack() {
+        restoreSelected();
+        forgetSelected();
+
+    }
+
+    public void forgetSelected() {
+        selected_point = null;
+        current_planet = -1;
+        selected_faction = -1;
+    }
+
+    private boolean restoreSelected() {
+        if (selected_point == null) {
+            return true;
+        }
+        if (selected_faction == -1) {
+            List<Unit> stack = game.getPlanet(current_planet).planet_grid.getHex(selected_point.x, selected_point.y).getStack();
+            if (stack.isEmpty()) {
+                return true;
+            }
+            game.setCurrentPlanetNr(current_planet);
+            game.setSelectedFaction(-1);
+            game.setSelectedPoint(new Point(selected_point.x, selected_point.y), -1);
+        } else {
+            List<Unit> stack = game.getPlanet(current_planet).space_stacks[selected_faction];
+            if (stack.isEmpty()) {
+                return true;
+            }
+            game.setCurrentPlanetNr(current_planet);
+            game.setSelectedFaction(-1);
+            game.setSelectedPoint(new Point(selected_point.x, selected_point.y), -1);
+        }
+        return false;
+    }
+    
+//    public void initStacks() {
+//        resetUnits();
+//        sortStacks();
+//
+//    }
+//
+//    public List< getStacks() {
+//        return stacks;
+//    }
+//
+//    private void resetUnits() {
+//        stacks.clear();
+//        for (Unit unit : game.getUnits()) {
+//            if (unit.owner == game.getTurn()) {
+//                stacks.add(unit);
+//            }
+//        }
+//    }
+//
+//    private void sortStacks() {
+//        stacks.sort(Comp.unit_in_space);
+//        stacks.sort(Comp.unit_xy);
+//        stacks.sort(Comp.unit_pidx);
+//    }
 
     public void setUpListeners() {
         MouseAdapter mouse_adapter = new MouseAdapter() {
@@ -138,6 +233,71 @@ public class UnitInfoWindow extends JPanel {
         setUpExit();
         setUpDisband();
         setUpUnload();
+        setUpPrev();
+        setUpNext();
+        setUpGo();
+        setUpPlanetName();
+    }
+
+    private void setUpPlanetName() {
+        planet_name = new JButton("Prev");
+        this.add(planet_name);
+        planet_name.setBackground(Color.BLACK);
+        planet_name.setForeground(C.COLOR_GOLD);
+        planet_name.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        planet_name.setBounds(c.get(GF.GAL_MAP_X), c.get(GF.PLAN_NAME_Y),
+                ws.galactic_map_width, c.get(GF.PLAN_NAME_H));
+    }
+
+    private void setUpPrev() {
+        prev_button = new JButton("Prev");
+        this.add(prev_button);
+        prev_button.setBackground(Color.BLACK);
+        prev_button.setForeground(C.COLOR_GOLD);
+        prev_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        prev_button.setBounds(c.get(GF.BUTTON_X), c.get(GF.BUTTON_Y),
+                c.get(GF.BUTTON_W), c.get(GF.BUTTON_H));
+        prev_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressPrevButton();
+            }
+        });
+    }
+
+    private void setUpNext() {
+        next_button = new JButton("Next");
+        this.add(next_button);
+        next_button.setBackground(Color.BLACK);
+        next_button.setForeground(C.COLOR_GOLD);
+        next_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        next_button.setBounds(c.get(GF.BUTTON2_X), c.get(GF.BUTTON_Y),
+                c.get(GF.BUTTON_W), c.get(GF.BUTTON_H));
+        next_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressNextButton();
+            }
+        });
+    }
+
+    private void setUpGo() {
+        go_button = new JButton("Go");
+        this.add(go_button);
+        go_button.setBackground(Color.BLACK);
+        go_button.setForeground(C.COLOR_GOLD);
+        go_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        go_button.setBounds(c.get(GF.BUTTON3_X), c.get(GF.BUTTON_Y),
+                c.get(GF.BUTTON_W), c.get(GF.BUTTON_H));
+        go_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                State state = gui.getCurrentState();
+                state.pressGoButton();
+            }
+        });
     }
 
     private void setUpExit() {
@@ -205,6 +365,7 @@ public class UnitInfoWindow extends JPanel {
         drawDraggedUnit(g);
         drawTopStats(g);
         UtilG.drawCityArea(g, game, ws, ws.sw_city_x, ws.sw_city_y, null);
+        planet_name.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
     }
 
     private void drawTopStats(Graphics g) {

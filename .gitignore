@@ -23,3 +23,4 @@
 # Maven build directory
 /target/
 /dependency-reduced-pom.xml
+/tst_log.txt

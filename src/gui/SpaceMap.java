@@ -41,6 +41,7 @@ import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -69,7 +70,8 @@ public class SpaceMap extends JPanel {
      *
      */
     private static final long serialVersionUID = 1L;
-    private static final int MARGIN = 1;
+    // bizarre, but helps reproduce EFS1.4 behaviour
+    private static final int MARGIN = 50;
     private static final int PLANET_PHASES = 16;
 
     /**
@@ -93,7 +95,8 @@ public class SpaceMap extends JPanel {
     private IndexColorModel color_index;
     private int cycle_count;
     private RingCounter planet_phase;
-    MouseEvent[] mouse_events;
+    private static MouseEvent[] mouse_events;
+    private static final long MULTI_CLICK_INTERVAL = (long) (int) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
     private static int[] planet_types;
 
     public SpaceMap(Gui gui) {
@@ -135,15 +138,15 @@ public class SpaceMap extends JPanel {
         }
     }
 
-    private void setUpMouse(Gui gui) throws HeadlessException {
+    static void setUpMouse(Gui gui, JPanel jpanel) throws HeadlessException {
         mouse_events = new MouseEvent[MouseInfo.getNumberOfButtons() + 1];
-        this.addMouseListener(new MouseAdapter() {
+        jpanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 mouse_events[e.getButton()] = e;
             }
         });
-        this.addMouseListener(new MouseAdapter() {
+        jpanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
                 int button = e.getButton();
@@ -154,9 +157,10 @@ public class SpaceMap extends JPanel {
                 mouse_events[button] = null;
                 Point p_p = press.getPoint();
                 Point r_p = e.getPoint();
-                if (p_p.x - MARGIN <= r_p.x && r_p.x <= p_p.x + MARGIN
+                long delay = e.getWhen() - press.getWhen();
+                if (delay < MULTI_CLICK_INTERVAL && p_p.x - MARGIN <= r_p.x && r_p.x <= p_p.x + MARGIN
                         && p_p.y - MARGIN <= r_p.y && r_p.y <= p_p.y + MARGIN) {
-                    gui.getCurrentState().clickOnSpaceMap(press);
+                    gui.getCurrentState().clickOnMainMap(press);
                 }
             }
         });

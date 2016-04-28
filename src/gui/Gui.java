@@ -102,6 +102,7 @@ import state.Wiz;
 import util.C;
 import util.Comp;
 import util.FN;
+import util.G;
 import util.StackIterator;
 import util.Util;
 import util.Util.HexIter;
@@ -142,8 +143,10 @@ public class Gui extends JFrame {
     private SpaceWindow space_window;
     private GalacticMap galactic_map;           // gal minimap on space window
     private GalacticMap galactic_map_cw;        // gal minimap on combat window
+    private GalacticMap galactic_map_uiw;        // gal minimap on unit info window
     private GlobeMap globe_map;                 // global minimap on planet window
     private GlobeMap globe_map_cw;              // global minimap on combat window
+    private GlobeMap globe_map_uiw;              // global minimap on unit info window
     //holds the unit info window/stack window
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
@@ -502,6 +505,13 @@ public class Gui extends JFrame {
         unit_info_window.setUpWindow();
     }
 
+    public void setUnitInfoWindowMode(boolean mode) {
+        unit_info_window.setMode(mode);
+        if (mode) {
+            unit_info_window.saveSelectedStack();
+        }
+    }
+
     private void setUpGlobeWindow() {
         /*
          * create star map display
@@ -573,11 +583,12 @@ public class Gui extends JFrame {
         space_map.setBounds(ws.space_map_x_pos, ws.space_map_y_pos,
                 ws.space_map_width, ws.space_map_height);
 
+//        SpaceMap.setUpMouse(this, space_map);
         space_map.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
 //                clickOnSpaceMap(e);
-                state.clickOnSpaceMap(e);
+                state.clickOnMainMap(e);
             }
         });
 
@@ -611,12 +622,12 @@ public class Gui extends JFrame {
         planet_window.add(planet_map);
         planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
                 ws.planet_map_width, ws.planet_map_height);
-
+//        SpaceMap.setUpMouse(this, planet_map);
         planet_map.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
 //                clickOnPlanetMap(e);
-                state.clickOnPlanetMap(e);
+                state.clickOnMainMap(e);
             }
         });
 
@@ -913,18 +924,19 @@ public class Gui extends JFrame {
         menu_group_finder.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_group_finder.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                C.MoveType[] move_types = C.MoveType.values();
-                int[] unit_manifest = new int[move_types.length];
-                for (Unit unit : game.getUnits()) {
-                    if (unit.owner == game.getTurn()) {
-                        ++unit_manifest[unit.move_type.ordinal()];
-                    }
-                }
-                String s_units = "";
-                for (int i = 0; i < unit_manifest.length; i++) {
-                    s_units += move_types[i] + " " + unit_manifest[i] + "\n";
-                }
-                showInfoWindow(s_units);
+                SU.showGroupFinder();
+//                C.MoveType[] move_types = C.MoveType.values();
+//                int[] unit_manifest = new int[move_types.length];
+//                for (Unit unit : game.getUnits()) {
+//                    if (unit.owner == game.getTurn()) {
+//                        ++unit_manifest[unit.move_type.ordinal()];
+//                    }
+//                }
+//                String s_units = "";
+//                for (int i = 0; i < unit_manifest.length; i++) {
+//                    s_units += move_types[i] + " " + unit_manifest[i] + "\n";
+//                }
+//                showInfoWindow(s_units);
             }
         });
         menu_city_info = new JMenuItem("City Info");
@@ -1320,6 +1332,16 @@ public class Gui extends JFrame {
         combat_window.add(globe_map_cw);
         globe_map_cw.setBounds(ws.cw_glm_x, ws.cw_glm_y,
                 ws.cw_glm_w, ws.cw_glm_h);
+
+        galactic_map_uiw = new GalacticMap(this, game, ws, true);
+        unit_info_window.add(galactic_map_uiw);
+        galactic_map_uiw.setBounds(ws.group_finder.get(G.GF.GAL_MAP_X), ws.group_finder.get(G.GF.GAL_MAP_Y),
+                ws.cw_gm_w, ws.cw_gm_h);
+
+        globe_map_uiw = new GlobeMap(this, game, ws, true);
+        unit_info_window.add(globe_map_uiw);
+        globe_map_uiw.setBounds(ws.group_finder.get(G.GF.PLAN_MAP_X), ws.group_finder.get(G.GF.PLAN_MAP_Y),
+                ws.cw_glm_w, ws.cw_glm_h);
     }
 
     public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
@@ -1541,6 +1563,10 @@ public class Gui extends JFrame {
 
     public GlobeWindow getGlobeWindow() {
         return globe_window;
+    }
+
+    public UnitInfoWindow getUnitInfoWindow() {
+        return unit_info_window;
     }
 
     private class CityDialog extends JDialog {
@@ -2029,6 +2055,8 @@ public class Gui extends JFrame {
         globe_map.setGame(game);
         galactic_map_cw.setGame(game);
         globe_map_cw.setGame(game);
+        galactic_map_uiw.setGame(game);
+        globe_map_uiw.setGame(game);
         build_panel.setGame(game);
         tech_panel.setGame(game);
         tech_db_panel.setGame(game);

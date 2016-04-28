@@ -60,7 +60,7 @@ public class SW2 extends SW {
     }
 
     @Override
-    public void clickOnSpaceMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
         Point p = SU.getSpaceMapClickPoint(e);
         if (e.getButton() == MouseEvent.BUTTON3) {
             SU.clickOnSpaceMapButton3(p);

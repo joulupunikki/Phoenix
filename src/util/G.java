@@ -168,4 +168,12 @@ public class G {
 
     }
 
+    /**
+     * Group Finder button coordinates
+     */
+    public enum GF {
+        BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, BUTTON2_X, BUTTON3_X, GAL_MAP_X, GAL_MAP_Y, PLAN_MAP_X, PLAN_MAP_Y, PLAN_NAME_Y, PLAN_NAME_H
+
+    }
+
 }

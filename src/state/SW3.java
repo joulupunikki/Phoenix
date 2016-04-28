@@ -54,7 +54,7 @@ public class SW3 extends SW {
         return instance;
     }
 
-    public void clickOnSpaceMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
         //button3
         //on stack
         //on empty square

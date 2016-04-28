@@ -409,8 +409,9 @@ public abstract class AI implements Serializable {
     }
 
     /**
-     * Find assets (units, structures) of a faction, and their enemies.
-      * 
+     * Find assets (units, structures) of a faction, and their enemies. TODO
+     * neutrals ?
+     *
      * @param faction
      */
     protected void findAssets(int faction) {

@@ -33,6 +33,7 @@ import java.util.Map;
 import util.C;
 
 /**
+ * Play By Email data structures.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

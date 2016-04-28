@@ -27,11 +27,12 @@
  */
 package ai;
 
-import game.Contract;
-import game.Faction;
+import galaxyreader.Structure;
+import galaxyreader.Unit;
 import game.Game;
-import game.Message;
-import gui.ResolveContract;
+import game.Hex;
+import java.util.LinkedList;
+import java.util.List;
 import util.C;
 import util.Util;
 
@@ -43,6 +44,87 @@ import util.Util;
 public class LeagueAI extends AI {
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Agora restock interval in years.
+     */
+    protected static final int RESTOCK_INTERVAL = 2;
+
+    /**
+     * Agora restock values.
+     */
+    protected static final int[] AGORA_RESTOCK = {
+        500,
+        200,
+        200,
+        100,
+        100,
+        50,
+        50,
+        50,
+        50,
+        25,
+        25,
+        10,
+        2
+    };
+
+    @Override
+    protected void findAssets(int faction) {
+        for (Structure s : all_structures) {
+            if (s.type == C.MONASTERY || s.type == C.ALIEN_RUINS || s.type == C.RUINS) {
+                continue;
+            }
+            if (s.owner == faction) {
+                structures.add(s);
+            } else if (planets.get(s.p_idx).spotted[faction]) {
+                enemy_structures.add(s);
+            }
+        }
+    }
+
+    /**
+     * Restock all League agoras every RESTOCK_INTERVAL years. Excess pods are
+     * silently deleted and replaced with pods of missing resources if
+     * necessary.
+     */
+    protected void restockAgoras() {
+        System.out.println("Check agora restock ...");
+        if ((game.getYear() - C.STARTING_YEAR + 1) % RESTOCK_INTERVAL != 0) {
+            System.out.println("... no agora restock");
+            return;
+        }
+        System.out.println("... restocking");
+        for (Structure s : structures) {
+            if (s.type != C.AGORA) {
+                continue;
+            }
+            System.out.println(" Agora at " + s.p_idx + "," + s.x + "," + s.y);
+            Hex hex = game.getHexFromPXY(s.p_idx, s.x, s.y);
+            List<Unit> stock = hex.getStack();
+            boolean[] have = new boolean[C.NR_RESOURCES];
+            List<Unit> overflow = new LinkedList<>();
+
+            for (Unit u : stock) {
+                if (u.type == C.CARGO_UNIT_TYPE) {
+                    if (have[u.res_relic]) {
+                        overflow.add(u);
+                        continue;
+                    }
+                    have[u.res_relic] = true;
+                    int adjust = AGORA_RESTOCK[u.res_relic] - u.amount;                   
+                    game.getResources().adjustPodResources(u, adjust);
+                }
+            }
+            for (Unit u : overflow) {
+                game.deleteUnitNotInCombat(u);
+            }
+            for (int i = 0; i < have.length; i++) {
+                if (!have[i]) {
+                    game.createUnitInHex(s.p_idx, s.x, s.y, C.LEAGUE, C.LEAGUE, C.CARGO_UNIT_TYPE, 0, i, AGORA_RESTOCK[i]);
+                }
+            }
+        }
+    }
 
     public enum UTypes {
 
@@ -65,7 +147,9 @@ public class LeagueAI extends AI {
 
     @Override
     public void doTurn() {
+        findAssets(C.LEAGUE);
         considerPeaceOffers();
+        restockAgoras();
         //logSuper(C.NEUTRAL, "Start");
         // list stacks
         //findAssets(C.NEUTRAL);

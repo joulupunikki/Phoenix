@@ -278,7 +278,7 @@ public class UIW1 extends State {
                 if (dx <= q.x && q.x <= dx + ws.unit_icon_size
                         && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     gui.setDragUnit(u, q);
-                    gui.setCurrentState(UIW2.get());
+                    setState();
                     gui.getMainWindows().repaint();
                     return;
                 }
@@ -314,6 +314,10 @@ public class UIW1 extends State {
             }
 
         }
+    }
+
+    protected void setState() {
+        gui.setCurrentState(UIW2.get());
     }
 
 }

@@ -31,6 +31,7 @@ import galaxyreader.Planet;
 import java.io.Serializable;
 
 /**
+ * A galaxy map square.
  *
  * @author joulupunikki
  */

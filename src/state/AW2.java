@@ -31,6 +31,7 @@ import galaxyreader.Unit;
 import game.Hex;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.math3.util.FastMath;
 import util.C;
 import util.Util;
 
@@ -68,19 +69,23 @@ public class AW2 extends State {
                 for (Unit u : sell_stack) {
                     if (u.type == C.CARGO_UNIT_TYPE && u.res_relic == i && u.amount > 0) {
                         //u.amount -= amounts[i];
-                        game.getResources().adjustPodResources(u, -amounts[i]);
-                        game.getFaction(sell_stack.get(0).owner).addFirebirds(amounts[i] * buys[i]);
+                        int amount = FastMath.min(amounts[i], u.amount); // fixes #80
+                        amounts[i] -= amount;
+                        game.getResources().adjustPodResources(u, -amount);
+                        game.getFaction(sell_stack.get(0).owner).addFirebirds(amount * buys[i]);
                         boolean res_exists = false;
+                        Unit agora_unit = null;
                         for (Unit agora_stack1 : agora_stack) {
                             if (agora_stack1.type == C.CARGO_UNIT_TYPE && agora_stack1.res_relic == i) {
                                 res_exists = true;
+                                agora_unit = agora_stack1;
                                 break;
                             }
                         }
                         if (res_exists) {
-                            game.getResources().addOneResourceTypeToHex(game.getCurrentPlanetNr(), h.getX(), h.getY(), C.LEAGUE, C.LEAGUE, i, amounts[i]);
+                            game.getResources().adjustPodResources(agora_unit, FastMath.min(amount, 999 - agora_unit.amount));
                         } else {
-                            game.createUnitInHex(game.getCurrentPlanetNr(), h.getX(), h.getY(), C.LEAGUE, C.LEAGUE, C.CARGO_UNIT_TYPE, 0, i, amounts[i]);
+                            game.createUnitInHex(game.getCurrentPlanetNr(), h.getX(), h.getY(), C.LEAGUE, C.LEAGUE, C.CARGO_UNIT_TYPE, 0, i, amount);
                         }
                     }
                 }

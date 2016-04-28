@@ -64,7 +64,7 @@ public class Wiz extends State {
         return instance;
     }
 
-    public void clickOnPlanetMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
 
         // if button 3
         //on stack

@@ -31,6 +31,7 @@ import java.io.Serializable;
 import util.C;
 
 /**
+ * A diplomatic message between two factions.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

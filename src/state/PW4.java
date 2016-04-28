@@ -55,7 +55,7 @@ public class PW4 extends PW {
     }
 
     @Override
-    public void clickOnPlanetMap(MouseEvent e) {
+    public void clickOnMainMap(MouseEvent e) {
 
         gui.stopStackMove();
 
