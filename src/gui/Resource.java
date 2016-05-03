@@ -41,6 +41,8 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Library class collecting various GUI resources (ini-files, graphics data,
+ * ...)
  *
  * @author joulupunikki
  */

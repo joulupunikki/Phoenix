@@ -46,6 +46,8 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Implements the space main window, where space square map, and selected stack
+ * unit icons are shown.
  *
  * @author joulupunikki
  */

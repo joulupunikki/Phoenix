@@ -39,6 +39,8 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Given size, file name, and image position in file constructs an icon usable
+ * with a button.
  *
  * @author joulupunikki
  */

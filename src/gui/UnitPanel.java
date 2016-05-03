@@ -33,6 +33,7 @@ import java.awt.Graphics;
 import javax.swing.JPanel;
 
 /**
+ * NOT USED, CANDIDATE FOR DELETION.
  *
  * @author joulupunikki
  */

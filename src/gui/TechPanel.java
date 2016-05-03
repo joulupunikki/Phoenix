@@ -64,13 +64,13 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Implements tech display where research can be directed.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
 public class TechPanel extends JPanel {
 
     /**
-     *
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

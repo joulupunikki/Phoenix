@@ -37,6 +37,7 @@ import java.util.List;
 import util.C;
 
 /**
+ * Technology and research related data structures and logic.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

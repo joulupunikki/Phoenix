@@ -58,6 +58,7 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Implements Manowitz archives display.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

@@ -110,6 +110,7 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Root GUI object.
  *
  * @author joulupunikki
  */

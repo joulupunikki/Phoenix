@@ -63,6 +63,7 @@ import util.UtilG.DarkSliderUI;
 import util.WindowSize;
 
 /**
+ * Agora buy/sell window.
  *
  * @author joulupunikki
  */

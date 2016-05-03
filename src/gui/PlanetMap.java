@@ -54,6 +54,7 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Implements planetary hex map display.
  *
  * @author joulupunikki
  */

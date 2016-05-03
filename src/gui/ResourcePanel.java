@@ -48,6 +48,8 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Display detailed info on a resource (food, metal, ..., production,
+ * consumption, ...)
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

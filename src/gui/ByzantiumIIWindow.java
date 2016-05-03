@@ -45,6 +45,8 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Byzantium II window where regency related orders can be issued (voting,
+ * ministry assignment, declare emperor.)
  *
  * @author joulupunikki
  */

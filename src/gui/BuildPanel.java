@@ -78,6 +78,7 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Handles unit building orders.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

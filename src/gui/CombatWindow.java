@@ -54,6 +54,7 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Combats are displayed in this window.
  *
  * @author joulupunikki
  */

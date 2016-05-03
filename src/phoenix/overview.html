@@ -21,14 +21,53 @@ POSSIBILITY OF SUCH DAMAGE.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        Java clone/remake/patch of the game 
+        An unofficial Java clone/remake/port/patch of/for the game 
+        <a href="http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns">Emperor of the Fading Suns (EFS)</a>.
+        <h3>Introduction</h3>
+        An unofficial Java clone/remake/port/patch of/for the game 
         <a href="http://en.wikipedia.org/wiki/Emperor_of_the_Fading_Suns">Emperor of the Fading Suns (EFS)</a>. 
-        Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods.
+        Uses original EFS data files and requires EFS 1.4 to be installed. Should work with all mods. All public classes,
+        that is the main classes of the source files, should have at least one sentence of documentation in this API documentation 
+        (note that this is not an API per se, but a documentation of the sources, as Phoenix is supposed to be a full
+        application, minus the data files.)
+        <h3>Program structure</h3>
+            The source code is organized as follows:
+            <ul>
+                <li>
+            Main program entry point: class Phoenix in package phoenix
+                <li>    
+            Graphical user interface implementation: package gui
+                <li>   
+            State machine for controlling GUI: package state
+                <li>    
+            Most of game data structures and logic: package game
+                <li>    
+            Reading in and representing data in GALAXY.GAL-files: package galaxyreader
+                <li>    
+            Reading in and representing data in text mode data files: package dat
+                <li>    
+            Utility classes: package util
+                <li>    
+            Most of AI related data structures and logic (very much WIP): package ai
+            </ul>
         <p>
+        <h3>Statement regarding Fading Suns IP</h3>    
         Phoenix is not associated with or authorized by Segasoft Inc. or Holistic Design Inc. 
         Fading Suns is a trademark and copyright of Holistic Design Inc. Emperor of the Fading 
         Suns software product is copyright of Holistic Design Inc. and/or Segasoft Inc. The 
         mention of or reference to any material in this site, document or material is not a 
         challenge to the trademarks or copyrights concerned.
+        <h3>Warranty disclaimer</h3>
+        THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, 
+NON-INFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE LIABLE 
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
+OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE.
     </body>
 </html>

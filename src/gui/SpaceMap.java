@@ -61,6 +61,7 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Implements space square map display.
  *
  * @author joulupunikki
  */

@@ -59,6 +59,8 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * When engineer receives build city order the city to be build is selected in
+ * this panel.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

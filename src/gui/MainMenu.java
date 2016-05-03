@@ -50,6 +50,7 @@ import util.UtilG;
 import util.WindowSize;
 
 /**
+ * Main menu JPanel for selecting human players and PBEM.
  *
  * @author joulupunikki
  */
@@ -204,7 +205,7 @@ public class MainMenu extends JPanel {
     }
 
     /**
-     * Main Menu Window 1
+     * The first Main Menu displayed to players.
      */
     public static class W1 extends JPanel {
 

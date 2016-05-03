@@ -53,6 +53,8 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Implements the planetary main window, where surface hex map, resource tally,
+ * and selected stack unit icons are shown.
  *
  * @author joulupunikki
  */

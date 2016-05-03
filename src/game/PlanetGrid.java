@@ -39,13 +39,14 @@ import java.util.Set;
 import util.C;
 
 /**
+ * Organizes the individual planet map Hexes in a 2-dimensional table, and holds
+ * routing information and other support structures for AI.
  *
  * @author joulupunikki
  */
 public class PlanetGrid implements Serializable {
 
     /**
-     *
      */
     private static final long serialVersionUID = 1L;
     //map origin

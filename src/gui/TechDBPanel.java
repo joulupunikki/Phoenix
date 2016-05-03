@@ -69,7 +69,8 @@ import util.WindowSize;
 public class TechDBPanel extends JPanel {
 
     /**
-     *
+     * Implements tech database display which shows researched techs and their
+     * maintenance costs.
      */
     private static final long serialVersionUID = 1L;
     private Gui gui;

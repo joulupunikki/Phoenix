@@ -40,6 +40,8 @@ import util.G.OW;
 import util.G.SS;
 
 /**
+ * GUI coordinates are stored here (x, y, width, height, etc of windows,
+ * buttons, etc.)
  *
  * @author joulupunikki
  */

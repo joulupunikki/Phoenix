@@ -61,6 +61,8 @@ import util.Util;
 import util.WindowSize;
 
 /**
+ * Implements Messages window where messages (received contracts proposals,
+ * replies, combat reports etc.) can be accessed.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */

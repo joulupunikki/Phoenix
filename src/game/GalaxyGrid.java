@@ -37,6 +37,8 @@ import java.util.Set;
 import util.C;
 
 /**
+ * Organizes the individual galaxy map Squares in a 2-dimensional table, and
+ * holds routing information for AI.
  *
  * @author joulupunikki
  */
