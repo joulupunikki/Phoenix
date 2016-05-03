@@ -1296,6 +1296,8 @@ public class WindowSize {
         group_finder.put(GF.PLAN_MAP_Y, 129);
         group_finder.put(GF.PLAN_NAME_Y, 111);
         group_finder.put(GF.PLAN_NAME_H, 14);
+        group_finder.put(GF.SENTRY_Y, 433);
+
 
 
 

@@ -876,6 +876,13 @@ public class SU extends State {
                                 selectUnit(u, true);
                             }
                         }
+                        State tmp = null;
+                        if (u.in_space) {
+                            tmp = SW2.get();
+                        } else {
+                            tmp = PW2.get();
+                        }
+                        gui.setCurrentState(tmp);
                     }
                     // to update build city menu item
                     setStateUpKeep(gui.getCurrentState());
@@ -1194,17 +1201,27 @@ public class SU extends State {
     }
 
     public static void centerMapOnUnit(Unit unit) {
+        centerMapOnUnit(unit, true);
+    }
+
+    public static void centerMapOnUnit(Unit unit, boolean set_state) {
         if (unit.in_space) {
             Point smo = Util.resolveSpaceMapOrigin(new Point(unit.x, unit.y), ws);
             game.setSpaceMapOrigin(smo);
             //System.out.println(" Star map");
             SU.setWindow(C.S_STAR_MAP);
-            gui.setCurrentState(SW2.get());
+            if (set_state) {
+                gui.setCurrentState(SW2.get());
+            }
+
         } else {
             game.setMapOrigin(Util.resolvePlanetMapOrigin(new Point(unit.x - C.PLANET_MAP_ORIGIN_X_OFFSET,
                     unit.y - C.PLANET_MAP_ORIGIN_Y_OFFSET)));
             SU.setWindow(C.S_PLANET_MAP);
-            gui.setCurrentState(PW2.get());
+            if (set_state) {
+                gui.setCurrentState(PW2.get());
+            }
+
         }
     }
 

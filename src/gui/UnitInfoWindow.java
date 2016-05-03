@@ -48,7 +48,9 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import state.State;
 import util.C;
@@ -109,12 +111,21 @@ public class UnitInfoWindow extends JPanel {
     private JButton prev_button;
     private JButton next_button;
     private JButton go_button;
+    private JPopupMenu filter_move;
+    private JMenuItem[] move_items;
+    private JButton filter_move_button;
+    private JPopupMenu filter_type;
+    private JMenuItem[] type_items;
+    private JButton filter_type_button;
+
+    private TYPE_FILTER type_filter;
     private Map<Enum, Integer> c;
     public UnitInfoWindow(Gui gui) {
         this.gui = gui;
         game = gui.getGame();
         ws = gui.getWindowSize();
         c = ws.group_finder;
+        type_filter = TYPE_FILTER.ALL_TYPES;
 //        stacks = new LinkedList<>();
     }
 
@@ -139,6 +150,20 @@ public class UnitInfoWindow extends JPanel {
         prev_button.setVisible(mode);
         next_button.setVisible(mode);
         go_button.setVisible(mode);
+        prev_button.setEnabled(mode);
+        next_button.setEnabled(mode);
+
+//        filter_move_button.setVisible(mode);
+        filter_type_button.setVisible(mode);
+
+    }
+
+    public void enablePrev(boolean mode) {
+        prev_button.setEnabled(mode);
+    }
+
+    public void enableNext(boolean mode) {
+        next_button.setEnabled(mode);
     }
 
     public void saveSelectedStack() {
@@ -237,6 +262,8 @@ public class UnitInfoWindow extends JPanel {
         setUpNext();
         setUpGo();
         setUpPlanetName();
+        setUpFilterType();
+        setUpFilterTypeMenu();
     }
 
     private void setUpPlanetName() {
@@ -350,6 +377,122 @@ public class UnitInfoWindow extends JPanel {
             }
         });
     }
+    private void setUpFilterMove() {
+        filter_move_button = new JButton("MT:All");
+        this.add(filter_move_button);
+        filter_move_button.setBounds(c.get(GF.BUTTON_X), c.get(GF.SENTRY_Y),
+                c.get(GF.BUTTON_W), c.get(GF.BUTTON_H));
+        filter_move_button.setBackground(Color.BLACK);
+        filter_move_button.setForeground(C.COLOR_GOLD);
+        filter_move_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        filter_move_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showFilterMoveMenu();
+            }
+        });
+    }
+
+    private void showFilterMoveMenu() {
+        filter_move.show(this, 0, 0);
+    }
+    
+    private void setUpFilterMoveMenu() {
+        filter_move = new JPopupMenu("Move Type");
+        filter_move.setVisible(false);
+        move_items = new JMenuItem[C.MoveType.values().length + 1];
+        final int ZERO = 0;
+        move_items[ZERO] = new JMenuItem("All");
+        filter_move.add(move_items[ZERO]);
+        move_items[ZERO].addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                selectMove(ZERO);
+            }
+        });
+        for (int i = 1; i < move_items.length; i++) {
+            move_items[i] = new JMenuItem(C.MoveType.values()[i - 1].name());
+            filter_move.add(move_items[i]);
+            final int final_i = i;
+            move_items[i].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    selectMove(final_i);
+                }
+            });
+        }
+    }
+
+    private void selectMove(int move) {
+
+    }
+
+    private void setUpFilterType() {
+        filter_type_button = new JButton("Type:All");
+        this.add(filter_type_button);
+        filter_type_button.setBounds(c.get(GF.BUTTON_X), c.get(GF.SENTRY_Y),
+                c.get(GF.BUTTON_W), c.get(GF.BUTTON_H));
+        filter_type_button.setBackground(Color.BLACK);
+        filter_type_button.setForeground(C.COLOR_GOLD);
+        filter_type_button.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        filter_type_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showFilterTypeMenu();
+            }
+        });
+    }
+
+    private void showFilterTypeMenu() {
+        filter_type.show(this, c.get(GF.BUTTON_X), c.get(GF.SENTRY_Y) - filter_type.getHeight());
+    }
+
+    public TYPE_FILTER getTypeFilter() {
+        return type_filter;
+    }
+
+    public enum TYPE_FILTER {
+        ALL_TYPES(-1),
+        ENGINEERS(C.ENGINEER_UNIT_TYPE),
+        TRANSPORTS(-1),
+        CARGO_PODS(C.CARGO_UNIT_TYPE),
+        NOBLES(C.NOBLE_UNIT_TYPE),
+        ASSASSINS(C.SPY_UNIT_TYPE),
+        SCEPTORS(C.SCEPTER_UNIT_TYPE);
+
+        public int type_no;
+
+        TYPE_FILTER(int type_no) {
+            this.type_no = type_no;
+        }
+    }
+    
+    private void setUpFilterTypeMenu() {
+        filter_type = new JPopupMenu("Unit Type");
+        type_items = new JMenuItem[TYPE_FILTER.values().length];
+        int idx = -1; //type_items.length;
+        for (TYPE_FILTER value : TYPE_FILTER.values()) {
+            type_items[++idx] = new JMenuItem(value.name());
+
+            final TYPE_FILTER final_value = value;
+            type_items[idx].addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    enableNext(true);
+                    enablePrev(true);
+                    selectType(final_value);
+                }
+            });
+        }
+        for (int i = type_items.length - 1; i > -1; i--) {
+            filter_type.add(type_items[i]);
+        }
+        filter_type.pack();
+        filter_type.show(null, 0, 0);  // fixes menu starting size and pos
+        filter_type.setVisible(false);
+    }
+
+    private void selectType(TYPE_FILTER value) {
+        type_filter = value;
+    }
+
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -366,6 +509,7 @@ public class UnitInfoWindow extends JPanel {
         drawTopStats(g);
         UtilG.drawCityArea(g, game, ws, ws.sw_city_x, ws.sw_city_y, null);
         planet_name.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
+        filter_type_button.setText(type_filter.name());
     }
 
     private void drawTopStats(Graphics g) {

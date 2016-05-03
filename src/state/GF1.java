@@ -30,10 +30,12 @@ package state;
 import galaxyreader.Planet;
 import galaxyreader.Unit;
 import game.Hex;
+import gui.UnitInfoWindow;
 import java.awt.Point;
 import java.util.List;
 import util.C;
 import util.Util;
+import static gui.UnitInfoWindow.TYPE_FILTER.TRANSPORTS;
 
 /**
  * Unit info window/Group finder mode
@@ -62,10 +64,46 @@ public class GF1 extends UIW1 {
         super.pressExitButton();
     }
 
+    /**
+     *
+     */
     @Override
     public void pressGoButton() {
         gui.getUnitInfoWindow().forgetSelected();
-        super.pressExitButton(); //To change body of generated methods, choose Tools | Templates.
+        boolean none_selected = true;
+        boolean in_space = false;
+        for (Unit unit : game.getSelectedStack()) {
+            in_space = unit.in_space;
+            if (unit.selected) {
+                none_selected = false;
+                break;
+            }
+        }
+        State tmp = null;
+        if (none_selected) {
+
+            if (in_space) {
+                tmp = SW1B.get();
+            } else {
+                tmp = PW1B.get();
+            }
+
+        } else {
+            if (in_space) {
+                tmp = SW2.get();
+            } else {
+                tmp = PW2.get();
+            }
+            // netbeans kills the next } on save unless this is here
+        }
+
+        gui.setCurrentState(tmp);
+        main_game_state = tmp;
+        SU.restoreMainWindow();
+        SU.centerMapOnUnit(game.getSelectedStack().get(0), false);
+        main_game_state = null;
+        gui.setInfo_unit(null);
+
     }
 
     @Override
@@ -111,6 +149,7 @@ public class GF1 extends UIW1 {
     @Override
     public void pressPrevButton() {
         System.out.println("Prev *****************");
+        gui.getUnitInfoWindow().enableNext(true);
         long time = System.currentTimeMillis();
         List<Unit> stack = game.getSelectedStack();
         int p_idx = 0;
@@ -161,7 +200,6 @@ public class GF1 extends UIW1 {
                     if (hex == null) {
                         if (p_idx <= 0) {
                             state = S_State.BEGIN;
-                            loop = false;
                         } else {
                             --p_idx;
                             space_slot = C.NR_FACTIONS;
@@ -169,7 +207,7 @@ public class GF1 extends UIW1 {
                         }
                     } else {
                         stack = hex.getStack();
-                        if (!stack.isEmpty() && stack.get(0).owner == game.getTurn()) {
+                        if (foundGroup(stack)) {
                             loop = false;
                             System.out.println("found stack");
                         }
@@ -184,7 +222,7 @@ public class GF1 extends UIW1 {
                         state = S_State.PLANET;
                     } else {
                         stack = game.getPlanet(p_idx).space_stacks[space_slot];
-                        if (!stack.isEmpty() && stack.get(0).owner == game.getTurn()) {
+                        if (foundGroup(stack)) {
                             loop = false;
                         }
                     }
@@ -200,7 +238,8 @@ public class GF1 extends UIW1 {
 //                        state = S_State.PLANET;
 //                    }
                     break;
-                case END:
+                case BEGIN:
+                    gui.getUnitInfoWindow().enablePrev(false);
                     loop = false;
                     break;
                 default:
@@ -280,9 +319,36 @@ public class GF1 extends UIW1 {
 //        setSelectedStack(stack);
     }
 
+    private boolean foundGroup(List<Unit> stack) {
+
+        if (stack.isEmpty() || stack.get(0).owner != game.getTurn()) {
+            return false;
+        }
+        UnitInfoWindow.TYPE_FILTER type_filter = gui.getUnitInfoWindow().getTypeFilter();
+        if (type_filter.equals(UnitInfoWindow.TYPE_FILTER.ALL_TYPES)) {
+            return true;
+        }
+        for (Unit unit : stack) {
+            switch (type_filter) {
+                case TRANSPORTS:
+                    if (unit.type_data.cargo > 0) {
+                        return true;
+                    }
+                    break;
+                default:
+                    if (unit.type == type_filter.type_no) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void pressNextButton() {
         System.out.println("Next *****************");
+        gui.getUnitInfoWindow().enablePrev(true);
         long time = System.currentTimeMillis();
         List<Unit> stack = game.getSelectedStack();
         int p_idx = 0;
@@ -333,7 +399,7 @@ public class GF1 extends UIW1 {
                         state = S_State.SPACE;
                     } else {
                         stack = hex.getStack();
-                        if (!stack.isEmpty() && stack.get(0).owner == game.getTurn()) {
+                        if (foundGroup(stack)) {
                             loop = false;
                             System.out.println("found stack");
                         }
@@ -345,7 +411,6 @@ public class GF1 extends UIW1 {
                         System.out.println(state + " " + p_idx);
                         if (p_idx >= game.getPlanets().size() - 1) {
                             state = S_State.END;
-                            loop = false;
                         } else {
                             p_idx++;
                             hex_iter = Util.getHexIter(game, p_idx);
@@ -353,7 +418,7 @@ public class GF1 extends UIW1 {
                         }
                     } else {
                         stack = game.getPlanet(p_idx).space_stacks[space_slot];
-                        if (!stack.isEmpty() && stack.get(0).owner == game.getTurn()) {
+                        if (foundGroup(stack)) {
                             loop = false;
                         }
                     }
@@ -370,6 +435,7 @@ public class GF1 extends UIW1 {
 //                    }
                     break;
                 case END:
+                    gui.getUnitInfoWindow().enableNext(false);
                     loop = false;
                     break;
                 default:

@@ -56,8 +56,25 @@ public class UIW1 extends State {
 
     @Override
     public void pressExitButton() {
+        boolean none_selected = true;
+        for (Unit unit : game.getSelectedStack()) {
+            if (unit.selected) {
+                none_selected = false;
+                break;
+            }
+        }
+        if (none_selected) {
+            State tmp = null;
+            if (main_game_state instanceof PW) {
+                tmp = PW1B.get();
+            } else {
+                tmp = SW1B.get();
+            }
+            gui.setCurrentState(tmp);
+        } else {
+            gui.setCurrentState(main_game_state);
+        }
         SU.restoreMainWindow();
-        gui.setCurrentState(main_game_state);
         main_game_state = null;
         gui.setInfo_unit(null);
 
