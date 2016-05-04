@@ -96,7 +96,7 @@ and open the template in the editor.
                 <td>
                     Last updated:
                     <ul>
-                    
+                        <li>Updates <a href="#Update2">2</a>,<a href="#Update3">3</a>,<a href="#Update4">4</a> 4.5.2016</li>
                         <li><a href="#Update1">Update 15.12.2015</a></li>
                     </ul>
                 </td>
@@ -225,39 +225,49 @@ and open the template in the editor.
 <p>
         Using java helps avoid 3, but lack of testing was a bit of a problem until last summer when automated high level testing using java Robot class was implemented. Basically, you play a game, testing features, the mouse and keyboard input and game state are recorded as you play, and the recorded game can be replayed (and features tested) automatically. Currently, there is almost an hours worth of tests in over twenty recorded games. Prior to implementing this testing, I have not been too confident to announce Phoenix outside of forums or threads dedicated to EFS.
 
-        <h2><A id="Web"></A>Phoenix on the web   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
+        <h2><A id="Update4"></A><A id="Web"></A>Phoenix on the web   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
 <p>
         The <a href="https://github.com/joulupunikki/Phoenix">Phoenix project</a> is hosted on github.
         <p>
             <a href="https://github.com/joulupunikki/Phoenix/releases">Release downloads</a> on github.
         <p>
+            <a href="https://googledrive.com/host/0B7pbLNesu2qwRERNNzBKSkktTFU/">Source javadoc</a> on google drive.
+        <p>
             A six minute video of <a href="https://www.youtube.com/watch?v=-5CJ0Of43C8">Phoenix 0.50.0</a> is on youtube. 
             Almost all EFS.EXE features implemented in Phoenix 0.50.0 are exhibited, with the notable exception of buy/sell resources from/to League agoras.
 
-        <h2><A id="Who"></A>Who made Phoenix patch ?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2> 
+        <h2><A id="Update3"></A><A id="Who"></A>Who made Phoenix patch ?   <A HREF="#Top"><font size="2">(back to top)</font></A></h2> 
 <p>
         <a href="mailto:joulupunikki@gmail.communist.invalid">joulupunikki</a> has done most of the work, 
         with first proof of concept GUI code produced in early spring 2010 and major parts done between fall 2012 and present (fall 2015).
         <p>
-            Richard Wein (co-creator of the Nova mod) 
+            Richard Wein (co-creator of the <a href="http://website.lineone.net/~rwein/nova/home.htm">Nova</a> mod) 
             has done almost all of the hard work regarding resource harvesting and production, and the special 
             cargo pod related data structures in early 2014.
 
 
         <h2 class="zero"><A id="Versions"></A>Phoenix version history   <A HREF="#Top"><font size="2">(back to top)</font></A></h2>
-        <h3>In the pipeline for the next release (version 0.51)</h3>
+        <h3><A id="Update2"></A>In the pipeline for the next release (version 0.51)</h3>
         <h4>Planned</h4>
         <ul>
             <li>If symbiot AI = useful => release single player mission/demo with players starting as Al-Malik regent, with fleet and garrison offices, and tasked with the conquest of Absolution, Chernobog and Daishan.</li>
+            <li>A multiplayer beta, or "beta" is the other option if the work on the AI doesn't bear fruit soon.
         </ul>
         <h4>Under construction</h4>
         <ul>
-            <li>Symbiot AI</li>
+            <li>Symbiot, Rebel, Church and League AIs</li>
+            <li>Auto purchase resources from league when building units.
+            <li>Fixing the bottom planetary hexes which are unseen in EFS1.4 (and currently non-existent in
+                Phoenix.)
         </ul>
         <h4>Completed</h4>
         <ul>
             <li>Tax, pay change effects on loyalty; resulting rebellions</li>
-            <li>Raze city</li>
+            <li>Orders: Build road, Raze city, Sentry, Wait</li>
+            <li>Combat: unspotted agility bonus, assassin special targeting,  experience, assault/feint</li>
+            <li>Bombard: city damage, shield effect</li>
+            <li>Keyboard shortcuts: sentry, wait, build city, Build Road</li>
+            <li>Archives: Group Finder (with type filter)</li>
             <li>Add promise votes, ministry to contracts</li>
             <li>Grand planetary map</li>
             <li>Grand galactic map</li>
