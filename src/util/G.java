@@ -176,4 +176,11 @@ public class G {
 
     }
 
+    /**
+     * Agora auto buy panel coordinates
+     */
+    public enum AAB {
+        WIN_X, WIN_Y, WIN_W, WIN_H, BUTTON_X, BUTTON_Y, BUTTON_W, BUTTON_H, ROW_H, HEADER_X, HEADER_Y, HEADER_Y2, HEADER_Y3, COL_TEXT_X, COL_TEXT_X2, ROW_TEXT_Y, HEADER_Y4, HEADER_Y5, BUTTON_X2, ROW_TEXT_Y2, COL_IMG_X, COL_IMG_X2, ROW_IMG_Y
+    }
+
 }

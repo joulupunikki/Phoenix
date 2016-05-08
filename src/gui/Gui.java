@@ -157,6 +157,8 @@ public class Gui extends JFrame {
     private HouseWindow house_window;
     private DiplomacyWindow diplomacy_window;
     private BuildPanel build_panel;
+    private AgoraAutobuyPanel agora_autobuy_panel;
+
     private JDialog build_window;
     // panel showing research options
     private TechPanel tech_panel;
@@ -317,6 +319,7 @@ public class Gui extends JFrame {
         diplomacy_selector = DiplomacySelectorPanel.getWindow(this);
         strategy_selector = CombatStrategyPanel.getWindow(this);
         setUpBuildWindow();
+        agora_autobuy_panel = AgoraAutobuyPanel.getWindow(this);
         setUpTechWindow();
         setUpTechDBWindow();
         setUpManowitzWindow();
@@ -1383,6 +1386,10 @@ public class Gui extends JFrame {
         build_window.setVisible(true);
     }
 
+    public void showAgoraAutobuyDialog(int[] resources, int planet, int type, int t_lvl, boolean[] response) {
+        agora_autobuy_panel.enterDialog(resources, planet, type, t_lvl, response);
+    }
+
     public void showStackMenu(MouseEvent e) {
         stack_menu.show(e.getComponent(), e.getX(), e.getY());
     }
@@ -2059,6 +2066,7 @@ public class Gui extends JFrame {
         galactic_map_uiw.setGame(game);
         globe_map_uiw.setGame(game);
         build_panel.setGame(game);
+        agora_autobuy_panel.setGame(game);
         tech_panel.setGame(game);
         tech_db_panel.setGame(game);
         manowitz_panel.setGame(game);

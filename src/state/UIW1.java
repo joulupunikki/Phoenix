@@ -90,7 +90,7 @@ public class UIW1 extends State {
             return;
         }
         switch (u.type) {
-            case C.CARGO_UNIT_TYPE:
+            //case C.CARGO_UNIT_TYPE:
             case C.NOBLE_UNIT_TYPE:
             case C.SCEPTER_UNIT_TYPE:
                 return;

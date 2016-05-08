@@ -1181,7 +1181,7 @@ public class UtilG {
     }
 
     /**
-     * Better colors for JSliders
+     * More EFS like appearance for JSliders
      */
     public static class DarkSliderUI extends MetalSliderUI {
 
@@ -1285,6 +1285,10 @@ public class UtilG {
 
     }
 
+    /**
+     * EFS like background for JOptionPanes, getting multicolor fonts requires
+     * more tuning.
+     */
     public static class PhoenixJOptionPane extends JOptionPane {
 
 

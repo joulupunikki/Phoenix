@@ -70,6 +70,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import org.apache.commons.math3.util.FastMath;
 import state.PW1;
 import util.C;
 import util.Comp;
@@ -341,6 +342,28 @@ public class BuildPanel extends JPanel {
                     Structure city = (Structure) city_table.getValueAt(selected_city, 0);
                     int[] tmp = (int[]) build_table.getValueAt(row, 0);
                     int[] unit = {tmp[0], tmp[1]};
+                    // autobuy from agora here, but only if this is the first unit in queue
+                    if (city.build_queue.isEmpty()) {
+                        int[] res_needed = game.getUnitTypes()[tmp[0]][tmp[1]].reqd_res;
+                        int planet = (Integer) planet_list.getSelectedValue();
+                        //System.out.println("Planet name = " + game.getPlanet(planet).name);
+                        int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
+                        int[] res_missing = new int[C.NR_RESOURCES];
+                        boolean need_more_res = false;
+                        for (int i = 0; i < res_display.length; i++) {
+                            res_missing[C.REQUIRED_RESOURCES[i]] = FastMath.max(0, res_needed[C.REQUIRED_RESOURCES[i]] - res_avail[C.REQUIRED_RESOURCES[i]]);
+                            if (res_missing[C.REQUIRED_RESOURCES[i]] > 0) {
+                                need_more_res = true;
+                            }
+                        }
+                        boolean[] response = {true};
+                        if (need_more_res) {
+                            gui.showAgoraAutobuyDialog(res_missing, planet, tmp[0], tmp[1], response);
+                        }
+                        if (!response[0]) {
+                            return;
+                        }
+                    }
                     city.addToQueue(unit, game.getUnitTypes(), game);
                     // if input unit was alone in selected stack
                     Point q = game.getSelectedPoint();

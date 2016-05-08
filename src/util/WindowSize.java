@@ -31,6 +31,7 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 import util.C.GC;
+import util.G.AAB;
 import util.G.CD;
 import util.G.CDW;
 import util.G.CGW;
@@ -560,6 +561,7 @@ public class WindowSize {
     public HashMap<Enum, Integer> options_window;
     public HashMap<Enum, Integer> strategy_selector;
     public HashMap<Enum, Integer> group_finder;
+    public HashMap<Enum, Integer> agora_auto_buy;
 
 
 
@@ -576,6 +578,7 @@ public class WindowSize {
         iOptionsWindow(is_double);
         iStrategy(is_double);
         iGroupFInder(is_double);
+        iAgoraAutobuy(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -1279,7 +1282,7 @@ public class WindowSize {
         strategy_selector.put(SS.HEADER_Y, 191 - y);
 
         if (is_double) {
-            diplomacy_selector.replaceAll(mul2);
+            strategy_selector.replaceAll(mul2);
         }
 
     }
@@ -1302,6 +1305,45 @@ public class WindowSize {
 
 
 
+    }
+
+    private void iAgoraAutobuy(boolean is_double) {
+        agora_auto_buy = new HashMap<>();
+        agora_auto_buy.put(AAB.WIN_X, 60);
+        agora_auto_buy.put(AAB.WIN_Y, 160);
+        int x = agora_auto_buy.get(AAB.WIN_X);
+        int y = agora_auto_buy.get(AAB.WIN_Y);
+
+        agora_auto_buy.put(AAB.WIN_W, 520);
+        agora_auto_buy.put(AAB.WIN_H, 232);
+        agora_auto_buy.put(AAB.BUTTON_X, 98);
+        agora_auto_buy.put(AAB.BUTTON_X2, 318);
+        agora_auto_buy.put(AAB.BUTTON_Y, 205);
+        agora_auto_buy.put(AAB.BUTTON_W, 104);
+        agora_auto_buy.put(AAB.BUTTON_H, 16);
+
+        agora_auto_buy.put(AAB.COL_TEXT_X, 52);
+        agora_auto_buy.put(AAB.COL_TEXT_X2, 332);
+        agora_auto_buy.put(AAB.COL_IMG_X, 11);
+        agora_auto_buy.put(AAB.COL_IMG_X2, 270);
+
+        agora_auto_buy.put(AAB.ROW_TEXT_Y, 113);
+        agora_auto_buy.put(AAB.ROW_TEXT_Y2, 125);
+        agora_auto_buy.put(AAB.ROW_IMG_Y, 100);
+
+        agora_auto_buy.put(AAB.ROW_H, 32);
+
+        agora_auto_buy.put(AAB.HEADER_X, 207 - x);
+        agora_auto_buy.put(AAB.HEADER_Y, 24);
+        agora_auto_buy.put(AAB.HEADER_Y2, 44);
+        agora_auto_buy.put(AAB.HEADER_Y3, 74);
+        agora_auto_buy.put(AAB.HEADER_Y4, 160);
+        agora_auto_buy.put(AAB.HEADER_Y5, 185);
+
+
+        if (is_double) {
+            agora_auto_buy.replaceAll(mul2);
+        }
 
     }
 
