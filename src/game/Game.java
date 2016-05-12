@@ -834,7 +834,7 @@ public class Game implements Serializable {
                 } else {
                     y = e.y / 2;
                 }
-                if (e.x % 2 == 0 && y >= 31) {
+                if (e.x < 0 || e.x >= C.PLANET_MAP_WIDTH || y < 0 || y >= C.PLANET_MAP_COLUMNS) {
 
                     System.out.println("Out of map unit number " + out_of_map_units++);
                     iterator.remove();
@@ -843,6 +843,13 @@ public class Game implements Serializable {
                 } else {
 //                    System.out.println("(x,y): " + e.x + "," + y);
                     planet.planet_grid.getHex(e.x, y).placeUnit(e);
+                    if (e.x % 2 == 0 && y == C.PLANET_MAP_COLUMNS - 1) {
+                        System.out.print("Low edge unit: ");
+                        System.out.print(" Owner " + e.owner);
+                        System.out.print(" Type " + e.type);
+                        System.out.print(" Planet " + planets.get(e.p_idx).name);
+                        System.out.println(" Hex(x,y): " + e.x + "," + y);
+                    }
 
                 }
             }
@@ -882,16 +889,17 @@ public class Game implements Serializable {
                 } else {
                     y = e.y / 2;
                 }
-                if ((e.x % 2 == 0 && y >= 31) || (e.x % 2 == 1 && y >= 32) || y < 0) {
+                if (e.x < 0 || e.x >= C.PLANET_MAP_WIDTH || y < 0 || y >= C.PLANET_MAP_COLUMNS) {
 
                     iterator.remove();
                     out_of_map_units++;
-                    if (e.owner < 5) {
-                        System.out.print("Del struct " + out_of_map_units);
-                        System.out.print(" Owner " + e.owner);
-                        System.out.print(" Planet " + planets.get(e.p_idx).name);
-                        System.out.println(" Hex(x,y): " + e.x + "," + y);
-                    }
+//                    if (e.owner < 5) {
+                    System.out.print("Del struct " + out_of_map_units);
+                    System.out.print(" Type " + e.type);
+                    System.out.print(" Owner " + e.owner);
+                    System.out.print(" Planet " + planets.get(e.p_idx).name);
+                    System.out.println(" Hex(x,y): " + e.x + "," + y);
+//                    }
                 } else {
 //                    System.out.println("(x,y): " + e.x + "," + y);
                     if (e.type < 26) {
@@ -903,13 +911,21 @@ public class Game implements Serializable {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeResource(e);
                         iterator.remove(); // FIX #53
                     }
+                    if (e.x % 2 == 0 && y == C.PLANET_MAP_COLUMNS - 1) {
+                        System.out.print("Low edge structure: ");
+                        System.out.print(" Owner " + e.owner);
+                        System.out.print(" Type " + e.type);
+                        System.out.print(" Planet " + planets.get(e.p_idx).name);
+                        System.out.println(" Hex(x,y): " + e.x + "," + y);
+                    }
+                    e.y = y;
                 }
-                e.y = y;
             }
         }
         if (out_of_map_units > 0) {
             System.out.println("Out of map structures: " + out_of_map_units);
         }
+
     }
 
     public void subMovePoints(List<Unit> selected) {
@@ -2008,5 +2024,11 @@ public class Game implements Serializable {
             }
         }
         return false;
+    }
+
+    public void omniscience() {
+        for (Planet planet : planets) {
+            planet.omniscience(getTurn());
+        }
     }
 }

@@ -202,28 +202,28 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-
-                    int move_cost = planet_grid.getHex(i, j).getMoveCost(move_type.ordinal());
-
-                    dx = x + x_offset;
-                    dy = y + dip + y_offset;
-
-                    if (ws.is_double) {
-                        dx *= 2;
-                        dy *= 2;
-                    }
-
-                    g.setColor(Color.red);
-                    g.setFont(new Font("Arial", Font.BOLD, 20));
-                    g.drawString("" + move_cost, dx, dy);
-
+                if (i % 2 == 0) {
+                    dip = +20;
                 }
+
+                int move_cost = planet_grid.getHex(i, j).getMoveCost(move_type.ordinal());
+
+                dx = x + x_offset;
+                dy = y + dip + y_offset;
+
+                if (ws.is_double) {
+                    dx *= 2;
+                    dy *= 2;
+                }
+
+                g.setColor(Color.red);
+                g.setFont(new Font("Arial", Font.BOLD, 20));
+                g.drawString("" + move_cost, dx, dy);
+
+//                }
                 y += 40;
 
             }
@@ -265,14 +265,14 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
+                if (i % 2 == 0) {
+                    dip = +20;
+                }
 
-                    boolean[] terrain_type = planet_grid.getHex(i, j).getTerrain();
+                boolean[] terrain_type = planet_grid.getHex(i, j).getTerrain();
 
 //                    int n = 0;
 //                    for (int k = 0; k < terrain_type.length; k++) {
@@ -291,37 +291,36 @@ public class PlanetMap extends JPanel {
 //                            //g.drawString("" + planet_grid.getHex(i, j).getLandNr(), dx, dy);
 //                        }
 //                    }
+                dx = x + x_offset;
+                dy = y + dip + y_offset;
 
-                    dx = x + x_offset;
-                    dy = y + dip + y_offset;
+                if (ws.is_double) {
+                    dx *= 2;
+                    dy *= 2;
+                }
 
-                    if (ws.is_double) {
-                        dx *= 2;
-                        dy *= 2;
-                    }
-
-                    g.setColor(Color.RED);
-                    g.setFont(new Font("Arial", Font.PLAIN, 10));
-                    String s = "";
-                    EnumMap gui_opt = gui.getGuiOpt();
-                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.LAND_NR)).isSelected()) {
-                        s += planet_grid.getHex(i, j).getLandNr() + " ";
-                    }
-                    if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.HEX_XY)).isSelected()) {
-                        s += i + "," + j;
-                    }
-                    g.drawString(s, dx, dy);
+                g.setColor(Color.RED);
+                g.setFont(new Font("Arial", Font.PLAIN, 10));
+                String s = "";
+                EnumMap gui_opt = gui.getGuiOpt();
+                if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.LAND_NR)).isSelected()) {
+                    s += planet_grid.getHex(i, j).getLandNr() + " ";
+                }
+                if (((JCheckBox) gui_opt.get(OptionsPanel.GUI_OPT.HEX_XY)).isSelected()) {
+                    s += i + "," + j;
+                }
+                g.drawString(s, dx, dy);
 //                        for (int k = 0; k < name.length(); k++) {
 //                            String t = name.substring(k, k + 1);
 //                            g.setFont(ws.font_structure_name_bg);
 //                            g.setColor(Color.BLACK);
 //                            g.drawString(t, dx + k * (ws.font_structure_name_size - ws.font_structure_name_gap), dy);
-//                                                        
+//
 //                            g.setColor(Util.getColor(pallette, Util.getOwnerColor(city.owner)));
 //                            g.setFont(ws.font_structure_name_fg);
 //                            g.drawString(t, dx + k * (ws.font_structure_name_size - ws.font_structure_name_gap), dy);
 //                        }
-                }
+//                }
                 y += 40;
 
             }
@@ -361,44 +360,44 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-                    Structure city = game.getPlanetGrid(current_planet).getHex(i, j).getStructure();
-                    Hex hex = game.getPlanetGrid(current_planet).getHex(i, j);
-                    if (city != null && hex.isSpotted(game.getTurn())) {
-                        String name = game.getStrBuild(city.type).name;
-
-                        dx = x + x_offset;
-                        dy = y + dip + y_offset + C.STRUCT_BIN_HEIGHT;
-
-                        if (ws.is_double) {
-                            dx *= 2;
-                            dy *= 2;
-                        }
-
-                        drawOutlinedText(g, name, dx, dy, city);
-                    }
-
-                    Structure resource = game.getPlanetGrid(current_planet).getHex(i, j).getResource();
-                    if (resource != null && hex.isSpotted(game.getTurn())) {
-                        String name = game.getStrBuild(resource.type).name;
-
-                        dx = x + x_offset;
-                        dy = y + dip + y_offset + C.STRUCT_BIN_HEIGHT;
-
-                        if (ws.is_double) {
-                            dx *= 2;
-                            dy *= 2;
-                        }
-
-                        drawOutlinedText(g, name, dx, dy, resource);
-                    }
-
+                if (i % 2 == 0) {
+                    dip = +20;
                 }
+                Structure city = game.getPlanetGrid(current_planet).getHex(i, j).getStructure();
+                Hex hex = game.getPlanetGrid(current_planet).getHex(i, j);
+                if (city != null && hex.isSpotted(game.getTurn())) {
+                    String name = game.getStrBuild(city.type).name;
+
+                    dx = x + x_offset;
+                    dy = y + dip + y_offset + C.STRUCT_BIN_HEIGHT;
+
+                    if (ws.is_double) {
+                        dx *= 2;
+                        dy *= 2;
+                    }
+
+                    drawOutlinedText(g, name, dx, dy, city);
+                }
+
+                Structure resource = game.getPlanetGrid(current_planet).getHex(i, j).getResource();
+                if (resource != null && hex.isSpotted(game.getTurn())) {
+                    String name = game.getStrBuild(resource.type).name;
+
+                    dx = x + x_offset;
+                    dy = y + dip + y_offset + C.STRUCT_BIN_HEIGHT;
+
+                    if (ws.is_double) {
+                        dx *= 2;
+                        dy *= 2;
+                    }
+
+                    drawOutlinedText(g, name, dx, dy, resource);
+                }
+
+//                }
                 y += 40;
 
             }
@@ -477,124 +476,124 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
+                if (i % 2 == 0) {
+                    dip = +20;
+                }
 
-                    dx = x + x_offset;
-                    dy = y + dip + y_offset;
+                dx = x + x_offset;
+                dy = y + dip + y_offset;
 
-                    if (ws.is_double) {
-                        dx *= 2;
-                        dy *= 2;
-                    }
+                if (ws.is_double) {
+                    dx *= 2;
+                    dy *= 2;
+                }
 
-                    int[] curr_mv_points = new int[Util.stackSize(selected)];
+                int[] curr_mv_points = new int[Util.stackSize(selected)];
 
-                    int index = 0;
+                int index = 0;
+                for (Unit e : selected) {
+                    curr_mv_points[index++] = e.move_points;
+                }
+
+                turn = 1;
+                for (ListIterator<Hex> it = path.listIterator(1); it.hasNext();) {
+                    Hex h = it.next();
+
+                    index = 0;
                     for (Unit e : selected) {
-                        curr_mv_points[index++] = e.move_points;
+                        int move_cost = h.getMoveCost(e.move_type.ordinal());
+                        int max_move = unit_types[e.type][e.t_lvl].move_pts;
+                        if (move_cost > max_move) {
+                            move_cost = max_move;
+                        }
+                        if (curr_mv_points[index] >= move_cost) {
+                            curr_mv_points[index] -= move_cost;
+                            index++;
+                        } else { // no movement points left
+                            no_move_left = true;
+                            break;
+                        }
                     }
 
-                    turn = 1;
-                    for (ListIterator<Hex> it = path.listIterator(1); it.hasNext();) {
-                        Hex h = it.next();
-
+                    if (no_move_left) {
+                        turn++;
                         index = 0;
                         for (Unit e : selected) {
+                            curr_mv_points[index] = unit_types[e.type][e.t_lvl].move_pts;
                             int move_cost = h.getMoveCost(e.move_type.ordinal());
                             int max_move = unit_types[e.type][e.t_lvl].move_pts;
                             if (move_cost > max_move) {
                                 move_cost = max_move;
                             }
-                            if (curr_mv_points[index] >= move_cost) {
-                                curr_mv_points[index] -= move_cost;
-                                index++;
-                            } else { // no movement points left
-                                no_move_left = true;
-                                break;
-                            }
+                            curr_mv_points[index] -= move_cost;
+                            index++;
                         }
-
-                        if (no_move_left) {
-                            turn++;
-                            index = 0;
-                            for (Unit e : selected) {
-                                curr_mv_points[index] = unit_types[e.type][e.t_lvl].move_pts;
-                                int move_cost = h.getMoveCost(e.move_type.ordinal());
-                                int max_move = unit_types[e.type][e.t_lvl].move_pts;
-                                if (move_cost > max_move) {
-                                    move_cost = max_move;
-                                }
-                                curr_mv_points[index] -= move_cost;
-                                index++;
-                            }
 //                                g.setColor(Color.RED);
 //                                g.fillOval(dx, dy, ws.path_circle, ws.path_circle);
 //                                g.setColor(Color.BLACK);
 //                                g.drawOval(dx, dy, ws.path_circle, ws.path_circle);
 //                                break;
-                            no_move_left = false;
-                        }
+                        no_move_left = false;
+                    }
 
-                        if (it.hasNext()) {
-                            Hex h2 = it.next();
-                            index = 0;
-                            for (Unit e : selected) {
-                                int move_cost = h2.getMoveCost(e.move_type.ordinal());
-                                int max_move = unit_types[e.type][e.t_lvl].move_pts;
-                                if (move_cost > max_move) {
-                                    move_cost = max_move;
-                                }
-                                if (curr_mv_points[index] < move_cost) {
-                                    end_turn = true;
-                                }
-                                index++;
+                    if (it.hasNext()) {
+                        Hex h2 = it.next();
+                        index = 0;
+                        for (Unit e : selected) {
+                            int move_cost = h2.getMoveCost(e.move_type.ordinal());
+                            int max_move = unit_types[e.type][e.t_lvl].move_pts;
+                            if (move_cost > max_move) {
+                                move_cost = max_move;
                             }
-                            it.previous();
+                            if (curr_mv_points[index] < move_cost) {
+                                end_turn = true;
+                            }
+                            index++;
+                        }
+                        it.previous();
+                    }
+
+                    if (h.getX() == i && h.getY() == j) {
+                        if (turn > 1) {
+                            g.setColor(PATH_RED);
+                        } else {
+                            g.setColor(PATH_GREEN);
                         }
 
-                        if (h.getX() == i && h.getY() == j) {
+                        if (end_turn) {
+                            dx -= ws.font_path_numbers_size / 2;
+                            dy += ws.font_path_numbers_size / 2;
+                            String s = "" + turn;
+                            g.setFont(ws.font_path_numbers);
+                            g.setColor(Color.BLACK);
+                            g.drawString(s, dx + ws.font_structure_name_gap, dy);
+                            g.drawString(s, dx - ws.font_structure_name_gap, dy);
+                            g.drawString(s, dx, dy - ws.font_structure_name_gap);
+                            g.drawString(s, dx, dy + ws.font_structure_name_gap);
                             if (turn > 1) {
                                 g.setColor(PATH_RED);
                             } else {
                                 g.setColor(PATH_GREEN);
                             }
 
-                            if (end_turn) {
-                                dx -= ws.font_path_numbers_size / 2;
-                                dy += ws.font_path_numbers_size / 2;
-                                String s = "" + turn;
-                                g.setFont(ws.font_path_numbers);
-                                g.setColor(Color.BLACK);
-                                g.drawString(s, dx + ws.font_structure_name_gap, dy);
-                                g.drawString(s, dx - ws.font_structure_name_gap, dy);
-                                g.drawString(s, dx, dy - ws.font_structure_name_gap);
-                                g.drawString(s, dx, dy + ws.font_structure_name_gap);
-                                if (turn > 1) {
-                                    g.setColor(PATH_RED);
-                                } else {
-                                    g.setColor(PATH_GREEN);
-                                }
+                            g.drawString(s, dx, dy);
 
-                                g.drawString(s, dx, dy);
-
-                            } else {
+                        } else {
 //                                g.setColor(Color.GREEN);
-                                dx -= ws.path_circle / 2;
-                                dy -= ws.path_circle / 2;
-                                g.fillOval(dx, dy, ws.path_circle, ws.path_circle);
-                                g.setColor(Color.BLACK);
-                                g.drawOval(dx, dy, ws.path_circle, ws.path_circle);
-                            }
+                            dx -= ws.path_circle / 2;
+                            dy -= ws.path_circle / 2;
+                            g.fillOval(dx, dy, ws.path_circle, ws.path_circle);
+                            g.setColor(Color.BLACK);
+                            g.drawOval(dx, dy, ws.path_circle, ws.path_circle);
                         }
-                        end_turn = false;
                     }
-
+                    end_turn = false;
                 }
+
+//                }
                 y += 40;
 
             }
@@ -728,97 +727,97 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-                    if (selected_stack != null && selected_stack.x == i && selected_stack.y == j) { // && gui.getAnimationBlink()) {
-
-                        if (!gui.getStackMove() && gui.getAnimationBlink()) {
-                            return;
-                        }
-
-                        dx = x + x_offset;
-                        dy = y + dip + y_offset;
-
-                        if (gui.getStackMove()) {
-                            int move_counter = gui.getStackMoveCounter();
-                            LinkedList<Hex> path = game.getPath();
-                            Hex hex_1 = path.get(0);
-                            Hex hex_2 = path.get(1);
-
-                            Hex[] neighbours = hex_1.getNeighbours();
-                            int neighbour = 0;
-                            for (int k = 0; k < neighbours.length; k++) {
-                                Hex hex = neighbours[k];
-                                if (hex_2.equals(hex)) {
-                                    neighbour = k;
-                                }
-
-                            }
-
-                            double smxo = 1.9;
-                            double smyo = 1.0;
-                            switch (neighbour) {
-                                case 0:
-//                                    dx -= smxo * move_counter;
-                                    dy -= 2 * smyo * move_counter;
-                                    break;
-                                case 1:
-                                    dx += smxo * move_counter;
-                                    dy -= smyo * move_counter;
-                                    break;
-                                case 2:
-                                    dx += smxo * move_counter;
-                                    dy += smyo * move_counter;
-                                    break;
-                                case 3:
-//                                    dx -= smxo * move_counter;
-                                    dy += 2 * smyo * move_counter;
-                                    break;
-                                case 4:
-                                    dx -= smxo * move_counter;
-                                    dy += smyo * move_counter;
-                                    break;
-                                case 5:
-                                    dx -= smxo * move_counter;
-                                    dy -= smyo * move_counter;
-                                    break;
-                                default:
-                                    throw new AssertionError();
-                            }
-
-                        }
-                        if (ws.is_double) {
-                            dx *= 2;
-                            dy *= 2;
-                        }
-
-                        List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
-                        if (stack != null && Util.stackSize(stack) > 0) {
-                            Unit e = null;
-                            List<Unit> spotted = new LinkedList<>();
-                            for (Unit unit : stack) {
-                                if (unit.spotted[game.getTurn()]) {
-                                    spotted.add(unit);
-                                }
-                            }
-                            e = spotted.get(0);
-                            Util.fillRaster(wr, Util.getOwnerColor(e.owner));
-                            Util.drawUnitIconEdges(wr, ws);
-                            Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
-
-                            Graphics2D g2d = (Graphics2D) g;
-
-                            g2d.drawImage(bi, null, dx, dy);
-                            Util.writeUnitCount(g2d, ws, Util.stackSize(spotted), dx, dy, e.owner != e.prev_owner);
-
-                        }
-                    }
-
+                if (i % 2 == 0) {
+                    dip = +20;
                 }
+                if (selected_stack != null && selected_stack.x == i && selected_stack.y == j) { // && gui.getAnimationBlink()) {
+
+                    if (!gui.getStackMove() && gui.getAnimationBlink()) {
+                        return;
+                    }
+
+                    dx = x + x_offset;
+                    dy = y + dip + y_offset;
+
+                    if (gui.getStackMove()) {
+                        int move_counter = gui.getStackMoveCounter();
+                        LinkedList<Hex> path = game.getPath();
+                        Hex hex_1 = path.get(0);
+                        Hex hex_2 = path.get(1);
+
+                        Hex[] neighbours = hex_1.getNeighbours();
+                        int neighbour = 0;
+                        for (int k = 0; k < neighbours.length; k++) {
+                            Hex hex = neighbours[k];
+                            if (hex_2.equals(hex)) {
+                                neighbour = k;
+                            }
+
+                        }
+
+                        double smxo = 1.9;
+                        double smyo = 1.0;
+                        switch (neighbour) {
+                            case 0:
+//                                    dx -= smxo * move_counter;
+                                dy -= 2 * smyo * move_counter;
+                                break;
+                            case 1:
+                                dx += smxo * move_counter;
+                                dy -= smyo * move_counter;
+                                break;
+                            case 2:
+                                dx += smxo * move_counter;
+                                dy += smyo * move_counter;
+                                break;
+                            case 3:
+//                                    dx -= smxo * move_counter;
+                                dy += 2 * smyo * move_counter;
+                                break;
+                            case 4:
+                                dx -= smxo * move_counter;
+                                dy += smyo * move_counter;
+                                break;
+                            case 5:
+                                dx -= smxo * move_counter;
+                                dy -= smyo * move_counter;
+                                break;
+                            default:
+                                throw new AssertionError();
+                        }
+
+                    }
+                    if (ws.is_double) {
+                        dx *= 2;
+                        dy *= 2;
+                    }
+
+                    List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
+                    if (stack != null && Util.stackSize(stack) > 0) {
+                        Unit e = null;
+                        List<Unit> spotted = new LinkedList<>();
+                        for (Unit unit : stack) {
+                            if (unit.spotted[game.getTurn()]) {
+                                spotted.add(unit);
+                            }
+                        }
+                        e = spotted.get(0);
+                        Util.fillRaster(wr, Util.getOwnerColor(e.owner));
+                        Util.drawUnitIconEdges(wr, ws);
+                        Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+
+                        Graphics2D g2d = (Graphics2D) g;
+
+                        g2d.drawImage(bi, null, dx, dy);
+                        Util.writeUnitCount(g2d, ws, Util.stackSize(spotted), dx, dy, e.owner != e.prev_owner);
+
+                    }
+                }
+
+//                }
                 y += 40;
 
             }
@@ -864,56 +863,56 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-                    if (selected_stack == null || selected_stack.x != i || selected_stack.y != j) {
-
-                        dx = x + x_offset;
-                        dy = y + dip + y_offset;
-
-                        if (ws.is_double) {
-                            dx *= 2;
-                            dy *= 2;
-                        }
-
-                        List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
-                        if (stack != null && Util.stackSize(stack) > 0) {
-                            Unit e = null;  //stack.get(0);
-                            int nr_spotted = 0;
-                            boolean spotted = false;
-                            for (Unit unit : stack) {
-                                if (unit.spotted[game.getTurn()]) {
-                                    spotted = true;
-                                    e = unit;
-                                    nr_spotted++;
-                                    nr_spotted += unit.cargo_list.size();
-                                }
-                            }
-                            if (spotted) {
-
-                                if (game.getPlanetGrid(current_planet).getHex(i, j).getStructure() == null) {
-
-                                    Util.fillRaster(wr, Util.getOwnerColor(e.owner));
-                                    Util.drawUnitIconEdges(wr, ws);
-                                    Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
-
-                                    Graphics2D g2d = (Graphics2D) g;
-
-                                    g2d.drawImage(bi, null, dx, dy);
-                                    Util.writeUnitCount(g2d, ws, nr_spotted, dx, dy, e.owner != e.prev_owner);
-                                } else {
-                                    g.setColor(Util.getColor(pallette, Util.getOwnerColor(e.owner)));
-                                    Util.drawBlip(g, dx, dy, ws.blip_side);
-                                }
-                            }
-                        }
-                    }
-
+                if (i % 2 == 0) {
+                    dip = +20;
                 }
+                if (selected_stack == null || selected_stack.x != i || selected_stack.y != j) {
+
+                    dx = x + x_offset;
+                    dy = y + dip + y_offset;
+
+                    if (ws.is_double) {
+                        dx *= 2;
+                        dy *= 2;
+                    }
+
+                    List<Unit> stack = game.getPlanetGrid(current_planet).getHex(i, j).getStack();
+                    if (stack != null && Util.stackSize(stack) > 0) {
+                        Unit e = null;  //stack.get(0);
+                        int nr_spotted = 0;
+                        boolean spotted = false;
+                        for (Unit unit : stack) {
+                            if (unit.spotted[game.getTurn()]) {
+                                spotted = true;
+                                e = unit;
+                                nr_spotted++;
+                                nr_spotted += unit.cargo_list.size();
+                            }
+                        }
+                        if (spotted) {
+
+                            if (game.getPlanetGrid(current_planet).getHex(i, j).getStructure() == null) {
+
+                                Util.fillRaster(wr, Util.getOwnerColor(e.owner));
+                                Util.drawUnitIconEdges(wr, ws);
+                                Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+
+                                Graphics2D g2d = (Graphics2D) g;
+
+                                g2d.drawImage(bi, null, dx, dy);
+                                Util.writeUnitCount(g2d, ws, nr_spotted, dx, dy, e.owner != e.prev_owner);
+                            } else {
+                                g.setColor(Util.getColor(pallette, Util.getOwnerColor(e.owner)));
+                                Util.drawBlip(g, dx, dy, ws.blip_side);
+                            }
+                        }
+                    }
+                }
+
+//                }
                 y += 40;
 
             }
@@ -994,7 +993,6 @@ public class PlanetMap extends JPanel {
 //            }
 //
 //        }
-
         int origin_x = origin.x;
         int origin_y = origin.y;
 
@@ -1007,29 +1005,29 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-                    // for setting spotted squares
-                    current_hex = hex_grid[i][j];
-
-                    // hex tile numbers in efstile*.bin
-                    int[] tile_no;
-
-                    tile_no = getTileNo(i, j, game);
-
-                    //skip top j when i % 2 == 0
-//                if (j != origin_y || (i % 2 != 0)) {
-                    if (!stack_moving || 0 >= stack_move_counter || 20 <= stack_move_counter) {
-                        writeHex2(x, y, dip, pixel_data, hex_tiles, tile_no, wr);
-                    }
-//                }
-                    //                int t_idx = 0;
-//                    writeUnit(g, x, y, dip, pixel_data, unit_icons, tile_no, wr);
+                if (i % 2 == 0) {
+                    dip = +20;
                 }
+                // for setting spotted squares
+                current_hex = hex_grid[i][j];
+
+                // hex tile numbers in efstile*.bin
+                int[] tile_no;
+
+                tile_no = getTileNo(i, j, game);
+
+                //skip top j when i % 2 == 0
+//                if (j != origin_y || (i % 2 != 0)) {
+                if (!stack_moving || 0 >= stack_move_counter || 20 <= stack_move_counter) {
+                    writeHex2(x, y, dip, pixel_data, hex_tiles, tile_no, wr);
+                }
+//                }
+                //                int t_idx = 0;
+//                    writeUnit(g, x, y, dip, pixel_data, unit_icons, tile_no, wr);
+//                }
                 y += 40;
 
             }
@@ -1223,14 +1221,14 @@ public class PlanetMap extends JPanel {
          * mountain, hill, river
          * resource
          * road 1
-         * 
-         * 
-         * 
-         * 
+         *
+         *
+         *
+         *
          * road 6
          * road 7 ?
          * structure
-         * 
+         *
          */
         int[] tile_no = {
             -1, -1, -1, -1,
@@ -1299,8 +1297,8 @@ public class PlanetMap extends JPanel {
         int[][] planet_map_flags = game.getGalaxy().getPlanetMap(current_planet);
 
 //        PlanetGrid planet_map = game.getPlanetGrid();
-//        
-//        
+//
+//
 //        Hex h = planet_map.getHex(u, v);
 //        System.out.println("u, v: " + u + ", " + v);
 //
@@ -1755,7 +1753,7 @@ public class PlanetMap extends JPanel {
     }
 
 //    public void drawFlags(Graphics g) {
-//        
+//
 //      int n = 0;
 //                for (int k = 0; k < powers.length; k++) {
 //                    if ((hex_buffer[buf_tab[i][j].x][buf_tab[i][j].y] & powers[k]) == powers[k]) {
@@ -1766,8 +1764,8 @@ public class PlanetMap extends JPanel {
 //                        int x_draw = x + x_offset;
 //                        int y_draw = y + dip + y_offset;
 //
-//                        
-//                        
+//
+//
 //                        if (n < 3) {
 //                            y_draw += n * 10;
 //                        } else if (n < 6) {
@@ -1791,8 +1789,8 @@ public class PlanetMap extends JPanel {
 //                        n++;
 //                    }
 //
-//                }  
-//        
+//                }
+//
 //    }
     public void drawHexGrid(Graphics g) {
 
@@ -1812,12 +1810,12 @@ public class PlanetMap extends JPanel {
 //                int[] x_p = {x + 39, x + 11, x + 0, x + 11, x + 39};
 //                int[] y_p = {y + 40, y + 40, y + 20, y + 0, y + 0};
 
-                int[] x_p = {x + 11, x + 0, x + 11, x + 38};
-                int[] y_p = {y + 40, y + 20, y + 0, y + 0};
+                int[] x_p = {x + 11, x + 0, x + 11, x + 38, x + 49, x + 38};
+                int[] y_p = {y + 40, y + 20, y + 0, y + 0, y + 20, y + 40};
                 int dip = 0;
-                if (i == 9) {
-                    y_p[0] = y + 39;
-                }
+//                if (i == 9) {
+//                    y_p[0] = y + 39;
+//                }
 
                 if (j % 2 == game.getMapOrigin().x % 2) {
                     dip = +20;
@@ -1841,7 +1839,7 @@ public class PlanetMap extends JPanel {
 //                if ((i != 0 || (j % 2 != game.getMapOrigin().x % 2))) {
                 if (j % 2 != game.getMapOrigin().x % 2 || i != 9) {
 
-                    g.drawPolyline(x_p, y_p, x_p.length);
+                    g.drawPolygon(x_p, y_p, x_p.length);
                 }
 //                }
                 x += 19;
@@ -1872,53 +1870,53 @@ public class PlanetMap extends JPanel {
             y = 0;
 
             for (int j = origin_y; j < origin_y + 10; j++) {
-                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
-                    int dip = 0;
+//                if ((i % 2 != 0 || j != 31) && (i % 2 != 0 || j != origin_y + 9)) {
+                int dip = 0;
 
-                    if (i % 2 == 0) {
-                        dip = +20;
-                    }
-                    current_hex = hex_grid[i][j];
-                    if (shielded_hexes.isEmpty()) {
-                        return;
-                    }
-                    if (shielded_hexes.remove(current_hex) && current_hex.isSpotted(current_faction)) {
-                        int[] x_p = {x + 11, x + 0, x + 11, x + 38, x + 49, x + 38, x + 11};
-                        int[] y_p = {y + 40, y + 20, y + 0, y + 0, y + 20, y + 40, y + 40};
+                if (i % 2 == 0) {
+                    dip = +20;
+                }
+                current_hex = hex_grid[i][j];
+                if (shielded_hexes.isEmpty()) {
+                    return;
+                }
+                if (shielded_hexes.remove(current_hex) && current_hex.isSpotted(current_faction)) {
+                    int[] x_p = {x + 11, x + 0, x + 11, x + 38, x + 49, x + 38, x + 11};
+                    int[] y_p = {y + 40, y + 20, y + 0, y + 0, y + 20, y + 40, y + 40};
 //                        int[] x_p = {x + 10, x + 0, x + 10, x + 37, x + 48, x + 37};
 //                        int[] y_p = {y + 39, y + 19, y + 0, y + 0, y + 19, y + 39};
 
-                        if (j - origin_y == 9) {
-                            y_p[0] = y + 39;
-                        }
+                    if (j - origin_y == 9) {
+                        y_p[0] = y + 39;
+                    }
 
+                    for (int k = 0; k < x_p.length; k++) {
+                        x_p[k] += x;
+                        y_p[k] += y + dip;
+
+                    }
+
+                    // if window is double size scale hexagon
+                    if (ws.is_double) {
                         for (int k = 0; k < x_p.length; k++) {
-                            x_p[k] += x;
-                            y_p[k] += y + dip;
-
-                        }
-
-                        // if window is double size scale hexagon
-                        if (ws.is_double) {
-                            for (int k = 0; k < x_p.length; k++) {
-                                x_p[k] = x_p[k] * 2;
-                                y_p[k] = y_p[k] * 2;
-                            }
-                        }
-
-//                g.drawPolygon(x_p, y_p, 6);
-                        //skip top j when i % 2 == 0
-//                if ((i != 0 || (j % 2 != game.getMapOrigin().x % 2))) {
-                        if (i % 2 != game.getMapOrigin().x % 2 || j - origin_y != 9) {
-
-                            g.drawPolyline(x_p, y_p, x_p.length);
-                            for (int k = 0; k < x_p.length; k++) {
-                                y_p[k]--;
-                            }
-                            g.drawPolyline(x_p, y_p, x_p.length);
+                            x_p[k] = x_p[k] * 2;
+                            y_p[k] = y_p[k] * 2;
                         }
                     }
+
+//                g.drawPolygon(x_p, y_p, 6);
+                    //skip top j when i % 2 == 0
+//                if ((i != 0 || (j % 2 != game.getMapOrigin().x % 2))) {
+                    if (i % 2 != game.getMapOrigin().x % 2 || j - origin_y != 9) {
+
+                        g.drawPolyline(x_p, y_p, x_p.length);
+                        for (int k = 0; k < x_p.length; k++) {
+                            y_p[k]--;
+                        }
+                        g.drawPolyline(x_p, y_p, x_p.length);
+                    }
                 }
+//                }
                 y += 20;
 
             }

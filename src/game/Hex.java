@@ -293,4 +293,11 @@ public class Hex implements Comparable<Hex>, Serializable {
         this.hex_idx = x + y * C.PLANET_MAP_WIDTH;
         return this;
     }
+
+    public void omniscience(int turn) {
+        spot(turn);
+        for (Unit unit : stack) {
+            unit.spotted[turn] = true;
+        }
+    }
 }

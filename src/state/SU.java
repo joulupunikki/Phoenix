@@ -183,9 +183,9 @@ public class SU extends State {
             map_point_y = 31;
         }
 
-        if (map_point_x % 2 == 0 && map_point_y > 30) {
-            map_point_y = 30;
-        }
+//        if (map_point_x % 2 == 0 && map_point_y > 30) {
+//            map_point_y = 30;
+//        }
 
         // roll-over x at x = 44
         if (map_point_x < 0) {

@@ -221,7 +221,7 @@ public class Gui extends JFrame {
     private JMenuItem menu_randomize_rng;
     private JMenuItem menu_do_ai_turn;
     private JMenuItem toggle_ai;
-    private JMenuItem show_all;
+    private JMenuItem menu_omniscience;
     private JMenuItem house_menu; // house menu
     private JMenuItem diplomacy_menu; // diplomacy_selector menu
     private JMenuItem byzantium_ii_menu; // bydantium II menu
@@ -259,6 +259,7 @@ public class Gui extends JFrame {
     private boolean load_succesfull; // true iff load game ok
     private JMenuItem menu_group_finder;
     private JMenuItem menu_city_info;
+
 
 
     public Gui() throws HeadlessException {
@@ -820,12 +821,20 @@ public class Gui extends JFrame {
                 toggle_ai.setText("Toggle AI. " + !game.getHumanControl()[C.SYMBIOT]);
             }
         });
+        menu_omniscience = new JMenuItem("Omniscience.");
+        menu_omniscience.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
+        menu_omniscience.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                game.omniscience();
+            }
+        });
         wizard_menu.add(menu_all_tech);
         wizard_menu.add(menu_all_resources);
         wizard_menu.add(menu_create_unit);
         wizard_menu.add(menu_randomize_rng);
         wizard_menu.add(menu_do_ai_turn);
         wizard_menu.add(toggle_ai);
+        wizard_menu.add(menu_omniscience);
 //        wizard_menu.add(show_all);
 
         menubar.add(wizard_menu);

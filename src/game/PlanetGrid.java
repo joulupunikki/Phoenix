@@ -70,17 +70,10 @@ public class PlanetGrid implements Serializable {
     public PlanetGrid() {
 
         // create hexes and populate map array
-        map_array = new Hex[C.PLANET_MAP_WIDTH][];
+        map_array = new Hex[C.PLANET_MAP_WIDTH][C.PLANET_MAP_COLUMNS];
         for (int i = 0; i < map_array.length; i++) {
-            if (i % 2 == 0) {
-                map_array[i] = new Hex[C.PLANET_MAP_COLUMNS - 1];
-            } else {
-                map_array[i] = new Hex[C.PLANET_MAP_COLUMNS];
-            }
-
             for (int j = 0; j < map_array[i].length; j++) {
                 map_array[i][j] = new Hex(i, j);
-//                map_array[i][j].print();
             }
         }
         // link hexes to form a graph of planet map
@@ -92,7 +85,7 @@ public class PlanetGrid implements Serializable {
                     map_array[i][j].setN(map_array[i + 1][j - 1], C.NORTHEAST);
                     map_array[i + 1][j - 1].setN(map_array[i][j], C.SOUTHWEST);
                 }
-                if (j != map_array[i].length - 1 && i % 2 == 1) {
+                if (i % 2 == 1) {
                     map_array[i][j].setN(map_array[i + 1][j], C.SOUTHEAST);
                     map_array[i + 1][j].setN(map_array[i][j], C.NORTHWEST);
                 }
@@ -101,7 +94,7 @@ public class PlanetGrid implements Serializable {
                     map_array[i][j].setN(map_array[i + 1][j], C.NORTHEAST);
                     map_array[i + 1][j].setN(map_array[i][j], C.SOUTHWEST);
                 }
-                if (i % 2 == 0) {
+                if (j != map_array[i].length - 1 && i % 2 == 0) {
                     map_array[i][j].setN(map_array[i + 1][j + 1], C.SOUTHEAST);
                     map_array[i + 1][j + 1].setN(map_array[i][j], C.NORTHWEST);
                 }
@@ -421,6 +414,16 @@ public class PlanetGrid implements Serializable {
 
     public ArrayList<LinkedHashMap<Hex, Hex>> getContinentMaps() {
         return continent_maps;
+    }
+
+    public void omniscience(int turn) {
+        for (int i = 0; i < map_array.length; i++) {
+            for (int j = 0; j < map_array[i].length; j++) {
+                map_array[i][j].omniscience(turn);
+
+            }
+
+        }
     }
 
 }

@@ -28,7 +28,6 @@
 package galaxyreader;
 
 import game.PlanetGrid;
-import java.awt.Point;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -131,52 +130,27 @@ public class Planet implements Serializable {
 
             }
         }
-        count.getSet(-4);
+        // read in planet hextile data
         hex_buffer = new int[C.PLANET_MAP_WIDTH][C.PLANET_MAP_HEIGHT];
+        int[][] planet_map_tmp = new int[C.PLANET_MAP_WIDTH][C.PLANET_MAP_COLUMNS];
         for (int i = 0; i < C.PLANET_MAP_WIDTH; i++) {
             for (int j = 0; j < C.PLANET_MAP_HEIGHT; j++) {
                 hex_buffer[i][j] = GalaxyReader.readInt(fc, count.getSet(4));
-//System.out.println("hex_buffer:" + hex_buffer[i][j]);
             }
         }
-//        System.out.println("read buf");
-        count.getSet(4);
-
-        Point[][] buf_tab = Util.createBufferConversionTable();
-
-        int[][] tmp = new int[C.PLANET_MAP_WIDTH][C.PLANET_MAP_COLUMNS];
-
+        // cull hextile data
+        int row = 0;
+        int col = 0;
         for (int i = 0; i < C.PLANET_MAP_WIDTH; i++) {
-            for (int j = 0; j < C.PLANET_MAP_COLUMNS; j++) {
-                tmp[i][j] = hex_buffer[buf_tab[i][j].x][buf_tab[i][j].y];
-
-            }
-
-        }
-
-        planet_map = new int[C.PLANET_MAP_WIDTH][];
-
-        for (int i = 0; i < C.PLANET_MAP_WIDTH; i++) {
-            if (i % 2 == 0) {
-                planet_map[i] = new int[C.PLANET_MAP_COLUMNS - 1];
-
-            } else {
-                planet_map[i] = new int[C.PLANET_MAP_COLUMNS];
-
-            }
-        }
-
-        for (int i = 0; i < planet_map.length; i++) {
-            for (int j = 0; j < planet_map[i].length; j++) {
-                if (i % 2 == 0) {
-                    planet_map[i][j] = tmp[i][j + 1];
-                } else {
-                    planet_map[i][j] = tmp[i][j];
-
+            row = 0;
+            for (int j = 0; j < C.PLANET_MAP_HEIGHT - 1; j++) {
+                if ((i % 2 == 0 && j % 2 == 1) || (i % 2 == 1 && j % 2 == 0)) {
+                    planet_map_tmp[col][row++] = hex_buffer[i][j];
                 }
             }
-
+            col++;
         }
+        planet_map = planet_map_tmp;
 
         // google "java generic array creation"
         space_stacks = (LinkedList<Unit>[]) new LinkedList[14];
@@ -390,5 +364,10 @@ public class Planet implements Serializable {
      */
     public void setShield(Structure shield) {
         this.shield = shield;
+    }
+
+    public void omniscience(int turn) {
+        spotted[turn] = true;
+        planet_grid.omniscience(turn);
     }
 }
