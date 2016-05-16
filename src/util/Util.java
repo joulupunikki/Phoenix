@@ -1424,6 +1424,7 @@ public class Util {
             file_data = readBytes(fc, 0, size, byte_order);
 
         } catch (IOException e) {
+            e.printStackTrace();
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             System.exit(1);

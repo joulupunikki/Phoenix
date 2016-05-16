@@ -1790,8 +1790,7 @@ public class Gui extends JFrame {
         // or http://tips4java.wordpress.com/2008/11/13/swing-utils/
         JFileChooser chooser = new JFileChooser();
         UtilG.setJComponentChildrenToDark(chooser);
-        String path_name = System.getProperty("user.dir")
-                + System.getProperty("file.separator") + FN.S_SAV;
+        String path_name = FN.S_SAVE_PATH;
         chooser.setCurrentDirectory(new File(path_name));
         int returnVal = chooser.showOpenDialog(this);
         //System.out.println("path_name = " + path_name);
@@ -1898,8 +1897,7 @@ public class Gui extends JFrame {
 //        FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //                "JPG & GIF Images", "jpg", "gif");
 //        chooser.setFileFilter(filter);
-        String path_name = System.getProperty("user.dir")
-                + System.getProperty("file.separator") + FN.S_SAV;
+        String path_name = FN.S_SAVE_PATH;
         chooser.setCurrentDirectory(new File(path_name));
 
         int returnVal = chooser.showSaveDialog(this);

@@ -134,7 +134,7 @@ public class Phoenix {
             }
         });
         // log input events
-        String file_name = "input.log";
+        String file_name = FN.S_DIST_PREFIX + "input.log";
         rollLogs(file_name);
         Path input_log_file = FileSystems.getDefault().getPath(file_name);
         BufferedWriter event_log_buf = null;

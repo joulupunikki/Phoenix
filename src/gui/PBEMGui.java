@@ -89,7 +89,7 @@ public class PBEMGui implements Serializable {
 
     public File[] getDataFiles() {
         // get DAT-files in DAT directory
-        File dat_dir = new File("DAT");
+        File dat_dir = new File(FN.S_DIST_PREFIX + "DAT");
         FilenameFilter dat_filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 String lc_name = name.toLowerCase();
@@ -145,9 +145,11 @@ public class PBEMGui implements Serializable {
     public byte[] getHash(File file, String dir) {
         String file_name;
         if (dir == null) {
-            file_name = file.getName();
-        } else {
+            file_name = FN.S_DIST_PREFIX + file.getName();
+        } else if (dir.equals("PHOENIX")) {
             file_name = dir + FN.F_S + file.getName();
+        } else {
+            file_name = FN.S_DIST_PREFIX + dir + FN.F_S + file.getName();
         }
         // count on file length fitting into an int
         byte[] data = Util.readFile(file_name, (int) file.length(), ByteOrder.BIG_ENDIAN);
@@ -211,7 +213,7 @@ public class PBEMGui implements Serializable {
             if (key.startsWith(FN.S_GAL + FN.F_S)) {
                 file_name = key.substring(4, key.length());
                 dir = FN.S_GAL;
-            } else if (key.equals(FN.S_GALAXY_GAL)) {
+            } else if (key.equals("GALAXY.GAL")) {
                 file_name = key;
                 dir = null;
             } else if (key.equals("PHOENIX.INI")) {
