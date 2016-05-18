@@ -243,4 +243,15 @@ public class Diplomacy implements Serializable {
     public int[] getAgora_prices() {
         return agora_prices;
     }
+
+    void printState() {
+        for (int i = 0; i < war_matrix.length; i++) {
+            for (int j = 0; j < war_matrix[i].length; j++) {
+                System.out.print(" " + war_matrix[i][j]);
+
+            }
+            System.out.println("");
+
+        }
+    }
 }

@@ -54,7 +54,7 @@ public class ChurchAI extends AI {
         CARGO_SP,
     }
     public ChurchAI(Game game) {
-        super(game, C.CHURCH);
+        super(game, C.THE_CHURCH);
         Util.dP("##### ChurchAI init begin");
         Util.dP("##### ChurchAI init end");
     }

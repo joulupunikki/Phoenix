@@ -192,7 +192,7 @@ public class C {
 
     // Structures    // RSW
     public static final int PALACE = 0;
-    public static final int CHURCH = 1;
+    public static final int CATHEDRAL = 1;
     public static final int MONASTERY = 2;
     public static final int FACTORY = 3;
     public static final int AGORA = 4;

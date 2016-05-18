@@ -51,7 +51,7 @@ public class AIObject implements Serializable {
             case C.LEAGUE:
                 ai[faction] = new LeagueAI(game);
                 break;
-            case C.CHURCH:
+            case C.THE_CHURCH:
                 ai[faction] = new ChurchAI(game);
                 break;
             case C.SYMBIOT:

@@ -410,9 +410,13 @@ public class Faction implements Serializable {
 
     public static int calculateCityLoyalty(int tax_rate, EfsIni efs_ini, Game game) {
         int excom_penalty = 0;
-        if (game.getDiplomacy().getDiplomaticState(game.getTurn(), C.CHURCH) == C.DS_WAR) {
+        //System.out.println(" state = " + game.getDiplomacy().getDiplomaticState(game.getTurn(), C.THE_CHURCH));
+        if (game.getDiplomacy().getDiplomaticState(game.getTurn(), C.THE_CHURCH) == C.DS_WAR) {
             excom_penalty = game.getEfs_ini().excom_peasant_loyalty_hit;
+            //System.out.println("WTF");
         }
+        //System.out.println("excom_peasant_loyalty_hit = " + game.getEfs_ini().excom_peasant_loyalty_hit);
+        //System.out.println("Excom penalty = " + excom_penalty);
         return FastMath.max(0, FastMath.min(100, 100 - (tax_rate - efs_ini.default_tax_rate) * C.TAX_LOYALTY_HIT - excom_penalty));
     }
 

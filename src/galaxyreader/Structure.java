@@ -386,7 +386,7 @@ public class Structure implements Serializable {
             case C.PALACE:
                 s = "Palace";
                 break;
-            case C.CHURCH:
+            case C.CATHEDRAL:
                 s = "Church";
                 break;
             case C.MONASTERY:

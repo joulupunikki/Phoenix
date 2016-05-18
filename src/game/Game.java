@@ -205,7 +205,7 @@ public class Game implements Serializable {
 //        }
         ai = new AIObject();
         ai.adAI(this, C.LEAGUE);
-        ai.adAI(this, C.CHURCH);
+        ai.adAI(this, C.THE_CHURCH);
         if (!Gui.getMainArgs().hasOption(C.OPT_AI_TEST)) {
             return;
         }
@@ -614,6 +614,7 @@ public class Game implements Serializable {
         regency.purgeEliminatedFromOffices(this);
         regency.advanceThroneClaim(false);
         regency.resolveElections(this);
+        diplomacy.printState();// DEBUG
     }
 
     public List<Unit> getCargoPods() {
