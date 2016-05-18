@@ -50,7 +50,7 @@ public class FN {
     static {
         File file = new File(".." + F_S + "Phoenix.exe");
         if (file.exists()) {
-            S_DIST_PREFIX = ".." + F_S;
+            S_DIST_PREFIX = ".." + F_S + ".." + F_S;
             S_SAVE_PATH = S_DIST_PREFIX + S_SAV;
         } else {
             S_DIST_PREFIX = "";
