@@ -576,7 +576,7 @@ public class UnitInfoWindow extends JPanel {
         Unit u = gui.getInfo_unit();
         if (u != null) {
             if (!u.equals(prev)) {
-                String filename = FN.S_FLC + FN.F_S + u.type_data.art;
+                String filename = FN.S_DIST_PREFIX + FN.S_FLC + FN.F_S + u.type_data.art;
                 File flc = new File(filename);
                 if (flc.exists()) {
                     unit_image = UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150);
