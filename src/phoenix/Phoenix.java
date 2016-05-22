@@ -57,6 +57,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import util.C;
 import util.FN;
+import util.FileNameCapitalizer;
 import util.Util;
 import util.UtilG;
 
@@ -308,6 +309,7 @@ public class Phoenix {
                 input_log_writer.close();
             }
         });
+        FileNameCapitalizer.run();
         // start GUI
         Gui.execute(cli_opts);
     }

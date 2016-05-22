@@ -48,8 +48,10 @@ public class FN {
     public static final String S_SAVE_PATH;
     public static final String S_SAV = "SAV";
     static {
-        File file = new File(".." + F_S + "Phoenix.exe");
-        if (file.exists()) {
+        File file_win = new File(".." + F_S + "Phoenix.exe");
+        File file_lin = new File(".." + F_S + "app" + F_S + "Phoenix.jar");
+
+        if (file_win.exists() || file_lin.exists()) {
             S_DIST_PREFIX = ".." + F_S + ".." + F_S;
             S_SAVE_PATH = S_DIST_PREFIX + S_SAV;
         } else {
