@@ -208,7 +208,7 @@ public class UIW1 extends State {
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
                 int dy = (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size);
 
-                if (dx <= q.x && q.x <= dx + ws.unit_icon_size
+                if (dx <= q.x && q.x <= dx + ws.ui_unit_block_w
                         && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     gui.setInfo_unit(u);
                     return;
@@ -292,7 +292,7 @@ public class UIW1 extends State {
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
                 int dy = (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size);
 
-                if (dx <= q.x && q.x <= dx + ws.unit_icon_size
+                if (dx <= q.x && q.x <= dx + ws.ui_unit_block_w
                         && dy <= q.y && q.y <= dy + ws.unit_icon_size) {
                     gui.setDragUnit(u, q);
                     setState();
