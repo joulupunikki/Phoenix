@@ -115,20 +115,20 @@ public class ResType implements Serializable {
         ResType[] res_types = new ResType[C.RES_TYPES];
 
         String s = "";
-
+        int[] line_nr = {0};
         try (BufferedReader in = new BufferedReader(new FileReader(FN.S_RES_DAT))) {
 
-            s = Util.cleanLine(in);    // Skip opening brace
+            s = Util.cleanLine(in, line_nr);    // Skip opening brace
             if (!s.startsWith("{")) {
                 throw new Exception("Character { expected. Found: " + s);
             }
 
             for (int i = 0; i < C.RES_TYPES; i++) {
-                s = Util.cleanLine(in);
+                s = Util.cleanLine(in, line_nr);
                 res_types[i] = getOneType(s);
             }
 
-            s = Util.cleanLine(in);    // Skip closing brace
+            s = Util.cleanLine(in, line_nr);    // Skip closing brace
             if (!s.startsWith("}")) {
                 throw new Exception("Character } expected. Found: " + s);
             }
@@ -137,7 +137,8 @@ public class ResType implements Serializable {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Error reading file: " + FN.S_RES_DAT);
             System.out.println("Last line read: " + s);
-
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(FN.S_RES_DAT, line_nr[0]);
             System.exit(1);
         }
 

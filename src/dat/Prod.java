@@ -61,18 +61,18 @@ public class Prod implements Serializable {
     /**
      * Reads production data for one city type
      */
-    private static Prod getProdForCity(int city_type, BufferedReader in, Game game) throws Exception {
+    private static Prod getProdForCity(int city_type, BufferedReader in, Game game, int[] line_nr) throws Exception {
 
         Prod ret_val = new Prod();
 
         // Read opening brace line
-        s = Util.cleanLine(in);
+        s = Util.cleanLine(in, line_nr);
         if (!s.startsWith("{")) {
             throw new Exception("Character { expected. Found: " + s);
         }
 
         // Read "city" line
-        s = Util.cleanLine(in);
+        s = Util.cleanLine(in, line_nr);
         Pattern pattern = Pattern.compile("\"[^\"]*\"");    // Find anything in quotes, including empty string
         Matcher m = pattern.matcher(s);
         m.find();
@@ -83,7 +83,7 @@ public class Prod implements Serializable {
         // For now, don't check city type
         // Read "need" lines
 
-        s = Util.cleanLine(in);    // Read one line ahead, as we don't know how many "need" lines there are
+        s = Util.cleanLine(in, line_nr);    // Read one line ahead, as we don't know how many "need" lines there are
         m = pattern.matcher(s);
         m.find();
         first_string = s.substring(m.start() + 1, m.end() - 1).trim();
@@ -98,7 +98,7 @@ public class Prod implements Serializable {
 
             need_count++;
 
-            s = Util.cleanLine(in);    // Read next line
+            s = Util.cleanLine(in, line_nr);    // Read next line
             m = pattern.matcher(s);
             m.find();
             first_string = s.substring(m.start() + 1, m.end() - 1).trim();
@@ -112,7 +112,7 @@ public class Prod implements Serializable {
         ret_val.make = ResPair.get(s, m, game);
 
         // Read closing brace line
-        s = Util.cleanLine(in);    // Skip closing brace
+        s = Util.cleanLine(in, line_nr);    // Skip closing brace
         if (!s.startsWith("}")) {
             throw new Exception("Character } expected. Found: " + s);
         }
@@ -130,12 +130,12 @@ public class Prod implements Serializable {
         Prod[] ret_val = new Prod[C.PROD_CITIES];
 
         s = "";
-
+        int[] line_nr = {0};
         try (BufferedReader in = new BufferedReader(new FileReader(FN.S_PROD_DAT))) {
 
             for (int city_type = 0; city_type < C.PROD_CITIES; city_type++) {    // For each city type
 
-                ret_val[city_type] = getProdForCity(city_type, in, game);
+                ret_val[city_type] = getProdForCity(city_type, in, game, line_nr);
             }
 
         } catch (Exception e) {
@@ -147,6 +147,8 @@ public class Prod implements Serializable {
                 System.out.println("Unknown error. Probably file missing or insufficient data.");
             }
             System.out.println("Last line read: " + s);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(FN.S_PROD_DAT, line_nr[0]);
             System.exit(1);
         }
 

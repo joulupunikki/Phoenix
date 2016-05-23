@@ -70,7 +70,7 @@ public class Galaxy implements Serializable {
      * @param fc the file channel containing the galaxy.gal file.
      * @throws IOException
      */
-    public Galaxy(FileChannel fc) throws IOException {
+    public Galaxy(FileChannel fc) throws Exception {
 //        C.print();
         Counter count = new Counter();
 
@@ -97,8 +97,8 @@ public class Galaxy implements Serializable {
             section = GalaxyReader.readShort(fc, count.getSet(2));
 
             if (index > C.MAX_PLANETS) {
-                System.out.println("Error reading galaxy file, too many planets: " + index);
-                System.exit(1);
+                throw new Exception("Error reading galaxy file, too many planets: " + index);
+
             }
         }
 
@@ -122,8 +122,8 @@ public class Galaxy implements Serializable {
             section = GalaxyReader.readShort(fc, count.getSet(2));
 
             if (index > C.MAX_JUMP_GATES) {
-                System.out.println("Error reading galaxy file, too many jump gates: " + index);
-                System.exit(1);
+                throw new Exception("Error reading galaxy file, too many jump gates: " + index);
+
             }
             index++;
 
@@ -138,8 +138,8 @@ public class Galaxy implements Serializable {
             section = GalaxyReader.readShort(fc, count.getSet(2));
 
             if (index > C.MAX_UNITS) {
-                System.out.println("Error reading galaxy file, too many units: " + index);
-                System.exit(1);
+                throw new Exception("Error reading galaxy file, too many units: " + index);
+
             }
             index++;
         }
@@ -158,8 +158,8 @@ public class Galaxy implements Serializable {
             section = GalaxyReader.readShort(fc, count.getSet(2));
 
             if (index > C.MAX_STRUCTURES) {
-                System.out.println("Error reading galaxy file, too many structures: " + index);
-                System.exit(1);
+                throw new Exception("Error reading galaxy file, too many structures: " + index);
+
             }
             index++;
 
@@ -223,6 +223,9 @@ public class Galaxy implements Serializable {
         } catch (IOException e) {
             e.printStackTrace();
             Util.logFFErrorAndExit(filename, -1);
+        } catch (Exception e) {
+            Util.logEx(null, e);
+            System.exit(1);
         }
 
         return galaxy;

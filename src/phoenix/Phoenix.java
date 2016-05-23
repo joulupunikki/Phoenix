@@ -143,6 +143,7 @@ public class Phoenix {
             event_log_buf = Files.newBufferedWriter(input_log_file, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
         } catch (IOException ex) {
             System.out.println("Unable to open input event log file \"" + file_name + "\"");
+            Util.logEx(null, ex);
             System.exit(1);
         }
         input_log_writer = new PrintWriter(event_log_buf, true);

@@ -152,7 +152,7 @@ public class TerrCost {
 
                             // incorrect data file
                         } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
+                            throw new Exception();
                         }
                     }
                 }

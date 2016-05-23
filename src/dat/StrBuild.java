@@ -155,7 +155,7 @@ public class StrBuild implements Serializable {
                         if (matcher.find()) {
                             read = true;
                         } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
+                            throw new Exception();
                         }
                     }
                 }

@@ -89,22 +89,22 @@ public class Harvest implements Serializable {
         ResPair[][][] ret_val = new ResPair[C.HARVEST_TERRAINS][C.HARVEST_PLANETS][];
 
         String s = "";
-
+        int[] line_nr = {0};
         try (BufferedReader in = new BufferedReader(new FileReader(file_name))) {
 
             for (int terrain_type = 0; terrain_type < C.HARVEST_TERRAINS; terrain_type++) {    // For each terrain type
 
-                s = Util.cleanLine(in);    // Skip opening brace
+                s = Util.cleanLine(in, line_nr);    // Skip opening brace
                 if (!s.startsWith("{")) {
                     throw new Exception("Character { expected. Found: " + s);
                 }
 
                 for (int planet_type = 0; planet_type < C.HARVEST_PLANETS; planet_type++) {    // For each planet type
-                    s = Util.cleanLine(in);
+                    s = Util.cleanLine(in, line_nr);
                     ret_val[terrain_type][planet_type] = getOneRow(s, game);
                 }
 
-                s = Util.cleanLine(in);    // Skip closing brace
+                s = Util.cleanLine(in, line_nr);    // Skip closing brace
                 if (!s.startsWith("}")) {
                     throw new Exception("Character } expected. Found: " + s);
                 }
@@ -115,7 +115,8 @@ public class Harvest implements Serializable {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Error reading file: " + file_name);
             System.out.println("Last line read: " + s);
-
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr[0]);
             System.exit(1);
         }
 

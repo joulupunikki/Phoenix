@@ -45,6 +45,7 @@ import java.awt.image.WritableRaster;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -170,7 +171,13 @@ public class Util {
                     }
                     break;
                 case FAIL:
-                    Util.logFFErrorAndExit(file_name, line_nr);
+                    try {
+                        throw new Exception();
+                    } catch (Exception e) {
+                        Util.logEx(null, e);
+                        Util.logFFErrorAndExit(file_name, line_nr);
+                    }
+
                     break;
                 default:
                     throw new AssertionError();
@@ -1399,6 +1406,7 @@ public class Util {
         } catch (IOException e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
 
@@ -1427,6 +1435,7 @@ public class Util {
             e.printStackTrace();
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
         return file_data;
@@ -1448,6 +1457,7 @@ public class Util {
         } catch (IOException e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
         return file_data;
@@ -1521,6 +1531,7 @@ public class Util {
         } catch (IOException e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
 
@@ -1555,6 +1566,7 @@ public class Util {
         } catch (IOException e) {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
 
@@ -1590,6 +1602,7 @@ public class Util {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Failed to read " + file_name);
+            Util.logEx(null, e, file_name);
             System.exit(1);
         }
 
@@ -1863,12 +1876,14 @@ public class Util {
     }
 
     /**
-     * Gets one line of input, skipping comments and white space
+     * Gets one line of input, skipping comments and white space, keeps tab on
+     * lines processed
      */
-    public static String cleanLine(BufferedReader in) throws Exception {
-
+    public static String cleanLine(BufferedReader in, int[] line_nr) throws Exception {
+        line_nr[0]++;
         String s = in.readLine().trim();
         while (s.startsWith("//") || s.equals("")) {
+            line_nr[0]++;
             s = in.readLine().trim();
         }
         return s;
@@ -2132,6 +2147,12 @@ public class Util {
         File file = new File(file_name);
         if (!file.exists()) {
             System.out.println("File not found: " + file_name);
+            try {
+                throw new FileNotFoundException(file_name);
+            } catch (FileNotFoundException e) {
+                Util.logEx(null, e, file_name);
+            }
+
             System.exit(1);
         }
     }
@@ -2265,6 +2286,7 @@ public class Util {
             fw = new FileWriter(file_name, false);
         } catch (IOException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
+            Util.logEx(null, ex, file_name);
             System.exit(1);
         }
 

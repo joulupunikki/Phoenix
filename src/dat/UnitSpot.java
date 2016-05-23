@@ -154,7 +154,7 @@ public class UnitSpot {
                             terrain_type++; // initialized to -1
                             // incorrect data file
                         } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
+                            throw new Exception();
                         }
                     }
                 }
@@ -191,59 +191,62 @@ public class UnitSpot {
         int index = 0;
         int counter = 0;
         boolean loop = true;
+        try {
+            while (loop) {
 
-        while (loop) {
-
-            switch (state) {
-                case 1:
-                    if (s.charAt(index) == ' ') {
-
-                    } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-
-                        start = index;
-                        state = 2;
-                    } else {
-                        Util.logFFErrorAndExit(file_name, line_nr);
-                    }
-                    break;
-                case 2:
-                    if (s.charAt(index) == '.') {
-                        state = 3;
-                    } else {
-                        Util.logFFErrorAndExit(file_name, line_nr);
-                    }
-                    break;
-
-                case 3:
-                    if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
-                        state = 4;
-
-                    } else {
-                        Util.logFFErrorAndExit(file_name, line_nr);
-                    }
-                    break;
-                case 4:
-                    if (counter == C.UNIT_SPOT_MOVE - 1) {
-                        if (s.charAt(index) == '"') {
-                            vals[counter++] = Double.parseDouble(s.substring(start, index));
-                            loop = false;
-                        } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
-                        }
-                    } else {
+                switch (state) {
+                    case 1:
                         if (s.charAt(index) == ' ') {
+
+                        } else if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+
+                            start = index;
+                            state = 2;
+                        } else {
+                            throw new Exception();
+                        }
+                        break;
+                    case 2:
+                        if (s.charAt(index) == '.') {
+                            state = 3;
+                        } else {
+                            throw new Exception();
+                        }
+                        break;
+
+                    case 3:
+                        if (s.charAt(index) >= '0' && s.charAt(index) <= '9') {
+                            state = 4;
+
+                        } else {
+                            throw new Exception();
+                        }
+                        break;
+                    case 4:
+                        if (counter == C.UNIT_SPOT_MOVE - 1) {
+                            if (s.charAt(index) == '"') {
+                                vals[counter++] = Double.parseDouble(s.substring(start, index));
+                                loop = false;
+                            } else {
+                                throw new Exception();
+                            }
+                        } else if (s.charAt(index) == ' ') {
                             vals[counter++] = Double.parseDouble(s.substring(start, index));
                             state = 1;
                         } else {
-                            Util.logFFErrorAndExit(file_name, line_nr);
+                            throw new Exception();
                         }
-                    }
-                    break;
-                default:
-                    throw new AssertionError();
+                        break;
+                    default:
+                        throw new AssertionError();
 
+                }
+                index++;
             }
-            index++;
+        } catch (Exception e) {
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(file_name, line_nr);
+            System.exit(1);
         }
     }
 

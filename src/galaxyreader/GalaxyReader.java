@@ -56,7 +56,7 @@ public class GalaxyReader {
             int[][] hex_buf = galaxy.getBuffer();
 //            Gui.start(args, hex_buf);
 //            galaxy.print();
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.err.println(e);
             System.out.println(e);
         }

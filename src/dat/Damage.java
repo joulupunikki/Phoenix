@@ -33,6 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import util.C;
 import util.FN;
+import util.Util;
 
 /**
  * Reads in attack damage table from DAMAGE.DAT.
@@ -80,7 +81,7 @@ public class Damage {
     public static int[][] readDamageDat() {
 
         int[][] damage_dat = new int[C.DAMAGE_DAT_Y][];
-
+        int line_nr = 1;
         try (BufferedReader in = new BufferedReader(new FileReader(FN.S_DAMAGE_DAT))) {
             String s = in.readLine();
 
@@ -123,12 +124,15 @@ public class Damage {
                         }
                     }
                 }
+                line_nr++;
                 s = in.readLine();
             }
 
         } catch (Exception e) {
             e.printStackTrace(System.out);
             System.out.println("Failed to read " + FN.S_DAMAGE_DAT);
+            Util.logEx(null, e);
+            Util.logFFErrorAndExit(FN.S_DAMAGE_DAT, line_nr);
             System.exit(1);
         }
 
