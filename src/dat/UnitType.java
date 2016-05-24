@@ -437,8 +437,8 @@ public class UnitType implements Serializable {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
-            System.exit(1);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
+            //CrashReporter.showCrashReport(e);
         }
 
         return unit_types;

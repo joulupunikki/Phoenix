@@ -35,6 +35,7 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import util.C;
+import util.CrashReporter;
 import util.Util;
 
 /**
@@ -222,10 +223,10 @@ public class Galaxy implements Serializable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            Util.logFFErrorAndExit(filename, -1);
+            Util.logFFErrorAndExit(filename, -1, e);
         } catch (Exception e) {
             Util.logEx(null, e);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
 
         return galaxy;

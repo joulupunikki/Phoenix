@@ -132,8 +132,8 @@ public class Damage {
             e.printStackTrace(System.out);
             System.out.println("Failed to read " + FN.S_DAMAGE_DAT);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_DAMAGE_DAT, line_nr);
-            System.exit(1);
+            Util.logFFErrorAndExit(FN.S_DAMAGE_DAT, line_nr, e);
+            //CrashReporter.showCrashReport(e);
         }
 
         return damage_dat;

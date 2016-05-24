@@ -91,7 +91,7 @@ public class Util {
         } catch (IOException ex) {
             Util.logEx(null, ex, s);
             ex.printStackTrace();
-            System.exit(1);
+            CrashReporter.showCrashReport(ex);
         }
     }
 
@@ -175,7 +175,7 @@ public class Util {
                         throw new Exception();
                     } catch (Exception e) {
                         Util.logEx(null, e);
-                        Util.logFFErrorAndExit(file_name, line_nr);
+                        Util.logFFErrorAndExit(file_name, line_nr, e);
                     }
 
                     break;
@@ -724,7 +724,7 @@ public class Util {
             }
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
         }
         return ret_val;
     }
@@ -1407,7 +1407,7 @@ public class Util {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
 
         for (int i = 0; i < tmp.length; i++) {
@@ -1436,7 +1436,7 @@ public class Util {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
         return file_data;
     }
@@ -1458,7 +1458,7 @@ public class Util {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
         return file_data;
     }
@@ -1532,7 +1532,7 @@ public class Util {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
 
         return square;
@@ -1567,7 +1567,7 @@ public class Util {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
 
         return squares;
@@ -1603,7 +1603,7 @@ public class Util {
             e.printStackTrace();
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(e);
         }
 
         return hex_tiles;
@@ -1833,20 +1833,25 @@ public class Util {
         }
     }
 
-    public static void logFFErrorAndExit(String file, int line) {
+    public static void logFFErrorAndExit(String file, int line, Exception e) {
         logFileFormatError(file, line, null);
-        System.exit(1);
+        CrashReporter.showCrashReport(e);
     }
 
-    public static void logFFErrorAndExit(String file, int line, String log_msg) {
+    public static void logFFErrorAndExit(String file, int line, String log_msg, Exception e) {
         logFileFormatError(file, line, log_msg);
-        System.exit(1);
+        CrashReporter.showCrashReport(e);
     }
 
     public static void testFFErrorAndExit(boolean found, String file, int line) {
         //System.out.println("found = " + found);
         if (!found) {
-            logFFErrorAndExit(file, line);
+            try {
+                throw new Exception();
+            } catch (Exception e) {
+                logFFErrorAndExit(file, line, e);
+            }
+
         }
     }
 
@@ -2151,9 +2156,9 @@ public class Util {
                 throw new FileNotFoundException(file_name);
             } catch (FileNotFoundException e) {
                 Util.logEx(null, e, file_name);
+                CrashReporter.showCrashReport(e);
             }
 
-            System.exit(1);
         }
     }
 
@@ -2287,7 +2292,7 @@ public class Util {
         } catch (IOException ex) {
             Logger.getLogger(Util.class.getName()).log(Level.SEVERE, null, ex);
             Util.logEx(null, ex, file_name);
-            System.exit(1);
+            CrashReporter.showCrashReport(ex);
         }
 
         BufferedWriter bw = new BufferedWriter(fw);

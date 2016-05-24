@@ -148,8 +148,8 @@ public class Prod implements Serializable {
             }
             System.out.println("Last line read: " + s);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_PROD_DAT, line_nr[0]);
-            System.exit(1);
+            Util.logFFErrorAndExit(FN.S_PROD_DAT, line_nr[0], e);
+            //CrashReporter.showCrashReport(e);
         }
 
         return ret_val;

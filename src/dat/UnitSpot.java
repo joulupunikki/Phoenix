@@ -167,8 +167,8 @@ public class UnitSpot {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
-            System.exit(1);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
+            //CrashReporter.showCrashReport(e);
         }
 
 //        printData(unit_spot);
@@ -245,8 +245,8 @@ public class UnitSpot {
             }
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
-            System.exit(1);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
+            //CrashReporter.showCrashReport(e);
         }
     }
 

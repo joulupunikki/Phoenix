@@ -138,8 +138,8 @@ public class ResType implements Serializable {
             System.out.println("Error reading file: " + FN.S_RES_DAT);
             System.out.println("Last line read: " + s);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_RES_DAT, line_nr[0]);
-            System.exit(1);
+            Util.logFFErrorAndExit(FN.S_RES_DAT, line_nr[0], e);
+            //CrashReporter.showCrashReport(e);
         }
 
         return res_types;

@@ -51,6 +51,7 @@ import javax.swing.JPasswordField;
 import javax.swing.WindowConstants;
 import org.apache.commons.cli.CommandLine;
 import util.C;
+import util.CrashReporter;
 import util.FN;
 import util.Util;
 import util.UtilG;
@@ -124,7 +125,7 @@ public class PBEMGui implements Serializable {
             md = MessageDigest.getInstance(algo);
         } catch (NoSuchAlgorithmException ex) {
             Util.logEx(null, ex);
-            System.exit(1);
+            CrashReporter.showCrashReport(ex);
         }
         return md;
     }
@@ -302,7 +303,7 @@ public class PBEMGui implements Serializable {
                     md = MessageDigest.getInstance("SHA-256");
                 } catch (NoSuchAlgorithmException ex) {
                     Util.logEx(null, ex);
-                    System.exit(1);
+                    CrashReporter.showCrashReport(ex);
                 }
                 pbem.passwd_hashes[f_idx] = digest(md, Util.toBytes(pw1), pbem.salt);
                 Arrays.fill(pw1, '0');
@@ -395,7 +396,7 @@ public class PBEMGui implements Serializable {
                     md = MessageDigest.getInstance("SHA-256");
                 } catch (NoSuchAlgorithmException ex) {
                     Util.logEx(null, ex);
-                    System.exit(1);
+                    CrashReporter.showCrashReport(ex);
                 }
                 byte[] passwd_hash = digest(md, Util.toBytes(pw1), pbem.salt);
                 System.out.print("Provided hash: ");

@@ -138,6 +138,9 @@ public class UIW1 extends State {
                 }
             }
         }
+        if (tmp.isEmpty()) {
+            return;
+        }
         Unit c;
         for (Unit u : tmp) {
             c = u.carrier;

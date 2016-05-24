@@ -65,7 +65,6 @@ public class PW3 extends PW {
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             SU.clickOnPlanetMapButton3(p);
         }
-
     }
 
 //    public void clickOnPlanetWindow(MouseEvent e) {

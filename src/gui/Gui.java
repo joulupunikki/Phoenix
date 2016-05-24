@@ -2614,6 +2614,12 @@ public class Gui extends JFrame {
         });
     }
 
+    public static void disposeGUI() {
+        if (gui != null) {
+            gui.dispose();
+        }
+    }
+
     /**
      * @return the stack_move_counter
      */

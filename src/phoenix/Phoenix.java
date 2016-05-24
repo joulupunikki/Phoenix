@@ -56,6 +56,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import util.C;
+import util.CrashReporter;
 import util.FN;
 import util.FileNameCapitalizer;
 import util.Util;
@@ -127,11 +128,13 @@ public class Phoenix {
         );
         // log all errors and exceptions
         rollLogs(FN.S_LOG_FILE);
+
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread t, Throwable e) {
                 System.out.println("Uncaught exception.");
                 Util.logEx(t, e);
+                CrashReporter.showCrashReport(e);
             }
         });
         // log input events
@@ -144,7 +147,9 @@ public class Phoenix {
         } catch (IOException ex) {
             System.out.println("Unable to open input event log file \"" + file_name + "\"");
             Util.logEx(null, ex);
-            System.exit(1);
+
+            CrashReporter.showCrashReport(ex);
+            return;
         }
         input_log_writer = new PrintWriter(event_log_buf, true);
 
@@ -303,7 +308,7 @@ public class Phoenix {
                 return ((prev_xy.x - p.x) + " "
                         + (prev_xy.y - p.y));
             }
-        }, AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK);
+        }, ROBOTTESTER_INPUT_EVENT_MASK);
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 input_log_writer.println("# input logging stopped due to jvm shutdown at " + (new Date()).toString());
@@ -314,6 +319,7 @@ public class Phoenix {
         // start GUI
         Gui.execute(cli_opts);
     }
+    public static final long ROBOTTESTER_INPUT_EVENT_MASK = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK;
 
     private static void setLAF() {
         try {

@@ -118,7 +118,7 @@ public class TerColor {
                         // if found } at beginning of line
                         if (matcher.find()) {
                             if (terrain_type != C.TER_COLOR_HEX) {
-                                Util.logFFErrorAndExit(s, line_nr, "Wrong number of data lines.");
+                                throw new Exception();
                             }
                             break;
                             // else read data
@@ -149,8 +149,8 @@ public class TerColor {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
-            System.exit(1);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
+            //CrashReporter.showCrashReport(e);
         }
 
 //        printData(unit_spot);

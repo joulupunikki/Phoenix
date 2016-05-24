@@ -187,7 +187,7 @@ public class EfsIni implements Serializable {
             phoenix_ini.load(in);
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_PHOENIX_INI, -1);
+            Util.logFFErrorAndExit(FN.S_PHOENIX_INI, -1, e);
         }
 
         // for testing, we may have some rather extraordinary settings in
@@ -199,7 +199,7 @@ public class EfsIni implements Serializable {
                 phoenix_ini.load(in);
             } catch (Exception e) {
                 Util.logEx(null, e);
-                Util.logFFErrorAndExit(FN.S_PHOENIXTEST_INI, -1);
+                Util.logFFErrorAndExit(FN.S_PHOENIXTEST_INI, -1, e);
             }
         }
 
@@ -219,7 +219,7 @@ public class EfsIni implements Serializable {
             efs_ini.load(in);
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_EFS_INI, -1);
+            Util.logFFErrorAndExit(FN.S_EFS_INI, -1, e);
         }
         File remove = new File(FN.S_EFS_INI_TMP);
         remove.delete();
@@ -257,7 +257,7 @@ public class EfsIni implements Serializable {
             out.flush();
         } catch (Exception e) {
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
         }
     }
 

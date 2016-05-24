@@ -168,9 +168,9 @@ public class StrBuild implements Serializable {
             System.out.println("Exception: " + e.getMessage());
             System.out.println("Failed to read " + file_name);
             Util.logEx(null, e);
-            Util.logFFErrorAndExit(file_name, line_nr);
+            Util.logFFErrorAndExit(file_name, line_nr, e);
 
-            System.exit(1);
+            //CrashReporter.showCrashReport(e);
         }
 
         return str_build;
