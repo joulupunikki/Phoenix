@@ -50,6 +50,7 @@ public class CrashReporter {
     private static boolean frame_up = false;
     private static String trace_string = "";
     private static final JTextArea text_area = new JTextArea();
+    private static JFrame frame = null;
     public static void showCrashReport(Throwable e) {
         AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners(Phoenix.ROBOTTESTER_INPUT_EVENT_MASK);
         for (AWTEventListener listener : listeners) {
@@ -66,7 +67,7 @@ public class CrashReporter {
 
     private static void createAndShowReport(Throwable e) {
         //Create and set up the window.
-        JFrame frame = new JFrame("Phoenix has terminated abnormally.");
+        frame = new JFrame("Phoenix has terminated abnormally.");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Create a text area.
         e.printStackTrace();

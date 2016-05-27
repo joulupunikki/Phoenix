@@ -588,14 +588,14 @@ public class Gui extends JFrame {
         space_map.setBounds(ws.space_map_x_pos, ws.space_map_y_pos,
                 ws.space_map_width, ws.space_map_height);
 
-//        SpaceMap.setUpMouse(this, space_map);
-        space_map.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-//                clickOnSpaceMap(e);
-                state.clickOnMainMap(e);
-            }
-        });
+        SpaceMap.setUpMouse(this, space_map);
+//        space_map.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+////                clickOnSpaceMap(e);
+//                state.clickOnMainMap(e);
+//            }
+//        });
 
         space_map.addMouseWheelListener(new MouseAdapter() {
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -617,7 +617,7 @@ public class Gui extends JFrame {
 
         planet_window.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 state.clickOnPlanetWindow(e);
             }
@@ -627,14 +627,14 @@ public class Gui extends JFrame {
         planet_window.add(planet_map);
         planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
                 ws.planet_map_width, ws.planet_map_height);
-//        SpaceMap.setUpMouse(this, planet_map);
-        planet_map.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-//                clickOnPlanetMap(e);
-                state.clickOnMainMap(e);
-            }
-        });
+        SpaceMap.setUpMouse(this, planet_map);
+//        planet_map.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+////                clickOnPlanetMap(e);
+//                state.clickOnMainMap(e);
+//            }
+//        });
 
         planet_map.addMouseWheelListener(new MouseAdapter() {
             public void mouseWheelMoved(MouseWheelEvent e) {
