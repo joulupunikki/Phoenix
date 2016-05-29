@@ -29,6 +29,8 @@ package phoenix;
 
 import gui.Gui;
 import java.awt.AWTEvent;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -47,7 +49,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.Date;
 import java.util.LinkedList;
 import javax.swing.AbstractButton;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.apache.commons.cli.CommandLine;
@@ -78,6 +82,9 @@ public class Phoenix {
     private static String last_jmenu = null;
     private static Gui gui = null;
     private static PrintWriter input_log_writer;
+    private static JFrame boot_frame = null;
+    private static JTextArea boot_text = null; 
+    private static String boot_string = null;
     /**
      * true iff Phoenix is doing an arbitrarily long task with user input
      * dependent length (such as stack moving with animation, which can be
@@ -92,6 +99,21 @@ public class Phoenix {
         start_time = System.nanoTime();
     }
 
+    public static void closeBootFrame() {
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ex) {
+        }
+        boot_frame.dispose();
+    }
+    
+    public static void addBootMsg(String s) {
+        System.out.println(s);
+        boot_string += s;
+        boot_text.setText(boot_string);
+        boot_text.paintImmediately(BOOT_FRAME_X, BOOT_FRAME_Y, BOOT_FRAME_W, BOOT_FRAME_H);
+    }
+    
     /**
      * Main entry point of Phoenix.
      * <p>
@@ -102,7 +124,25 @@ public class Phoenix {
      *
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) {        
+        boot_string = "Phoenix started.\n" + "OS: "
+                + System.getProperty("os.arch", "No arch info.") + " "
+                + System.getProperty("os.name", "No name info.") + " "
+                + System.getProperty("os.version", "No version info.") + "\n"
+                + "System: "
+                + "available cores " + Runtime.getRuntime().availableProcessors()
+        ;
+        System.out.println(boot_string);
+        boot_frame = new JFrame("Starting Phoenix");
+        
+        boot_text = new JTextArea();
+        boot_text.setText(boot_string);
+        boot_text.setForeground(C.COLOR_GOLD);
+        boot_text.setBackground(Color.BLACK);
+        boot_frame.getContentPane().add(boot_text, BorderLayout.CENTER);
+        boot_frame.pack();
+        boot_frame.setVisible(true);
+        boot_frame.setBounds(BOOT_FRAME_X, BOOT_FRAME_Y, BOOT_FRAME_W, BOOT_FRAME_H);
         setLAF();
 //        logger.debug("Test log4j logging");
 
@@ -118,14 +158,7 @@ public class Phoenix {
             }
 
         }
-        System.out.println("Phoenix started.");
-        System.out.println("OS: "
-                + System.getProperty("os.arch", "No arch info.") + " "
-                + System.getProperty("os.name", "No name info.") + " "
-                + System.getProperty("os.version", "No version info.") + "\n"
-                + "System: "
-                + "available cores " + Runtime.getRuntime().availableProcessors()
-        );
+
         // log all errors and exceptions
         rollLogs(FN.S_LOG_FILE);
 
@@ -319,6 +352,10 @@ public class Phoenix {
         // start GUI
         Gui.execute(cli_opts);
     }
+    private static final int BOOT_FRAME_H = 400;
+    private static final int BOOT_FRAME_W = 400;
+    private static final int BOOT_FRAME_Y = 0;
+    private static final int BOOT_FRAME_X = 0;
     public static final long ROBOTTESTER_INPUT_EVENT_MASK = AWTEvent.MOUSE_MOTION_EVENT_MASK | AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_WHEEL_EVENT_MASK | AWTEvent.KEY_EVENT_MASK;
 
     private static void setLAF() {

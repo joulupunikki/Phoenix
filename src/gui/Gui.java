@@ -278,6 +278,7 @@ public class Gui extends JFrame {
         resources = new Resource(this);
         unit_icons_dark = UtilG.makeDarkUnitIcons(resources.getColorScaler(), unit_icons);
         // load galaxy
+        Phoenix.addBootMsg("\nLoading galaxy file ...");
         String galaxy_file_name = FN.S_GALAXY_GAL;
         if (args.hasOption(C.OPT_NAMED_GALAXY)) {
             galaxy_file_name = args.getOptionValue(C.OPT_NAMED_GALAXY);
@@ -285,6 +286,7 @@ public class Gui extends JFrame {
         Util.foundOrExit(galaxy_file_name);
         // create game object
         game = new Game(galaxy_file_name, 14);
+        Phoenix.addBootMsg(" done.\nInitializing GUI ...");
         game.init(resources);
         // set fonts after WindowSize has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_large);
@@ -355,9 +357,11 @@ public class Gui extends JFrame {
 
         // initialize game state
         this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
+        Phoenix.addBootMsg(" done.");
         state = MM1.get();
         
         this.pack();
+        Phoenix.closeBootFrame();
         this.setVisible(true);
 
         // BUGFIX ? without this, the menubar menus will shift slightly when the
