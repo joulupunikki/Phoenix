@@ -72,7 +72,7 @@ public class CombatStrategyPanel extends JPanel {
     private JDialog dialog;
 
     private Strategy[] response_array = null;
-
+    private BufferedImage bi;
     public enum Strategy {
         NORMAL,
         ASSAULT,
@@ -89,6 +89,7 @@ public class CombatStrategyPanel extends JPanel {
         ws = Gui.getWindowSize();
         c = ws.strategy_selector;
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
         dialog.setUndecorated(true);
         dialog.add(this);
@@ -154,8 +155,6 @@ public class CombatStrategyPanel extends JPanel {
     }
 
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
         UtilG.drawFrameRectIn(g, 0, 0, c.get(G.SS.WIN_W), c.get(G.SS.WIN_H));

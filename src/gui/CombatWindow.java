@@ -79,13 +79,13 @@ public class CombatWindow extends JPanel {
     private JButton exit;
     private JButton bombard_again;
     private JLabel planet_name;
-
+    private BufferedImage bi;
     public CombatWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
 
         game = gui.getGame();
-
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
     }
 
@@ -214,9 +214,6 @@ public class CombatWindow extends JPanel {
     }
 
     public void drawUnits(Graphics g) {
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
 
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

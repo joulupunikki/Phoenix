@@ -1682,8 +1682,9 @@ public class Gui extends JFrame {
         JButton build;
         JButton exit;
         Structure city;
-
+        BufferedImage bi;
         public CityPanel() {
+            this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
             setUpPanel();
         }
 
@@ -1698,9 +1699,9 @@ public class Gui extends JFrame {
         public void paintComponent(Graphics g) {
             System.out.println("Paint");
             super.paintComponent(g);
-            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(bi, null, 0, 0);
+            g2d.drawImage(this.bi, null, 0, 0);
             UtilG.drawCityArea(g, game, ws, ws.city_panel_city_area_x, ws.city_panel_city_area_x, city);
         }
 
