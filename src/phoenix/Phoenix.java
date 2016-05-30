@@ -133,7 +133,7 @@ public class Phoenix {
                 + "available cores " + Runtime.getRuntime().availableProcessors()
         ;
         System.out.println(boot_string);
-        boot_frame = new JFrame("Starting Phoenix");
+        boot_frame = new JFrame("Phoenix boot GUI");
         
         boot_text = new JTextArea();
         boot_text.setText(boot_string);
@@ -158,7 +158,14 @@ public class Phoenix {
             }
 
         }
+        //
+        if (!FileNameCapitalizer.run()) {
+            addBootMsg("\nFailed to ensure all filenames are uppercase.");
+            addBootMsg("\nPhoenix halted.");
+            CrashReporter.removeEventListeners();
 
+            return;
+        }
         // log all errors and exceptions
         rollLogs(FN.S_LOG_FILE);
 
@@ -170,6 +177,11 @@ public class Phoenix {
                 CrashReporter.showCrashReport(e);
             }
         });
+        // start GUI
+        Gui.execute(cli_opts);
+    }
+
+    public static boolean startInputEventLogging(CommandLine cli_opts) {
         // log input events
         String file_name = FN.S_DIST_PREFIX + "input.log";
         rollLogs(file_name);
@@ -180,12 +192,10 @@ public class Phoenix {
         } catch (IOException ex) {
             System.out.println("Unable to open input event log file \"" + file_name + "\"");
             Util.logEx(null, ex);
-
             CrashReporter.showCrashReport(ex);
-            return;
+            return true;
         }
         input_log_writer = new PrintWriter(event_log_buf, true);
-
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             //WORKAROUND JDK-6778087 : getLocationOnScreen() always returns (0, 0) for mouse wheel events, on Windows
             private Point prev_xy = new Point(-1, -1);
@@ -348,9 +358,7 @@ public class Phoenix {
                 input_log_writer.close();
             }
         });
-        FileNameCapitalizer.run();
-        // start GUI
-        Gui.execute(cli_opts);
+        return false;
     }
     private static final int BOOT_FRAME_H = 400;
     private static final int BOOT_FRAME_W = 400;

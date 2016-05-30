@@ -362,6 +362,7 @@ public class Gui extends JFrame {
         
         this.pack();
         Phoenix.closeBootFrame();
+        Phoenix.startInputEventLogging(args);
         this.setVisible(true);
 
         // BUGFIX ? without this, the menubar menus will shift slightly when the

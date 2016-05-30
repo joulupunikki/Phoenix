@@ -52,16 +52,21 @@ public class CrashReporter {
     private static final JTextArea text_area = new JTextArea();
     private static JFrame frame = null;
     public static void showCrashReport(Throwable e) {
+        removeEventListeners();
+        addToReport(e, text_area);
+        if (!frame_up) {
+            frame_up = true;
+            Gui.disposeGUI();
+            createAndShowReport(e);
+
+        }
+    }
+
+    public static void removeEventListeners() {
         AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners(Phoenix.ROBOTTESTER_INPUT_EVENT_MASK);
         for (AWTEventListener listener : listeners) {
             Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
             System.out.println(" listener " + listener.toString() + " removed.");
-        }
-        addToReport(e, text_area);
-        if (!frame_up) {
-            frame_up = true;
-            createAndShowReport(e);
-            Gui.disposeGUI();
         }
     }
 
