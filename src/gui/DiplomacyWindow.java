@@ -896,6 +896,7 @@ public class DiplomacyWindow extends JPanel {
         private JDialog dialog;
 
         private int value;
+        private BufferedImage bi;
 
         private DetailDialog() {
         }
@@ -910,6 +911,7 @@ public class DiplomacyWindow extends JPanel {
             dialog.setModal(true);
             this.gui = gui;
             game = gui.getGame();
+            this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
             this.setLayout(null);
             setUpWindow();
             dialog.setUndecorated(true);

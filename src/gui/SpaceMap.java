@@ -99,6 +99,7 @@ public class SpaceMap extends JPanel {
     private static MouseEvent[] mouse_events;
     private static final long MULTI_CLICK_INTERVAL = (long) (int) Toolkit.getDefaultToolkit().getDesktopProperty("awt.multiClickInterval");
     private static int[] planet_types;
+    private BufferedImage bi;
 
     public SpaceMap(Gui gui) {
         this.gui = gui;
@@ -113,6 +114,7 @@ public class SpaceMap extends JPanel {
         color_index = gui.getICM();
         planet_phase = new RingCounter(PLANET_PHASES - 1, 0);
         //setUpMouse(gui);
+        this.bi = Util.loadStarFld2(FN.S_STARFLD2_PCX, ws.is_double, gui.getPallette(), 480, 416);
         setUpPlanetTypes();
 
     }
@@ -321,9 +323,6 @@ public class SpaceMap extends JPanel {
 
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, ws.space_map_width, ws.space_map_height);
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadStarFld2(FN.S_STARFLD2_PCX, ws.is_double, pallette, 480, 416);
 
         g2d.drawImage(bi, null, ws.starfld2_x_pos, ws.starfld2_y_pos);
 
