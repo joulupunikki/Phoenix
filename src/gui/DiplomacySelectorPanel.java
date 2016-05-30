@@ -74,7 +74,7 @@ public class DiplomacySelectorPanel extends JPanel {
     private Map<Enum, Integer> c;
 
     private JDialog dialog;
-    
+    private BufferedImage bi;
     private DiplomacySelectorPanel() {
     }
 
@@ -101,6 +101,9 @@ public class DiplomacySelectorPanel extends JPanel {
 
     public void setWindowVisiblity(boolean visible) {
         dialog.setBounds(c.get(CD.WIN_X) + gui.getX(), c.get(CD.WIN_Y) + gui.getY(), c.get(CD.WIN_W), c.get(CD.WIN_H));
+        if (visible) {
+            bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
+        }
         dialog.setVisible(visible);
     }
 
@@ -154,8 +157,6 @@ public class DiplomacySelectorPanel extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         
         WritableRaster wr = bi.getRaster(); 

@@ -85,6 +85,7 @@ public class HouseWindow extends JPanel {
 
     private int gdp;
     private int base_pay;
+    private BufferedImage bi;
 
     private HouseWindow() {
     }
@@ -113,6 +114,7 @@ public class HouseWindow extends JPanel {
     }
 
     public void enterHouseWindow() {
+        this.bi = Util.loadImage(FN.S_HOUSE_PCX, ws.is_double, gui.getPallette(), 640, 480);
         Faction house = game.getFaction(game.getTurn());
         gdp = house.calculateGDP();
         base_pay = house.calculateUnitPay();
@@ -227,8 +229,6 @@ public class HouseWindow extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_HOUSE_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         WritableRaster wr = bi.getRaster();
         drawTreatyFlags(g2d, wr);

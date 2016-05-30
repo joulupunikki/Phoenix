@@ -69,12 +69,14 @@ public class SpaceWindow extends JPanel {
     JButton next_stack;
     JButton skip_stack;
     private JButton sentry;
+    private BufferedImage bi;
 
     public SpaceWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
 
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_STARMAP3_PCX, ws.is_double, gui.getPallette(), 640, 480);
 
         setUpInfoText();
         setUpButtons();
@@ -239,10 +241,6 @@ public class SpaceWindow extends JPanel {
     }
 
     public void renderSpaceWindow(Graphics g) {
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_STARMAP3_PCX, ws.is_double, pallette, 640, 480);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
 

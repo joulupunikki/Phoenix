@@ -49,10 +49,12 @@ public class XPlayerScreen extends JPanel {
     private static final long serialVersionUID = 1L;
     private Gui gui;
     private WindowSize ws;
+    private BufferedImage bi;
 
     public XPlayerScreen(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
+        this.bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, gui.getPallette(), 640, 480);
     }
 
     public void paintComponent(Graphics g) {
@@ -63,10 +65,6 @@ public class XPlayerScreen extends JPanel {
     }
 
     public void renderPanel(Graphics g) {
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
 

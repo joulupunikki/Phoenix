@@ -68,11 +68,13 @@ public class ByzantiumIIWindow extends JPanel {
     private JButton declare_emperor;
     private JButton abstain;
     private JButton vote;
+    private BufferedImage bi;
 
     public ByzantiumIIWindow(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BYZSECU_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
     }
 
@@ -180,8 +182,6 @@ public class ByzantiumIIWindow extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BYZSECU_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

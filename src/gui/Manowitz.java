@@ -97,6 +97,8 @@ public class Manowitz extends JPanel {
     private int chapters;
     // spread/double page number of current chapter
     private int spread;
+    private BufferedImage bi;
+
 //    // contents is displayed
 //    private final int CONTENTS = 1;
 //    // a chapter is displayed
@@ -116,6 +118,7 @@ public class Manowitz extends JPanel {
         File file_obj = new File(FN.S_BOOK5H_PCX);
         pallette = Util.getPalletteFromPCX(FN.S_BOOK5H_PCX, (int) file_obj.length());
         color_index = new IndexColorModel(8, 256, pallette[2], pallette[1], pallette[0], 256);
+        bi = Util.loadImage(FN.S_BOOK5H_PCX, ws.is_double, pallette, 640, 480);
 
         addLeftPage();
         addRightPage();
@@ -131,7 +134,6 @@ public class Manowitz extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage bi = Util.loadImage(FN.S_BOOK5H_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

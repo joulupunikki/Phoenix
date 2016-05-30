@@ -108,11 +108,12 @@ public class BuildPanel extends JPanel {
     private UnitStats.Left left_stats;
     private UnitStats.Right right_stats;
     private UnitStats.Attack attack_stats;
-
+    BufferedImage bi;
     public BuildPanel(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_UNITBG2_PCX, ws.is_double, gui.getPallette(), 504, 209);
         addLists();
         setUpButtons();
         setUpResDisplay();
@@ -697,8 +698,6 @@ public class BuildPanel extends JPanel {
         super.paintComponent(g);
         g.setColor(new Color(33, 33, 33));
         g.fillRect(0, 0, ws.planet_map_width, ws.planet_map_height);
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_UNITBG2_PCX, ws.is_double, pallette, 504, 209);
         drawResourceIcons(bi.getRaster());
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);

@@ -160,7 +160,7 @@ public class DiplomacyWindow extends JPanel {
         c = ws.diplomacy_window;
         c2 = ws.house;
         game = gui.getGame();
-        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
+        this.bi = Util.loadImage(FN.S_DIPLOMA_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
         detail_dialog = new DetailDialog(gui);
         non_promised_ministries = new LinkedList<>();
@@ -552,8 +552,6 @@ public class DiplomacyWindow extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_DIPLOMA_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

@@ -67,13 +67,13 @@ public class MainMenu extends JPanel {
     private JButton pbem;
     private JCheckBox[] hc;
     PBEMGui test;
-
+    private BufferedImage bi;
     public MainMenu(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
 
         game = gui.getGame();
-
+        this.bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
         setUpButtons();
     }
@@ -127,10 +127,6 @@ public class MainMenu extends JPanel {
     }
 
     public void renderMainMenu(Graphics g) {
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
 
@@ -222,12 +218,14 @@ public class MainMenu extends JPanel {
         private JButton credits;
         private JLabel name;
         private JLabel name2;
+        private BufferedImage bi;
 
         public W1(Gui gui) {
             this.gui = gui;
             ws = Gui.getWindowSize();
 
             game = gui.getGame();
+            this.bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, gui.getPallette(), 640, 480);
 
             setUpButtons();
         }
@@ -240,10 +238,6 @@ public class MainMenu extends JPanel {
         }
 
         public void renderMainMenu(Graphics g) {
-
-            byte[][] pallette = gui.getPallette();
-            BufferedImage bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, pallette, 640, 480);
-
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
             drawTitles(g2d);
