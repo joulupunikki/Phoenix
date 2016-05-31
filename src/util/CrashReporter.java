@@ -30,7 +30,6 @@ package util;
 import gui.Gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import javax.swing.BorderFactory;
@@ -76,7 +75,6 @@ public class CrashReporter {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Create a text area.
         e.printStackTrace();
-        text_area.setFont(new Font("Serif", Font.ITALIC, 12));
         text_area.setLineWrap(true);
         text_area.setWrapStyleWord(true);
         JScrollPane scroll_pane = new JScrollPane(text_area);
