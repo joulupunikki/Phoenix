@@ -44,6 +44,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -712,7 +713,10 @@ public class BuildPanel extends JPanel {
         int w;
         int h;
         int i = 0;
+        final int[] ZEROS = new int[C.EFSUNIT_BIN_WIDTH * C.EFSUNIT_BIN_HEIGHT];
+        Arrays.fill(ZEROS, C.INDEX_COLOR_EFS_BLACK);
         // if we need input unit draw its icon instead of resource 0
+        wr.setPixels(x, y, C.EFSUNIT_BIN_WIDTH, C.EFSUNIT_BIN_HEIGHT, ZEROS);
         if (input_unit_nr > -1) {
             i = 1;
             w = C.EFSUNIT_BIN_WIDTH;
