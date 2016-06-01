@@ -141,7 +141,7 @@ public class FileNameCapitalizer {
             String cap_name = isEFSDir(current);
             if (cap_name != null && !actual_names[i].equals(cap_name)) {
                 try {
-                    Files.move(Paths.get(actual_names[i]), Paths.get(cap_name));
+                    Files.move(Paths.get(top_dir_name, actual_names[i]), Paths.get(top_dir_name, cap_name));
                     System.out.println("Capitalized " + actual_names[i] + " -> " + cap_name);
                 } catch (Exception e) {
                     Phoenix.addBootMsg("\nError: Capitalization " + actual_names[i] + " -> " + cap_name + " failed");
