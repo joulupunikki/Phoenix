@@ -159,7 +159,7 @@ public class Phoenix {
 
         }
         //
-        if (!FileNameCapitalizer.run()) {
+        if (cli_opts.hasOption(C.OPT_CAPITALIZE_FILE_NAMES) && !FileNameCapitalizer.run()) {
             addBootMsg("\nFailed to ensure all filenames are uppercase.");
             addBootMsg("\nPhoenix halted.");
             CrashReporter.removeEventListeners();

@@ -423,6 +423,8 @@ public class C {
     public static final String OPT_MAX_DELAY = "maxdelay";
     public static final String OPT_WIZARD_MODE = "wizardmode";
     public static final String OPT_RANDOM_SEED = "randomseed";
+    public static final String OPT_CAPITALIZE_FILE_NAMES = "capitalizefilenames";
+
     // stack menu choices
     public static final String S_ALL = "all";
     public static final String S_COMBAT = "combat";
