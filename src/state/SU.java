@@ -699,6 +699,12 @@ public class SU extends State {
         gui.setCurrentState(ByzII.get());
     }
 
+    public static void showCityInfoWindow() {
+        setWindow(C.S_CITY_INFO_WINDOW);
+        saveMainGameState();
+        gui.setCurrentState(CIW.get());
+    }
+
     public static void showDiplomacyWindow() {
         setWindow(C.S_DIPLOMACY_WINDOW);
         saveMainGameState();

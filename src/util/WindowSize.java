@@ -36,6 +36,7 @@ import util.G.CD;
 import util.G.CDW;
 import util.G.CGW;
 import util.G.CH;
+import util.G.CIW;
 import util.G.GF;
 import util.G.OW;
 import util.G.SS;
@@ -563,6 +564,8 @@ public class WindowSize {
     public HashMap<Enum, Integer> strategy_selector;
     public HashMap<Enum, Integer> group_finder;
     public HashMap<Enum, Integer> agora_auto_buy;
+    public HashMap<Enum, Integer> city_info;
+
 
 
 
@@ -580,6 +583,7 @@ public class WindowSize {
         iStrategy(is_double);
         iGroupFInder(is_double);
         iAgoraAutobuy(is_double);
+        iCityInfo(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -1344,6 +1348,20 @@ public class WindowSize {
 
         if (is_double) {
             agora_auto_buy.replaceAll(mul2);
+        }
+
+    }
+
+    private void iCityInfo(boolean is_double) {
+        city_info = new HashMap<>();
+        city_info.put(CIW.T_X, 159);
+        city_info.put(CIW.T_Y, 45);
+        city_info.put(CIW.T_W, 461);
+        city_info.put(CIW.T_H, 303);
+        city_info.put(CIW.H_Y, 23);
+
+        if (is_double) {
+            city_info.replaceAll(mul2);
         }
 
     }
