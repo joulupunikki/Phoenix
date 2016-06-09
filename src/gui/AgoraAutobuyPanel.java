@@ -244,6 +244,7 @@ public class AgoraAutobuyPanel extends JPanel {
             return;
         }
         // do you have enough money, do they have enough goods
+        bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         this.response = response;
         this.type = type;
         this.t_lvl = t_lvl;
@@ -303,8 +304,6 @@ public class AgoraAutobuyPanel extends JPanel {
     }
 
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         drawResListImages(g2d);
         g2d.drawImage(bi, null, 0, 0);

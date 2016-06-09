@@ -28,11 +28,9 @@
 package gui;
 
 import dat.UnitType;
-import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
-import game.Hex;
 import game.Message;
 import game.PBEM;
 import java.awt.BorderLayout;
@@ -69,7 +67,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -105,7 +102,6 @@ import util.FN;
 import util.G;
 import util.StackIterator;
 import util.Util;
-import util.Util.HexIter;
 import util.UtilG;
 import util.WindowSize;
 
@@ -145,9 +141,13 @@ public class Gui extends JFrame {
     private GalacticMap galactic_map;           // gal minimap on space window
     private GalacticMap galactic_map_cw;        // gal minimap on combat window
     private GalacticMap galactic_map_uiw;        // gal minimap on unit info window
+    private GalacticMap galactic_map_ciw;        // gal minimap on city info window
+
     private GlobeMap globe_map;                 // global minimap on planet window
     private GlobeMap globe_map_cw;              // global minimap on combat window
     private GlobeMap globe_map_uiw;              // global minimap on unit info window
+    private GlobeMap globe_map_ciw;              // global minimap on city info window
+
     //holds the unit info window/stack window
     private UnitInfoWindow unit_info_window;
     private MainMenu main_menu;
@@ -158,7 +158,7 @@ public class Gui extends JFrame {
     private DiplomacyWindow diplomacy_window;
     private BuildPanel build_panel;
     private AgoraAutobuyPanel agora_autobuy_panel;
-
+    private CityInfoWindow city_info_window;
     private JDialog build_window;
     // panel showing research options
     private TechPanel tech_panel;
@@ -278,6 +278,7 @@ public class Gui extends JFrame {
         resources = new Resource(this);
         unit_icons_dark = UtilG.makeDarkUnitIcons(resources.getColorScaler(), unit_icons);
         // load galaxy
+        Phoenix.addBootMsg("\nLoading galaxy file ...");
         String galaxy_file_name = FN.S_GALAXY_GAL;
         if (args.hasOption(C.OPT_NAMED_GALAXY)) {
             galaxy_file_name = args.getOptionValue(C.OPT_NAMED_GALAXY);
@@ -285,6 +286,7 @@ public class Gui extends JFrame {
         Util.foundOrExit(galaxy_file_name);
         // create game object
         game = new Game(galaxy_file_name, 14);
+        Phoenix.addBootMsg(" done.\nInitializing GUI ...");
         game.init(resources);
         // set fonts after WindowSize has been initialized
         UIManager.put("OptionPane.messageFont", ws.font_large);
@@ -334,6 +336,7 @@ public class Gui extends JFrame {
         setUpUnitInfoWindow();
         setUpMainMenus();
         setUpCombatWindow();
+        city_info_window = CityInfoWindow.getCityInfoWindow(this);
         setUpMiniMaps();
         setUpXPlayerScreen();
         setUpMessagesWindow();
@@ -355,9 +358,12 @@ public class Gui extends JFrame {
 
         // initialize game state
         this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
+        Phoenix.addBootMsg(" done.");
         state = MM1.get();
         
         this.pack();
+        Phoenix.closeBootFrame();
+        Phoenix.startInputEventLogging(args);
         this.setVisible(true);
 
         // BUGFIX ? without this, the menubar menus will shift slightly when the
@@ -449,6 +455,7 @@ public class Gui extends JFrame {
         main_windows.add(diplomacy_window, C.S_DIPLOMACY_WINDOW);
         main_windows.add(galaxy_window, C.S_GALAXY_WINDOW);
         main_windows.add(globe_window, C.S_GLOBE_WINDOW);
+        main_windows.add(city_info_window, C.S_CITY_INFO_WINDOW);
 
         this.getContentPane().add(main_windows, BorderLayout.CENTER);
     }
@@ -588,14 +595,14 @@ public class Gui extends JFrame {
         space_map.setBounds(ws.space_map_x_pos, ws.space_map_y_pos,
                 ws.space_map_width, ws.space_map_height);
 
-//        SpaceMap.setUpMouse(this, space_map);
-        space_map.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-//                clickOnSpaceMap(e);
-                state.clickOnMainMap(e);
-            }
-        });
+        SpaceMap.setUpMouse(this, space_map);
+//        space_map.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+////                clickOnSpaceMap(e);
+//                state.clickOnMainMap(e);
+//            }
+//        });
 
         space_map.addMouseWheelListener(new MouseAdapter() {
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -617,7 +624,7 @@ public class Gui extends JFrame {
 
         planet_window.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mousePressed(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 state.clickOnPlanetWindow(e);
             }
@@ -627,14 +634,14 @@ public class Gui extends JFrame {
         planet_window.add(planet_map);
         planet_map.setBounds(ws.planet_map_x_offset, ws.planet_map_y_offset,
                 ws.planet_map_width, ws.planet_map_height);
-//        SpaceMap.setUpMouse(this, planet_map);
-        planet_map.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-//                clickOnPlanetMap(e);
-                state.clickOnMainMap(e);
-            }
-        });
+        SpaceMap.setUpMouse(this, planet_map);
+//        planet_map.addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+////                clickOnPlanetMap(e);
+//                state.clickOnMainMap(e);
+//            }
+//        });
 
         planet_map.addMouseWheelListener(new MouseAdapter() {
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -956,39 +963,8 @@ public class Gui extends JFrame {
         menu_city_info.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_city_info.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String city_string = "";
-                LinkedList<Structure> cities = new LinkedList<>();
-                for (Planet planet : game.getPlanets()) {
-                    cities.clear();
-                    HexIter hi = Util.getHexIter(game, planet.index);
-                    Hex hex = hi.next();
-                    while (hex != null) {
-                        Structure s = hex.getStructure();
-                        if (s != null && s.owner == game.getTurn()) {
-                            if (s.type == C.RUINS || s.type == C.ALIEN_RUINS || s.type == C.MONASTERY) {
-                                cities.addLast(s);
-                            } else {
-                                cities.addFirst(s);
-                            }
-                        }
-                        hex = hi.next();
-                    }
-                    if (!cities.isEmpty()) {
-                        city_string += planet.name + "\n";
-                        boolean start = true;
-                        for (Structure city : cities) {
-                            if (start) {
-                                city_string += "--> ";
-                                start = false;
-                            } else {
-                                city_string += ", ";
-                            }
-                            city_string += game.getStrBuild(city.type).name;
-                        }
-                        city_string += "\n";
-                    }
-                }
-                showInfoWindow(city_string);
+                city_info_window.enterCityInfoWindow();
+                SU.showCityInfoWindow();
             }
         });
         archives_menu.add(menu_vol1);
@@ -1355,6 +1331,16 @@ public class Gui extends JFrame {
         unit_info_window.add(globe_map_uiw);
         globe_map_uiw.setBounds(ws.group_finder.get(G.GF.PLAN_MAP_X), ws.group_finder.get(G.GF.PLAN_MAP_Y),
                 ws.cw_glm_w, ws.cw_glm_h);
+
+        galactic_map_ciw = new GalacticMap(this, game, ws, true);
+        city_info_window.add(galactic_map_ciw);
+        galactic_map_ciw.setBounds(ws.group_finder.get(G.GF.GAL_MAP_X), ws.group_finder.get(G.GF.GAL_MAP_Y),
+                ws.cw_gm_w, ws.cw_gm_h);
+
+        globe_map_ciw = new GlobeMap(this, game, ws, true);
+        city_info_window.add(globe_map_ciw);
+        globe_map_ciw.setBounds(ws.group_finder.get(G.GF.PLAN_MAP_X), ws.group_finder.get(G.GF.PLAN_MAP_Y),
+                ws.cw_glm_w, ws.cw_glm_h);
     }
 
     public void setDialogSize(JDialog dialog, int x, int y, int w, int h) {
@@ -1586,6 +1572,10 @@ public class Gui extends JFrame {
         return unit_info_window;
     }
 
+    public CityInfoWindow getCityInfoWindow() {
+        return city_info_window;
+    }
+
     private class CityDialog extends JDialog {
 
         /**
@@ -1677,8 +1667,9 @@ public class Gui extends JFrame {
         JButton build;
         JButton exit;
         Structure city;
-
+        BufferedImage bi;
         public CityPanel() {
+            this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
             setUpPanel();
         }
 
@@ -1693,9 +1684,9 @@ public class Gui extends JFrame {
         public void paintComponent(Graphics g) {
             System.out.println("Paint");
             super.paintComponent(g);
-            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
+
             Graphics2D g2d = (Graphics2D) g;
-            g2d.drawImage(bi, null, 0, 0);
+            g2d.drawImage(this.bi, null, 0, 0);
             UtilG.drawCityArea(g, game, ws, ws.city_panel_city_area_x, ws.city_panel_city_area_x, city);
         }
 

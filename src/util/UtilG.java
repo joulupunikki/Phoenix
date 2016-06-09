@@ -1295,7 +1295,7 @@ public class UtilG {
         private static final long serialVersionUID = 1L;
         private static byte[][] pallette;
         private static WindowSize ws;
-
+        private static BufferedImage bi;
         /**
          *
          * @param message the value of message
@@ -1322,7 +1322,6 @@ public class UtilG {
 
         @Override
         public void paint(Graphics g) {
-            BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(bi, null, 0, 0);
             
@@ -1334,6 +1333,7 @@ public class UtilG {
         public static void setUpPhoenixJOptionPane(Gui gui) {
             pallette = gui.getPallette();
             ws = Gui.getWindowSize();
+            bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         }      
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 joulupunikki joulupunikki@gmail.communist.invalid.
+ * Copyright (C) 2016 joulupunikki joulupunikki@gmail.communist.invalid.
  *
  *  Disclaimer of Warranties and Limitation of Liability.
  *
@@ -25,48 +25,30 @@
  *     all liability.
  *
  */
-package gui;
-
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import javax.swing.JPanel;
-import util.FN;
-import util.Util;
-import util.WindowSize;
+package state;
 
 /**
- * Window to display on main windows during player change (to cover details of
- * current player from prying eyes)
+ * City Info Window state.
  *
  * @author joulupunikki <joulupunikki@gmail.communist.invalid>
  */
-public class XPlayerScreen extends JPanel {
+public class CIW extends State {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-    private Gui gui;
-    private WindowSize ws;
-    private BufferedImage bi;
+    private static CIW instance = new CIW();
 
-    public XPlayerScreen(Gui gui) {
-        this.gui = gui;
-        ws = Gui.getWindowSize();
-        this.bi = Util.loadImage(FN.S_CATHED3_PCX, ws.is_double, gui.getPallette(), 640, 480);
+    private CIW() {
     }
 
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        renderPanel(g);
-
+    public static State get() {
+        return instance;
     }
 
-    public void renderPanel(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.drawImage(bi, null, 0, 0);
-
+    @Override
+    public void pressExitButton() {
+        gui.getCityInfoWindow().restoreCurrentSelectedStack();
+        SU.restoreMainWindow();
+        gui.setCurrentState(main_game_state);
+        main_game_state = null;
     }
+
 }

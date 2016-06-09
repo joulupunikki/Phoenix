@@ -83,11 +83,13 @@ public class TechDBPanel extends JPanel {
     private JButton exit;
     private JButton archive;
     private static Object[] tech_db_table_header = {"Tech Name", "Maint"};
+    private BufferedImage bi;
 
     public TechDBPanel(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, ws.tech_window_h);
 
         addTechDBTable();
         addTechDBInfo();
@@ -99,10 +101,6 @@ public class TechDBPanel extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, ws.tech_window_h);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

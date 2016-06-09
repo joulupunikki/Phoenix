@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.util.Locale;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
+import phoenix.Phoenix;
 
 /**
  * Ensures EFS file names are capitalized.
@@ -85,12 +86,12 @@ public class FileNameCapitalizer {
     private FileNameCapitalizer() {
     }
 
-    public static void run() {
-        FNC.runSub();
+    public static boolean run() {
+        return FNC.runSub();
 
     }
 
-    private void runSub() {
+    private boolean runSub() {
         String top_dir_name = ".";
         if (!FN.S_DIST_PREFIX.equals("")) {
             top_dir_name = FN.S_DIST_PREFIX;
@@ -109,9 +110,29 @@ public class FileNameCapitalizer {
                 count--;
             }
         }
+
         if (count > 0) {
-            throw new RuntimeException("All EFS1.4 files are not present.");
+            Phoenix.addBootMsg("\nError: not all EFS1.4 files present.");
+            return false;
         }
+
+        top_dir = new File(top_dir_name);
+        actual_names = top_dir.list(DirectoryFileFilter.DIRECTORY);
+        count = EFS_SUBDIRS.length;
+        for (int i = 0; i < actual_names.length; i++) {
+
+            File current = new File(actual_names[i]);
+            String cap_name = isEFSDir(current);
+            if (cap_name != null && actual_names[i].equalsIgnoreCase(cap_name)) {
+                count--;
+            }
+        }
+
+        if (count > 0) {
+            Phoenix.addBootMsg("\nError: not all EFS1.4 sub dirs present.");
+            return false;
+        }
+
         // capitalize EFS subdir names
         actual_names = top_dir.list(DirectoryFileFilter.INSTANCE);
         for (int i = 0; i < actual_names.length; i++) {
@@ -120,9 +141,11 @@ public class FileNameCapitalizer {
             String cap_name = isEFSDir(current);
             if (cap_name != null && !actual_names[i].equals(cap_name)) {
                 try {
-                    Files.move(Paths.get(actual_names[i]), Paths.get(cap_name));
+                    Files.move(Paths.get(top_dir_name, actual_names[i]), Paths.get(top_dir_name, cap_name));
                     System.out.println("Capitalized " + actual_names[i] + " -> " + cap_name);
                 } catch (Exception e) {
+                    Phoenix.addBootMsg("\nError: Capitalization " + actual_names[i] + " -> " + cap_name + " failed");
+                    return false;
                 }
 
             }
@@ -139,6 +162,8 @@ public class FileNameCapitalizer {
                     Files.move(Paths.get(top_dir_name, actual_names[i]), Paths.get(top_dir_name, cap_name));
                     System.out.println("Capitalized " + actual_names[i] + " -> " + cap_name);
                 } catch (Exception e) {
+                    Phoenix.addBootMsg("\nError: Capitalization " + actual_names[i] + " -> " + cap_name + " failed");
+                    return false;
                 }
 
             }
@@ -158,10 +183,13 @@ public class FileNameCapitalizer {
                         Files.move(Paths.get(top_dir_name, string, actual_names[i]), Paths.get(top_dir_name, string, cap_name));
                         System.out.println("Capitalized " + string + FN.F_S + actual_names[i] + " -> " + string + FN.F_S + cap_name);
                     } catch (Exception e) {
+                        Phoenix.addBootMsg("\nError: Capitalization " + string + FN.F_S + actual_names[i] + " -> " + string + FN.F_S + cap_name + " failed");
+                        return false;
                     }
                 }
             }
         }
+        return true;
     }
 
     private String isEFSDir(File file) {

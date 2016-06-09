@@ -75,6 +75,8 @@ public class ResolveContract extends JPanel {
     // the message with the contract as attachment
     private Message message;
     private Contract contract;
+    private BufferedImage bi;
+
     private ResolveContract() {
     }
 
@@ -85,6 +87,7 @@ public class ResolveContract extends JPanel {
         c = ws.diplomacy_window;
         c2 = ws.house;
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_CONTRACT_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
         dialog.setUndecorated(true);
         dialog.add(this);
@@ -222,8 +225,6 @@ public class ResolveContract extends JPanel {
     }
 
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_CONTRACT_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
 //TODO draw leader portrait
 //        WritableRaster wr = bi.getRaster();

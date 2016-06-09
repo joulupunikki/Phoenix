@@ -97,6 +97,8 @@ public class Manowitz extends JPanel {
     private int chapters;
     // spread/double page number of current chapter
     private int spread;
+    private BufferedImage bi;
+
 //    // contents is displayed
 //    private final int CONTENTS = 1;
 //    // a chapter is displayed
@@ -116,6 +118,7 @@ public class Manowitz extends JPanel {
         File file_obj = new File(FN.S_BOOK5H_PCX);
         pallette = Util.getPalletteFromPCX(FN.S_BOOK5H_PCX, (int) file_obj.length());
         color_index = new IndexColorModel(8, 256, pallette[2], pallette[1], pallette[0], 256);
+        bi = Util.loadImage(FN.S_BOOK5H_PCX, ws.is_double, pallette, 640, 480);
 
         addLeftPage();
         addRightPage();
@@ -131,7 +134,6 @@ public class Manowitz extends JPanel {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        BufferedImage bi = Util.loadImage(FN.S_BOOK5H_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }
@@ -308,7 +310,7 @@ public class Manowitz extends JPanel {
     public int selectRow(MouseEvent e) {
         int selected_row = -1;
         Point p = e.getPoint();
-        System.out.println("Manowitz left page(x,y): " + p.x + ", " + p.y);
+//        System.out.println("Manowitz left page(x,y): " + p.x + ", " + p.y);
         FontMetrics fm = right_page.getFontMetrics(right_page.getFont());
         selected_row = p.y / fm.getHeight() + 1;
         return selected_row;
@@ -320,27 +322,27 @@ public class Manowitz extends JPanel {
             public void mousePressed(MouseEvent e) {
 //                clickOnPlanetMap(e);
                 Point p = e.getPoint();
-                System.out.println("Manowitz (x,y): " + p.x + ", " + p.y);
+//                System.out.println("Manowitz (x,y): " + p.x + ", " + p.y);
 
                 if (p.x > ws.manowitz_contents_x_offset
                         && p.x < ws.manowitz_contents_x_offset + ws.manowitz_contents_w
                         && p.y > ws.manowitz_contents_y_offset
                         && p.y < ws.manowitz_contents_y_offset + ws.manowitz_contents_h) {
-                    System.out.println("Contents");
+//                    System.out.println("Contents");
                     pressContents(-1);
                 }
                 if (p.x > ws.manowitz_prev_x_offset
                         && p.x < ws.manowitz_prev_x_offset + ws.manowitz_prev_w
                         && p.y > ws.manowitz_prev_y_offset
                         && p.y < ws.manowitz_prev_y_offset + ws.manowitz_prev_h) {
-                    System.out.println("Prev");
+//                    System.out.println("Prev");
                     pressPrev();
                 }
                 if (p.x > ws.manowitz_next_x_offset
                         && p.x < ws.manowitz_next_x_offset + ws.manowitz_next_w
                         && p.y > ws.manowitz_next_y_offset
                         && p.y < ws.manowitz_next_y_offset + ws.manowitz_next_h) {
-                    System.out.println("Next");
+//                    System.out.println("Next");
                     pressNext();
                 }
 
@@ -348,7 +350,7 @@ public class Manowitz extends JPanel {
                         && p.x < ws.manowitz_close_x_offset + ws.manowitz_close_w
                         && p.y > ws.manowitz_close_y_offset
                         && p.y < ws.manowitz_close_y_offset + ws.manowitz_close_h) {
-                    System.out.println("Close");
+//                    System.out.println("Close");
                     gui.closeManowitz();
                 }
 
@@ -522,21 +524,19 @@ public class Manowitz extends JPanel {
     }
 
     public String getChapterName(int vol, int chapter) {
-        String sample = "V1CHP001.TXT";
-        String manowitz = "MANOWITZ";
-        String separ = System.getProperty("file.separator");
-        String v = "V";
-        String chp = "CHP";
-        String zero = "0";
-        String zerozero = "00";
-        String txt = ".TXT";
-        String file_name = manowitz + separ + v + vol + chp;
+        //String sample = "V1CHP001.TXT";
+        final String S_V = "V";
+        final String S_CHP = "CHP";
+        final String S_ZERO = "0";
+        final String S_ZEROZERO = "00";
+        final String S__TXT = ".TXT";
+        String file_name = FN.S_DIST_PREFIX + FN.S_MANOWITZ + FN.F_S + S_V + vol + S_CHP;
         if (chapter < 10) {
-            file_name += zerozero;
+            file_name += S_ZEROZERO;
         } else {
-            file_name += zero;
+            file_name += S_ZERO;
         }
-        file_name += chapter + txt;
+        file_name += chapter + S__TXT;
         return file_name;
     }
 
@@ -563,7 +563,7 @@ public class Manowitz extends JPanel {
         // do not skip wolfen and conclusion of vol 5 in vanilla EFS
         if (vol > 1) { // && (vol != 5 || (chapter != 25 && chapter != 47))) {
             String preqs = getPrerequisiteTechString(vol, chapter);
-            System.out.println("preqs = " + preqs);
+//            System.out.println("preqs = " + preqs);
             text += preqs;
         }
         //break text into words, spaces and newlines
@@ -595,14 +595,14 @@ public class Manowitz extends JPanel {
             if (c != ' ' && c != '\n' && c != '\r') {
                 word += c;
             } else if (c == '\r') {
-                System.out.println("CR");
+//                System.out.println("CR");
             } else {
 
                 words.add(word);
-                System.out.println("word = " + word);
+//                System.out.println("word = " + word);
                 word = "" + c;
                 words.add(word);
-                System.out.println("word = " + word);
+//                System.out.println("word = " + word);
                 word = "";
             }
         }
@@ -625,7 +625,7 @@ public class Manowitz extends JPanel {
                     }
                 } else {
                     lines.add(line);
-                    System.out.println("line = " + line);
+//                    System.out.println("line = " + line);
                     line = "";
 //                    if (word != " ") {
                     line += word;
@@ -644,15 +644,15 @@ public class Manowitz extends JPanel {
                 if (fm.stringWidth(line + word) <= d.width) {
                     line += word;
                     lines.add(line);
-                    System.out.println("line = " + line);
+//                    System.out.println("line = " + line);
                     line = "";
 
                 } else {
                     lines.add(line);
-                    System.out.println("line = " + line);
+//                    System.out.println("line = " + line);
                     line = word;
                     lines.add(line);
-                    System.out.println("line = " + line);
+//                    System.out.println("line = " + line);
                     line = "";
                 }
             }
@@ -677,20 +677,20 @@ public class Manowitz extends JPanel {
 
         Rectangle r = right_page.getBounds();
         int rows = r.height / fm.getHeight();
-        System.out.println("r.height = " + r.height);
-        System.out.println("fm.getHeight() = " + fm.getHeight());
-        System.out.println("rows = " + rows);
+//        System.out.println("r.height = " + r.height);
+//        System.out.println("fm.getHeight() = " + fm.getHeight());
+//        System.out.println("rows = " + rows);
         String left_text = "";
         int i = (spread - 1) * rows * 2;
         for (int j = 0; i < lines.size() && j < rows; i++, j++) {
             left_text += lines.get(i);
         }
-        System.out.println("left_text = " + left_text);
+//        System.out.println("left_text = " + left_text);
         String right_text = "";
         for (int j = 0; i < lines.size() && j < rows; i++, j++) {
             right_text += lines.get(i);
         }
-        System.out.println("right_text = " + right_text);
+//        System.out.println("right_text = " + right_text);
         left_page.setText(left_text);
         right_page.setText(right_text);
     }

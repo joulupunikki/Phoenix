@@ -78,8 +78,10 @@ public class GalaxyWindow extends JPanel {
     //private int[][] mini_planet_images;
     private Image[] mini_planet_images;
     private int[] planet_owners;
-
+    private BufferedImage bi;
+    private BufferedImage bi2;
     public GalaxyWindow(Gui gui) {
+
         this.gui = gui;
 
         ws = Gui.getWindowSize();
@@ -87,7 +89,8 @@ public class GalaxyWindow extends JPanel {
         game = gui.getGame();
         square_side = c.get(CGW.SQUARE);
         setUpButtons();
-
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
+        this.bi2 = Util.loadStarFld2(FN.S_STARFLD2_PCX, ws.is_double, gui.getPallette(), STARFLD2_W, STARFLD2_H);
         int[][] planet_images = SpaceMap.getPlanet_images();
         //mini_planet_images = new int[planet_images.length][square_side * square_side];
         mini_planet_images = new Image[planet_images.length];
@@ -184,14 +187,8 @@ public class GalaxyWindow extends JPanel {
     }
 
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
-
-        BufferedImage bi2 = Util.loadStarFld2(FN.S_STARFLD2_PCX, ws.is_double, pallette, STARFLD2_W, STARFLD2_H);
-
         g2d.drawImage(bi2, null, (ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y));
         g2d.setColor(Color.BLACK);
         g2d.fillRect((ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y) + STARFLD2_H, STARFLD2_W, c.get(CGW.MAP_H) - bi2.getHeight());

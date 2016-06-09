@@ -83,6 +83,7 @@ public class PlanetWindow extends JPanel {
 
     JButton build;
     JButton trade;
+    private BufferedImage bi;
 
     //bug test
     long test_long = 0;
@@ -95,6 +96,7 @@ public class PlanetWindow extends JPanel {
         ws = Gui.getWindowSize();
 
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_PLNPLAT3_PCX, ws.is_double, gui.getPallette(), 640, 480);
 
         setUpInfoText();
         setUpButtons();
@@ -326,9 +328,6 @@ public class PlanetWindow extends JPanel {
     }
 
     public void renderPlanetWindow(Graphics g) {
-
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_PLNPLAT3_PCX, ws.is_double, pallette, 640, 480);
         drawResourceIcons(bi.getRaster());
 
         Graphics2D g2d = (Graphics2D) g;

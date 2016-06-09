@@ -94,7 +94,7 @@ public class AgoraWindow extends JPanel {
     private Map<Enum, Integer> c;
     // null iff buying, othewise pointer to agora hex to which we are selling
     private Hex sell;
-
+    private BufferedImage bi;
     public static AgoraWindow getAgoraWindow(Gui gui) {
         AgoraWindow aw = new AgoraWindow(gui);
         aw.setLayout(null);
@@ -111,6 +111,7 @@ public class AgoraWindow extends JPanel {
         ws = Gui.getWindowSize();
         c = ws.agora;
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
     }
 
@@ -245,8 +246,6 @@ public class AgoraWindow extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

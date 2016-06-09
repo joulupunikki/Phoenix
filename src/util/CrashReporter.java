@@ -30,7 +30,6 @@ package util;
 import gui.Gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
 import javax.swing.BorderFactory;
@@ -50,27 +49,32 @@ public class CrashReporter {
     private static boolean frame_up = false;
     private static String trace_string = "";
     private static final JTextArea text_area = new JTextArea();
+    private static JFrame frame = null;
     public static void showCrashReport(Throwable e) {
+        removeEventListeners();
+        addToReport(e, text_area);
+        if (!frame_up) {
+            frame_up = true;
+            Gui.disposeGUI();
+            createAndShowReport(e);
+
+        }
+    }
+
+    public static void removeEventListeners() {
         AWTEventListener[] listeners = Toolkit.getDefaultToolkit().getAWTEventListeners(Phoenix.ROBOTTESTER_INPUT_EVENT_MASK);
         for (AWTEventListener listener : listeners) {
             Toolkit.getDefaultToolkit().removeAWTEventListener(listener);
             System.out.println(" listener " + listener.toString() + " removed.");
         }
-        addToReport(e, text_area);
-        if (!frame_up) {
-            frame_up = true;
-            createAndShowReport(e);
-            Gui.disposeGUI();
-        }
     }
 
     private static void createAndShowReport(Throwable e) {
         //Create and set up the window.
-        JFrame frame = new JFrame("Phoenix has terminated abnormally.");
+        frame = new JFrame("Phoenix has terminated abnormally.");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //Create a text area.
         e.printStackTrace();
-        text_area.setFont(new Font("Serif", Font.ITALIC, 12));
         text_area.setLineWrap(true);
         text_area.setWrapStyleWord(true);
         JScrollPane scroll_pane = new JScrollPane(text_area);

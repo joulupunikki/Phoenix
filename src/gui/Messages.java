@@ -80,11 +80,12 @@ public class Messages extends JPanel {
     private JButton view_replays;
     private static Object[] message_table_header = {"Message", "Location"};
     private CombatReport current_cmbt_report;
-
+    private BufferedImage bi;
     public Messages(Gui gui) {
         this.gui = gui;
         ws = Gui.getWindowSize();
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpButtons();
         addMessageTable();
     }
@@ -145,8 +146,6 @@ public class Messages extends JPanel {
     }
 
     public void renderMessages(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
     }

@@ -34,7 +34,6 @@ import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.EnumMap;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -72,7 +71,7 @@ public class OptionsPanel extends JPanel {
     private Map<Enum, Integer> c;
 
     private JDialog dialog;
-    
+    private BufferedImage bi;
     private OptionsPanel() {
     }
 
@@ -82,6 +81,7 @@ public class OptionsPanel extends JPanel {
         ws = Gui.getWindowSize();
         c = ws.options_window;
         game = gui.getGame();
+        this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, gui.getPallette(), 640, 480);
         setUpWindow();
         dialog.setUndecorated(true);
         dialog.add(this);
@@ -151,11 +151,9 @@ public class OptionsPanel extends JPanel {
     }
     
     private void drawBackground(Graphics g) {
-        byte[][] pallette = gui.getPallette();
-        BufferedImage bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
         Graphics2D g2d = (Graphics2D) g;
         
-        WritableRaster wr = bi.getRaster(); 
+        //WritableRaster wr = bi.getRaster();
         g2d.drawImage(bi, null, 0, 0);
         UtilG.drawFrameRectIn(g, 0, 0, c.get(OW.WIN_W), c.get(OW.WIN_H));
     }
