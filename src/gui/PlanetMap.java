@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2015 joulupunikki joulupunikki@gmail.communist.invalid.
+ * Copyright (C) 2016 Charles Keil ck@charleskeil.com
  *
  *  Disclaimer of Warranties and Limitation of Liability.
  *
@@ -1536,6 +1537,7 @@ public class PlanetMap extends JPanel {
                 case 011: /* 001001 */
                 case 022: /* 010010 */
                 case 021: /* 010001 */ 
+                case 024: /* 010100 */
                     tile_no[FOREST] = 29;  break;
                 default : 
                 {
