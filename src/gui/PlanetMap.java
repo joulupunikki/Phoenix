@@ -44,11 +44,11 @@ import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
-import java.util.HashSet;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import util.C;
@@ -1659,7 +1659,9 @@ public class PlanetMap extends JPanel {
                 if (neighbour_terrain[C.GRASS]      && !terrain[C.GRASS])      { tile_no[i] =  74 + (i-FADEN); } 
                 if (neighbour_terrain[C.ARID_GRASS] && !terrain[C.ARID_GRASS]) { tile_no[i] =  81 + (i-FADEN); } 
                 if (neighbour_terrain[C.DESERT]     && !terrain[C.DESERT])     { tile_no[i] =  88 + (i-FADEN); } 
-                if (neighbour_terrain[C.ICE]        && !terrain[C.ICE])        { tile_no[i] = 124 + (i-FADEN); } 
+                if (neighbour_terrain[C.ICE] && !terrain[C.ICE]) {
+                    tile_no[i] = 125 + (i - FADEN);
+                }
                 if (neighbour_terrain[C.TUNDRA]     && !terrain[C.TUNDRA])     { tile_no[i] = 118 + (i-FADEN); }
             }            
         }
