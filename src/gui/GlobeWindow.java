@@ -30,6 +30,9 @@ package gui;
 import galaxyreader.Unit;
 import game.Game;
 import game.Hex;
+import gui.PlanetMap.Layer;
+import gui.PlanetMap.Orientation;
+import static gui.PlanetMap.TILE_EDGES;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -249,47 +252,60 @@ public class GlobeWindow extends JPanel {
     }
 
     public void writePixel(int x, int y, int t_idx, int[] pixel_data, int[][] hex_tiles, int[] tile_no, WritableRaster wr) {
+        final int origTidx = t_idx;
+
         for (int i = 0; i < tile_no.length; i++) {
+            if (tile_no[i] == -1) {
+                continue;
+            }
 
-            if (tile_no[i] != -1) {
-                if (i == 3 || i == 11) {
-                    pixel_data[0] = structures[tile_no[i]][t_idx];
-                } else {
-                    pixel_data[0] = hex_tiles[tile_no[i]][t_idx];
+            Orientation orientation = Orientation.DEFAULT;
+            if (tile_no[i] >= (Orientation.FLIPFLOP.ordinal() * 100000)) {
+                orientation = Orientation.FLIPFLOP;
+            } else if (tile_no[i] >= (Orientation.FLOP.ordinal() * 100000)) {
+                orientation = Orientation.FLOP;
+            } else if (tile_no[i] >= (Orientation.FLIP.ordinal() * 100000)) {
+                orientation = Orientation.FLIP;
+            }
+            int t_y = (t_idx) / C.STRUCT_BIN_WIDTH;
+            int t_x = (t_idx) - (t_y * C.STRUCT_BIN_WIDTH);
+            if (orientation != Orientation.DEFAULT) {
+                if ((orientation == Orientation.FLIP) || (orientation == Orientation.FLIPFLOP)) {
+                    t_y = C.STRUCT_BIN_HEIGHT - 1 - t_y;
                 }
+                if ((orientation == Orientation.FLOP) || (orientation == Orientation.FLIPFLOP)) {
+                    t_x = C.STRUCT_BIN_WIDTH - 1 - t_x;
+                }
+                t_idx = t_y * C.STRUCT_BIN_WIDTH + t_x;
+            }
+            if (i >= Layer.EDGEN.ordinal() && i <= Layer.EDGENW.ordinal()) {
+                if (!TILE_EDGES[i - Layer.EDGEN.ordinal()].contains(t_x, t_y)) {
+                    continue;
+                };
+            }
 
-                if (pixel_data[0] != 0) {
-                    if (!current_hex.isSpotted(current_faction)) {
-                        pixel_data[0] = color_scaler[pixel_data[0]];
+            if (i != Layer.RESOURCE.ordinal() && i != Layer.STRUCTURE.ordinal()) {
+                pixel_data[0] = hex_tiles[tile_no[i] - (orientation.ordinal() * 100000)][t_idx];
+            } else {
+                pixel_data[0] = structures[tile_no[i] - (orientation.ordinal() * 100000)][t_idx];
+            }
 
-                    }
-                    // if double window size scale image
-                    if (ws.is_double) {
-                        wr.setPixel(2 * x, 2 * y, pixel_data);
-                        wr.setPixel(2 * x + 1, 2 * y, pixel_data);
-                        wr.setPixel(2 * x, 2 * y + 1, pixel_data);
-                        wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
-                    } else {
-                        wr.setPixel(x, y, pixel_data);
-                    }
+            if (pixel_data[0] != 0) {
+                if (!current_hex.isSpotted(current_faction)) {
+                    pixel_data[0] = color_scaler[pixel_data[0]];
+                }
+                // if double window size scale image
+                if (ws.is_double) {
+                    wr.setPixel(2 * x, 2 * y, pixel_data);
+                    wr.setPixel(2 * x + 1, 2 * y, pixel_data);
+                    wr.setPixel(2 * x, 2 * y + 1, pixel_data);
+                    wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
+                } else {
+                    wr.setPixel(x, y, pixel_data);
                 }
             }
-        }
 
-//        if (tile_no[tile_no.length - 1] != -1) {
-//            pixel_data[0] = hex_tiles[tile_no[]][t_idx];
-//            if (pixel_data[0] != 0) {
-//
-//                // if double window size scale image
-//                if (ws.is_double) {
-//                    wr.setPixel(2 * x, 2 * y, pixel_data);
-//                    wr.setPixel(2 * x + 1, 2 * y, pixel_data);
-//                    wr.setPixel(2 * x, 2 * y + 1, pixel_data);
-//                    wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
-//                } else {
-//                    wr.setPixel(x, y, pixel_data);
-//                }
-//            }
-//        }
+            t_idx = origTidx;
+        }
     }
 }
