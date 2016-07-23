@@ -1035,7 +1035,11 @@ public class DiplomacyWindow extends JPanel {
             slider.addChangeListener(cl);
             slider.addMouseWheelListener(mwl);
             int w = this.w * 4 / 5;
-            slider.setBounds((this.w - w) / 2, h / 4, w, 39);
+            int h = 39;
+            if (ws.is_double) {
+                h *= 2;
+            }
+            slider.setBounds((this.w - w) / 2, this.h / 4, w, h);
             this.add(slider);
         }
 

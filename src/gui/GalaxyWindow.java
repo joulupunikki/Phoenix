@@ -94,12 +94,12 @@ public class GalaxyWindow extends JPanel {
         int[][] planet_images = SpaceMap.getPlanet_images();
         //mini_planet_images = new int[planet_images.length][square_side * square_side];
         mini_planet_images = new Image[planet_images.length];
-        BufferedImage bi_big = new BufferedImage(ws.planet_image_side, ws.planet_image_side, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
+        BufferedImage bi_big = new BufferedImage(C.EFSUNIT_BIN_WIDTH, C.EFSUNIT_BIN_WIDTH, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         WritableRaster wr_big = bi_big.getRaster();
         BufferedImage bi_small = new BufferedImage(square_side, square_side, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         WritableRaster wr_small = bi_small.getRaster();
         for (int i = 0; i < planet_images.length; i++) {
-            wr_big.setPixels(0, 0, ws.planet_image_side, ws.planet_image_side, planet_images[i]);
+            wr_big.setPixels(0, 0, C.EFSUNIT_BIN_WIDTH, C.EFSUNIT_BIN_WIDTH, planet_images[i]);
             mini_planet_images[i] = bi_big.getScaledInstance(square_side, square_side, Image.SCALE_AREA_AVERAGING);
         }
         planet_owners = new int[game.getPlanets().size()];
@@ -191,8 +191,8 @@ public class GalaxyWindow extends JPanel {
         g2d.drawImage(bi, null, 0, 0);
         g2d.drawImage(bi2, null, (ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y));
         g2d.setColor(Color.BLACK);
-        g2d.fillRect((ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y) + STARFLD2_H, STARFLD2_W, c.get(CGW.MAP_H) - bi2.getHeight());
-        UtilG.drawFrameRect(g, (ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y), STARFLD2_W, c.get(CGW.MAP_H));
+        g2d.fillRect((ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y) + bi2.getHeight(), bi2.getWidth(), c.get(CGW.MAP_H) - bi2.getHeight());
+        UtilG.drawFrameRect(g, (ws.main_window_width - bi2.getWidth()) / 2, c.get(CGW.MAP_Y), bi2.getWidth(), c.get(CGW.MAP_H)); // Fix #86
     }
 
     /**

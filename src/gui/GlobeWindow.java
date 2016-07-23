@@ -294,15 +294,15 @@ public class GlobeWindow extends JPanel {
                 if (!current_hex.isSpotted(current_faction)) {
                     pixel_data[0] = color_scaler[pixel_data[0]];
                 }
-                // if double window size scale image
-                if (ws.is_double) {
-                    wr.setPixel(2 * x, 2 * y, pixel_data);
-                    wr.setPixel(2 * x + 1, 2 * y, pixel_data);
-                    wr.setPixel(2 * x, 2 * y + 1, pixel_data);
-                    wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
-                } else {
+//                // if double window size scale image
+//                if (ws.is_double) {
+//                    wr.setPixel(2 * x, 2 * y, pixel_data);
+//                    wr.setPixel(2 * x + 1, 2 * y, pixel_data);
+//                    wr.setPixel(2 * x, 2 * y + 1, pixel_data);
+//                    wr.setPixel(2 * x + 1, 2 * y + 1, pixel_data);
+//                } else {
                     wr.setPixel(x, y, pixel_data);
-                }
+//                }
             }
 
             t_idx = origTidx;

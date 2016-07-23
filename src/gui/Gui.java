@@ -288,11 +288,8 @@ public class Gui extends JFrame {
         game = new Game(galaxy_file_name, 14);
         Phoenix.addBootMsg(" done.\nInitializing GUI ...");
         game.init(resources);
-        // set fonts after WindowSize has been initialized
-        UIManager.put("OptionPane.messageFont", ws.font_large);
-        UIManager.put("Button.font", ws.font_large);
-        UIManager.put("Label.font", ws.font_large);
-        UIManager.put("TextField.font", ws.font_large);
+        setResDependentLAF();
+
         UtilG.setUpUtilG(this);
         // set up PBEM
         pbem_gui = new PBEMGui(game);
@@ -376,6 +373,17 @@ public class Gui extends JFrame {
 
     }
 
+    public static void setResDependentLAF() {
+        UIManager.put("OptionPane.messageFont", ws.font_large);
+        UIManager.put("Button.font", ws.font_large);
+        UIManager.put("Label.font", ws.font_large);
+        UIManager.put("TextField.font", ws.font_large);
+        if (ws.is_double) {
+            UIManager.put("Menu.font", ws.font_large); // Fix #86
+            UIManager.put("MenuItem.font", ws.font_large);
+        }
+    }
+
     private void setUpMenubar() {
         /*
          *set up menubar
@@ -383,9 +391,9 @@ public class Gui extends JFrame {
         menubar = new JMenuBar();
         menubar.setBackground(Color.BLACK);
         menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
-        menubar.setBounds(0, 0, ws.main_window_width, 18);
+        menubar.setBounds(0, 0, ws.main_window_width, ws.menubar_h);
         menubar_holder = new JPanel(null);
-        menubar_holder.setBounds(0, 0, ws.main_window_width, 18);
+        menubar_holder.setBounds(0, 0, ws.main_window_width, ws.menubar_h);
         menubar_holder.add(menubar);
     }
 

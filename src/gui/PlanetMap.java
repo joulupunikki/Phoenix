@@ -1068,13 +1068,18 @@ public class PlanetMap extends JPanel {
 
         int dx = 0;
         int dy = 0;
-
+        int x_lim = ws.planet_map_width;
+        int y_lim = ws.planet_map_height;
+        if (ws.is_double) {
+            x_lim /= 2;
+            y_lim /= 2;
+        }
         for (int i = 0; i < C.STRUCT_BIN_HEIGHT; i++) {
             for (int j = 0; j < C.STRUCT_BIN_WIDTH; j++) {
 
                 dx = x + j;
                 dy = y + dip + i;
-                if (dx < ws.planet_map_width && dy < ws.planet_map_height) {
+                if (dx < x_lim && dy < y_lim) {
 
                     writePixel(dx, dy, i * C.STRUCT_BIN_WIDTH + j,
                             pixel_data, hex_tiles, tile_no, wr);
@@ -1678,6 +1683,9 @@ public class PlanetMap extends JPanel {
         }
         {
             int flags = planet_map_flags[u][v];
+            if (h.getTerrain(C.ROAD)) { // fix #91
+                flags >>>= 9;
+            }
             final int mask = 0b0000_1111_1111;
             flags &= mask;
             String s_flags = Util.createFlagString(flags);

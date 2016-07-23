@@ -159,14 +159,26 @@ public class DiplomacySelectorPanel extends JPanel {
     private void drawBackground(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         
-        WritableRaster wr = bi.getRaster(); 
+        WritableRaster wr = bi.getRaster();
+        int row1_x = c.get(G.CD.ROW1_X); //Fix #86
+        int row2_x = c.get(G.CD.ROW2_X);
+        int row1_y = c.get(G.CD.ROW1_Y);
+        int row2_y = c.get(G.CD.ROW2_Y);
+        int row_w = c.get(G.CD.ROW_W);
+        if (ws.is_double) {
+            row1_x /= 2;
+            row2_x /= 2;
+            row1_y /= 2;
+            row2_y /= 2;
+            row_w /= 2;
+        }
         int[] pixel_data = new int[1];
         int count = 0;
         for (int i = 0; i <= C.HOUSE5; i++) {
             if (i == game.getTurn()) {
                 continue;
             }
-            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW1_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW1_Y), ws.banner100_side, ws.banner100_side);
+            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, row1_x + count * row_w, row1_y, C.BANNER100_SIDE, C.BANNER100_SIDE);
             count++;
         }
         count = 0;
@@ -174,7 +186,7 @@ public class DiplomacySelectorPanel extends JPanel {
             if (i == C.SYMBIOT) {
                 i++;
             }
-            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, c.get(G.CD.ROW2_X) + count * c.get(G.CD.ROW_W), c.get(G.CD.ROW2_Y), ws.banner100_side, ws.banner100_side);
+            Util.writeRect(pixel_data, gui.getResources().getBanner100(i), wr, ws, row2_x + count * row_w, row2_y, C.BANNER100_SIDE, C.BANNER100_SIDE);
             count++;
         }
         g2d.drawImage(bi, null, 0, 0);

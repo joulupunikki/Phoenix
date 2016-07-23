@@ -554,6 +554,8 @@ public class WindowSize {
     public int bz2_button1_w = 235;
     public int bz2_button1_h = 15;
 
+    public int menubar_h = 18;
+
     public int d = 1;
     public HashMap<Enum, Integer> agora;
     public HashMap<Enum, Integer> house;
@@ -581,7 +583,7 @@ public class WindowSize {
         iGalaxyWindow(is_double);
         iOptionsWindow(is_double);
         iStrategy(is_double);
-        iGroupFInder(is_double);
+        iGroupFinder(is_double);
         iAgoraAutobuy(is_double);
         iCityInfo(is_double);
         if (is_double) {
@@ -1060,7 +1062,7 @@ public class WindowSize {
             bz2_button1_y *= 2;
             bz2_button1_w *= 2;
             bz2_button1_h *= 2;
-
+            menubar_h *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 
@@ -1292,7 +1294,7 @@ public class WindowSize {
 
     }
 
-    private void iGroupFInder(boolean is_double) {
+    private void iGroupFinder(boolean is_double) {
         group_finder = new HashMap<>();
         group_finder.put(GF.BUTTON_X, 144);
         group_finder.put(GF.BUTTON_Y, 459);
@@ -1308,7 +1310,9 @@ public class WindowSize {
         group_finder.put(GF.PLAN_NAME_H, 14);
         group_finder.put(GF.SENTRY_Y, 433);
 
-
+        if (is_double) { // Fix #86
+            group_finder.replaceAll(mul2);
+        }
 
     }
 
