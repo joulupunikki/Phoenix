@@ -725,6 +725,12 @@ public class SU extends State {
     }
 
     public static void showGroupFinder() {
+        if (game.getSelectedStack() == null) { // Fix #92
+            selectNextUnmovedUnit();
+            if (game.getSelectedStack() == null) {
+                return;
+            }
+        }
         gui.setUnitInfoWindowMode(true);
         setWindow(C.S_UNIT_INFO);
         saveMainGameState();
