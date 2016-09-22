@@ -44,6 +44,8 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.Point;
@@ -260,8 +262,6 @@ public class Gui extends JFrame {
     private JMenuItem menu_group_finder;
     private JMenuItem menu_city_info;
 
-
-
     public Gui() throws HeadlessException {
         //this.setUndecorated(true); // Ubuntu unity, see https://github.com/joulupunikki/Phoenix/issues/51
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -270,11 +270,24 @@ public class Gui extends JFrame {
         color_index = loadICM();
         unit_icons = Util.loadSquares(FN.S_EFSUNIT_BIN, 92, 32 * 32);
         // set resolution, needed when building Gui elements.
+
+        boolean is_double_res = false;
         if (args.hasOption(C.OPT_DOUBLE_RES)) {
-            ws = new WindowSize(true);
-        } else {
-            ws = new WindowSize(false);
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            int width = gd.getDisplayMode().getWidth();
+            int height = gd.getDisplayMode().getHeight();
+            Phoenix.addBootMsg("\nDouble resolution requested ...");
+            Phoenix.addBootMsg("\nDefault screen size is " + width + " x " + height);
+            if (width >= 1300 && height >= 980) {
+                Phoenix.addBootMsg("\nDefault screen is large enough for 1280 x 960 windowed mode");
+                is_double_res = true;
+            } else {
+                Phoenix.addBootMsg("\nDefault screen is not large enough for 1280 x 960 windowed mode"
+                        + "\n defaulting to 640 x 480 windowed mode");
+            }
         }
+        ws = new WindowSize(is_double_res);
+
         resources = new Resource(this);
         unit_icons_dark = UtilG.makeDarkUnitIcons(resources.getColorScaler(), unit_icons);
         // load galaxy
@@ -352,12 +365,11 @@ public class Gui extends JFrame {
         setUpStackMenu();
         setUpCityDialog3(game, ws);
 
-
         // initialize game state
         this.setCursor(resources.getCursor(C.S_CURSOR_SCEPTOR));
         Phoenix.addBootMsg(" done.");
         state = MM1.get();
-        
+
         this.pack();
         Phoenix.closeBootFrame();
         Phoenix.startInputEventLogging(args);
@@ -686,7 +698,6 @@ public class Gui extends JFrame {
         build_window.pack();
     }
 
-
     private void setUpFileMenu() {
         file_menu = new JMenu("File");
         menu_exit = new JMenuItem("Exit");
@@ -984,7 +995,7 @@ public class Gui extends JFrame {
         archives_menu.add(menu_vol5);
         archives_menu.add(menu_group_finder);
         archives_menu.add(menu_city_info);
-        
+
         menubar.add(archives_menu);
     }
 
@@ -999,10 +1010,9 @@ public class Gui extends JFrame {
             }
         });
         menubar.add(house_menu);
-        
+
 //        house_menu.setSize(55, 17);
 //        house_menu.setBounds(0, 0, 55, 17);
-        
     }
 
     private void setUpDiplomacyMenu() {
@@ -1041,7 +1051,7 @@ public class Gui extends JFrame {
         menu_read_messages = new JMenuItem("Read Messages");
         menu_read_messages.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_read_messages.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 messages_window.addMessageData();
 
                 SU.showMessagesWindow();
@@ -1676,6 +1686,7 @@ public class Gui extends JFrame {
         JButton exit;
         Structure city;
         BufferedImage bi;
+
         public CityPanel() {
             this.bi = Util.loadImage(FN.S_BG0_PCX, ws.is_double, pallette, 640, 480);
             setUpPanel();
@@ -1886,7 +1897,6 @@ public class Gui extends JFrame {
 //            this.setCursor(cursor);
         }
     }
-
 
     public void saveGame() {
         // to set attributes of chooser components google "Darryl SwingUtils"
@@ -2167,21 +2177,19 @@ public class Gui extends JFrame {
                     line = "";
                     line += word;
                 }
-            } else {
-                if (fm.stringWidth(line + word) <= width) {
-                    line += word;
-                    lines.add(line);
-                    //System.out.println("line = " + line);
-                    line = "";
+            } else if (fm.stringWidth(line + word) <= width) {
+                line += word;
+                lines.add(line);
+                //System.out.println("line = " + line);
+                line = "";
 
-                } else {
-                    lines.add(line);
-                    //System.out.println("line = " + line);
-                    line = word;
-                    lines.add(line);
-                    //System.out.println("line = " + line);
-                    line = "";
-                }
+            } else {
+                lines.add(line);
+                //System.out.println("line = " + line);
+                line = word;
+                lines.add(line);
+                //System.out.println("line = " + line);
+                line = "";
             }
         }
         if (!line.equalsIgnoreCase("")) {
@@ -2581,7 +2589,7 @@ public class Gui extends JFrame {
         double init_time = ((System.nanoTime() - Phoenix.start_time)) / 1_000_000 / 1e3;
         System.out.println("Startup time = " + init_time + "s");
         System.out.println("Phoenix ready.");
-        Long random_seed = Phoenix.start_time;   
+        Long random_seed = Phoenix.start_time;
         if (args.hasOption(C.OPT_RANDOM_SEED)) {
             System.out.println(args.getOptionValue(C.OPT_RANDOM_SEED));
             random_seed = Long.parseLong(args.getOptionValue(C.OPT_RANDOM_SEED)); // Fix #65
