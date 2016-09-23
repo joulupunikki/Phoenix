@@ -130,7 +130,8 @@ public class Phoenix {
                 + System.getProperty("os.name", "No name info.") + " "
                 + System.getProperty("os.version", "No version info.") + "\n"
                 + "System: "
-                + "available cores " + Runtime.getRuntime().availableProcessors()
+                + "available cores " + Runtime.getRuntime().availableProcessors() + "\n"
+                + "Best large cursor size: " + Toolkit.getDefaultToolkit().getBestCursorSize(64, 64);
         ;
         System.out.println(boot_string);
         boot_frame = new JFrame("Phoenix boot GUI");

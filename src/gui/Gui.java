@@ -2257,22 +2257,21 @@ public class Gui extends JFrame {
     }
 
     public Cursor createMouseCursor(String cursor_file, String cursor_name, boolean bullseye) {
-
-        int wt;
-        int ht;
-        if (ws.is_double) {
-            wt = 64;
-            ht = 64;
-        } else {
-            wt = 32;
-            ht = 32;
+        final int LARGE_CURSOR_SIZE = 64;
+        final int NORMAL_CURSOR_SIZE = 32;
+        int wt = NORMAL_CURSOR_SIZE;
+        int ht = wt;
+        Dimension crsr_size = Toolkit.getDefaultToolkit().getBestCursorSize(LARGE_CURSOR_SIZE, LARGE_CURSOR_SIZE);
+        if (ws.is_double && crsr_size.width == LARGE_CURSOR_SIZE && crsr_size.height == LARGE_CURSOR_SIZE) {
+            wt = LARGE_CURSOR_SIZE;
+            ht = wt;
         }
 
         BufferedImage bi = new BufferedImage(wt, ht, BufferedImage.TYPE_BYTE_INDEXED, color_index);
         WritableRaster wr = bi.getRaster();
-        int[] cursor_img = Util.loadSquare(cursor_file, 0, 32 * 32);
-        if (ws.is_double) {
-            cursor_img = Util.scale2XImage(cursor_img, 32 * 32, 32);
+        int[] cursor_img = Util.loadSquare(cursor_file, 0, NORMAL_CURSOR_SIZE * NORMAL_CURSOR_SIZE);
+        if (wt == LARGE_CURSOR_SIZE) {
+            cursor_img = Util.scale2XImage(cursor_img, NORMAL_CURSOR_SIZE * NORMAL_CURSOR_SIZE, NORMAL_CURSOR_SIZE);
         }
         wr.setPixels(0, 0, wt, ht, cursor_img);
         BufferedImage alpha_img = new BufferedImage(wt, ht, BufferedImage.TYPE_INT_ARGB);
