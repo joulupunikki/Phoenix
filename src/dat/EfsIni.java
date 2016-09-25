@@ -128,6 +128,7 @@ public class EfsIni implements Serializable {
     public boolean wizard_mode = false;
     public int regency_term_length = -1;
     public int pts_fire_range = -1;
+    public boolean lander_vulnerability_EFS = true;
     public boolean combat_strategy_selection = true;
     public boolean experience_combat_effect = true;
     public boolean STP_minimap_navigation = true;
@@ -155,6 +156,7 @@ public class EfsIni implements Serializable {
         wizard_mode = Boolean.parseBoolean((phoenix_ini.getProperty("wizard_mode")).trim());
         regency_term_length = Integer.parseInt((phoenix_ini.getProperty("regency_term_length")).trim());
         pts_fire_range = Integer.parseInt((phoenix_ini.getProperty("pts_fire_range")).trim());
+        lander_vulnerability_EFS = Boolean.parseBoolean((phoenix_ini.getProperty("lander_vulnerability_EFS")).trim());
         combat_strategy_selection = Boolean.parseBoolean((phoenix_ini.getProperty("combat_strategy_selection")).trim());
         experience_combat_effect = Boolean.parseBoolean((phoenix_ini.getProperty("experience_combat_effect")).trim());
         STP_minimap_navigation = Boolean.parseBoolean((phoenix_ini.getProperty("STP_minimap_navigation")).trim());

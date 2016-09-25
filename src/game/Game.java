@@ -148,7 +148,6 @@ public class Game implements Serializable {
         terr_cost = TerrCost.readTerrCost();
         damage = Damage.readDamageDat();
         target = Target.readTargetDat();
-
         galaxy = Galaxy.loadGalaxy(galaxy_file);
         planet_map_origin = new Point(0, 0);
         space_map_origin = new Point(0, 0);
@@ -230,6 +229,7 @@ public class Game implements Serializable {
         battle.battleInit(random, damage, target, terr_cost, this, planets);
 
         efs_ini = EfsIni.readEfsIni(gui_resource.getEFSIni(), gui_resource.getPhoenixIni());
+        Target.setLanderVulnerability(target, efs_ini);
         resources = new Resources(this);
         economy = new Economy(this, resources);
 

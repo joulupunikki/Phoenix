@@ -173,4 +173,20 @@ public class Target {
             System.out.println("");
         }
     }
+
+    /**
+     * Check and set EFS1.4 hardwired lander ground attack vulnerability if
+     * requested.
+     *
+     * @param target
+     * @param efs_ini
+     */
+    public static void setLanderVulnerability(int[][] target, EfsIni efs_ini) {
+        if (efs_ini.lander_vulnerability_EFS) {
+            int t = C.MoveType.LANDER.ordinal();
+            target[t][C.INDIRECT] = 1;
+            target[t][C.DIRECT] = 1;
+            target[t][C.CLOSE] = 1;
+        }
+    }
 }
