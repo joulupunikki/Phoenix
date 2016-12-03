@@ -97,6 +97,10 @@ public class MainMenu extends JPanel {
     private void initPBEMButton() {
         if (game.getEfs_ini().pbem.pbem) {
             pbem.setText("PBEM On");
+            for (int i = 0; i < C.NR_HOUSES; i++) { // fix #95
+                game.setFactionPlayer(i, true);
+                hc[i].setSelected(true);
+            }
         } else {
             pbem.setText("PBEM Off");
         }

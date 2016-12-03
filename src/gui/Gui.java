@@ -264,7 +264,16 @@ public class Gui extends JFrame {
 
     public Gui() throws HeadlessException {
         //this.setUndecorated(true); // Ubuntu unity, see https://github.com/joulupunikki/Phoenix/issues/51
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE); // fix #94
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent we) {
+                if (!showConfirmWindow("Are you sure you want to quit ?")) { // fix #94
+                    return;
+                }
+                System.exit(0);
+            }
+        });
         CommandLine args = Gui.args;
         pallette = Util.loadPallette(FN.S_EFS_PAL);
         color_index = loadICM();
@@ -715,6 +724,9 @@ public class Gui extends JFrame {
 //        menu_exit.setForeground(C.COLOR_GOLD);
         menu_exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (!showConfirmWindow("Are you sure you want to quit ?")) { // fix #94
+                    return;
+                }
                 int ret_val = 0;
                 int robot_wait = 10000;
                 if (RobotTester.isRobotTest()) {
@@ -755,6 +767,9 @@ public class Gui extends JFrame {
         });
         menu_restart.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (!showConfirmWindow("Are you sure you want to restart ?")) { // fix #94
+                    return;
+                }
                 toMainMenu();
 
             }
