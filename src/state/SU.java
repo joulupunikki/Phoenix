@@ -1190,6 +1190,7 @@ public class SU extends State {
         boolean nothing_selected = true;
         List<Unit> selected_stack = game.getSelectedStack();
         if (selected_stack == null) {
+            game.resetUnmovedUnits(false); // fix #99
             gui.showInfoWindow("You have moved all of your units.");
             return nothing_selected;
         }
@@ -1208,6 +1209,7 @@ public class SU extends State {
             game.setSelectedPoint(null, -1);
             game.setSelectedFaction(-1);
         }
+        game.resetUnmovedUnits(false); // fix #99
         gui.showInfoWindow("You have moved all of your units.");
         return nothing_selected;
     }

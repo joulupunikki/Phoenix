@@ -175,7 +175,7 @@ public class Game implements Serializable {
         checkStackSizes();
         placeStructures();
         resetMovePoints();
-        resetUnmovedUnits();
+        resetUnmovedUnits(true);
 
         setMoveType();
         setUnitTypeData();
@@ -582,7 +582,7 @@ public class Game implements Serializable {
         doResearch();
         buildUnits();
 
-        resetUnmovedUnits();
+        resetUnmovedUnits(true);
         resetMovePoints();
         setMaxSpotRange();
         cargo_pods = Util.getCargoPods(units, this);
@@ -732,13 +732,20 @@ public class Game implements Serializable {
         return unmoved_units;
     }
 
-    public void resetUnmovedUnits() {
+    /**
+     * Resets the list of unmoved units. If start_of_turn then cancels rout.
+     *
+     * @param start_of_turn the value of start_of_turn
+     */
+    public void resetUnmovedUnits(boolean start_of_turn) {
         unmoved_units.clear();
         for (Unit u : units) {
             if (u.owner == turn && !u.is_sentry) {
 //                System.out.println("u.owner = " + u.owner);
                 unmoved_units.add(u);
-                u.routed = false;
+                if (start_of_turn) {
+                    u.routed = false;
+                }
             }
         }
 

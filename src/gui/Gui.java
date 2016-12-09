@@ -1850,7 +1850,7 @@ public class Gui extends JFrame {
                 if (pbem.end_turn) {
                     pbem.end_turn = false;
                     game.endTurn();
-                    pbem_gui.testDATAHashes(this);
+                    //pbem_gui.testDATAHashes(this); // fixme #98
                 }
                 if (pbem.password_revocation) {  // if password revocation sequence
                     int password_turn = pbem_gui.passwordTurn(game); // get next confirmation giver
@@ -2096,6 +2096,9 @@ public class Gui extends JFrame {
         globe_map_cw.setGame(game);
         galactic_map_uiw.setGame(game);
         globe_map_uiw.setGame(game);
+        galactic_map_ciw.setGame(game); // fix #96 ...
+        globe_map_ciw.setGame(game);
+        city_info_window.setGame(game); // ... fix #96
         build_panel.setGame(game);
         agora_autobuy_panel.setGame(game);
         tech_panel.setGame(game);

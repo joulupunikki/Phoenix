@@ -166,6 +166,11 @@ public class BuildPanel extends JPanel {
 
     }
 
+    /**
+     * Show required res amounts for unit
+     *
+     * @param unit
+     */
     public void drawResAmounts(int[] unit) {
         int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
         int planet = (Integer) planet_list.getSelectedValue();
@@ -179,6 +184,23 @@ public class BuildPanel extends JPanel {
             }
             res_display[i].setText(Util.c4Display(res_needed[C.REQUIRED_RESOURCES[i]]));
 
+        }
+    }
+
+    /**
+     * Show res amounts for planet
+     */
+    public void drawResAmounts() {
+        Integer val = (Integer) planet_list.getSelectedValue();
+        if (val == null) {
+            return;
+        }
+        int planet = val;
+        //System.out.println("Planet name = " + game.getPlanet(planet).name);
+        int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
+        for (int i = 0; i < res_display.length; i++) {
+            res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            res_display[i].setText(Util.c4Display(res_avail[C.REQUIRED_RESOURCES[i]]));
         }
     }
 
@@ -412,6 +434,7 @@ public class BuildPanel extends JPanel {
                         if (!e.getValueIsAdjusting()) {
                             citySelected(e);
                             zeroResources();
+                            drawResAmounts();
                         }
                     }
                 });
@@ -444,6 +467,7 @@ public class BuildPanel extends JPanel {
                         if (!e.getValueIsAdjusting()) {
                             planetSelected(e, -1);
                             zeroResources();
+                            drawResAmounts();
                         }
                     }
                 });

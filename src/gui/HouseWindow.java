@@ -244,13 +244,24 @@ public class HouseWindow extends JPanel {
 
     private void drawTreatyFlags(Graphics2D g, WritableRaster wr) {
         int[] pixel_data = new int[1];
+        // fix #97
+        int x = c.get(G.CH.STATE_X);
+        int y = c.get(G.CH.STATE_Y);
+        int s = c.get(G.CH.STATE_S);
+        int w = c.get(G.CH.STATE_W);
+        if (ws.is_double) {
+            x /= 2;
+            y /= 2;
+            s /= 2;
+            w /= 2;
+        }
         for (int i = 0; i < C.NR_HOUSES; i++) {
             for (int j = 0; j < C.NR_HOUSES; j++) {
                 if (i == j) {
                     continue;
                 }
                 if (game.getDiplomacy().getDiplomaticState(i, j) == C.DS_WAR) {
-                    Util.writeRect(pixel_data, gui.getResources().getTreatyFlag(C.DS_WAR), wr, ws, c.get(G.CH.STATE_X) + i * c.get(G.CH.STATE_S), c.get(G.CH.STATE_Y) + j * c.get(G.CH.STATE_S), c.get(G.CH.STATE_W), c.get(G.CH.STATE_W));
+                    Util.writeRect(pixel_data, gui.getResources().getTreatyFlag(C.DS_WAR), wr, ws, x + i * s, y + j * s, w, w); // fix #97
                 }
             }
         }
