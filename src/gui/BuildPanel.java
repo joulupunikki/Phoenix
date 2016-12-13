@@ -42,9 +42,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,6 +75,7 @@ import util.C;
 import util.Comp;
 import util.FN;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
@@ -166,26 +165,6 @@ public class BuildPanel extends JPanel {
 
     }
 
-    /**
-     * Show required res amounts for unit
-     *
-     * @param unit
-     */
-    public void drawResAmounts(int[] unit) {
-        int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
-        int planet = (Integer) planet_list.getSelectedValue();
-        //System.out.println("Planet name = " + game.getPlanet(planet).name);
-        int[] res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
-        for (int i = 0; i < res_display.length; i++) {
-            if (res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
-                res_display[i].setForeground(Color.RED);
-            } else {
-                res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
-            }
-            res_display[i].setText(Util.c4Display(res_needed[C.REQUIRED_RESOURCES[i]]));
-
-        }
-    }
 
     /**
      * Show res amounts for planet
@@ -352,7 +331,8 @@ public class BuildPanel extends JPanel {
                     } else {
                         input_unit_nr = -1;
                     }
-                    drawResAmounts(unit);
+                    UtilG.drawResAmounts(unit, (Integer) planet_list.getSelectedValue(),
+                            game, res_display);
                     UnitType ut = game.getUnitTypes()[unit[0]][unit[1]];
                     left_stats.setValues(ut);
                     right_stats.setValues(ut);
@@ -723,42 +703,9 @@ public class BuildPanel extends JPanel {
         super.paintComponent(g);
         g.setColor(new Color(33, 33, 33));
         g.fillRect(0, 0, ws.planet_map_width, ws.planet_map_height);
-        drawResourceIcons(bi.getRaster());
+        UtilG.drawResourceIcons(bi.getRaster(), input_unit_nr, gui, ws, 11, 166);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
-    }
-
-    public void drawResourceIcons(WritableRaster wr) {
-        int[][] res_icons = gui.getResources().getResIcons();
-        int x = 11;
-        int y = 166;
-        int x_offset = 38;
-        int[] pixel_data = new int[1];
-        int w;
-        int h;
-        int i = 0;
-        final int[] ZEROS = new int[C.EFSUNIT_BIN_WIDTH * C.EFSUNIT_BIN_HEIGHT];
-        Arrays.fill(ZEROS, C.INDEX_COLOR_EFS_BLACK);
-        // if we need input unit draw its icon instead of resource 0
-        wr.setPixels(x, y, C.EFSUNIT_BIN_WIDTH, C.EFSUNIT_BIN_HEIGHT, ZEROS);
-        if (input_unit_nr > -1) {
-            i = 1;
-            w = C.EFSUNIT_BIN_WIDTH;
-            h = C.EFSUNIT_BIN_HEIGHT;
-            int[][] unit_icons = Gui.getUnitIcons();
-            Util.writeImage(pixel_data, input_unit_nr, unit_icons,
-                    wr, ws, w, h, x, y);
-        }
-
-        w = C.CARGO_WIDTH;
-        h = C.CARGO_HEIGHT;
-
-        for (; i < C.REQUIRED_RESOURCES.length; i++) {
-            Util.writeImage(pixel_data, C.REQUIRED_RESOURCES[i], res_icons,
-                    wr, ws, w, h, x + i * x_offset, y);
-
-        }
-
     }
 
     class CustomRendererInt extends JLabel

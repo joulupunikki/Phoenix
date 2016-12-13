@@ -1307,7 +1307,7 @@ public class PlanetMap extends JPanel {
         if (city != null) {
             if (h.isSpotted(game.getTurn())) {
                 tile_no[STRUCTURE] = city.type;
-            } else {
+            } else if (city.type != C.RUINS && city.type != C.ALIEN_RUINS && city.type != C.MONASTERY) { // fix #81
                 tile_no[STRUCTURE] = 21;
             }
         }
@@ -1683,13 +1683,13 @@ public class PlanetMap extends JPanel {
         }
         {
             int flags = planet_map_flags[u][v];
-            if (h.getTerrain(C.ROAD)) { // fix #91
-                flags >>>= 9;
-            }
+//            if (h.getTerrain(C.ROAD)) { // fix #91
+//                System.out.println("     ROAD");
+//                flags >>>= 9;
+//            }
             final int mask = 0b0000_1111_1111;
             flags &= mask;
             String s_flags = Util.createFlagString(flags);
-
             switch (s_flags) {
                 case "0124": tile_no[MOUNTAIN] = 132; break;
                 case "0125": tile_no[MOUNTAIN] = 133; break;

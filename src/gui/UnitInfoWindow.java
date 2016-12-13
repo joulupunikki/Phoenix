@@ -117,6 +117,7 @@ public class UnitInfoWindow extends JPanel {
     private JPopupMenu filter_type;
     private JMenuItem[] type_items;
     private JButton filter_type_button;
+    private JTextField[] res_display;
 
     private TYPE_FILTER type_filter;
     private Map<Enum, Integer> c;
@@ -137,8 +138,31 @@ public class UnitInfoWindow extends JPanel {
         setUpListeners();
         setUpButtons();
         setUpStatDisplay();
+        setUpResDisplay();
         byte[][] pallette = gui.getPallette();
         bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
+    }
+
+    public void setUpResDisplay() {
+        res_display = new JTextField[C.REQUIRED_RESOURCES.length];
+        for (int i = 0; i < res_display.length; i++) {
+            res_display[i] = new JTextField();
+            this.add(res_display[i]);
+            int x_offset = 123;
+            if (ws.is_double) {
+                x_offset *= 2;
+            }
+            res_display[i].setBounds(x_offset + ws.bp_res_display_x_offset + i * ws.pw_res_display_x_gap, ws.bp_res_display_y_offset, ws.bp_res_display_w, ws.bp_res_display_h);
+//            res_display[i].setBackground(Color.WHITE);
+            res_display[i].setOpaque(false);
+            res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            res_display[i].setEditable(false);
+            res_display[i].setHorizontalAlignment(JTextField.CENTER);
+            res_display[i].setBorder(null);
+            res_display[i].setFont(ws.font_default);
+//            res_display[i].setText("123");
+        }
+
     }
 
     /**
@@ -600,9 +624,14 @@ public class UnitInfoWindow extends JPanel {
         attack_stats.setValues(null);
 
         if (u == null) {
+            for (JTextField item : res_display) {
+                item.setText("");
+            }
             return;
         }
-
+        UtilG.drawResourceIcons(bi.getRaster(), u.type_data.unit, gui, ws, 134, 166);
+        int[] unit = {u.type, u.t_lvl};
+        UtilG.drawResAmounts(unit, -1, game, res_display);
         top_stats.setValues(u);
         left_stats.setValues(u.type_data);
         right_stats.setValues(u.type_data);
@@ -687,7 +716,7 @@ public class UnitInfoWindow extends JPanel {
                 g.setColor(C.COLOR_GOLD);
                 g.setFont(ws.font_abbrev);
 
-                if (e.experience > 0) {
+                if (e.experience > 0 && e.type != C.CARGO_UNIT_TYPE) { // fix #100
                     if (e.experience == 1) {
                         g.setColor(Color.LIGHT_GRAY);
                     }

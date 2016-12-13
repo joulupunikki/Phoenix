@@ -51,6 +51,7 @@ import java.awt.image.WritableRaster;
 import java.nio.ByteOrder;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,6 +62,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.BorderUIResource;
@@ -1130,6 +1132,55 @@ public class UtilG {
             }
         }
         return tmp;
+    }
+
+    public static void drawResourceIcons(WritableRaster wr, int input_unit_nr, Gui gui, WindowSize ws, int x, int y) {
+        int[][] res_icons = gui.getResources().getResIcons();
+        int x_offset = 38;
+        int[] pixel_data = new int[1];
+        int w;
+        int h;
+        int i = 0;
+        final int[] ZEROS = new int[C.EFSUNIT_BIN_WIDTH * C.EFSUNIT_BIN_HEIGHT];
+        Arrays.fill(ZEROS, C.INDEX_COLOR_EFS_BLACK);
+        // if we need input unit draw its icon instead of resource 0
+        wr.setPixels(x, y, C.EFSUNIT_BIN_WIDTH, C.EFSUNIT_BIN_HEIGHT, ZEROS);
+        if (input_unit_nr > -1) {
+            i = 1;
+            w = C.EFSUNIT_BIN_WIDTH;
+            h = C.EFSUNIT_BIN_HEIGHT;
+            int[][] unit_icons = Gui.getUnitIcons();
+            Util.writeImage(pixel_data, input_unit_nr, unit_icons, wr, ws, w, h, x, y);
+        }
+        w = C.CARGO_WIDTH;
+        h = C.CARGO_HEIGHT;
+        for (; i < C.REQUIRED_RESOURCES.length; i++) {
+            Util.writeImage(pixel_data, C.REQUIRED_RESOURCES[i], res_icons, wr, ws, w, h, x + i * x_offset, y);
+        }
+    }
+
+    /**
+     * Show required res amounts for unit
+     *
+     * @param unit
+     */
+    public static void drawResAmounts(int[] unit, int planet, Game game, JTextField[] res_display) {
+        int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
+        //int planet = (Integer) planet_list.getSelectedValue();
+        //System.out.println("Planet name = " + game.getPlanet(planet).name);
+        int[] res_avail = null;
+        if (planet > -1) {
+            res_avail = game.getResources().getResourcesAvailable(planet, game.getTurn());
+        }
+
+        for (int i = 0; i < res_display.length; i++) {
+            if (planet > -1 && res_avail[C.REQUIRED_RESOURCES[i]] - res_needed[C.REQUIRED_RESOURCES[i]] < 0) {
+                res_display[i].setForeground(Color.RED);
+            } else {
+                res_display[i].setForeground(C.COLOR_RES_DISP_GREEN);
+            }
+            res_display[i].setText(Util.c4Display(res_needed[C.REQUIRED_RESOURCES[i]]));
+        }
     }
 
     public static class DarkTheme extends DefaultMetalTheme {
