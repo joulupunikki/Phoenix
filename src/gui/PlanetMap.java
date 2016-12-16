@@ -1473,7 +1473,11 @@ public class PlanetMap extends JPanel {
 //              case 06104: tile_no[RIVER] = 115 + FLOP    ; break; /* 110001 0001000 */
 //              case 01640: tile_no[RIVER] = 115 + FLIPFLOP; break; /* 001110 1000000 */
                 
-                default:    tile_no[RIVER] = 116; break;
+                default:
+                    System.out.print("Delta not defined : " + Integer.toOctalString(deltaTile) + " " + Integer.toBinaryString(deltaTile));
+                    System.out.println(" Planet : " + game.getCurrentPlanetNr() + " " + game.getPlanet(game.getCurrentPlanetNr()).name);
+                    tile_no[RIVER] = 116;
+                    break;
             }
         }
         if (isForest) {
