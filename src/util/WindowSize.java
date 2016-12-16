@@ -40,6 +40,7 @@ import util.G.CIW;
 import util.G.GF;
 import util.G.OW;
 import util.G.SS;
+import util.G.UIW;
 
 /**
  * GUI coordinates are stored here (x, y, width, height, etc of windows,
@@ -147,6 +148,9 @@ public class WindowSize {
     public int cw_att_n_x = 127;
     public int cw_def_n_x = 513;
     public int cw_att_n_y1 = 18;
+    public int cw_att_b_x = 15;
+    public int cw_def_b_x = 525;
+    public int cw_att_b_y1 = 10;
 
     public int skull_offset = 3;
     public int skull_side = 40;
@@ -567,6 +571,7 @@ public class WindowSize {
     public HashMap<Enum, Integer> group_finder;
     public HashMap<Enum, Integer> agora_auto_buy;
     public HashMap<Enum, Integer> city_info;
+    public HashMap<Enum, Integer> unit_info;
 
 
 
@@ -586,6 +591,7 @@ public class WindowSize {
         iGroupFinder(is_double);
         iAgoraAutobuy(is_double);
         iCityInfo(is_double);
+        iUnitInfo(is_double);
         if (is_double) {
             banner100_side *= 2;
             treaty_flag_side *= 2;
@@ -693,6 +699,9 @@ public class WindowSize {
             cw_att_n_x *= 2;
             cw_def_n_x *= 2;
             cw_att_n_y1 *= 2;
+            cw_att_b_x *= 2;
+            cw_def_b_x *= 2;
+            cw_att_b_y1 *= 2;
             skull_offset *= 2;
             skull_side *= 2;
 
@@ -1368,6 +1377,17 @@ public class WindowSize {
             city_info.replaceAll(mul2);
         }
 
+    }
+
+    private void iUnitInfo(boolean _double) {
+        unit_info = new HashMap<>();
+        unit_info.put(UIW.BNR_X, 28);
+        unit_info.put(UIW.BNR_Y, 385);
+        unit_info.put(UIW.BNR_S, 75);
+
+        if (is_double) {
+            unit_info.replaceAll(mul2);
+        }
     }
 
     private class Doubler implements BiFunction<Enum, Integer, Integer> {

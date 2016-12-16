@@ -194,10 +194,24 @@ public class CombatWindow extends JPanel {
 
     private void drawFactionDetails(Graphics g) {
         FontMetrics fm = this.getFontMetrics(ws.font_large);
-        String s = Util.getFactionName(game.getBattle().getCombatStack("a").get(0).owner);
+        int attacker_idx = game.getBattle().getCombatStack("a").get(0).owner;
+        int defender_idx = game.getBattle().getCombatStack("b").get(0).owner;
+        int a_x = ws.cw_att_b_x;
+        int d_x = ws.cw_def_b_x;
+        int y = ws.cw_att_b_y1;
+        if (ws.is_double) {
+            a_x /= 2;
+            d_x /= 2;
+            y /= 2;
+
+        }
+        int[] pixel_data = new int[1];
+        String s = Util.getFactionName(attacker_idx);
         UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.cw_att_n_x, ws.cw_att_n_y1);
-        s = Util.getFactionName(game.getBattle().getCombatStack("b").get(0).owner);
+        s = Util.getFactionName(defender_idx);
         UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.cw_def_n_x - fm.stringWidth(s), ws.cw_att_n_y1);
+        Util.writeRect(pixel_data, gui.getResources().getBanner100(attacker_idx), bi.getRaster(), ws, a_x, y, C.BANNER100_SIDE, C.BANNER100_SIDE);
+        Util.writeRect(pixel_data, gui.getResources().getBanner100(defender_idx), bi.getRaster(), ws, d_x, y, C.BANNER100_SIDE, C.BANNER100_SIDE);
     }
     /**
      * Draw golden frames around window items.

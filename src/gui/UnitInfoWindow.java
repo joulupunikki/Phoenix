@@ -35,6 +35,7 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,6 +57,7 @@ import state.State;
 import util.C;
 import util.FN;
 import util.G.GF;
+import util.G.UIW;
 import util.StackIterator;
 import util.Util;
 import util.UtilG;
@@ -121,11 +123,14 @@ public class UnitInfoWindow extends JPanel {
 
     private TYPE_FILTER type_filter;
     private Map<Enum, Integer> c;
+    private Map<Enum, Integer> c_uiw;
+
     public UnitInfoWindow(Gui gui) {
         this.gui = gui;
         game = gui.getGame();
         ws = gui.getWindowSize();
         c = ws.group_finder;
+        c_uiw = ws.unit_info;
         type_filter = TYPE_FILTER.ALL_TYPES;
 //        stacks = new LinkedList<>();
     }
@@ -672,6 +677,13 @@ public class UnitInfoWindow extends JPanel {
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[game.getSelectedFaction().y];
         }
         drawDetails(g, stack.get(0).owner, stack.get(0).prev_owner); // TODO this should be elsewhere
+
+        BufferedImage bi_tmp = new BufferedImage(C.BANNER100_SIDE, C.BANNER100_SIDE, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
+        Util.writeRect(pixel_data, gui.getResources().getBanner100(stack.get(0).prev_owner), bi_tmp.getRaster(), ws, 0, 0, C.BANNER100_SIDE, C.BANNER100_SIDE);
+        Image im;
+        im = bi_tmp.getScaledInstance(c_uiw.get(UIW.BNR_S), c_uiw.get(UIW.BNR_S), Image.SCALE_FAST);
+        g.drawImage(im, c_uiw.get(UIW.BNR_X), c_uiw.get(UIW.BNR_Y), null);
+
         if (game.getTurn() != stack.get(0).owner) {
 
             List<Unit> tmp = new LinkedList<>();

@@ -187,4 +187,8 @@ public class G {
         T_X, T_Y, T_W, T_H, H_Y
     }
 
+    public enum UIW {
+        BNR_X, BNR_Y, BNR_S
+
+    }
 }

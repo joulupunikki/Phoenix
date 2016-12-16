@@ -90,6 +90,13 @@ public class FN {
     public static final String S_BNRLEG_BIN = S_DIST_PREFIX + S_BIN + F_S + "BNRLEG.BIN";
     public static final String S_BNRCHU_BIN = S_DIST_PREFIX + S_BIN + F_S + "BNRCHU.BIN";
     public static final String S_BNRVAU_BIN = S_DIST_PREFIX + S_BIN + F_S + "BNRVAU.BIN";
+    public static final String S_BNRREB_BIN = S_DIST_PREFIX + S_BIN + F_S + "BNRREB.BIN";
+    public static final String S_EYE100_BIN = S_DIST_PREFIX + S_BIN + F_S + "EYE100.BIN";
+    public static final String S_FLET100_BIN = S_DIST_PREFIX + S_BIN + F_S + "FLET100.BIN";
+    public static final String S_STIG100_BIN = S_DIST_PREFIX + S_BIN + F_S + "STIG100.BIN";
+    public static final String S_SYM100_BIN = S_DIST_PREFIX + S_BIN + F_S + "SYM100.BIN";
+    public static final String S_RGT100_BIN = S_DIST_PREFIX + S_BIN + F_S + "RGT100.BIN";
+
 
     public static final String S_EFS_PAL = S_DIST_PREFIX + "EFS.PAL";
     public static final String S_GALAXY_GAL = S_DIST_PREFIX + "GALAXY.GAL";
