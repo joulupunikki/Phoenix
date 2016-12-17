@@ -1361,7 +1361,8 @@ public class PlanetMap extends JPanel {
       
         if (isDelta) {
             int waterNeighborFlags = ~landNeighbourFlags & 077;
-            int deltaTile = (waterNeighborFlags<<6) | riverNeighbourFlags;
+            int mask = waterNeighborFlags & riverNeighbourFlags; // fix #102
+            int deltaTile = ((mask ^ waterNeighborFlags) << 6) | (mask ^ riverNeighbourFlags);
             switch (deltaTile) { // duplicates commented out
                 case 00110: tile_no[RIVER] =  94 + DEFAULT ; break; /* 000001 0010000 */
                 case 00220: tile_no[RIVER] =  94 + FLIP    ; break; /* 000010 0100000 */
@@ -1476,10 +1477,11 @@ public class PlanetMap extends JPanel {
                 default:
                     System.out.print("Delta not defined : " + Integer.toOctalString(deltaTile) + " " + Integer.toBinaryString(deltaTile));
                     System.out.println(" Planet : " + game.getCurrentPlanetNr() + " " + game.getPlanet(game.getCurrentPlanetNr()).name);
+                    System.out.println(" " + Integer.toBinaryString(planet_map_flags[u][v]));
                     tile_no[RIVER] = 116;
                     break;
             }
-        }
+       }
         if (isForest) {
             int forestTile = forestNeighbourFlags;
             switch (forestTile) {
