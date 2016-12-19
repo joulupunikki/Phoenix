@@ -439,6 +439,9 @@ public class C {
     public static final String S_CURSOR_LAND = "cursor_land";
     public static final String S_CURSOR_BOMBARD = "cursor_bombard";
     //public static final String S_CURSOR_SCEPTOR = "cursor_sceptor";
+    public static final Color COLOR_EFS_FONT_BRIGHT = new Color(232, 224, 100);
+    public static final Color COLOR_EFS_FONT_MIDDLE = new Color(200, 168, 68);
+    public static final Color COLOR_EFS_FONT_DARK = new Color(164, 116, 40);
     public static final Color COLOR_GOLD_BRIGHT = new Color(232, 224, 100);
     public static final Color COLOR_GOLD = new Color(255, 215, 0);
     public static final Color COLOR_GOLD_DARK = new Color(164, 116, 40);

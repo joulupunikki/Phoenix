@@ -678,7 +678,11 @@ public class UnitInfoWindow extends JPanel {
         }
         drawDetails(g, stack.get(0).owner, stack.get(0).prev_owner); // TODO this should be elsewhere
 
-        BufferedImage bi_tmp = new BufferedImage(C.BANNER100_SIDE, C.BANNER100_SIDE, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
+        int mul = 1;
+        if (ws.is_double) {
+            mul = 2;
+        }
+        BufferedImage bi_tmp = new BufferedImage(C.BANNER100_SIDE * mul, C.BANNER100_SIDE * mul, BufferedImage.TYPE_BYTE_INDEXED, Gui.getICM());
         Util.writeRect(pixel_data, gui.getResources().getBanner100(stack.get(0).prev_owner), bi_tmp.getRaster(), ws, 0, 0, C.BANNER100_SIDE, C.BANNER100_SIDE);
         Image im;
         im = bi_tmp.getScaledInstance(c_uiw.get(UIW.BNR_S), c_uiw.get(UIW.BNR_S), Image.SCALE_FAST);

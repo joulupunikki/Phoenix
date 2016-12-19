@@ -45,6 +45,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.TexturePaint;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
 import java.awt.image.WritableRaster;
@@ -630,6 +632,10 @@ public class UtilG {
      * @param res_disp the value of res_disp
      */
     public static void drawStringGrad(Graphics2D g2d, String s, Font f, int x, int y, int border, boolean res_disp) {
+        drawStringTextured(g2d, s, f, x, y, border, res_disp);
+        if (true) {
+            return;
+        }
         //gradient font test
 //            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 //                    RenderingHints.VALUE_ANTIALIAS_ON);
@@ -646,6 +652,39 @@ public class UtilG {
             drawStringBorder(g2d, s, Color.BLACK, x, y, border);
         }
         g2d.setPaint(gp);
+        g2d.drawString(s, x, y);
+    }
+
+    public static void drawStringTextured(Graphics2D g2d, String s, Font f, int x, int y, int border, boolean res_disp) {
+        g2d.setFont(f);
+        FontMetrics fm = g2d.getFontMetrics(f);
+        int texture_width = 1;
+        int texture_height = fm.getDescent() + fm.getAscent();//(int) (f.getSize() * 0.66);
+        int bright_lim = texture_height / 3;
+        int normal_lim = bright_lim + (texture_height - bright_lim) / 2;
+        //int dark_h = texture_height - bright_h - normal_h;
+        Rectangle2D anchor = new Rectangle2D.Float(x, y - fm.getAscent(), texture_width, texture_height);
+        BufferedImage font_texture = new BufferedImage(texture_width, texture_height, BufferedImage.TYPE_INT_RGB);
+        WritableRaster texture_raster = font_texture.getRaster();
+        int[] texture_data_bright = {C.COLOR_EFS_FONT_BRIGHT.getRed(), C.COLOR_EFS_FONT_BRIGHT.getGreen(), C.COLOR_EFS_FONT_BRIGHT.getBlue()};
+        int[] texture_data_normal = {C.COLOR_EFS_FONT_MIDDLE.getRed(), C.COLOR_EFS_FONT_MIDDLE.getGreen(), C.COLOR_EFS_FONT_MIDDLE.getBlue()};
+        int[] texture_data_dark = {C.COLOR_EFS_FONT_DARK.getRed(), C.COLOR_EFS_FONT_DARK.getGreen(), C.COLOR_EFS_FONT_DARK.getBlue()};
+        int[] tmp_arr = texture_data_bright;
+        for (int i = 0; i < texture_height; i++) {
+            if (i >= bright_lim) {
+                if (i >= normal_lim) {
+                    tmp_arr = texture_data_dark;
+                } else {
+                    tmp_arr = texture_data_normal;
+                }
+            }
+            texture_raster.setPixel(texture_width - 1, i, tmp_arr);
+        }
+        if (border > 0) {
+            drawStringBorder(g2d, s, Color.BLACK, x, y, border);
+        }
+        TexturePaint tp = new TexturePaint(font_texture, anchor);
+        g2d.setPaint(tp);
         g2d.drawString(s, x, y);
     }
 

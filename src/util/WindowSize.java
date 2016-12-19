@@ -1079,13 +1079,13 @@ public class WindowSize {
 
         font_path_numbers = new Font("Arial", Font.BOLD, font_path_numbers_size);
 
-        font_default = new Font("Arial", Font.BOLD, font_default_size);
+        font_default = new Font("Arial", Font.PLAIN, font_default_size);
 
         font_abbrev = new Font("Arial", Font.PLAIN, font_default_size);
 
         font_bcw_2 = new Font("Arial", Font.PLAIN, font_bcw_2_size);
 
-        font_large = new Font("Arial", Font.BOLD, font_large_size);
+        font_large = new Font("Arial", Font.PLAIN, font_large_size);
     }
 
     private void iAgora(boolean is_double) {
