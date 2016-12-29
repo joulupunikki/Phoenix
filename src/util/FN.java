@@ -69,6 +69,9 @@ public class FN {
     public static final String S_PHOENIX = "PHOENIX";
     public static final String S_PHOENIX_INI = S_PHOENIX + F_S + "PHOENIX.INI";
     public static final String S_PHOENIXTEST_INI = S_PHOENIX + F_S + "PHOENIXTEST.INI";
+    public static final String S_RUINGUARD_CSV = S_PHOENIX + F_S + "RUIN_GUARD.CSV";
+    public static final String S_ALIENRUINGUARD_CSV = S_PHOENIX + F_S + "ALIEN_RUIN_GUARD.CSV";
+
     public static final String S_BLANK_FLC = S_DIST_PREFIX + "BLANK.FLC";
     
     

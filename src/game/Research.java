@@ -33,6 +33,7 @@ import galaxyreader.Structure;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import util.C;
 
@@ -54,7 +55,7 @@ public class Research implements Serializable {
     //currently researched tech
     public int researched;
     //available research points
-    public int points_left;
+    public int rp_available;
     //for each city type, list of units which can be built there
     public ArrayList<ArrayList<int[]>> can_build;
     private Game game;
@@ -81,17 +82,17 @@ public class Research implements Serializable {
      * Calculate research points at beginning of turn.
      */
     public void initResearchPts() {
-        points_left = 0;
+        rp_available = 0;
         List<Structure> cities = game.getStructures();
         for (Structure structure : cities) {
             if (structure.owner == game.getTurn() && structure.type == C.LAB) {
-                points_left += game.getEfs_ini().lab_points;
+                rp_available += game.getEfs_ini().lab_points;
             }
         }
 
         for (int i = 0; i < techs.length; i++) {
             if (techs[i]) {
-                points_left -= game.getGameResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
+                rp_available -= game.getGameResources().getTech()[i].stats[C.TECH_COST] / C.TECH_MAINT;
             }
 
         }
@@ -105,24 +106,29 @@ public class Research implements Serializable {
         if (researched == 0) {
             return;
         }
-        points[researched] += points_left;
+        points[researched] += rp_available;
         int cost = game.getGameResources().getTech()[researched].stats[C.TECH_COST];
-        points_left = points[researched] - cost;
-        if (points_left >= 0) {
+        rp_available = points[researched] - cost;
+        if (rp_available >= 0) {
             techs[researched] = true;
             researched = 0;
             setCanBuild(game.getUnitTypes());
         } else {
-            points_left = 0;
+            rp_available = 0;
         }
     }
 
+    /**
+     * Handles receiving tech from sources other than own research.
+     *
+     * @param tech
+     */
     public void receiveTech(int tech) {
         if (researched == tech) {
-            points[researched] = game.getGameResources().getTech()[researched].stats[C.TECH_COST];
-        } else {
-            techs[tech] = true;
+            researched = 0;
         }
+        techs[tech] = true;
+        setCanBuild(game.getUnitTypes()); // fix #103
     }
 
     /**
@@ -174,6 +180,32 @@ public class Research implements Serializable {
             }
         }
         return ret_val;
+    }
+
+    public List<Integer> getResearchableTechs() {
+        Tech[] tech = game.getGameResources().getTech();
+        List<Integer> researchables = new LinkedList<>();
+        for (int i = 1; i < tech.length; i++) {
+            if (techs[i]) {
+                continue;
+            }
+            if (tech[i].stats[C.TECH_COST] == 0) {
+                continue;
+            }
+            if (tech[i].stats[C.TECH0] >= 900) {
+                researchables.add(tech[i].idx);
+                continue;
+            }
+            else if (tech[i].stats[C.TECH0] >= 800) {
+                continue;
+            }
+            if (techs[tech[i].stats[C.TECH0]]
+                    && techs[tech[i].stats[C.TECH1]]
+                    && techs[tech[i].stats[C.TECH2]]) {
+                researchables.add(tech[i].idx);
+            }
+        }
+        return researchables;
     }
 
     /**

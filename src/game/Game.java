@@ -128,6 +128,7 @@ public class Game implements Serializable {
     private int[][] target;
 
     private Random random;
+    private long initial_seed;
     private EfsIni efs_ini;
     private Resources resources;
     private Economy economy;
@@ -2038,5 +2039,19 @@ public class Game implements Serializable {
         for (Planet planet : planets) {
             planet.omniscience(getTurn());
         }
+    }
+
+    /**
+     * @return the initial_seed
+     */
+    public long getInitialSeed() {
+        return initial_seed;
+    }
+
+    /**
+     * @param initial_seed the initial_seed to set
+     */
+    public void setInitialSeed(long initial_seed) {
+        this.initial_seed = initial_seed;
     }
 }

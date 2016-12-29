@@ -2613,6 +2613,7 @@ public class Gui extends JFrame {
         }
         System.out.println("Random seed = " + random_seed);
         gui.getGame().getRandom().setSeed(random_seed);
+        gui.getGame().setInitialSeed(random_seed);
         if (args.hasOption(C.OPT_ROBOT_TEST)) {
             System.out.println(""
                     + "Starting Robot test. Please leave test machine undisturbed until test is\n"

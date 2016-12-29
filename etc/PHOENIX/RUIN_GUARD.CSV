@@ -1,0 +1,47 @@
+# EFS.EXE 1.4 ruin guardian stacks, aproximated
+#
+#amount unit_number,tech_level
+#
+# the '-1' is a flag for phoenix to start a new stack
+#1#Noble#Power Legion#Flak#AT#Arty
+-1
+1,45,0
+4,82,0
+2,85,0
+2,86,0
+2,87,0
+-1
+#2#Rebel Partisans#Jet Fighter#Flak#AT#Arty
+3,55,0
+3,74,0
+1,85,0
+1,86,0
+1,87,0
+-1
+#3#Officer#Infantry Legion#Flak#AT#Arty
+1,51,0
+5,83,0
+1,85,0
+1,86,0
+1,87,0
+-1
+#4#Medium Tank#Tank Destroyer#Mobile Flak Battery#Militia Legion#Arty
+3,59,0
+1,65,0
+1,67,0
+3,84,0
+1,87,0
+-1
+#5#Space Cruiser#Space Frigate#Assault Lander#Militia Legion#AT#Arty
+1,13,0
+1,15,0
+2,19,0
+3,84,0
+2,86,0
+2,87,0
+-1
+#6#Symbiot Spitter#Symbiot Minder#Symbiot Butcher#Symbiot Reaver
+3,38,0
+1,39,0
+2,42,0
+3,43,0

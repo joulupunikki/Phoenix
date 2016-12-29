@@ -264,7 +264,7 @@ public class TechPanel extends JPanel {
 
     public void setRPAvailable() {
         rp_available.setText("You have "
-                + game.getFaction(game.getTurn()).getResearch().points_left
+                + game.getFaction(game.getTurn()).getResearch().rp_available
                 + " research points available.");
     }
 

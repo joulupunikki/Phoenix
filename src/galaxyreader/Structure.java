@@ -70,7 +70,7 @@ public class Structure implements Serializable {
     int tech_type; //short
     public int health; //short - RSW
     int sect; //short
-    int Flags; //UINT
+    private int flags; //UINT
     public short task_force = 0x0;
     int unit_health; //short 
     int temp_count;  //short 
@@ -121,7 +121,7 @@ public class Structure implements Serializable {
 
         health = GalaxyReader.readShort(fc, count.getSet(2));
         sect = GalaxyReader.readShort(fc, count.getSet(2));
-        Flags = GalaxyReader.readInt(fc, count.getSet(4));
+        flags = GalaxyReader.readInt(fc, count.getSet(4));
 
         unit_health = 0;
         temp_count = 0;
@@ -486,4 +486,26 @@ public class Structure implements Serializable {
         return s;
     }
 
+    /**
+     * @return the Flags
+     */
+    public boolean getFlag(FLAG flag) {
+        return ((flags >> flag.ordinal()) & 0x1) == 1;
+    }
+
+    /**
+     * @param Flags the Flags to set
+     */
+    public void setFlags(FLAG flag, boolean value) {
+        int mask = 0x1 << flag.ordinal();
+        if (value) {
+            flags = flags | mask;
+        } else {
+            flags = flags & ~mask;
+        }
+    }
+
+    public enum FLAG {
+        RUIN_GUARD // true iff guard should not be generated
+    }
 }
