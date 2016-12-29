@@ -29,16 +29,8 @@ package game;
 
 import dat.Tech;
 import dat.UnitSpot;
-import java.io.FileReader;
-import java.io.Reader;
 import java.io.Serializable;
 import java.util.ArrayList;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import static org.junit.Assert.*;
-import util.C;
-import util.FN;
-import util.Util;
 
 /**
  * Loaded data used by the game object.
@@ -60,46 +52,46 @@ public class GameResources implements Serializable {
 
         unit_spot = UnitSpot.readUnitSpot();
         techs = Tech.readTech();
-        loadRuinGuardData(FN.S_RUINGUARD_CSV, ruin_guards);
+//        loadRuinGuardData(FN.S_RUINGUARD_CSV, ruin_guards);
     }
 
-    private void loadRuinGuardData(String file_name, ArrayList<ArrayList<int[]>> guard_list) {
-        // TODO read ruin guard data
-        Iterable<CSVRecord> records = null;
-        try {
-            Reader in = new FileReader(file_name);
-            records = CSVFormat.EXCEL.withCommentMarker('#').parse(in);
-        } catch (Exception e) {
-            e.printStackTrace(System.out);
-            System.out.println("Exception: " + e.getMessage());
-            System.out.println("Failed to read " + FN.S_RUINGUARD_CSV);
-            Util.logEx(null, e);
-            Util.logFFErrorAndExit(FN.S_RUINGUARD_CSV, -1, e);
-        }
-        guard_list = new ArrayList<>();
-        ArrayList<int[]> tmp = null;
-        int stack_size = 0;
-        for (CSVRecord record : records) {
-            if (record.size() < 3) {
-                tmp = new ArrayList<>();
-                guard_list.add(tmp);
-                stack_size = 0;
-                continue;
-            }
-            int[] unit_data = {Integer.parseInt(record.get(AMOUNT)),
-                Integer.parseInt(record.get(UNIT_IDX)),
-                Integer.parseInt(record.get(TECH_LVL))};
-            assertTrue(unit_data[AMOUNT] > 0);
-            stack_size += unit_data[AMOUNT];
-            assertTrue(stack_size <= C.STACK_SIZE);
-            assertTrue(unit_data[UNIT_IDX] >= 0 && unit_data[UNIT_IDX] <= 91);
-            assertTrue(unit_data[TECH_LVL] >= 0 && unit_data[TECH_LVL] <= 5);
-
-            tmp.add(unit_data);
-        }
+//    private void loadRuinGuardData(String file_name, ArrayList<ArrayList<int[]>> guard_list) {
+//        // TODO read ruin guard data
+//        Iterable<CSVRecord> records = null;
+//        try {
+//            Reader in = new FileReader(file_name);
+//            records = CSVFormat.EXCEL.withCommentMarker('#').parse(in);
+//        } catch (Exception e) {
+//            e.printStackTrace(System.out);
+//            System.out.println("Exception: " + e.getMessage());
+//            System.out.println("Failed to read " + FN.S_RUINGUARD_CSV);
+//            Util.logEx(null, e);
+//            Util.logFFErrorAndExit(FN.S_RUINGUARD_CSV, -1, e);
+//        }
+//        guard_list = new ArrayList<>();
+//        ArrayList<int[]> tmp = null;
+//        int stack_size = 0;
+//        for (CSVRecord record : records) {
+//            if (record.size() < 3) {
+//                tmp = new ArrayList<>();
+//                guard_list.add(tmp);
+//                stack_size = 0;
+//                continue;
+//            }
+//            int[] unit_data = {Integer.parseInt(record.get(AMOUNT)),
+//                Integer.parseInt(record.get(UNIT_IDX)),
+//                Integer.parseInt(record.get(TECH_LVL))};
+//            assertTrue(unit_data[AMOUNT] > 0);
+//            stack_size += unit_data[AMOUNT];
+//            assertTrue(stack_size <= C.STACK_SIZE);
+//            assertTrue(unit_data[UNIT_IDX] >= 0 && unit_data[UNIT_IDX] <= 91);
+//            assertTrue(unit_data[TECH_LVL] >= 0 && unit_data[TECH_LVL] <= 5);
+//
+//            tmp.add(unit_data);
+//        }
 //        Tech.print(techs);
 //        System.exit(0);
-    }
+//    }
     private static final int TECH_LVL = 2;
     private static final int UNIT_IDX = 1;
     private static final int AMOUNT = 0;
