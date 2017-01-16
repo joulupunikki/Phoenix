@@ -913,8 +913,16 @@ public class Game implements Serializable {
 //                    System.out.println("(x,y): " + e.x + "," + y);
                     if (e.type < 26) {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeStructure(e);
-                        if (e.type == C.SHIELD) {
-                            planets.get(e.p_idx).setShield(e);
+                        switch (e.type) {
+                            case C.SHIELD:
+                                planets.get(e.p_idx).setShield(e);
+                                break;
+                            case C.RUINS:
+                            case C.ALIEN_RUINS:
+                                e.setFlags(Structure.FLAG.RUIN_GUARD, false);
+                                break;
+                            default:
+                                break;
                         }
                     } else {
                         planets.get(e.p_idx).planet_grid.getHex(e.x, y).placeResource(e);

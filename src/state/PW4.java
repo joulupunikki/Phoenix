@@ -367,7 +367,7 @@ public class PW4 extends PW {
             //3.1: no units in stack
             if (stack.isEmpty()) {
 //                logger.debug("PW4 3.1");
-                if (handleRuinGuards(city, moving_unit, faction, true)) {
+                if (handleLootableCity(city, moving_unit, faction, true)) {
                     return false;
                 }
                 game.captureCity(city, faction.x, faction.y);
@@ -403,7 +403,7 @@ public class PW4 extends PW {
             //4.1: no units in stack
             if (stack.isEmpty()) {
 //                logger.debug("PW4 4.1");
-                if (handleRuinGuards(city, moving_unit, faction, true)) {
+                if (handleLootableCity(city, moving_unit, faction, true)) {
                     return false;
                 }
                 game.captureCity(city, faction.x, faction.y);
@@ -441,15 +441,17 @@ public class PW4 extends PW {
     }
 
     private boolean handleRuinGuards(Structure city, Unit moving_unit, Point faction, boolean is_guard) {
-//        if (true) {
-//            return false; // TODO generate guards
-//        }
         switch (city.type) {
             case C.RUINS:
             case C.ALIEN_RUINS:
                 break;
             default:
                 return false;
+        }
+        if (!city.getFlag(Structure.FLAG.RUIN_GUARD)) {
+            city.setFlags(Structure.FLAG.RUIN_GUARD, true);
+        } else {
+            return false;
         }
         long city_seed = createCitySeed(is_guard, city);
         // fix #104 each lootable city will have a random, but per game fixed loot

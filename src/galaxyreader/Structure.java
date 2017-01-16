@@ -505,6 +505,10 @@ public class Structure implements Serializable {
         }
     }
 
+    /**
+     * Enums for city flags, ordinal of enum is the bit position of
+     * corresponding flag in the flags variable.
+     */
     public enum FLAG {
         RUIN_GUARD // true iff guard should not be generated
     }
