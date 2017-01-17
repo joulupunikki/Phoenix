@@ -2570,7 +2570,9 @@ public class Gui extends JFrame {
     }
 
     public void setCurrentState(State s) {
-        System.out.println("State -> " + s.getClass().getName());
+        String state_name = s.getClass().getName();
+        System.out.println("State -> " + state_name);
+        Phoenix.logGuiState(state_name);
         state = s;
         SU.setStateUpKeep(s);
 //        state_ref.setState(s);

@@ -448,4 +448,13 @@ public class Phoenix {
         }
         log_buffer.clear();
     }
+
+    public static void logGuiState(String state) {
+        String STATE_PREFIX = "# s->";
+        if (is_real_time) {
+            log_buffer.addLast(STATE_PREFIX + state);
+        } else {
+            input_log_writer.println(STATE_PREFIX + state);
+        }
+    }
 }
