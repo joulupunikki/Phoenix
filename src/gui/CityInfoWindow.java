@@ -283,7 +283,8 @@ public class CityInfoWindow extends JPanel {
 
     private void saveCurrentSelectedStack() {
         current_planet_ptr = game.getCurrentPlanetNr();
-        selected_point_ptr = new Point(game.getSelectedPoint()); // fix #105
+        Point tmp = game.getSelectedPoint(); // fix #105, again
+        selected_point_ptr = tmp == null ? null : new Point(tmp); // fix #105
         selected_faction_ptr = new Point(game.getSelectedFaction());
     }
 
