@@ -83,6 +83,7 @@ public class PlanetWindow extends JPanel {
 
     JButton build;
     JButton trade;
+    private JButton select_all_button;
     private BufferedImage bi;
 
     //bug test
@@ -162,7 +163,7 @@ public class PlanetWindow extends JPanel {
         setUpSkipStack();
         setUpSentry();
         setUpTrade();
-
+        setUpSelectAllButton(this, ws, select_all_button, gui);
         ButtonIcon build_disabled = new ButtonIcon(ws.build_button_w, ws.build_button_h, null, 0, color_index, ws);
 //        file_offset = 2;
 //        ButtonIcon build_pressed = new ButtonIcon(ws.unit_order_buttons_w, ws.unit_order_buttons_h, FN.S_EFSBUT_BIN[10], file_offset, color_index, ws);
@@ -183,6 +184,39 @@ public class PlanetWindow extends JPanel {
             }
         });
 
+    }
+
+    /**
+     * Sets up the select all button for Planet and Space Windows
+     *
+     * @param self
+     * @param ws
+     * @param select_all_button
+     * @param gui
+     */
+    static void setUpSelectAllButton(JPanel self, WindowSize ws, JButton select_all_button, Gui gui) {
+
+        ButtonIcon select_all_button_enabled = new ButtonIcon(ws.select_all_button_width, ws.select_all_button_height, FN.S_EFSBUT_BIN[4], 0, gui.getICM(), ws);
+
+//        int file_offset = 3;
+//        select_all_button_disabled = new ButtonIcon(ws.select_all_button_width, ws.select_all_button_height, FN.S_EFSBUT_BIN[11], file_offset, color_index, ws);
+        int file_offset = 1;
+        ButtonIcon select_all_button_pressed = new ButtonIcon(ws.select_all_button_width, ws.select_all_button_height, FN.S_EFSBUT_BIN[4], file_offset, gui.getICM(), ws);
+
+        select_all_button = new JButton();
+        select_all_button.setBorder(null);
+        select_all_button.setIcon(select_all_button_enabled);
+        select_all_button.setPressedIcon(select_all_button_pressed);
+        self.add(select_all_button);
+        select_all_button.setBounds(ws.select_all_button_x_offset, ws.select_all_button_y_offset,
+                ws.select_all_button_width, ws.select_all_button_height);
+        select_all_button.setEnabled(true);
+        select_all_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gui.getCurrentState().pressSelectAllButton();
+            }
+        });
     }
 
     public void setUpTrade() {

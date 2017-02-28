@@ -93,7 +93,11 @@ import phoenix.Phoenix;
 import phoenix.RobotTester;
 import state.MM1;
 import state.PW;
+import state.PW1B;
+import state.PW2;
 import state.SU;
+import state.SW1B;
+import state.SW2;
 import state.State;
 import static state.State.saveMainGameState;
 import state.WS;
@@ -1474,7 +1478,7 @@ public class Gui extends JFrame {
 
         StackIterator iterator = new StackIterator(stack);
         Unit u = iterator.next();
-
+        boolean is_unit_selected = false;
         while (u != null) {
             switch (sel) {
                 case C.S_ALL:
@@ -1524,8 +1528,24 @@ public class Gui extends JFrame {
                 default:
                     throw new AssertionError();
             }
+            if (!is_unit_selected && u.selected == true) {
+                is_unit_selected = true;
+            }
             u = iterator.next();
         }
+        if (state instanceof PW) { // fix #113
+            if (is_unit_selected) {
+                setCurrentState(PW2.get());
+            } else {
+                setCurrentState(PW1B.get());
+            }
+        } else if (is_unit_selected) {
+            setCurrentState(SW2.get());
+        } else {
+            setCurrentState(SW1B.get());
+        }
+        game.setPath(null);
+        game.setJumpPath(null);
         // to update build city menu item
         SU.setStateUpKeep(state);
     }
@@ -1921,17 +1941,24 @@ public class Gui extends JFrame {
 //        FileNameExtensionFilter filter = new FileNameExtensionFilter(
 //                "JPG & GIF Images", "jpg", "gif");
 //        chooser.setFileFilter(filter);
+        boolean is_PBEM_end_turn = false;
+        if (game.getEfs_ini().pbem.pbem && game.getEfs_ini().pbem.end_turn) {
+            is_PBEM_end_turn = true;
+        }
         String path_name = FN.S_SAVE_PATH;
         chooser.setCurrentDirectory(new File(path_name));
-
+        String save_name = FN.S_DEFAULT_SAVE_NAME;
         int returnVal = chooser.showSaveDialog(this);
         //System.out.println("path_name = " + path_name);
 //        System.exit(0);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION || is_PBEM_end_turn) {
             RobotTester.setWaitState(true); // tell Robot tester we are unresponsive
-            final String save_name = chooser.getCurrentDirectory().getAbsolutePath()
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                save_name = chooser.getSelectedFile().getName();
+            }
+            final String save_name_full = chooser.getCurrentDirectory().getAbsolutePath()
                     + System.getProperty("file.separator")
-                    + chooser.getSelectedFile().getName();
+                    + save_name;
 
             //System.out.println("save_name = " + save_name);
 //            FileOutputStream f;
@@ -1939,11 +1966,11 @@ public class Gui extends JFrame {
             loadsave_dialog = showProgressBar("Saving game");
             Cursor cursor = this.getCursor();
             this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-            new SaveWorker(this, save_name).execute();
+            new SaveWorker(this, save_name_full).execute();
 
             loadsave_dialog.setVisible(true);
 
-            if (game.getEfs_ini().pbem.pbem && game.getEfs_ini().pbem.end_turn) {
+            if (is_PBEM_end_turn) {
                 toMainMenu();
             }
             this.setCursor(cursor);

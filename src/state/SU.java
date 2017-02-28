@@ -1062,6 +1062,7 @@ public class SU extends State {
                 return;
             }
         }
+        // handle currently selected units
         if (p != null) {
             List<Unit> stack = null;
             if (faction.x == -1) {
@@ -1071,16 +1072,23 @@ public class SU extends State {
                 stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
             }
 
-            // remove stack from unmoved
+            // remove selected units from unmoved
             StackIterator si = new StackIterator(stack);
-            for (Unit u = si.next(); u != null; u = si.next()) {
-                unmoved_units.remove(u);
-//                System.out.println("Remove");
-            }
-            if (wait) {
-                unmoved_units.addAll(stack);
-            }
+            List<Unit> t_list = new LinkedList<>();
+            List<Unit> t2_list = new LinkedList<>();
 
+            for (Unit u = si.next(); u != null; u = si.next()) {
+                if (u.selected) {
+                    t_list.add(u);
+                    if (u.move_points > 0) {
+                        t2_list.add(u);
+                    }
+                }
+            }
+            unmoved_units.removeAll(t_list);
+            if (wait) { // if waiting add movables to end of unmoved_units
+                unmoved_units.addAll(t2_list);
+            }
         }
 
         if (unmoved_units.isEmpty()) {
@@ -1088,13 +1096,21 @@ public class SU extends State {
             return;
         }
 
+        // select next unmoved units
         Unit unit = unmoved_units.get(0);
-//        System.out.println("unit = " + unit);
-        int x = unit.x;
-//        System.out.println("x = " + x);
-        int y = unit.y;
-//        System.out.println("y = " + y);
-        Point point = new Point(x, y);
+        List<Unit> stack = setNextStack(unit);
+
+        selectMovableUnits(stack);
+
+        centerMapOnUnit(unit);
+    }
+
+    private static List<Unit> setNextStack(Unit unit) {
+        Point faction;
+        Point p;
+        //        System.out.println("unit = " + unit);
+        Point point = new Point(unit.x, unit.y);
+        System.out.println("point " + point);
         faction = new Point(-1, -1);
         if (unit.in_space) {
 //            System.out.println("unit.in_space = " + unit.in_space);
@@ -1104,13 +1120,12 @@ public class SU extends State {
 //            System.out.println("faction = " + faction);
         }
         game.setCurrentPlanetNr(unit.p_idx);
-//        System.out.println("unit.p_idx = " + unit.p_idx);
+        //        System.out.println("unit.p_idx = " + unit.p_idx);
         game.setSelectedPointFaction(point, faction.x, null, null);
         game.setSelectedPoint(point, faction.y);
         game.setSelectedFaction(faction.x, faction.y);
         String name = game.getPlanet(unit.p_idx).name;
 //        System.out.println("name = " + name);
-
         p = game.getSelectedPoint();
 //        System.out.println("p = " + p);
         List<Unit> stack = null;
@@ -1121,15 +1136,7 @@ public class SU extends State {
             stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
 //            System.out.println("stack = " + stack);
         }
-
-        StackIterator si = new StackIterator(stack);
-        for (Unit u = si.next(); u != null; u = si.next()) {
-            if (!u.is_sentry) {
-                u.setSelected(true);
-            }
-        }
-
-        centerMapOnUnit(unit);
+        return stack;
     }
 
     public static void selectNextUnmovedUnit() {
@@ -1173,17 +1180,23 @@ public class SU extends State {
             //System.out.println("stack = " + stack);
         }
 
+        selectMovableUnits(stack);
+
+        centerMapOnUnit(unit);
+    }
+
+    private static void selectMovableUnits(List<Unit> stack) {
         StackIterator iterator = new StackIterator(stack);
         Unit e = iterator.next();
 
         while (e != null) {
-            if (!e.is_sentry) {
+            if (!e.is_sentry && e.move_points > 0) {
                 e.setSelected(true);
+            } else {
+                e.setSelected(false);
             }
             e = iterator.next();
         }
-
-        centerMapOnUnit(unit);
     }
 
     private static boolean checkNothingSelected() {

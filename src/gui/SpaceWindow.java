@@ -69,6 +69,7 @@ public class SpaceWindow extends JPanel {
     JButton next_stack;
     JButton skip_stack;
     private JButton sentry;
+    private JButton select_all_button;
     private BufferedImage bi;
 
     public SpaceWindow(Gui gui) {
@@ -149,6 +150,7 @@ public class SpaceWindow extends JPanel {
 
         setUpSkipStack();
         setUpSentry();
+        PlanetWindow.setUpSelectAllButton(this, ws, select_all_button, gui);
     }
 
     public void setUpSkipStack() {
@@ -252,7 +254,7 @@ public class SpaceWindow extends JPanel {
 
         planet_name_display.setText(game.getPlanet(game.getCurrentPlanetNr()).name);
         year_display.setText("A.D. " + game.getYear());
-        money_display.setText("4500 FB");
+        money_display.setText("" + game.getFaction(game.getTurn()).getFirebirds()); // fix #108
 
         UtilG.emperorCrowned(g2d, game, ws);
     }

@@ -32,6 +32,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
+import util.C;
+import util.C;
 
 /**
  * Planet window stack selected no destination selected.
@@ -120,6 +122,11 @@ public class PW2 extends PW {
     @Override
     public void razeCity() {
         SU.razeCitySU();
+    }
+
+    @Override
+    public void pressSelectAllButton() {
+        gui.selectUnits(C.S_ALL);
     }
 
 }

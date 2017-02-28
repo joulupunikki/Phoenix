@@ -110,6 +110,10 @@ public class WindowSize {
     public int launch_button_y_offset = 50;
     public int launch_button_width = 23;
     public int launch_button_height = 41;
+    public int select_all_button_x_offset = 81;
+    public int select_all_button_y_offset = 389;
+    public int select_all_button_width = 30;
+    public int select_all_button_height = 14;
     public int info_text_field_x = stack_display_x_offset;
     public int info_text_field_y = 100;
     public int info_text_field_y_space = 128;
@@ -1072,6 +1076,11 @@ public class WindowSize {
             bz2_button1_w *= 2;
             bz2_button1_h *= 2;
             menubar_h *= 2;
+
+            select_all_button_x_offset *= 2;
+            select_all_button_y_offset *= 2;
+            select_all_button_width *= 2;
+            select_all_button_height *= 2;
         }
         font_unit_icon = new Font("Arial", Font.PLAIN, font_unit_icon_size);
 

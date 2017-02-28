@@ -157,4 +157,8 @@ public class SW3 extends SW {
         }
     }
 
+    @Override
+    public void pressSelectAllButton() {
+        gui.selectUnits(C.S_ALL);
+    }
 }

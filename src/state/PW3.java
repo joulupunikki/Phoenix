@@ -32,6 +32,8 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.LinkedList;
+import static state.State.gui;
+import util.C;
 import util.Util;
 
 /**
@@ -128,5 +130,10 @@ public class PW3 extends PW {
     @Override
     public void razeCity() {
         SU.razeCitySU();
+    }
+
+    @Override
+    public void pressSelectAllButton() {
+        gui.selectUnits(C.S_ALL);
     }
 }

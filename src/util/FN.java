@@ -47,6 +47,7 @@ public class FN {
     public static final String S_DIST_PREFIX; // = "";//".." + F_S;//
     public static final String S_SAVE_PATH;
     public static final String S_SAV = "SAV";
+    public static final String S_DEFAULT_SAVE_NAME = "PBEM_DEFAULT_SAVE";
     static {
         File file_win = new File(".." + F_S + "Phoenix.exe");
         File file_lin = new File(".." + F_S + "app" + F_S + "Phoenix.jar");

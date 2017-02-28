@@ -203,4 +203,10 @@ public class SW2 extends SW {
         }
 
     }
+
+    @Override
+    public void pressSelectAllButton() {
+        gui.selectUnits(C.S_ALL);
+    }
+
 }

@@ -741,8 +741,12 @@ public class Game implements Serializable {
     public void resetUnmovedUnits(boolean start_of_turn) {
         unmoved_units.clear();
         for (Unit u : units) {
-            if (u.owner == turn && !u.is_sentry) {
-//                System.out.println("u.owner = " + u.owner);
+            /*
+            FIXME units with zero move may have more than 0 mp when this is called during the first turn
+            so we need to check type_data also, this should not be so
+             */
+            if (u.owner == turn && !u.is_sentry && u.move_points > 0 && u.type_data.move_pts > 0) {
+
                 unmoved_units.add(u);
                 if (start_of_turn) {
                     u.routed = false;
@@ -945,6 +949,12 @@ public class Game implements Serializable {
 
     }
 
+    /**
+     * Deducts move points from units of a moving planetary stack. If a unit's
+     * move is reduced to zero it will be removed from unmoved units.
+     *
+     * @param selected
+     */
     public void subMovePoints(List<Unit> selected) {
         Hex destination = getPath().get(1);
 //        int current_planet = getCurrentPlanetNr();
@@ -960,7 +970,7 @@ public class Game implements Serializable {
 //                System.out.println("unit = " + unit);
 //            }
 //        }
-
+        List<Unit> t_list = new LinkedList<>();
         for (Unit e : selected) {
             int move_cost = destination.getMoveCost(e.move_type.ordinal());
             int max_move = e.type_data.move_pts;
@@ -968,15 +978,27 @@ public class Game implements Serializable {
                 move_cost = max_move;
             }
             e.move_points -= move_cost;
-            //System.out.println("move_cost = " + move_cost);
+            if (e.move_points == 0) {
+                t_list.add(e);
+            }
         }
-
+        unmoved_units.removeAll(t_list);
     }
-
+    /**
+     * Deducts move points from units of a moving non-jumping space stack. If a
+     * unit's move is reduced to zero it will be removed from unmoved units.
+     *
+     * @param selected
+     */
     public void subMovePointsSpace(List<Unit> selected) {
+        List<Unit> t_list = new LinkedList<>();
         for (Unit unit : selected) {
             unit.move_points--;
+            if (unit.move_points == 0) {
+                t_list.add(unit);
+            }
         }
+        unmoved_units.removeAll(t_list);
     }
 
     public void unSpot(List<Unit> stack) {
@@ -1054,6 +1076,13 @@ public class Game implements Serializable {
         return rv;
     }
 
+    /**
+     * System to system space travel, that is Jump in EFS terms. Move points set
+     * to zero and all units removed from unmoved units.
+     *
+     * @param p
+     * @return
+     */
     public boolean moveSpaceStack(Point p) {
         boolean rv = false;
         Square[][] galaxy_map = getGalaxyMap().getGalaxyGrid();
@@ -1077,6 +1106,7 @@ public class Game implements Serializable {
             }
             destination.addStack(selected, selected_faction.y);
             source.minusStack(selected, selected_faction.y);
+            unmoved_units.removeAll(selected);
             unSpot(selected);
             spotSpace(destination, selected, selected_faction.x);
             setUnitCoords(true, destination.index, p.x, p.y, selected);
