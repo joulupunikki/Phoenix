@@ -2272,13 +2272,14 @@ public class Gui extends JFrame {
     }
 
     /**
-     * Show attack confirm window if hex has non-hostile units.
+     * Show attack confirm window if hex has non-hostile units or city.
      *
      * @param my_faction
      * @param target_stack
-     * @return
+     * @param city the value of city
+     * @return the boolean
      */
-    public boolean showAttackConfirmWindow(int my_faction, List<Unit> target_stack) {
+    public boolean showAttackConfirmWindow(int my_faction, List<Unit> target_stack, Structure city) {
         String msg = ". Shall we attack anyway?";
         boolean spotted = false;
         for (Unit u : target_stack) {
@@ -2287,7 +2288,10 @@ public class Gui extends JFrame {
                 break;
             }
         }
-        if (spotted) {
+        if (city != null) {
+            msg = "My Lord, we are not at war with " + Util.factionNameDisplay(city.owner)
+                    + msg;
+        } else if (spotted) {
             msg = "My Lord, we are not at war with " + Util.factionNameDisplay(target_stack.get(0).owner)
                     + msg;
         } else {

@@ -296,7 +296,7 @@ public class PW4 extends PW {
                 if (!byzIICombatOK(moving_stack)) {
                     return false;
                 }
-                if (!gui.showAttackConfirmWindow(faction.x, stack)) {
+                if (!gui.showAttackConfirmWindow(faction.x, stack, null)) {
                     stop();
                     return false;
                 }
@@ -359,11 +359,11 @@ public class PW4 extends PW {
             if (!byzIICombatOK(moving_stack)) {
                 return false;
             }
-            if (!gui.showAttackConfirmWindow(faction.x, stack)) {
+            if (!gui.showAttackConfirmWindow(faction.x, stack, city)) {
                 stop();
                 return false;
             }
-            game.getDiplomacy().setDiplomaticState(faction.x, stack.get(0).owner, C.DS_WAR);
+            game.getDiplomacy().setDiplomaticState(faction.x, city.owner, C.DS_WAR);
             //3.1: no units in stack
             if (stack.isEmpty()) {
 //                logger.debug("PW4 3.1");

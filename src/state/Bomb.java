@@ -112,7 +112,7 @@ public class Bomb extends STP {
             return;
         }
         if (game.getDiplomacy().getDiplomaticState(faction.x, target_stack.get(0).owner) != C.DS_WAR
-                && !gui.showAttackConfirmWindow(faction.x, target_stack)) {
+                && !gui.showAttackConfirmWindow(faction.x, target_stack, null)) {
             subMoveAndToSpaceIfNoLeft(selected);
             return;
         }

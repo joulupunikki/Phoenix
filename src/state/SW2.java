@@ -193,7 +193,7 @@ public class SW2 extends SW {
             }
 
             if (game.getDiplomacy().getDiplomaticState(game.getTurn(), planet.space_stacks[attacked_slot].get(0).owner) != C.DS_WAR
-                    && !gui.showAttackConfirmWindow(game.getTurn(), planet.space_stacks[attacked_slot])) {
+                    && !gui.showAttackConfirmWindow(game.getTurn(), planet.space_stacks[attacked_slot], null)) {
                 return;
             }
             game.getDiplomacy().setDiplomaticState(game.getTurn(), planet.space_stacks[attacked_slot].get(0).owner, C.DS_WAR);
