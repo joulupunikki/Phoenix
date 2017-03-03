@@ -279,7 +279,7 @@ public class Messages extends JPanel {
             Color c_b = Color.BLACK;
             Color c_f = C.COLOR_GOLD;
             Message ms = (Message) table.getValueAt(row, 1);
-            if (ms.isRead()) {
+            if (ms.isRead() && (ms.getContract() == null || ms.getContract().isResolved())) {
                 c_f = Color.LIGHT_GRAY;
             }
             String val = "";

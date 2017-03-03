@@ -30,7 +30,6 @@ package gui;
 import game.Contract;
 import game.Contract.Term;
 import game.Game;
-import game.Message;
 import game.Regency;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -181,10 +180,20 @@ public class DiplomacyWindow extends JPanel {
 
     public void enterWindow(int faction) {
         this.faction = faction; // fix #71
+        clear();
+        List<Contract> c_list = game.getDiplomacy().getSentContracts();
+        for (Contract contract1 : c_list) {
+            if (contract1.getReceiver() == this.faction) {
+                contract = contract1;
+                break;
+            }
+        }
         if (contract == null) {
             contract = new Contract();
+        } else {
+            c_list.remove(contract);
         }
-        clear();
+
     }
 
     public void showIfYouMenu(Point p) {        
@@ -392,7 +401,6 @@ public class DiplomacyWindow extends JPanel {
     }
 
     public void clear() {
-        contract.clear();
         // reset all diplomacy choices
         for (int i = 0; i < if_you_items.length; i++) {
             if_you_items[i].setEnabled(true);
@@ -530,15 +538,12 @@ public class DiplomacyWindow extends JPanel {
                     int receiver = terms.get(0).getDonor();
                     if (receiver == game.getTurn()) {
                         receiver = terms.get(0).getRecipient();
-                                
+
                     }
                     contract.setSender(game.getTurn());
                     contract.setReceiver(receiver);
-                    Message msg = new Message(null, C.Msg.CONTRACT, game.getYear(), null);
-                    msg.setContract(contract);
                     game.getDiplomacy().addSentContract(contract);
                     contract = null;
-                    game.getFaction(receiver).addMessage(msg);
                 }
                 gui.getCurrentState().pressExitButton();
             }

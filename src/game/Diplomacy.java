@@ -254,4 +254,22 @@ public class Diplomacy implements Serializable {
 
         }
     }
+
+    public void sendContracts() {
+        for (Contract contract : sent_contracts) {
+            List<Contract.Term> terms = contract.getTerms();
+            if (!terms.isEmpty()) {
+                int receiver = terms.get(0).getDonor();
+                if (receiver == game.getTurn()) {
+                    receiver = terms.get(0).getRecipient();
+
+                }
+                Message msg = new Message(null, C.Msg.CONTRACT, game.getYear(), null);
+                msg.setContract(contract);
+                contract = null;
+                game.getFaction(receiver).addMessage(msg);
+            }
+        }
+        sent_contracts.clear();
+    }
 }

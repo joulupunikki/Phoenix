@@ -565,6 +565,7 @@ public class Game implements Serializable {
             }
         }
         factions[turn].deleteOldMessages();
+        diplomacy.sendContracts();
     }
 
     public void advanceTurn() {
@@ -590,7 +591,6 @@ public class Game implements Serializable {
         if (regency.needToVote(turn, efs_ini, year + 1, Regency.VoteCheck.ADVANCE)) { // election notice
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
-        diplomacy.getSentContracts().clear();
         if (Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
             while (!StaticThreads.isStaticDone()) {
                 try {
