@@ -581,6 +581,7 @@ public class WindowSize {
 
 
     private final Doubler mul2;
+    public final Font font_menu;
 
     public WindowSize(boolean is_double) {
         this.mul2 = new Doubler();
@@ -1095,6 +1096,8 @@ public class WindowSize {
         font_bcw_2 = new Font("Arial", Font.PLAIN, font_bcw_2_size);
 
         font_large = new Font("Arial", Font.PLAIN, font_large_size);
+
+        font_menu = new Font("DialogInput", Font.PLAIN, font_large_size);
     }
 
     private void iAgora(boolean is_double) {

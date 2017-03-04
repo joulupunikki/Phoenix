@@ -88,6 +88,7 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingWorker;
 import javax.swing.Timer;
 import javax.swing.UIManager;
+import javax.swing.border.BevelBorder;
 import org.apache.commons.cli.CommandLine;
 import phoenix.Phoenix;
 import phoenix.RobotTester;
@@ -415,7 +416,8 @@ public class Gui extends JFrame {
          */
         menubar = new JMenuBar();
         menubar.setBackground(Color.BLACK);
-        menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+//        menubar.setBorder(BorderFactory.createLineBorder(C.COLOR_GOLD));
+        menubar.setBorder(new BevelBorder(BevelBorder.LOWERED, C.COLOR_EFS_FONT_DARK, C.COLOR_EFS_FONT_DARK, C.COLOR_EFS_FONT_BRIGHT, C.COLOR_EFS_FONT_BRIGHT));
         menubar.setBounds(0, 0, ws.main_window_width, ws.menubar_h);
         menubar_holder = new JPanel(null);
         menubar_holder.setBounds(0, 0, ws.main_window_width, ws.menubar_h);
@@ -713,6 +715,7 @@ public class Gui extends JFrame {
 
     private void setUpFileMenu() {
         file_menu = new JMenu("File");
+        file_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "File", -1, color_index, ws));
         menu_exit = new JMenuItem("Exit");
         menu_load = new JMenuItem("Load");
         menu_save = new JMenuItem("Save");
@@ -815,6 +818,8 @@ public class Gui extends JFrame {
 
     private void setUpWizardModeMenu() {
         wizard_menu = new JMenu("WIZARD MODE");
+        wizard_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "WIZ", -1, color_index, ws));
+
         menu_all_tech = new JMenuItem("Get all techs.");
         menu_all_tech.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_all_tech.addActionListener(new ActionListener() {
@@ -887,6 +892,7 @@ public class Gui extends JFrame {
 
     private void setUpOrdersMenu() {
         orders_menu = new JMenu("Orders");
+        orders_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Orders", -1, color_index, ws));
         menu_build = new JMenuItem("Build units");
 
         menu_build.addActionListener(new ActionListener() {
@@ -942,6 +948,7 @@ public class Gui extends JFrame {
 
     private void setUpArchivesMenu() {
         archives_menu = new JMenu("Archives");
+        archives_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Archives", -1, color_index, ws));
         archives_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         menu_vol1 = new JMenuItem("Volume 1: The Known Worlds");
         menu_vol1.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
@@ -1020,6 +1027,7 @@ public class Gui extends JFrame {
 
     private void setUpHouseMenu() {
         house_menu = new JMenuItem("House");
+        house_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "House", -1, color_index, ws));
         house_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         house_menu.addActionListener(new ActionListener() {
             @Override
@@ -1036,6 +1044,7 @@ public class Gui extends JFrame {
 
     private void setUpDiplomacyMenu() {
         diplomacy_menu = new JMenuItem("Diplomacy");
+        diplomacy_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Diplomacy", -1, color_index, ws));
         diplomacy_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         diplomacy_menu.addActionListener(new ActionListener() {
 
@@ -1050,6 +1059,7 @@ public class Gui extends JFrame {
 
     private void setUpByzantiumIIMenu() {
         byzantium_ii_menu = new JMenuItem("Byzantium II");
+        byzantium_ii_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Byzantium II", -1, color_index, ws));
         byzantium_ii_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         byzantium_ii_menu.addActionListener(new ActionListener() {
             @Override
@@ -1063,6 +1073,7 @@ public class Gui extends JFrame {
 
     private void setUpMessagesMenu() {
         messages_menu = new JMenu("Messages");
+        messages_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Messages", -1, color_index, ws));
         menu_send_message = new JMenuItem("Send Message");
         menu_send_message.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         messages_menu.add(menu_send_message);

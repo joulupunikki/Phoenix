@@ -27,6 +27,7 @@
  */
 package gui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,11 +37,13 @@ import java.awt.image.WritableRaster;
 import javax.swing.Icon;
 import util.C;
 import util.Util;
+import util.UtilG;
 import util.WindowSize;
 
 /**
  * Given size, file name, and image position in file constructs an icon usable
- * with a button.
+ * with a button. Given negative image position will construct an icon with the
+ * text of icon_file String on black backround.
  *
  * @author joulupunikki
  */
@@ -63,6 +66,13 @@ public class ButtonIcon implements Icon {
         icon_image = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_INDEXED, color_index);
         WritableRaster wr = icon_image.getRaster();
         int[] icon_data = null;
+        if (pos_index < 0) {
+            Graphics2D g = (Graphics2D) icon_image.getGraphics();
+            g.setColor(Color.BLACK);
+            g.fillRect(0, 0, width, height);
+            UtilG.drawStringTextured(g, icon_file, ws.font_menu, 2 * ws.d, 4 * height / 6, 0, false);
+            return;
+        }
         if (icon_file != null) {
             icon_data = Util.loadSquare(icon_file, pos_index * raw_width * raw_height, raw_width * raw_height);
         }
