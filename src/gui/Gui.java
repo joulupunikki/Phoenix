@@ -1027,6 +1027,7 @@ public class Gui extends JFrame {
 
     private void setUpHouseMenu() {
         house_menu = new JMenuItem("House");
+        house_menu.setForeground(Color.BLACK);
         house_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "House", -1, color_index, ws));
         house_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         house_menu.addActionListener(new ActionListener() {
@@ -1044,6 +1045,7 @@ public class Gui extends JFrame {
 
     private void setUpDiplomacyMenu() {
         diplomacy_menu = new JMenuItem("Diplomacy");
+        diplomacy_menu.setForeground(Color.BLACK);
         diplomacy_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Diplomacy", -1, color_index, ws));
         diplomacy_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         diplomacy_menu.addActionListener(new ActionListener() {
@@ -1059,6 +1061,7 @@ public class Gui extends JFrame {
 
     private void setUpByzantiumIIMenu() {
         byzantium_ii_menu = new JMenuItem("Byzantium II");
+        byzantium_ii_menu.setForeground(Color.BLACK);
         byzantium_ii_menu.setIcon(new ButtonIcon(menubar.getWidth() / C.MENU_COUNT, menubar.getHeight(), "Byzantium II", -1, color_index, ws));
         byzantium_ii_menu.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         byzantium_ii_menu.addActionListener(new ActionListener() {
