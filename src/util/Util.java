@@ -776,6 +776,17 @@ public class Util {
             bg = fg;
             fg = tmp;
         }
+        if (e.carrier != null) {
+            g.setColor(text_color);
+            String tmp = "+";
+            if (e.owner != game.getTurn()) {
+                tmp = "+ ??";
+            }
+            g.drawString(tmp, x + 2 * ws.font_unit_icon_offset, y + 8 * ws.font_unit_icon_offset);
+            if (e.owner != game.getTurn()) {
+                return;
+            }
+        }
         g.setColor(bg);
         g.fillRect(x + side - (int) (ws.font_unit_icon_size * width * 0.6) - ws.font_unit_icon_offset, y + ws.font_unit_icon_offset,
                 (int) (ws.font_unit_icon_size * width * 0.6), (int) (ws.font_unit_icon_size * 0.9));
@@ -811,11 +822,6 @@ public class Util {
                 (int) (ws.font_unit_icon_size * 0.6), (int) (ws.font_unit_icon_size * 0.9));
         g.setColor(fg);
         g.drawString("" + ((char) (tech_lvl + e.t_lvl)), x + ws.font_unit_icon_offset, y + side - 2 * ws.font_unit_icon_offset);
-
-        if (e.carrier != null) {
-            g.setColor(text_color);
-            g.drawString("+", x + 2 * ws.font_unit_icon_offset, y + 8 * ws.font_unit_icon_offset);
-        }
 
         if (e.type == C.CARGO_UNIT_TYPE) {    // For resource pod, add resource type string (first 2 characters) to icon - RSW
             g.setColor(text_color);
@@ -880,14 +886,14 @@ public class Util {
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr, color);
                 Util.drawUnitIconEdges(wr, ws, e);
-                Util.writeUnit(pixel_data, e.type, icons, wr, ws);
-
+                if (e.carrier == null || e.owner == game.getTurn()) {
+                    Util.writeUnit(pixel_data, e.type, icons, wr, ws);
+                }
                 Graphics2D g2d = (Graphics2D) g;
                 int dx = ws.unit_icon_size * j + ws.stack_display_x_offset;
                 int dy = ws.unit_icon_size * i + ws.stack_display_y_offset;
 
                 g2d.drawImage(bi, null, dx, dy);
-
                 Util.drawUnitDetails(g, game, e, dx, dy);
 
 //                if (iterator.hasNext()) {

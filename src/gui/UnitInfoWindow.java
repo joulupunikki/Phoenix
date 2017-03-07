@@ -560,7 +560,7 @@ public class UnitInfoWindow extends JPanel {
         offset += ws.sw_tp_h;
         UtilG.drawStringGrad((Graphics2D) g, s, ws.font_large, ws.sw_tp_x - fm.stringWidth(s), ws.sw_tp_y2 + offset);
         Unit u = gui.getInfo_unit();
-        if (u == null) {
+        if (u == null || (u.carrier != null && u.owner != game.getTurn())) {
             return;
         }
         s = u.type_data.name;
@@ -603,7 +603,7 @@ public class UnitInfoWindow extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(bi, null, 0, 0);
         Unit u = gui.getInfo_unit();
-        if (u != null) {
+        if (u != null && (u.carrier == null || u.owner == game.getTurn())) {
             if (!u.equals(prev)) {
                 String filename = FN.S_DIST_PREFIX + FN.S_FLC + FN.F_S + u.type_data.art;
                 File flc = new File(filename);
@@ -628,7 +628,7 @@ public class UnitInfoWindow extends JPanel {
         right_stats.setValues(null);
         attack_stats.setValues(null);
 
-        if (u == null) {
+        if (u == null || (u.carrier != null && u.owner != game.getTurn())) {
             for (JTextField item : res_display) {
                 item.setText("");
             }
@@ -722,50 +722,52 @@ public class UnitInfoWindow extends JPanel {
 //                System.out.println("color = " + color);
                 Util.fillRaster(wr, color);
                 Util.drawUnitIconEdges(wr, ws);
-                Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
-
+                if (e.carrier == null || e.owner == game.getTurn()) {
+                    Util.writeUnit(pixel_data, e.type, unit_icons, wr, ws);
+                }
                 int dx = (int) (ws.unit_panel_x_offset + j * 3.5 * ws.unit_icon_size);
                 int dy = (int) (ws.unit_panel_y_offset + i * 1.15 * ws.unit_icon_size);
 
                 g2d.drawImage(bi, null, dx, dy);
 
-                g.setColor(C.COLOR_GOLD);
-                g.setFont(ws.font_abbrev);
+                if (e.carrier == null || e.owner == game.getTurn()) {
 
-                if (e.experience > 0 && e.type != C.CARGO_UNIT_TYPE) { // fix #100
-                    if (e.experience == 1) {
-                        g.setColor(Color.LIGHT_GRAY);
-                    }
-                    g.drawString("  " + Unit.XP.values()[e.experience].getTitle(), dx + ws.unit_icon_size + ws.carry_symbol_x,
-                            dy + (int) 2.8 * ws.font_default_size);
                     g.setColor(C.COLOR_GOLD);
+                    g.setFont(ws.font_abbrev);
+
+                    if (e.experience > 0 && e.type != C.CARGO_UNIT_TYPE) { // fix #100
+                        if (e.experience == 1) {
+                            g.setColor(Color.LIGHT_GRAY);
+                        }
+                        g.drawString("  " + Unit.XP.values()[e.experience].getTitle(), dx + ws.unit_icon_size + ws.carry_symbol_x,
+                                dy + (int) 2.8 * ws.font_default_size);
+                        g.setColor(C.COLOR_GOLD);
+                    }
+
+                    if (e.type == C.CARGO_UNIT_TYPE) {
+                        g.drawString(game.getResTypes()[e.res_relic].name, dx + ws.unit_icon_size + ws.carry_symbol_x,
+                                dy + (int) 1.5 * ws.font_default_size);    // For resource pod, show resource type instead of abbrev - RSW
+                        g.drawString("  " + String.valueOf(e.amount) + " pts", dx + ws.unit_icon_size + ws.carry_symbol_x,
+                                dy + (int) 2.8 * ws.font_default_size);    // Also show num of resource points - RSW
+                    } else {
+                        g.drawString(e.type_data.abbrev, dx + ws.unit_icon_size + ws.carry_symbol_x,
+                                dy + (int) 1.5 * ws.font_default_size);
+                    }
+
+                    for (int k = 0; k < e.type_data.cargo; k++) {
+                        g.setColor(Color.GRAY);
+                        g.fill3DRect(dx + (k + 1) * ws.carry_symbol_x + k * ws.carry_symbol_w + ws.unit_icon_size,
+                                dy + ws.carry_symbol_y, ws.carry_symbol_w, ws.carry_symbol_h,
+                                true);
+
+                    }
                 }
-
-                if (e.type == C.CARGO_UNIT_TYPE) {
-                    g.drawString(game.getResTypes()[e.res_relic].name, dx + ws.unit_icon_size + ws.carry_symbol_x,
-                            dy + (int) 1.5 * ws.font_default_size);    // For resource pod, show resource type instead of abbrev - RSW
-                    g.drawString("  " + String.valueOf(e.amount) + " pts", dx + ws.unit_icon_size + ws.carry_symbol_x,
-                            dy + (int) 2.8 * ws.font_default_size);    // Also show num of resource points - RSW 
-                } else {
-                    g.drawString(e.type_data.abbrev, dx + ws.unit_icon_size + ws.carry_symbol_x,
-                            dy + (int) 1.5 * ws.font_default_size);
-                }
-
-                for (int k = 0; k < e.type_data.cargo; k++) {
-                    g.setColor(Color.GRAY);
-                    g.fill3DRect(dx + (k + 1) * ws.carry_symbol_x + k * ws.carry_symbol_w + ws.unit_icon_size,
-                            dy + ws.carry_symbol_y, ws.carry_symbol_w, ws.carry_symbol_h,
-                            true);
-
-                }
-
                 if (e.carrier != null) {
                     g.setColor(Color.GRAY);
                     for (int k = 0; k < 4; k++) {
                         g.drawString("+", dx - ws.font_unit_icon_size, (int) (dy + (k + 0.5) * ws.font_unit_icon_size));
                     }
                 }
-
                 Util.drawUnitDetails(g, game, e, dx, dy);
 
                 if (e != null) {
