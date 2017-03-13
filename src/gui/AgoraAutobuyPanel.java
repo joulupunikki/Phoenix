@@ -150,7 +150,7 @@ public class AgoraAutobuyPanel extends JPanel {
         int p_idx = agora_stack.get(0).p_idx;
         int[] sells = game.getDiplomacy().getAgora_prices();
         Hex h = game.getPlanetGrid(p_idx).getHex(agora_stack.get(0).x, agora_stack.get(0).y);
-        Set<Hex> hexes = Util.getHexesWithinRadiusOf(h, 1);
+        Set<Hex> hexes = Util.getHexesWithinRadiusOf(h, 1, null);
         hexes.remove(h);
         h = null;
         List<Integer> manifest = new LinkedList<>();

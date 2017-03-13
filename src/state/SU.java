@@ -1269,7 +1269,7 @@ public class SU extends State {
         if (origin_hex.getTerrain(C.OCEAN)) {
             return false;
         }
-        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1);
+        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1, null);
         Hex target_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), p.x, p.y);
         if (!adjacent.contains(target_hex)) {
             return false;
@@ -1404,7 +1404,7 @@ public class SU extends State {
             return false;
         }
         Hex origin_hex = game.getHexFromPXY(game.getCurrentPlanetNr(), q.x, q.y);
-        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1);
+        Set<Hex> adjacent = Util.getHexesWithinRadiusOf(origin_hex, 1, null);
         if (!adjacent.contains(target_hex)) {
             return false;
         }

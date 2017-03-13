@@ -1118,7 +1118,7 @@ public class Battle implements Serializable {
             return;
         }
         pts_queue.clear(); // fix #64
-        Set<Hex> pts_area = Util.getHexesWithinRadiusOf(h, game.getEfs_ini().pts_fire_range);
+        Set<Hex> pts_area = Util.getHexesWithinRadiusOf(h, game.getEfs_ini().pts_fire_range, null);
         pts_area.remove(h);
         for (Hex next : pts_area) {
             List<Unit> stack = next.getStack();

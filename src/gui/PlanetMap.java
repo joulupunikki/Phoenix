@@ -1987,7 +1987,7 @@ public class PlanetMap extends JPanel {
     public void drawShield(Graphics g) {
         Structure shield = game.getPlanet(game.getCurrentPlanetNr()).getShield();
         if (shield != null && game.getEfs_ini().shield_radius > -1) {
-            shielded_hexes = Util.getHexesWithinRadiusOf(game.getHexFromPXY(shield.p_idx, shield.x, shield.y), game.getEfs_ini().shield_radius);
+            shielded_hexes = Util.getHexesWithinRadiusOf(game.getHexFromPXY(shield.p_idx, shield.x, shield.y), game.getEfs_ini().shield_radius, null);
         } else {
             return;
         }

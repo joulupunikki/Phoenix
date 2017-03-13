@@ -59,7 +59,7 @@ public class AW extends State {
         int[] sells = gui.getAgoraWindow().getSells();
         List<Unit> agora_stack = game.getSelectedStack();
         Hex h = game.getPlanetGrid(game.getCurrentPlanetNr()).getHex(agora_stack.get(0).x, agora_stack.get(0).y);
-        Set<Hex> hexes = Util.getHexesWithinRadiusOf(h, 1);
+        Set<Hex> hexes = Util.getHexesWithinRadiusOf(h, 1, null);
         hexes.remove(h);
         h = null;
         List<Integer> manifest = new LinkedList<>();

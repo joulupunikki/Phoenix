@@ -2008,7 +2008,7 @@ public class Util {
 
     /**
      * Find and return the set of all hexes within a certain radius of a given
-     * hex.
+     * hex, optionally stores the distance of hexes in distances.
      *
      * Typically this is called with radius 2, for harvesting cities, in which
      * case it returns a set of 17 hexes (unless the radius extends off the top
@@ -2016,35 +2016,41 @@ public class Util {
      *
      * @param hex The central hex
      * @param radius The distance in hexes to extend the search
-     * @return Set of hexes within the radius
+     * @param distances the value of distances, can be null
+     * @return the java.util.Set<game.Hex>
      *
      */
-    public static Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius) {
+    public static Set<Hex> getHexesWithinRadiusOf(Hex hex, int radius, List<Integer> distances) {
 
         // Find the neighbours of the given hex, and then the neighbours of those neighbours, etc.
         // To avoid adding the same hex more than once, use Set instead of List, as that leaves it
         // to the JRE to avoid duplicates
         Set<Hex> ret_val = new LinkedHashSet<>(1 + (radius + 1) * radius * 3);    // Set of hexes to be returned
+        if (distances == null) {
+            distances = new LinkedList<>();
+        }
         LinkedList<Hex> queue = new LinkedList<>();
         LinkedList<Integer> queueR = new LinkedList<>();
 
         ret_val.add(hex);
+        distances.add(0);
         if (radius < 1) {
             return ret_val;
         }
 
         queue.add(hex);
-        queueR.add(new Integer(0));
+        queueR.add(0);
         while (!queue.isEmpty()) {
             Hex father = queue.pop();
-            int r = queueR.pop().intValue();
+            int r = queueR.pop();
             Hex[] neighbours = father.getNeighbours();
             for (Hex child : neighbours) {
                 if (child != null && ret_val.add(child)) {
                     int child_r = r + 1;
+                    distances.add(child_r);
                     if (child_r < radius) {
                         queue.add(child);
-                        queueR.add(new Integer(child_r));
+                        queueR.add(child_r);
                     }
                 }
             }

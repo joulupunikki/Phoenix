@@ -236,7 +236,7 @@ public class BuildCityPanel extends JPanel {
         // for harvesting cities check that no harvesting city within 4 hexes
         harvest_in_4 = new boolean[buildables_nr];
         Hex hex = game.getHexFromPXY(unit.p_idx, unit.x, unit.y);
-        Set<Hex> hexes_in_4 = Util.getHexesWithinRadiusOf(hex, 4);
+        Set<Hex> hexes_in_4 = Util.getHexesWithinRadiusOf(hex, 4, null);
         loop:
         for (Hex hex1 : hexes_in_4) {
             Structure str = hex1.getStructure();

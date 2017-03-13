@@ -261,7 +261,7 @@ public class Game implements Serializable {
             for (int i = 0; i < planet_grid.length; i++) {
                 for (int j = 0; j < planet_grid[i].length; j++) {
                     Hex hex = planet_grid[i][j];
-                    hex_proc.initSpotProc(hex, planet);
+                    hex_proc.initSpotForHex(hex, planet);
 
                 }
 
@@ -2065,7 +2065,7 @@ public class Game implements Serializable {
     public boolean isShielded(Hex hex, int p_idx) {
         Structure shield = planets.get(p_idx).getShield();
         if (shield != null && getEfs_ini().shield_radius > -1) {
-            Set<Hex> shielded_hexes = Util.getHexesWithinRadiusOf(getHexFromPXY(shield.p_idx, shield.x, shield.y), getEfs_ini().shield_radius);
+            Set<Hex> shielded_hexes = Util.getHexesWithinRadiusOf(getHexFromPXY(shield.p_idx, shield.x, shield.y), getEfs_ini().shield_radius, null);
             if (shielded_hexes.contains(hex)) {
                 return true;
             }

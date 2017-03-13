@@ -32,9 +32,13 @@ import galaxyreader.Planet;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import util.C;
 import util.StackIterator;
+import util.Util;
 
 /**
  * Contains procedures where something is done or calculated based on distance
@@ -167,16 +171,23 @@ public class HexProc implements Serializable {
         }
     }
 
-    public void initSpotProc(Hex hex, Planet planet) {
+    public void initSpotForHex(Hex hex, Planet planet) {
         List<Unit> stack = hex.getStack();
         Structure struct = hex.getStructure();
         if (stack.isEmpty() && struct == null) {
             return;
         }
+        List<Integer> distances = new LinkedList<>();
+        Set<Hex> hexes;
         int range = 0;
         if (struct != null) {
             range = 5;
             this.faction_a = struct.owner;
+            hexes = Util.getHexesWithinRadiusOf(hex, range, distances);
+            for (Iterator<Hex> hex_iter = hexes.iterator(); hex_iter.hasNext();) {
+                Hex hex2 = hex_iter.next();
+                hex2.spot(faction_a);
+            }
         }
 
         if (!stack.isEmpty()) {
@@ -189,13 +200,28 @@ public class HexProc implements Serializable {
                 if (unit.type_data.spot > spotting) {
                     spotting = unit.type_data.spot;
                 }
+                unit.spotted[faction_a] = true;
                 unit = iter.next();
             }
             int tmp = Unit.spotRange(spotting);
             range = range > tmp ? range : tmp;
+            this.planet = game.getPlanet(stack.get(0).p_idx);
+            this.faction_a = stack.get(0).owner;
+            this.spotting_a = spotting;
+            this.stack_a = stack;
+            this.hex = hex;
+            distances.clear();
+            hexes = Util.getHexesWithinRadiusOf(hex, range, distances);
+            Iterator<Integer> dist_iter = distances.iterator();
+            for (Iterator<Hex> hex_iter = hexes.iterator(); hex_iter.hasNext();) {
+                int dist = dist_iter.next();
+                Hex hex2 = hex_iter.next();
+                hex2.spot(faction_a);
+                spot(hex2, dist);
+            }
         }
 
-        hexProc(hex, range, C.INIT_SPOT);
+        //hexProc(hex, range, C.INIT_SPOT);
         planet.spotted[this.faction_a] = true;
     }
 
