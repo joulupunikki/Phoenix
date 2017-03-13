@@ -174,7 +174,7 @@ public class C {
         ELECTION_RESULTS,
         CONTRACT,
         RESPONSE,
-        THRONE_CLAIM, REBELLION, CITY_LOST,
+        THRONE_CLAIM, REBELLION, CITY_LOST, NOBLE_KILLED,
     }
 
     // movement types

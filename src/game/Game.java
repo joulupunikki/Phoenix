@@ -1883,6 +1883,12 @@ public class Game implements Serializable {
 //        System.out.println("*** deleteEmptyUnit: deleted " + unit.type_data.name + " at " + unit.p_idx + ", "
 //                + unit.x + ", " + unit.y + ", " + unit.in_space);    // TESTING
         // If there are any units spotted only by this one, we should clear their spotted flags. ???
+        if (unit.type == C.NOBLE_UNIT_TYPE && unit.owner < C.NR_HOUSES) {
+            for (int i = 0; i < C.NR_HOUSES; i++) {
+                factions[i].addMessage(new Message("A noble from House " + Util.getFactionName(unit.owner)
+                        + " has been killed!", C.Msg.NOBLE_KILLED, year, Util.getFactionName(unit.owner)));
+            }
+        }
     }
 
     /**
