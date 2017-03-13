@@ -107,6 +107,12 @@ public class UIW1 extends State {
         }
         game.deleteUnitNotInCombat(u);
         gui.setInfo_unit(null);
+        if (game.getSelectedStack().isEmpty()) {
+            gui.setCurrentState(PW1.get());
+            game.setSelectedPointFaction(null, -1, null, null);
+            SU.restoreMainWindow();
+            main_game_state = null;
+        }
     }
 
     @Override
