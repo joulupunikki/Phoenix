@@ -61,7 +61,7 @@ public class MW extends State {
     public void pressEndTurnButton() {
         if (game.getTurn() <= C.HOUSE5) {
             // only the last one may have side effects !!!
-            if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
+            if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear()) && game.getRegency().allowedToVote(game.getTurn())) {
                 gui.showInfoWindow("My Lord, we must cast our votes before the day is done!");
                 return;
             }

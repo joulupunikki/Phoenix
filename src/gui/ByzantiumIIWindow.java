@@ -94,7 +94,8 @@ public class ByzantiumIIWindow extends JPanel {
         } else {
             vote.setEnabled(false);
         }
-        if (game.getRegency().getRegent() == game.getTurn() && game.getRegency().getYearsSinceThroneClaim() < 0) {
+        if (game.getRegency().getRegent() == game.getTurn()
+                && game.getRegency().getElectionLevel() == C.ELECTION_LEVEL.REGENT) {
             declare_emperor.setVisible(true);
         } else {
             declare_emperor.setVisible(false);
@@ -199,10 +200,10 @@ public class ByzantiumIIWindow extends JPanel {
         drawMinistryDetails(g, C.HOUSE4, C.HOUSE4);
         drawMinistryDetails(g, C.HOUSE5, C.HOUSE5);
 
-        if (regency.getCrownedEmperor() > -1) {
-            UtilG.drawStringGrad((Graphics2D) g, Util.getFactionName(regency.getCrownedEmperor()) + " Victor", ws.font_large,
+        if (regency.getElectionLevel() == C.ELECTION_LEVEL.EMPEROR_CROWNED) {
+            UtilG.drawStringGrad((Graphics2D) g, Util.getFactionName(regency.getRegent()) + " Victor", ws.font_large,
                     ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1, false);
-        } else if (regency.getYearsSinceThroneClaim() > -1) {
+        } else if (regency.getElectionLevel() > C.ELECTION_LEVEL.REGENT) {
             UtilG.drawStringGrad((Graphics2D) g, "Emperor declared", ws.font_large,
                     ws.bz2_button1_x, ws.bz2_button1_y + ws.bz2_button1_h, 1, false);
         }

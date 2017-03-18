@@ -28,6 +28,7 @@
 package game;
 
 import dat.EfsIni;
+import galaxyreader.Unit;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -67,6 +68,11 @@ public class Regency implements Serializable {
         return promised_ministries;
     }
 
+    void initRegency(EfsIni efs_ini) {
+        election_level = C.ELECTION_LEVEL.REGENT;
+        years_till_elections = efs_ini.regency_term_length;
+    }
+
     public enum VoteCheck {
         ADVANCE,
         NORMAL,
@@ -80,20 +86,27 @@ public class Regency implements Serializable {
 //    private int garrison = -1;
 //    private int eye = -1;
 //    private int fleet = -1;
-    // -1 if no ongoing throne claim
-    private int years_since_throne_claim = -1;
+    // how many years till the next scheduled elections
+    private int years_till_elections = -1;
     private boolean may_set_offices = false;
 
     // vote tally for all the houses + league + church
     // votes[faction][CANDIDATE_IDX]: -2 iff not voted yet; -1 iff abstained; else candidate faction ID
     // votes[faction][VOTES_IDX]: number of votes
     private int[][] votes = new int[C.THE_CHURCH + 1][2]; // {{-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}, {-1, -1}};
+    // 0 regent elections; 1 first emperor vote; 2 final emperor vote; 3 emperor crowned, game over
+    private int election_level = -1;
 
-    private int crowned_emperor = -1;
+    private boolean[] allowed_to_vote;
 
     public Regency() {
+        resetVotingRights();
         resetVotes();
         resetPromisedMinistries();
+    }
+
+    private void resetVotingRights() {
+        allowed_to_vote = new boolean[]{true, true, true, true, true};
     }
 
     /**
@@ -157,23 +170,25 @@ public class Regency implements Serializable {
     }
 
     /**
-     * Advance age of throne claim by one iff throne was just claimed or throne
-     * claim is in force. Call this when throne is claimed and at the start of
-     * new year.
+     * Call this at the start of new year.
      *
-     * @param just_claimed
      */
-    public void advanceThroneClaim(boolean just_claimed) {
-        if (years_since_throne_claim > -1 || just_claimed) {
-            ++years_since_throne_claim;
-        }
+    public void advanceElectionTimer() {
+        --years_till_elections;
+    }
+
+    public void makeThroneClaim() {
+        election_level = C.ELECTION_LEVEL.FIRST_EMPEROR;
+        years_till_elections = 1;
     }
 
     /**
      * Cancel ongoing throne claim.
+     * @param ini the value of ini
      */
-    public void dropThroneClaim() {
-        years_since_throne_claim = -1;
+    public void dropThroneClaim(EfsIni ini) {
+        election_level = C.ELECTION_LEVEL.REGENT;
+        years_till_elections = ini.regency_term_length;
     }
 
     /**
@@ -190,6 +205,8 @@ public class Regency implements Serializable {
     }
 
     /**
+     * If check equals VoteCheck.ADVANCE then we check for elections next year
+     * If check equals VoteCheck.FINAL then we assign pledged votes
      *
      * @param ini
      * @param faction
@@ -198,14 +215,13 @@ public class Regency implements Serializable {
      * @return
      */
     public boolean needToVote(int faction, EfsIni ini, int year, VoteCheck check) {
-        int years_since_throne_claim = this.years_since_throne_claim;
+        int years_till_elections = this.years_till_elections;
         if (check == VoteCheck.ADVANCE) {
-            years_since_throne_claim++;
+            years_till_elections--;
         }
-        int term_length = ini.regency_term_length;
         if (faction <= C.THE_CHURCH) {
-            if ((years_since_throne_claim < 1 && year != C.STARTING_YEAR && (year - C.STARTING_YEAR) % term_length == 0)
-                    || years_since_throne_claim == 1 || years_since_throne_claim == term_length + 1) {
+            if (years_till_elections == 0) {
+
                 if (votes[faction][CANDIDATE_IDX] == -2) { // has not voted yet
                     return true; 
                 }
@@ -217,6 +233,16 @@ public class Regency implements Serializable {
         return false;
     }
 
+    /**
+     * Houses are allowed to vote only if fulfill the requirements.
+     *
+     * @param house
+     * @return
+     */
+    public boolean allowedToVote(int house) {
+        return house >= C.NR_HOUSES || allowed_to_vote[house];
+    }
+    
     public void setVotes(int faction, int candidate, int nr_votes) {
         votes[faction][CANDIDATE_IDX] = candidate;
         votes[faction][VOTES_IDX] = nr_votes;
@@ -229,82 +255,106 @@ public class Regency implements Serializable {
         }
     }
 
+    /**
+     * Resolves elections.
+     *
+     * @param game
+     */
     public void resolveElections(Game game) {
         may_set_offices = false;
-        if (haveVotes()) {
-            String message = "Election results:";
-            // count votes
-            int[] vote_count = new int[C.NR_HOUSES];
-            for (int[] voter : votes) {
-                if (voter[CANDIDATE_IDX] > -1) {
-                    vote_count[voter[CANDIDATE_IDX]] += voter[VOTES_IDX];
-                }
+        if (years_till_elections < 0) {
+            switch (years_till_elections) {
+                case -1:
+                    break;
+                default:
+                    throw new AssertionError();
             }
-            for (int i = 0; i < C.NR_HOUSES; i++) {
-                message += " " + Util.getFactionName(i) + " " + vote_count[i] + ";";
+        } else {
+            return;
+        }
+        String message = "Election results:\n";
+        // First: count votes
+        int[] vote_count = new int[C.NR_HOUSES];
+        for (int[] voter : votes) {
+            if (voter[CANDIDATE_IDX] > -1) {
+                vote_count[voter[CANDIDATE_IDX]] += voter[VOTES_IDX];
             }
-            int max_votes = 0;
-            int candidate = -1;
-            for (int i = 0; i < vote_count.length; i++) {
-                if (vote_count[i] > max_votes) { // new frontrunner
-                    max_votes = vote_count[i];
-                    candidate = i;
-                } else if (vote_count[i] == max_votes) { // a draw
-                    candidate = -1;
-                }
+        }
+        for (int i = 0; i < C.NR_HOUSES; i++) {
+            message += " " + Util.getFactionName(i) + " " + vote_count[i] + "\n";
+        }
+        int max_votes = 0;
+        int vote_winner = -1;
+        for (int i = 0; i < vote_count.length; i++) {
+            if (vote_count[i] > max_votes) { // new frontrunner
+                max_votes = vote_count[i];
+                vote_winner = i;
+            } else if (vote_count[i] == max_votes) { // a draw
+                vote_winner = -1;
             }
-            if (years_since_throne_claim < 2) { // regent elections
-
-                if (candidate > -1) { // a new regent
-                    if (candidate != regent) {
-                        dropThroneClaim();
-                    }
-                    setRegent(candidate);
+        }
+        // Second: decide results based on votes and election level
+        switch (election_level) {
+            case C.ELECTION_LEVEL.REGENT:
+                years_till_elections = game.getEfs_ini().regency_term_length;
+                if (vote_winner > -1) { // a new regent
+                    setRegent(vote_winner);
                     may_set_offices = true;
-                    message += " Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
+                    message += " Lord of " + Util.getFactionName(vote_winner) + " is the new Regent.";
 
                 } else {
                     message += " No one had a majority of votes, so the Regent remains the same.";
                 }
-            } else { // emperor vote
-                if (candidate == -1 && vote_count[regent] == max_votes) {
+                break;
+            case C.ELECTION_LEVEL.FIRST_EMPEROR:
+            case C.ELECTION_LEVEL.FINAL_EMPEROR:
+                if (vote_winner == -1 && vote_count[regent] == max_votes) {
                     message += " The vote was a tie with the throne claimant. The claim is dropped and the claimant remains a Regent.";
-                    dropThroneClaim();
-                } else if (candidate == -1 && vote_count[regent] < max_votes) {
+                    dropThroneClaim(game.getEfs_ini());
+                } else if (vote_winner == -1 && vote_count[regent] < max_votes) {
                     message += " The vote was a tie without the throne claimant. The claim is dropped and the regency is vacated.";
-                    dropThroneClaim();
+                    dropThroneClaim(game.getEfs_ini());
                     regent = -1;
-                } else if (candidate == regent) {
-                    if (years_since_throne_claim == 2) { // 1st vote
-                        message += " The claimant " + Util.getFactionName(candidate)
-                                + " has gathered the support necessary to become emperor."
-                                + " Other houses have " + game.getEfs_ini().regency_term_length
-                                + " years before the rest of humanity recognizes this claim.";
-                    } else { // final vote
-                        message += " In the final vote, the claimant " + Util.getFactionName(candidate)
-                                + " has gathered the support necessary to become emperor. \n\n"
-                                + "All hail The Imperial Majesty, Lord of Lords of "
-                                + Util.factionNameDisplay(candidate) + ", Emperor of the Fading Suns !";
-                        crowned_emperor = regent;
+                } else if (vote_winner == regent) {
+                    switch (election_level) {
+                        case C.ELECTION_LEVEL.FIRST_EMPEROR:// 1st vote
+                            message += " The claimant " + Util.getFactionName(vote_winner)
+                                    + " has gathered the support necessary to become emperor."
+                                    + " Other houses have " + game.getEfs_ini().regency_term_length
+                                    + " years before the rest of humanity recognizes this claim.";
+                            years_till_elections = game.getEfs_ini().regency_term_length;
+                            break;
+                        case C.ELECTION_LEVEL.FINAL_EMPEROR: // final vote
+                            message += " In the final vote, the claimant " + Util.getFactionName(vote_winner)
+                                    + " has gathered the support necessary to become emperor. \n\n"
+                                    + "All hail The Imperial Majesty, Lord of Lords of "
+                                    + Util.factionNameDisplay(vote_winner) + ", Emperor of the Fading Suns !";
+                            election_level = C.ELECTION_LEVEL.EMPEROR_CROWNED;
+                            break;
+                        default:
+                            throw new AssertionError();
                     }
                 } else {
-                    setRegent(candidate);
+                    setRegent(vote_winner);
                     may_set_offices = true;
-                    message += "The claimant loses the election. Lord of " + Util.getFactionName(candidate) + " is the new Regent.";
-                    dropThroneClaim();
-                }  
-            }
-            for (Faction faction : game.getFactions()) {
-                faction.addMessage(new Message(message, C.Msg.ELECTION_RESULTS, game.getYear(), null));
-            }
-            if (may_set_offices) { // enforce ministry promises if any
-                int[] tmp = game.getDiplomacy().getMinistryPromises(regent);
-                System.arraycopy(tmp, 0, promised_ministries, 0, tmp.length);
-            }
-            game.getDiplomacy().zeroMinistryPromises();
-            resetVotes();
+                    message += "The claimant loses the election. Lord of " + Util.getFactionName(vote_winner) + " is the new Regent.";
+                    dropThroneClaim(game.getEfs_ini());
+                }
+                break;
+            default:
+                throw new AssertionError();
         }
-        
+        for (Faction faction : game.getFactions()) {
+            faction.addMessage(new Message(message, C.Msg.ELECTION_RESULTS, game.getYear(), null));
+        }
+        if (may_set_offices) { // enforce ministry promises if any
+            int[] tmp = game.getDiplomacy().getMinistryPromises(regent);
+            System.arraycopy(tmp, 0, promised_ministries, 0, tmp.length);
+        }
+        game.getDiplomacy().zeroMinistryPromises();
+        resetVotes();
+        resetVotingRights();
+
     }
     
     private boolean haveVotes() {
@@ -410,19 +460,19 @@ public class Regency implements Serializable {
         }
     }
 
-    public int getYearsSinceThroneClaim() {
-        return years_since_throne_claim;
+    public int getYearsTillElections() {
+        return years_till_elections;
     }
 
     /**
      * @return the crowned_emperor
      */
-    public int getCrownedEmperor() {
-        return crowned_emperor;
+    public int getElectionLevel() {
+        return election_level;
     }
 
     void record(PrintWriter pw) {
-        pw.println( "regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + crowned_emperor);
+        pw.println("regency " + regent + "," + ministers[0] + "," + ministers[1] + "," + ministers[2] + "," + election_level);
 
     }
 
@@ -430,7 +480,8 @@ public class Regency implements Serializable {
      * @param crowned_emperor the crowned_emperor to set
      */
     public void setCrownedEmperor(int crowned_emperor) {
-        this.crowned_emperor = crowned_emperor;
+        this.regent = crowned_emperor;
+        this.election_level = C.ELECTION_LEVEL.EMPEROR_CROWNED;
     }
 
     boolean promisedVotes(int a) {
@@ -476,4 +527,34 @@ public class Regency implements Serializable {
         promised_ministries = new int[]{-1, -1, -1, -1, -1};
     }
 
+    /**
+     *
+     * @param game
+     * @return
+     */
+    public boolean checkRightToVote(Game game) {
+        int faction = game.getTurn();
+        if (faction >= C.NR_HOUSES) {
+            return true;
+        }
+        List<Unit> units = game.getUnits();
+        for (Unit unit : units) {
+            if (unit.type == C.NOBLE_UNIT_TYPE && unit.prev_owner == faction && unit.p_idx == C.BYZ_II_P_IDX) {
+                return true;
+            }
+        }
+        allowed_to_vote[faction] = false;
+        return false;
+    }
+
+    /**
+     * Temporary code to ensure correctness of game object when loading saves
+     * after modifications which change save game structure have been made.
+     *
+     * @param game
+     */
+    void adjustForNewSaveVersion(Game game) {
+        this.election_level = 0;
+        this.years_till_elections = 1;
+    }
 }

@@ -72,8 +72,8 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.metal.DefaultMetalTheme;
 import javax.swing.plaf.metal.MetalSliderUI;
 import org.apache.commons.math3.util.FastMath;
-import static util.Util.readFile;
 import static util.Util.scale2XImage;
+import static util.Util.readFile;
 
 /**
  * Graphics related utilities.
@@ -846,9 +846,8 @@ public class UtilG {
     }
 
     public static void emperorCrowned(Graphics2D g, Game game, WindowSize ws) {
-        int emperor = game.getRegency().getCrownedEmperor();
-        if (emperor > -1) {
-            String s = "Lord of " + Util.getFactionName(emperor) + " has been crowned Emperor of the Fading Suns";
+        if (game.getRegency().getElectionLevel() > C.ELECTION_LEVEL.FINAL_EMPEROR) {
+            String s = "Lord of " + Util.getFactionName(game.getRegency().getRegent()) + " has been crowned Emperor of the Fading Suns";
             UtilG.drawStringGrad(g, s, ws.font_large, 5, 5 + ws.font_large.getSize(), 1, false);
         }
     }

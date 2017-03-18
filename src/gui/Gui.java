@@ -2022,6 +2022,7 @@ public class Gui extends JFrame {
                     ObjectInputStream s = new ObjectInputStream(gis)) {
                 Game tmp = (Game) s.readObject();
                 game = tmp;
+                game.adjustForNewSaveVersion();
                 //System.out.println("after read object");
 //                space_map.setGame(game);
 //                planet_map.setGame(game);

@@ -1481,7 +1481,7 @@ public class SU extends State {
      * @return the boolean
      */
     public static boolean byzIICombatOK(List<Unit> stack, boolean show_msg) {
-        if (game.getRegency().getYearsSinceThroneClaim() < 0 && stack.get(0).p_idx == C.BYZ_II_P_IDX) {
+        if (game.getRegency().getElectionLevel() < C.ELECTION_LEVEL.FIRST_EMPEROR && stack.get(0).p_idx == C.BYZ_II_P_IDX) {
             for (Unit u : stack) {
                 switch (u.type) {
                     case C.STEALTH_SHIP_UNIT_TYPE:

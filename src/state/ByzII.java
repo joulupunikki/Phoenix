@@ -73,20 +73,35 @@ public class ByzII extends State {
 
     @Override
     public void pressVoteButton() {
+        if (!game.getRegency().allowedToVote(game.getTurn())) {
+            gui.showInfoWindow("House " + Util.getFactionName(game.getTurn()) + " is not eligible to vote in these elections!");
+            return;
+        }
         if (game.getRegency().needToVote(game.getTurn(), game.getEfs_ini(), game.getYear())) {
             gui.setCurrentState(ByzII2.get());
             String s = "This is";
-            int claim = game.getRegency().getYearsSinceThroneClaim();
-            if (claim < 1) {
+            int claim = game.getRegency().getElectionLevel();
+            if (claim == C.ELECTION_LEVEL.REGENT) {
                 s += " a vote for the regency. ";
             } else {
-                if (claim == 1) {
+                String claimant = Util.factionNameDisplay(game.getRegency().getRegent());
+                if (claim == C.ELECTION_LEVEL.FIRST_EMPEROR) {
                     s += " the first vote for ";
                 } else {
                     s += " the final vote for ";
                 }
-                s += Util.factionNameDisplay(game.getRegency().getRegent())
+                s += claimant
                         + "'s claim to the emperor's crown.";
+                switch (claim) {
+                    case C.ELECTION_LEVEL.FIRST_EMPEROR:
+                        break;
+                    case C.ELECTION_LEVEL.FINAL_EMPEROR:
+                        s += "\nIf " + claimant
+                                + " wins this vote then they will be declared the Emperor!";
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
             }
             gui.showInfoWindow(s + " Cast your votes, Lord " + Util.getFactionName(game.getTurn()) + ".");
             gui.getByzantium_ii_window().enableAbstainButton(true);
@@ -99,7 +114,7 @@ public class ByzII extends State {
         if (!gui.showConfirmWindow("Are you sure you want to lay a claim to the emperor's crown?")) {
             return;
         }
-        game.getRegency().advanceThroneClaim(true);
+        game.getRegency().makeThroneClaim();
         String s = "" + Util.factionNameDisplay(game.getTurn()) + " has laid claim "
                 + "to the emperor's crown in the year " + game.getYear() + ". New "
                 + "elections must take place in the year " + (game.getYear() + 1)

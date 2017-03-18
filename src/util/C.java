@@ -471,6 +471,13 @@ public class C {
     public static final int DS_PEACE = 0;
     public static final int DS_WAR = 1;
 
+    public static final class ELECTION_LEVEL {
+
+        public static final int REGENT = 0;
+        public static final int FIRST_EMPEROR = 1;
+        public static final int FINAL_EMPEROR = 2;
+        public static final int EMPEROR_CROWNED = 3;
+    }
     /**
      * Short print method for debugging, fixed message.
      *

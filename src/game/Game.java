@@ -138,8 +138,12 @@ public class Game implements Serializable {
 
     private AIObject ai;
 
-    public Game(String galaxy_file, int current_planet) {
+    // save file version, monotonically increasing numbers
+    private long save_file_version = 0;
+    static final long NEW_SAVE_FILE_VERSION = 1;
 
+    public Game(String galaxy_file, int current_planet) {
+        save_file_version = NEW_SAVE_FILE_VERSION;
         random = RandomAdaptor.createAdaptor(new XorShift1024Star(1L));
 
         // Read fixed data files
@@ -239,6 +243,7 @@ public class Game implements Serializable {
         }
         diplomacy = new Diplomacy(this);
         diplomacy.initDiplomacy();
+        regency.initRegency(efs_ini);
     }
 
     public void initVisibilitySpot(boolean do_reset) {
@@ -591,6 +596,7 @@ public class Game implements Serializable {
         if (regency.needToVote(turn, efs_ini, year + 1, Regency.VoteCheck.ADVANCE)) { // election notice
             factions[turn].addMessage(new Message("Regent elections will happen next turn.", C.Msg.ELECTION_NOTICE, year, null));
         }
+        regency.checkRightToVote(this);
         if (Gui.getMainArgs().hasOption(C.OPT_ENABLE_AI) && !human_ctrl[turn] && ai.isAIcontrolled(turn)) {
             while (!StaticThreads.isStaticDone()) {
                 try {
@@ -613,7 +619,7 @@ public class Game implements Serializable {
             regency.setCrownedEmperor(last_house_standing);
         }
         regency.purgeEliminatedFromOffices(this);
-        regency.advanceThroneClaim(false);
+        regency.advanceElectionTimer();
         regency.resolveElections(this);
         diplomacy.printState();// DEBUG
     }
@@ -2097,5 +2103,21 @@ public class Game implements Serializable {
      */
     public void setInitialSeed(long initial_seed) {
         this.initial_seed = initial_seed;
+    }
+
+    /**
+     * Temporary code to ensure correctness of game object when loading saves
+     * after modifications which change save game structure have been made.
+     *
+     * @return
+     */
+    public boolean adjustForNewSaveVersion() {
+        if (save_file_version >= NEW_SAVE_FILE_VERSION) {
+            System.out.println("No save file adjustments.");
+            return false;
+        }
+        System.out.println("Adjusting save file for newer version.");
+        regency.adjustForNewSaveVersion(this);
+        return true;
     }
 }
