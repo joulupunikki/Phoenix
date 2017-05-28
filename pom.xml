@@ -9,7 +9,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.joulupunikki</groupId>
     <artifactId>Phoenix</artifactId>
-    <version>0.52.5-alpha</version>
+    <version>0.52.6-alpha</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
