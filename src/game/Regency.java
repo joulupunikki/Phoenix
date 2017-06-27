@@ -240,7 +240,8 @@ public class Regency implements Serializable {
      * @return
      */
     public boolean allowedToVote(int house) {
-        return house >= C.NR_HOUSES || allowed_to_vote[house];
+        //FIXME church and league voting rights ?
+        return house < C.NR_HOUSES && allowed_to_vote[house];
     }
     
     public void setVotes(int faction, int candidate, int nr_votes) {
@@ -556,5 +557,6 @@ public class Regency implements Serializable {
     void adjustForNewSaveVersion(Game game) {
         this.election_level = 0;
         this.years_till_elections = 1;
+        resetVotingRights();
     }
 }
