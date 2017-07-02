@@ -76,6 +76,7 @@ public class UIW1 extends State {
         }
         SU.restoreMainWindow();
         main_game_state = null;
+        gui.getUnitInfoWindow().stopAnimation();
         gui.setInfo_unit(null);
 
     }
