@@ -45,12 +45,15 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -110,8 +113,8 @@ public class UnitInfoWindow extends JPanel {
     private Point selected_point;
     private int current_planet;
     private int selected_faction;
-    BufferedImage unit_image;
-    List<BufferedImage> unit_images;
+    ImageIcon unit_image;
+    List<ImageIcon> unit_images;
     BufferedImage bi;
 
     private JButton prev_button;
@@ -129,7 +132,7 @@ public class UnitInfoWindow extends JPanel {
     private Map<Enum, Integer> c;
     private Map<Enum, Integer> c_uiw;
 
-    private JPanel unit_image_panel;
+    private JLabel unit_image_label;
     private FLCAnimation unit_flc_animation;
     private Timer anim_timer;
     private int frame_number;
@@ -156,30 +159,32 @@ public class UnitInfoWindow extends JPanel {
         byte[][] pallette = gui.getPallette();
         bi = Util.loadImage(FN.S_UNITINFO_PCX, ws.is_double, pallette, 640, 480);
         setUpUnitImagePanel();
+        setUpAnimTimer(1);
     }
 
     private void setUpUnitImagePanel() {
-        unit_image_panel = new JPanel() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.drawImage(unit_image, null, null);
-//                g.drawImage(unit_image, 0, 0, null);
-//                
-//                g2d.drawImage(unit_image, null, 0, 0);
-            }
-        };
-        this.add(unit_image_panel);
+        unit_image_label = new JLabel();
+//        {
+//            private static final long serialVersionUID = 1L;
+//
+//            @Override
+//            public void paintComponent(Graphics g) {
+//                super.paintComponent(g);
+//                Graphics2D g2d = (Graphics2D) g;
+//                g2d.drawImage(unit_image, null, null);
+////                g.drawImage(unit_image, 0, 0, null);
+////
+////                g2d.drawImage(unit_image, null, 0, 0);
+//            }
+//        };
+        this.add(unit_image_label);
         int uix = 175;
         int uiy = 150;
         if (ws.is_double) {
             uix *= 2;
             uiy *= 2;
         }
-        unit_image_panel.setBounds(ws.sw_flc_x, ws.sw_flc_y, uix, uiy);
+        unit_image_label.setBounds(ws.sw_flc_x, ws.sw_flc_y, uix, uiy);
         //unit_image_panel.setDoubleBuffered(true);
     }
 
@@ -654,14 +659,14 @@ public class UnitInfoWindow extends JPanel {
                     try {
                         unit_flc_animation = new FLCAnimation(filename);
                         List<BufferedImage> tmp = unit_flc_animation.getFrames();
-                        unit_images = new LinkedList<>();
+                        unit_images = new ArrayList<>();
                         for (Iterator<BufferedImage> iterator = tmp.iterator(); iterator.hasNext();) {
 
                             BufferedImage next = iterator.next();
                             if (ws.is_double) {
-                                unit_images.add((BufferedImage) next.getScaledInstance(350, 300, BufferedImage.SCALE_FAST));
+                                unit_images.add(new ImageIcon(next.getScaledInstance(350, 300, BufferedImage.SCALE_FAST)));
                             } else {
-                                unit_images.add(next);
+                                unit_images.add(new ImageIcon(next));
                             }
                         }
                         frame_number = 0;
@@ -670,17 +675,19 @@ public class UnitInfoWindow extends JPanel {
                         anim_timer.restart();
                     } catch (Exception e) {
                         e.printStackTrace(System.out);
-                        unit_image = UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150);
+                        unit_image = new ImageIcon(UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150));
                     }
 
                 } else {
                     anim_timer.stop();
-                    unit_image = UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150);
+                    unit_image = new ImageIcon(UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150));
                 }
                 prev = u;
             }
         } else {
-            unit_image = UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150);
+            anim_timer.stop();
+
+            unit_image = new ImageIcon(UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150));
         }
 //        g.drawImage(unit_image, ws.sw_flc_x, ws.sw_flc_y, null);
 //        g2d.drawImage(unit_image, null, ws.sw_flc_x, ws.sw_flc_y);
@@ -696,11 +703,15 @@ public class UnitInfoWindow extends JPanel {
         }
         ActionListener timer_listener = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
+                try {
+                    unit_images.isEmpty();
+                } catch (Exception e) {
+                    throw new Error("Unit animation not initialized!");
+                }
                 if (++frame_number >= unit_images.size()) {
                     frame_number = 0;
                 }
-                unit_image = unit_images.get(frame_number);
-                unit_image_panel.repaint();
+                unit_image_label.setIcon(unit_images.get(frame_number));
 
             }
         };
