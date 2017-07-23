@@ -522,6 +522,10 @@ public class UnitInfoWindow extends JPanel {
         anim_timer.stop();
     }
 
+    public void zeroPrev() {
+        prev = null;
+    }
+
     public enum TYPE_FILTER {
         ALL_TYPES(-1),
         ENGINEERS(C.ENGINEER_UNIT_TYPE),
@@ -675,22 +679,31 @@ public class UnitInfoWindow extends JPanel {
                         anim_timer.restart();
                     } catch (Exception e) {
                         e.printStackTrace(System.out);
-                        unit_image = new ImageIcon(UtilG.loadFLCFirst(filename, ws.is_double, pallette, 175, 150));
+                        displayBlankImage(pallette);
                     }
 
                 } else {
-                    anim_timer.stop();
-                    unit_image = new ImageIcon(UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150));
+                    displayBlankImage(pallette);
                 }
                 prev = u;
             }
         } else {
-            anim_timer.stop();
-
-            unit_image = new ImageIcon(UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150));
+            displayBlankImage(pallette);
         }
 //        g.drawImage(unit_image, ws.sw_flc_x, ws.sw_flc_y, null);
 //        g2d.drawImage(unit_image, null, ws.sw_flc_x, ws.sw_flc_y);
+    }
+
+    private void displayBlankImage(byte[][] pallette) {
+        anim_timer.stop();
+        BufferedImage blank = UtilG.loadFLCFirst(FN.S_BLANK_FLC, ws.is_double, pallette, 175, 150);
+        ImageIcon tmp = null;
+        if (ws.is_double) {
+            tmp = new ImageIcon(blank.getScaledInstance(350, 300, BufferedImage.SCALE_FAST));
+        } else {
+            tmp = new ImageIcon(blank);
+        }
+        unit_image_label.setIcon(tmp);
     }
 
     private void setUpAnimTimer(int delay) {
