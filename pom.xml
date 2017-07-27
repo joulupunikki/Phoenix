@@ -11,6 +11,12 @@
     <artifactId>Phoenix</artifactId>
     <version>0.52.6-alpha</version>
     <packaging>jar</packaging>
+    <scm>
+        <connection>scm:git:https://github.com/joulupunikki/Phoenix.git</connection>
+        <!--<developerConnection>ZZZ</developerConnection>-->
+        <tag>HEAD</tag>
+        <url>https://github.com/joulupunikki/Phoenix.git</url>
+    </scm>
     <dependencies>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -208,6 +214,24 @@
                 <configuration>
                     <show>private</show>
                     <overview>${basedir}/src/phoenix/overview.html</overview>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <shortRevisionLength>5</shortRevisionLength>
                 </configuration>
             </plugin>
         </plugins>
