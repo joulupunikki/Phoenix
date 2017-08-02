@@ -2118,6 +2118,7 @@ public class Game implements Serializable {
         }
         System.out.println("Adjusting save file for newer version.");
         regency.adjustForNewSaveVersion(this);
+        save_file_version = NEW_SAVE_FILE_VERSION;
         return true;
     }
 }
