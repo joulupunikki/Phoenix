@@ -999,6 +999,10 @@ public class SU extends State {
 
     public static void pressEndTurnButtonSU() {
     }
+
+    /**
+     * Skips over current stack and selects next unmoved stack.
+     */
     public static void pressSkipStackButtonSU() {
         iterateOverUnmovedUnits(false);
     }
@@ -1042,18 +1046,24 @@ public class SU extends State {
 //        centerMapOnUnit(pod);
 //    }
 
+    /**
+     * Moves current stack to end of unmoved stacks queue and selects next
+     * unmoved stack.
+     */
     public static void pressNextStackButtonSU() {
         iterateOverUnmovedUnits(true);
     }
 
     /**
+     * Iterates over the unmoved stacks queue. If wait is true and current stack
+     * is owned by the player then the current stack will be moved to the end of
+     * the unmoved stacks queue
      *
      * @param wait the value of wait
      */
     public static void iterateOverUnmovedUnits(boolean wait) {
         Point p = game.getSelectedPoint();
         Point faction = game.getSelectedFaction();
-        int current_planet = game.getCurrentPlanetNr();
 
         List<Unit> unmoved_units = game.getUnmovedUnits();
         if (!wait) {
@@ -1071,23 +1081,24 @@ public class SU extends State {
                 Square[][] galaxy_grid = game.getGalaxyMap().getGalaxyGrid();
                 stack = galaxy_grid[p.x][p.y].parent_planet.space_stacks[faction.y];
             }
+            if (stack.get(0).owner == game.getTurn()) { // fix #122
+                // remove selected units from unmoved
+                StackIterator si = new StackIterator(stack);
+                List<Unit> t_list = new LinkedList<>();
+                List<Unit> t2_list = new LinkedList<>();
 
-            // remove selected units from unmoved
-            StackIterator si = new StackIterator(stack);
-            List<Unit> t_list = new LinkedList<>();
-            List<Unit> t2_list = new LinkedList<>();
-
-            for (Unit u = si.next(); u != null; u = si.next()) {
-                if (u.selected) {
-                    t_list.add(u);
-                    if (u.move_points > 0) {
-                        t2_list.add(u);
+                for (Unit u = si.next(); u != null; u = si.next()) {
+                    if (u.selected) {
+                        t_list.add(u);
+                        if (u.move_points > 0) {
+                            t2_list.add(u);
+                        }
                     }
                 }
-            }
-            unmoved_units.removeAll(t_list);
-            if (wait) { // if waiting add movables to end of unmoved_units
-                unmoved_units.addAll(t2_list);
+                unmoved_units.removeAll(t_list);
+                if (wait) { // if waiting add movables to end of unmoved_units
+                    unmoved_units.addAll(t2_list);
+                }
             }
         }
 
