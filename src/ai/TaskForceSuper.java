@@ -27,6 +27,7 @@
  */
 package ai;
 
+import galaxyreader.Unit;
 import game.GalaxyGrid;
 import game.Game;
 import java.io.Serializable;
@@ -36,7 +37,7 @@ import java.io.Serializable;
  *
  * @author joulupunikki joulupunikki@gmail.communist.invalid
  */
-public class TaskForceSuper implements Serializable {
+public abstract class TaskForceSuper implements Serializable {
 
     protected Game game;
     protected GalaxyGrid gal_grid;
@@ -47,5 +48,7 @@ public class TaskForceSuper implements Serializable {
      */
     protected TaskForceSuper() {
     }
+
+    abstract protected boolean removeUnit(Unit u) throws AIFatalException;
 
 }

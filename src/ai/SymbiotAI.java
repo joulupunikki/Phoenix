@@ -31,6 +31,8 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import java.util.LinkedList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import util.C;
@@ -52,6 +54,7 @@ public class SymbiotAI extends AI {
 
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LogManager.getLogger(SymbiotAI.class);
+
 
     public enum UTypes {
 
@@ -134,6 +137,8 @@ public class SymbiotAI extends AI {
         TaskForce.zeroExceptionCounter();
         try {
             logSuper(C.SYMBIOT, "Start");
+            // update AI data after enemy/neutral activity
+            updatePersistent(C.SYMBIOT);
             // list stacks, cities, own, enemies
             findAssets(C.SYMBIOT);
             // symbiots are no retreat, no surrender
@@ -156,10 +161,57 @@ public class SymbiotAI extends AI {
             logSuper(C.SYMBIOT, "End year " + game.getYear() + " (+" + (game.getYear() - C.STARTING_YEAR) + ")");
         } catch (AIException ex) {
             logger.debug("", ex);
+            if (ex instanceof AIFatalException) {
+                logger.debug("AI Debug stop", ex);
+                game.setDebugStop();
+            }
+        } catch (Throwable t) {
+            logger.debug("AI Debug stop", t);
+            game.setDebugStop();
         }
         int ex_count = TaskForce.getExceptionCounter();
         if (ex_count > 0) {
             logger.debug(" ******** Exceptions: " + ex_count + " ********");
+        }
+    }
+
+    @Override
+    protected void updatePersistent(int faction_id) {
+        // check for lost units in task_forces
+        List<TaskForce> tf_finished = new LinkedList<>();
+        for (TaskForce task_force : task_forces) {
+            List<Unit> dead = new LinkedList<>();
+            for (Unit u : task_force.ground_forces) {
+                if (u.task_force == Integer.MIN_VALUE) {
+                    dead.add(u);
+                }
+            }
+            task_force.ground_forces.removeAll(dead);
+            dead.clear();
+            for (Unit u : task_force.transports) {
+                if (u.task_force == Integer.MIN_VALUE) {
+                    dead.add(u);
+                }
+            }
+            task_force.transports.removeAll(dead);
+            if (task_force.ground_forces.isEmpty() || task_force.transports.isEmpty()) {
+                tf_finished.add(task_force);
+            }
+        }
+        task_forces.removeAll(tf_finished);
+        for (TaskForce taskForce : tf_finished) {
+            taskForce.finished();
+        }
+        // check for lost units in scouts
+        List<TaskForceScout> tfs_finished = new LinkedList<>();
+        for (TaskForceScout task_force_scout : task_force_scouts) {
+            if (task_force_scout.scout.task_force == Integer.MIN_VALUE) {
+                tfs_finished.add(task_force_scout);
+            }
+        }
+        task_force_scouts.removeAll(tfs_finished);
+        for (TaskForceScout taskForceScout : tfs_finished) {
+            taskForceScout.finished();
         }
     }
 

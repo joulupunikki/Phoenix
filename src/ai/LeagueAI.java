@@ -70,6 +70,7 @@ public class LeagueAI extends AI {
 
     @Override
     protected void findAssets(int faction) {
+        super.clear(); // fix #126
         for (Structure s : all_structures) {
             if (s.type == C.MONASTERY || s.type == C.ALIEN_RUINS || s.type == C.RUINS) {
                 continue;

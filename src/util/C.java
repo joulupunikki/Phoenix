@@ -160,6 +160,8 @@ public class C {
     public static final int PERSONNEL_UNIT_MIN_RANK = 6;
     public static final int UNSPOTTED_AG_BONUS = 3;
     public static final int MENU_COUNT = 7;
+    public static final String OPT_ENABLE_SYMBIOT_AI = "enable_symbiot_ai";
+    public static final String OPT_EFS_SPACE_SPOT = "efs_space_spot";
 
 
 

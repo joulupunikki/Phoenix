@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import util.C;
+import util.Util;
 
 /**
  * Organizes the individual planet map Hexes in a 2-dimensional table, and holds
@@ -163,9 +164,10 @@ public class PlanetGrid implements Serializable {
      * suitable for serial execution.
      *
      * @param planet
+     * @param game the value of game
      */
-    public void serialSetAIDataStructures(Planet planet) {
-        defineContinents(planet);
+    public void serialSetAIDataStructures(Planet planet, Game game) {
+        defineContinents(planet, game);
     }
 
     private void defineIntraContinentHexDist() {
@@ -224,7 +226,7 @@ public class PlanetGrid implements Serializable {
      *
      * @param planet
      */
-    private void defineContinents(Planet planet) {
+    private void defineContinents(Planet planet, Game game) {
         continent_maps = new ArrayList<>();
         //LinkedHashMap<Hex, Hex> continent = new LinkedHashMap<>(C.PLANET_MAP_COLUMNS * C.PLANET_MAP_WIDTH);    // list of hexes to be returned
         Set<Hex> all_hexes = new LinkedHashSet<>();  // set of all visited hexes
@@ -253,6 +255,8 @@ public class PlanetGrid implements Serializable {
             }
             if (!parent.getTerrain(C.OCEAN) || planet.tile_set_type == C.BARREN_TILE_SET) {
                 continent_maps.get(continent_maps.size() - 1).put(parent, parent);
+            } else {
+                parent.setLandNr(-1); // Fix #124
             }
             Hex[] neighbours = parent.getNeighbours();
             for (Hex child : neighbours) {
@@ -272,6 +276,15 @@ public class PlanetGrid implements Serializable {
             }
             count++;
         }
+        // Fix #124: assert that if planet.tile_set_type != C.BARREN_TILE_SET ocean hexes have land_nr of -1
+        Util.HexIter iter = Util.getHexIter(game, planet.index);
+        Hex tmp = iter.next();
+        System.out.print(" Creating AI continent mappings ... Planet: " + planet.index + "," + planet.name + " ...");
+        while (tmp != null) {
+            assert planet.tile_set_type == C.BARREN_TILE_SET || tmp.getTerrain(C.OCEAN) == false || tmp.getLandNr() < 0;
+            tmp = iter.next();
+        }
+        System.out.println(" OK");
     }
 
 //    public Hex getNextStack(Point p) {

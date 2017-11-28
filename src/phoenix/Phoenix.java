@@ -398,7 +398,9 @@ public class Phoenix {
         opts.addOption(null, C.OPT_RANDOM_SEED, true, "Set argument as random seed");
         opts.addOption(null, C.OPT_ENABLE_AI, false, "Enable AI");
         opts.addOption(null, C.OPT_AI_TEST, false, "Do AI test run");
+        opts.addOption(null, C.OPT_ENABLE_SYMBIOT_AI, false, "Enable symbiot AI");
         opts.addOption(null, C.OPT_CAPITALIZE_FILE_NAMES, false, "convert lower case to upper case in EFS file names");
+        opts.addOption(null, C.OPT_EFS_SPACE_SPOT, false, "EFS1.4 style space spotting: need 100 camo to remain unspotted");
 
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();

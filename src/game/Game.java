@@ -59,6 +59,7 @@ import java.util.ListIterator;
 import java.util.Random;
 import java.util.Set;
 import org.apache.commons.math3.random.RandomAdaptor;
+import state.SU;
 import util.C;
 import util.StackIterator;
 import util.Util;
@@ -142,6 +143,8 @@ public class Game implements Serializable {
     private long save_file_version = 0;
     static final long NEW_SAVE_FILE_VERSION = 1;
 
+    private boolean is_debug_stop = false;
+
     public Game(String galaxy_file, int current_planet) {
         save_file_version = NEW_SAVE_FILE_VERSION;
         random = RandomAdaptor.createAdaptor(new XorShift1024Star(1L));
@@ -198,7 +201,7 @@ public class Game implements Serializable {
             return;
         }
         for (Planet planet : planets) { // fast serial
-            planet.planet_grid.serialSetAIDataStructures(planet);
+            planet.planet_grid.serialSetAIDataStructures(planet, this);
         }
         StaticThreads.dispatchStaticAIWorker(planets); // slow parallel
         if (!dynamic) {
@@ -210,7 +213,7 @@ public class Game implements Serializable {
         ai = new AIObject();
         ai.adAI(this, C.LEAGUE);
         ai.adAI(this, C.THE_CHURCH);
-        if (!Gui.getMainArgs().hasOption(C.OPT_AI_TEST)) {
+        if (!Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !Gui.getMainArgs().hasOption(C.OPT_ENABLE_SYMBIOT_AI)) {
             return;
         }
         ai.adAI(this, C.SYMBIOT);
@@ -320,11 +323,6 @@ public class Game implements Serializable {
     public void doResearch() {
         factions[turn].getResearch().initResearchPts();
         factions[turn].getResearch().doResearch();
-    }
-
-    public void deleteUnit2(Unit u) {
-        units.remove(u);
-        unmoved_units.remove(u);
     }
 
     public List<Unit> getCombatStack(String stack) {
@@ -556,9 +554,14 @@ public class Game implements Serializable {
     public void endTurn() {
         endTurnHousekeeping();
         advanceTurn();
-        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 1000 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
+        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 162 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !checkDebugStop(false))) { //&& !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
             endTurnHousekeeping();
             advanceTurn();
+        }
+        if (checkDebugStop(true)) {
+            setPath(null);
+            setJumpPath(null);
+            SU.selectNextUnmovedUnit();
         }
     }
 
@@ -1018,7 +1021,11 @@ public class Game implements Serializable {
     }
 
     public void spotSpace(Planet planet, List<Unit> stack, int faction) {
+        int min_spot = 0;
         int spotting_a = 0;
+        if (Gui.getMainArgs().hasOption(C.OPT_EFS_SPACE_SPOT)) {
+            spotting_a = min_spot = 99;
+        }
         for (Unit unit : stack) {
             if (unit.type_data.spot > spotting_a) {
                 spotting_a = unit.type_data.spot;
@@ -1028,7 +1035,7 @@ public class Game implements Serializable {
         for (int i = 0; i < stacks.length; i++) {
             List<Unit> stack_b = stacks[i];
             if (!stack_b.isEmpty()) {
-                int spotting_b = 0;
+                int spotting_b = min_spot;
                 for (Unit unit : stack_b) {
                     if (unit.type_data.spot > spotting_b) {
                         spotting_b = unit.type_data.spot;
@@ -1895,6 +1902,11 @@ public class Game implements Serializable {
                         + " has been killed!", C.Msg.NOBLE_KILLED, year, Util.getFactionName(unit.owner)));
             }
         }
+
+        // Mark enemy task force dirty
+        if (unit.owner != getTurn() && unit.task_force != 0) {
+            unit.task_force = Integer.MIN_VALUE;
+        }
     }
 
     /**
@@ -2121,4 +2133,17 @@ public class Game implements Serializable {
         save_file_version = NEW_SAVE_FILE_VERSION;
         return true;
     }
+
+    private boolean checkDebugStop(boolean zero_flag) {
+        boolean ret_val = is_debug_stop;
+        if (zero_flag) {
+            is_debug_stop = false;
+        }
+        return ret_val;
+    }
+
+    public void setDebugStop() {
+        is_debug_stop = true;
+    }
+
 }

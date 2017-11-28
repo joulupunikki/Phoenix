@@ -177,9 +177,10 @@ public abstract class AI implements Serializable {
     
 
     /**
-     *
+     * Top level AI method.
      */
     public abstract void doTurn();
+
 
     protected void logSuper(int faction, String msg) {
         logger.debug("******** " + Util.getFactionName(faction) + " " + msg + " ********\n");
@@ -284,6 +285,10 @@ public abstract class AI implements Serializable {
             }
         }
         f_ref.getMessages();
+    }
+
+    protected void updatePersistent(int faction_id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private enum Task_Loop {
@@ -511,7 +516,7 @@ public abstract class AI implements Serializable {
         }
     }
 
-    private void clear() {
+    protected void clear() { // fix #126
         units.clear();
         units_engineer.clear();
         units_land_battle.clear();
@@ -587,6 +592,9 @@ public abstract class AI implements Serializable {
             String tmp = "";
             for (Unit u : stack) {
                 tmp += u.type_data.abbrev + " ";
+                if (u.in_space) {
+                    throw new AIFatalException("Ground stack " + u.p_idx + "," + u.x + "," + u.y + " with in_space flag.");
+                }
             }
             logger.debug("  stacks (" + stacks.size() + ") on continent: " + stack.hashCode() + " " + stack.size() + " " + stack.get(0).x + "," + stack.get(0).y + " " + tmp + stack);
         }
@@ -594,6 +602,15 @@ public abstract class AI implements Serializable {
         long time = System.nanoTime();
         PlanetGrid pg = game.getPlanetGrid(p_idx);
         LinkedHashSet<Hex> targets = getTargets(p_idx, c_idx, map);
+        {
+            String tmp = "";
+            for (Hex target : targets) {
+
+                tmp += ((target.getStructure() != null) ? target.getStructure().type : "null") + ":" + target.getX() + "," + target.getY() + " ";
+
+            }
+            logger.debug("  targets (" + targets.size() + ") on continent: " + tmp);
+        }
         while (!targets.isEmpty() && !stacks.isEmpty()) {
             Hex h = null;
             List<Unit> s = null;
@@ -612,7 +629,7 @@ public abstract class AI implements Serializable {
 //                            System.exit(0);
 //                        }
                         dist = tmp;
-                        s_dists += "s:" + stack.get(0).x + "," + stack.get(0).y + " t:" + target.getX() + "," + target.getY() + " ";
+                        s_dists += "s:" + stack.get(0).p_idx + ":" + stack.get(0).x + "," + stack.get(0).y + " t:" + target.getX() + "," + target.getY() + " ";
                     }
                 }
             }
@@ -633,7 +650,7 @@ public abstract class AI implements Serializable {
                 game.setSelectedPoint(new Point(s.get(0).x, s.get(0).y), -1);
                 s_moves += game.getPath().size() + " ";
             }
-            logger.debug("     path " + s_moves);
+            logger.debug("     " + s.get(0).x + "," + s.get(0).y + " path " + s_moves);
             // TODO if path.size() == 1 try to capture any routed enemies
             selectLandUnits(game.getSelectedStack(), false);
 
@@ -831,9 +848,16 @@ public abstract class AI implements Serializable {
         if (s_targets.length() > 0) {
             logger.debug("     cities: " + s_targets);
         }
-        for (Unit u : enemy_units) {
-            if (u.p_idx == p_idx && map[u.x][u.y].getLandNr() == c_idx) {
-                targets.add(map[u.x][u.y]);
+        for (Unit u : enemy_units) {            
+            if (u.p_idx == p_idx) {
+                Hex tmp = map[u.x][u.y];
+                if (tmp.getLandNr() == c_idx) {
+                    if (tmp.getTerrain(C.OCEAN)) {
+                        System.out.println(" OCEAN TARGET: c_idx:" + c_idx + " x,y:" + tmp.getX() + "," + tmp.getY());
+                    }
+                    //assert !tmp.getTerrain(C.OCEAN) || tmp.getTerrain(C.DELTA);
+                    targets.add(tmp);
+                }
             }
         }
         return targets;

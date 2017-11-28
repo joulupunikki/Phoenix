@@ -2041,7 +2041,7 @@ public class Gui extends JFrame {
 //                build_city_panel.setGame(game);
 //                State.setGameRef(game);
 //                Comp.setGame(game);
-
+                System.out.println("Initial Seed: " + game.getInitialSeed());
             } catch (Throwable ex) {
                 load_succesfull = false;
                 Util.logEx(null, ex, "Load game failed");

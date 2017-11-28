@@ -85,6 +85,21 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     Unit c;
     private STATE state;
     private String s_state_log;
+
+    @Override
+    protected boolean removeUnit(Unit u) throws AIFatalException {
+        if (ground_forces.remove(u)) {
+            return true;
+        }
+        if (transports.remove(u)) {
+            return true;
+        }
+        if (escorts.remove(u)) {
+            return true;
+        }
+        throw new AIFatalException("Indicated unit not found in task force");
+    }
+
     private enum STATE {
 
         MOVING_TO_PICKUP,
@@ -474,7 +489,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     }
 
 
-    private void finished() {
+    void finished() {
         logger.debug("TaskForce " + tf_id + " finished: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
         for (Unit u : ground_forces) {
             u.task_force = 0;

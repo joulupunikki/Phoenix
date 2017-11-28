@@ -72,6 +72,15 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
     private final int TF_SIZE = 1;
     private final int MAX_AI_PLAN_STEPS = 2;
 
+    @Override
+    protected boolean removeUnit(Unit u) throws AIFatalException {
+        if (!scout.equals(u)) {
+            throw new AIFatalException("Indicated unit not found in task force");
+        }
+        finished();
+        return true;
+    }
+
     private enum STATE {
         ON_PLANET,
         IN_SPACE;
@@ -149,7 +158,7 @@ public class TaskForceScout extends TaskForceSuper implements Serializable {
         scout.setSelected(true);
     }
 
-    private void finished() {
+    void finished() {
         logger.debug("TaskForceScout " + tf_id + " finished: target " + game.getPlanet(target_p_idx).name);
         scout.task_force = 0;
         scout = null;

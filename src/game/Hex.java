@@ -63,7 +63,7 @@ public class Hex implements Comparable<Hex>, Serializable {
     private Structure resource = null;
 
     //***** ai support data
-    private transient int land_nr = -1;
+    private transient int land_nr = -1; // FIXME: this will initialize to 0 for loaded games ?
     private transient int hex_idx;
     private byte recon_time = 127;
     private short terr_flags;
