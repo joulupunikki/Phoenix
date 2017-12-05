@@ -95,6 +95,8 @@ public class Phoenix {
      */
     private static boolean is_real_time = false;
 
+    public static int FOLLOW_UNIT;
+
     static {
         start_time = System.nanoTime();
     }
@@ -397,10 +399,12 @@ public class Phoenix {
                 + "Robot and leave game as is");
         opts.addOption(null, C.OPT_RANDOM_SEED, true, "Set argument as random seed");
         opts.addOption(null, C.OPT_ENABLE_AI, false, "Enable AI");
-        opts.addOption(null, C.OPT_AI_TEST, false, "Do AI test run");
+        opts.addOption(null, C.OPT_AI_TEST, true, "Do AI test run, for arg number of turns");
         opts.addOption(null, C.OPT_ENABLE_SYMBIOT_AI, false, "Enable symbiot AI");
         opts.addOption(null, C.OPT_CAPITALIZE_FILE_NAMES, false, "convert lower case to upper case in EFS file names");
         opts.addOption(null, C.OPT_EFS_SPACE_SPOT, false, "EFS1.4 style space spotting: need 100 camo to remain unspotted");
+        opts.addOption(null, C.OPT_FOLLOW_UNIT, true, "follow unit with specified unit number");
+        opts.addOption(null, C.OPT_DEBUG_STOP, false, "stop ai run and drop to game UI on fatal ai errors");
 
         HelpFormatter formatter = new HelpFormatter();
         DefaultParser parser = new DefaultParser();
@@ -415,6 +419,7 @@ public class Phoenix {
                     + "\n\nLong options are for debugging", opts);
             System.exit(0);
         }
+        FOLLOW_UNIT = Integer.parseInt(ret_val.getOptionValue(C.OPT_FOLLOW_UNIT, "0"));
         return ret_val;
     }
 

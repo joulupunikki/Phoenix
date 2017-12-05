@@ -127,7 +127,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
         escorts = new ArrayList<>(C.STACK_SIZE);
         this.target_p_idx = target_p_idx;
         this.target_hex = target;
-        logger.debug("TaskForce " + tf_id + " created: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
+        logger.debug(AI.year_since_start + " TaskForce " + tf_id + " created: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
     }
 
     public void addTransport(Unit u) {
@@ -151,11 +151,11 @@ public class TaskForce extends TaskForceSuper implements Serializable {
 
     private void printFirstCargoInWaiting() {
         if (ground_stacks.isEmpty() || ground_stacks.get(0).isEmpty()) {
-            logger.debug("  no cargo left");
+            logger.debug(AI.year_since_start + "   no cargo left");
             return;
         }
         Unit u = ground_stacks.get(0).get(0);
-        logger.debug("  ground_stacks.get(0).get(0) " + u + "  at " + game.getPlanet(u.p_idx).name + " " + u.x + "," + u.y);
+        logger.debug(AI.year_since_start + "   ground_stacks.get(0).get(0) " + u + "  at " + game.getPlanet(u.p_idx).name + " " + u.x + "," + u.y);
     }
 
     public void initPlan() {
@@ -184,7 +184,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
         if (!transports.get(0).in_space) {
             loc = transports.get(0).x + "," + transports.get(0).y;
         }
-        logger.debug("----> " + tf_id + " execute plan: start at " + game.getPlanet(t.p_idx).name + " " + loc);
+        logger.debug(AI.year_since_start + " ----> " + tf_id + " execute plan: start at " + game.getPlanet(t.p_idx).name + " " + loc);
 //        printFirstCargoInWaiting();
         if (Util.movesLeft(transports)) {
             Util.selectAll(transports);
@@ -199,10 +199,10 @@ public class TaskForce extends TaskForceSuper implements Serializable {
             } catch (AIException ex) { // at this stage we are content with logging
                 exception_counter++;
                 if (ex instanceof AIFatalException) { // fatals will not be re-queued
-                    logger.debug("  XXX AIFatalException: " + ex.getMessage());
+                    logger.debug(AI.year_since_start + "   XXX AIFatalException: " + ex.getMessage());
                 } else {
                     pass = false;
-                    logger.debug("  XXX AIException: " + ex.getMessage());
+                    logger.debug(AI.year_since_start + "   XXX AIException: " + ex.getMessage());
                 }
             } catch (RuntimeException ex) {
                 caught_ex = ex;
@@ -213,7 +213,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
             if (!t.in_space) {
                 loc = t.x + "," + t.y;
             }
-            logger.debug("<---- execute plan: steps " + steps + " " + s_state_log + " end at " + game.getPlanet(t.p_idx).name + " " + loc);
+            logger.debug(AI.year_since_start + " <---- execute plan: steps " + steps + " " + s_state_log + " end at " + game.getPlanet(t.p_idx).name + " " + loc);
             if (caught_ex != null) {
                 throw caught_ex;
             }
@@ -283,7 +283,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                             game.moveStack();
                             game.setSelectedPoint(new Point(t.x, t.y), faction);
                             game.setSelectedFaction(faction);
-                            logger.debug("YYY moved to side");
+                            logger.debug(AI.year_since_start + " YYY moved to side");
                         }
                     }
                     if (!game.landStack(new Point(c.x, c.y))) {
@@ -298,7 +298,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
             } else {
                 // FIXED find next planet on path to target
                 Planet planet = game.getPlanet(gal_grid.nextInRoutingTable(t.p_idx, c.p_idx));
-                logger.debug("  start->" + game.getPlanet(t.p_idx).name + " dest->" + game.getPlanet(target_p_idx).name + " next->" + game.getPlanet(planet.index).name);
+                logger.debug(AI.year_since_start + "   start->" + game.getPlanet(t.p_idx).name + " dest->" + game.getPlanet(target_p_idx).name + " next->" + game.getPlanet(planet.index).name);
                 if (!game.moveSpaceStack(new Point(planet.x, planet.y))) { // FIXME this may fail due to a traffic jam
                     throw new AIException("move from " + game.getPlanet(t.p_idx).name + " to " + planet.name + " failed");
                 }
@@ -405,14 +405,14 @@ public class TaskForce extends TaskForceSuper implements Serializable {
             game.resolveGroundBattleFinalize();
         }
         if (Util.getSelectedUnits(game.getSelectedStack()).isEmpty()) {
-            logger.debug("  Task Force lost to PTS fire.");
+            logger.debug(AI.year_since_start + "   Task Force lost to PTS fire.");
             finished();
             return true;
         }
         return false;
     }
 
-    private boolean pickUp() throws AIException {
+    private SUB_STATE pickUp() throws AIException {
         if (t.in_space) {
             throw new AIFatalException("pickup attempt in space");
         }
@@ -420,7 +420,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
         int cap = 0;
         for (Unit transport : transports) {
             cap += transport.type_data.cargo - transport.cargo_list.size();
-            logger.debug("  cap: " + cap);
+            logger.debug(AI.year_since_start + "   cap: " + cap);
         }
         List<Unit> tmp = new LinkedList<>();
         for (Unit u : hex.getStack()) {
@@ -436,9 +436,12 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                 cap--;
             }
         }
-//        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
+        if (tmp.isEmpty()) {
+            return SUB_STATE.FINISHED;
+        }
+//        logger.debug(AI.year_since_start + "   ground_stacks.get(0): " + ground_stacks.get(0));
         hex.minusStack(tmp);
-//        logger.debug("  ground_stacks.get(0): " + ground_stacks.get(0));
+//        logger.debug(AI.year_since_start + "   ground_stacks.get(0): " + ground_stacks.get(0));
         String s_cargo = " ";
         for (Unit transport : transports) {
             for (Iterator<Unit> iterator = tmp.iterator(); iterator.hasNext();) {
@@ -452,8 +455,12 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                 }
             }
         }
-        logger.debug("  picked up: " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
-        return Util.movesLeft(transports);
+        logger.debug(AI.year_since_start + "   picked up: " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
+        if (Util.movesLeft(transports)) {
+            return SUB_STATE.MOVES_LEFT;
+        } else {
+            return SUB_STATE.NO_MOVES_LEFT;
+        }
     }
 
     private SUB_STATE unload() throws AIException {
@@ -472,13 +479,13 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                 s_cargo += u.type_data.abbrev + " ";
                 transport.disembark(u);
                 stack.add(u);
-                u.task_force = 0;
+                //u.task_force = 0;
             }
         }
-        logger.debug("  dropped : " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
+        logger.debug(AI.year_since_start + "   dropped : " + s_cargo + " at " + game.getPlanet(t.p_idx).name + " " + t.x + "," + t.y);
         c = AI.haveInTaskForce(ground_stacks.get(0), tf_id);
         if (c != null) {
-            logger.debug("  more cargo at " + game.getPlanet(c.p_idx).name + " " + c.x + "," + c.y);
+            logger.debug(AI.year_since_start + "   more cargo at " + game.getPlanet(c.p_idx).name + " " + c.x + "," + c.y);
             if (Util.movesLeft(transports)) {
                 return SUB_STATE.MOVES_LEFT;
             } else {
@@ -490,7 +497,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
 
 
     void finished() {
-        logger.debug("TaskForce " + tf_id + " finished: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
+        logger.debug(AI.year_since_start + " TaskForce " + tf_id + " finished: target " + game.getPlanet(target_p_idx).name + " " + target_hex.getX() + "," + target_hex.getY());
         for (Unit u : ground_forces) {
             u.task_force = 0;
         }
@@ -514,7 +521,7 @@ public class TaskForce extends TaskForceSuper implements Serializable {
     }
 
     private boolean executePlan1() throws AIException {
-        logger.debug("  state " + state);
+        logger.debug(AI.year_since_start + "   state " + state);
         s_state_log += state + " ";
         switch (state) {
             case MOVING_TO_PICKUP:
@@ -531,9 +538,19 @@ public class TaskForce extends TaskForceSuper implements Serializable {
                         
                 }
             case AT_PICKUP:
-                boolean result = pickUp();
-                state = STATE.MOVING_TO_DESTINATION;
-                return result;
+                switch (pickUp()) {
+                    case MOVES_LEFT:
+                        state = STATE.MOVING_TO_DESTINATION;
+                        return true;
+                    case NO_MOVES_LEFT:
+                        state = STATE.MOVING_TO_DESTINATION;
+                        return false;
+                    case FINISHED:
+                        finished();
+                        return false;
+                    default:
+                        throw new AssertionError();
+                }
             case MOVING_TO_DESTINATION:
                 switch (moveToDestination()) {
                     case MOVES_LEFT:

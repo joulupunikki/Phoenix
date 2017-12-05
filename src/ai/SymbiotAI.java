@@ -31,6 +31,7 @@ import dat.UnitType;
 import galaxyreader.Structure;
 import galaxyreader.Unit;
 import game.Game;
+import gui.Gui;
 import java.util.LinkedList;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
@@ -70,18 +71,31 @@ public class SymbiotAI extends AI {
         CARGO_SP,
     }
 
+    /**
+     * Names and indexes of buildable symbiot units in UNIT.DAT
+     */
     protected enum UNames {
-        GRAPPLER,
-        BLOW_SHIP,
-        SPORE_SHIP,
-        POD_SHIP,
-        SPITTER,
-        MINDER,
-        SHUFFLER,
-        ARCER,
-        BUTCHER,
-        REAVER,
-        NESTER,
+        GRAPPLER(0),
+        BLOW_SHIP(1),
+        SPORE_SHIP(2),
+        POD_SHIP(3),
+        SPITTER(38),
+        MINDER(39),
+        SHUFFLER(40),
+        ARCER(41),
+        BUTCHER(42),
+        REAVER(43),
+        NESTER(44),;
+
+        private final int idx;
+
+        private UNames(int idx) {
+            this.idx = idx;
+        }
+
+        public int idx() {
+            return idx;
+        }
     }
     /**
      * This is the symbiot build order as given by Matt Caspermeyer for
@@ -124,6 +138,8 @@ public class SymbiotAI extends AI {
     protected int[] buildable_indexes = new int[game.getUnitTypes().length];
     protected RingCounter build_idx;
 
+    protected int native_symbiot_count;
+
     public SymbiotAI(Game game) {
         super(game, C.SYMBIOT);
         Util.dP("##### SymbiotAI init begin");
@@ -134,6 +150,7 @@ public class SymbiotAI extends AI {
 
     @Override
     public void doTurn() {
+        super.doTurn();
         TaskForce.zeroExceptionCounter();
         try {
             logSuper(C.SYMBIOT, "Start");
@@ -156,23 +173,38 @@ public class SymbiotAI extends AI {
             createTaskForces();
             moveTaskForces();
             // queue more units to build if necessary
+            countNativeSymbiots();
             getRealForceCounts();
             buildUnits();
             logSuper(C.SYMBIOT, "End year " + game.getYear() + " (+" + (game.getYear() - C.STARTING_YEAR) + ")");
         } catch (AIException ex) {
             logger.debug("", ex);
             if (ex instanceof AIFatalException) {
+                if (Gui.getMainArgs().hasOption(C.OPT_DEBUG_STOP)) {
                 logger.debug("AI Debug stop", ex);
-                game.setDebugStop();
+                    game.setDebugStop();
+                }
             }
         } catch (Throwable t) {
+            if (Gui.getMainArgs().hasOption(C.OPT_DEBUG_STOP)) {
             logger.debug("AI Debug stop", t);
-            game.setDebugStop();
+                game.setDebugStop();
+            }
         }
         int ex_count = TaskForce.getExceptionCounter();
         if (ex_count > 0) {
             logger.debug(" ******** Exceptions: " + ex_count + " ********");
         }
+    }
+
+    private void countNativeSymbiots() {
+        native_symbiot_count = 0;
+        for (Unit unit : units) {
+            if (unit.owner == C.SYMBIOT && unit.type_data.t_lvl == 0 && unit.type_data.bldgs == C.HIVE) {
+                ++native_symbiot_count;
+            }
+        }
+        logger.debug("Native symbiot count: " + native_symbiot_count);
     }
 
     @Override
@@ -225,9 +257,12 @@ public class SymbiotAI extends AI {
                 real_force_counts[buildable_indexes[unit.type]]++;
             }
         }
-//        for (int i = 0; i < real_force_counts.length; i++) {
-//            real_force_counts[i] /= units.size();
-//        }
+        String msg = "";
+        for (int i = 0; i < real_force_counts.length; i++) {
+            msg += " " + buildable_units.get(i).abbrev + ":" + real_force_counts[i];
+
+        }
+        logger.debug("Real force counts: " + msg);
     }
 
     @Override
@@ -235,7 +270,8 @@ public class SymbiotAI extends AI {
         int in_queue = 0;
         String msg = "";
         for (Structure structure : structures) {
-            if (structures.size() * MAX_UNITS_PER_CITY < units.size()) {
+            if (structures.size() * MAX_UNITS_PER_CITY < native_symbiot_count) {
+                logger.debug("Too many units, stopping build");
                 break;
             }
             if (structure.type == C.HIVE) {
@@ -243,10 +279,11 @@ public class SymbiotAI extends AI {
                 if (!structure.build_queue.isEmpty()) {
                     continue;
                 }
+                System.out.println("###");
                 int shortage = 0;
                 double fraction = Double.MAX_VALUE;
                 for (int i = 0; i < real_force_counts.length; i++) {
-                    double tmp_fract = real_force_counts[i] / ((units.size() + in_queue) * ideal_force_fractions[i]);
+                    double tmp_fract = real_force_counts[i] / ((native_symbiot_count + in_queue) * ideal_force_fractions[i]);
                     if (tmp_fract < fraction) {
                         fraction = tmp_fract;
                         shortage = i;
@@ -262,7 +299,7 @@ public class SymbiotAI extends AI {
         if (msg.length() > 0) {
             String fractions = "";
             for (int i = 0; i < real_force_counts.length; i++) {
-                fractions += real_force_counts[i] / (units.size() * ideal_force_fractions[i]) + " ";
+                fractions += buildable_units.get(i).abbrev + " " + real_force_counts[i] / (native_symbiot_count * ideal_force_fractions[i]) + " ";
 
             }
             logger.debug("Force fractions: " + fractions);
@@ -278,9 +315,18 @@ public class SymbiotAI extends AI {
             buildable_indexes[i] = -1;
         }
         int idx = 0;
+//        UnitType[][] types = game.getUnitTypes();
+//        for (int i = 0; i < types.length; i++) {
+//            UnitType type = types[i][0];
+//            if (type != null && type.bldgs == C.HIVE) {
+//                System.out.println(type.abbrev);
+//                buildable_units.add(type);
+//                buildable_indexes[type.index] = idx++;
+//            }
+//        }
         for (UnitType[] types : game.getUnitTypes()) {
             for (UnitType type : types) {
-                if (type != null && type.bldgs == C.HIVE) {
+                if (type != null && type.t_lvl == 0 && type.bldgs == C.HIVE) {
                     System.out.println(type.abbrev);
                     buildable_units.add(type);
                     buildable_indexes[type.index] = idx++;
@@ -290,11 +336,17 @@ public class SymbiotAI extends AI {
         real_force_counts = new int[buildable_units.size()];
         ideal_force_fractions = new double[buildable_units.size()];
         for (UNames uNames : SYMBIOT_BUILD_ORDER) {
-            ideal_force_fractions[uNames.ordinal()]++;
+            ideal_force_fractions[uNames.ordinal()] += 1;
         }
         for (int i = 0; i < ideal_force_fractions.length; i++) {
             ideal_force_fractions[i] /= ideal_force_fractions.length;
         }
+//        String msg = "";
+//        for (int i = 0; i < ideal_force_fractions.length; i++) {
+//            msg += UNames.
+//            double ideal_force_fraction = ideal_force_fractions[i];
+//
+//        }
     }
 
 }

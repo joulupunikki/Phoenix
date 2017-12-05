@@ -237,6 +237,9 @@ public class Structure implements Serializable {
     }
 
     public void subtractResources(int[] unit, Game game) {
+        if (exempt(game)) {
+            return;
+        }
         UnitType[][] unit_types = game.getUnitTypes();
         int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
         if (!game.getResources().consumeResources(this.p_idx, this.owner, res_needed)) {
@@ -244,8 +247,20 @@ public class Structure implements Serializable {
         }
     }
 
+    /**
+     * Checks that current player has enough resources to build
+     * unit {idx,
+     * t_lvl}. For NPC factions, the resource requirements may be omitted.
+     *
+     * @param unit
+     * @param game
+     * @return true iff there are enough resources
+     */
     public boolean checkForResources(int[] unit, Game game) {
         boolean ret_val = true;
+        if (exempt(game)) {
+            return true;
+        }
         UnitType[][] unit_types = game.getUnitTypes();
         int[] res_needed = game.getUnitTypes()[unit[0]][unit[1]].reqd_res;
         int[] res_avail = game.getResources().getResourcesAvailable(this.p_idx, this.owner);
@@ -256,6 +271,13 @@ public class Structure implements Serializable {
             }
         }
         return ret_val;
+    }
+
+    private boolean exempt(Game game) {
+        if (game.getTurn() == C.SYMBIOT) {
+            return true;
+        }
+        return false;
     }
 
     /**

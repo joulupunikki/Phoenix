@@ -108,6 +108,7 @@ public abstract class AI implements Serializable {
         return null;
     }
 
+    static int year_since_start;
     int faction;
     Game game;
     List<UnitType> buildable_units;
@@ -126,6 +127,9 @@ public abstract class AI implements Serializable {
     List<Unit> units_engineer;
 
     List<Unit> enemy_units;
+    List<Unit> enemy_units_on_planet;
+    List<Unit> enemy_units_at_sea;
+    List<Unit> enemy_units_in_space;
     List<Structure> all_structures;
     List<Structure> structures;
     List<Structure> enemy_structures;
@@ -155,6 +159,9 @@ public abstract class AI implements Serializable {
         units_engineer = new LinkedList<>();
         structures = new LinkedList<>();
         enemy_units = new LinkedList<>();
+        enemy_units_at_sea = new LinkedList<>();
+        enemy_units_in_space = new LinkedList<>();
+        enemy_units_on_planet = new LinkedList<>();
         enemy_structures = new LinkedList<>();
         free_enemy_structures = new LinkedHashSet<>();
         continents = new ArrayList<>(planets.size());
@@ -179,7 +186,9 @@ public abstract class AI implements Serializable {
     /**
      * Top level AI method.
      */
-    public abstract void doTurn();
+    public void doTurn() {
+        year_since_start = game.getYear() - C.STARTING_YEAR;
+    }
 
 
     protected void logSuper(int faction, String msg) {
@@ -211,7 +220,7 @@ public abstract class AI implements Serializable {
         for (TaskForce task_force : task_forces) {
             s_task += task_force.tf_id + " ";
         }
-        logger.debug("  task forces left: " + s_task);
+        logger.debug(year_since_start + "   task forces left: " + s_task);
     }
 
     /**
@@ -239,7 +248,7 @@ public abstract class AI implements Serializable {
         for (TaskForceScout tf : task_force_scouts) {
             s_task += tf.tf_id + " ";
         }
-        logger.debug("  task forces scouts left: " + s_task);
+        logger.debug(year_since_start + "   task forces scouts left: " + s_task);
     }
 
     public int nextTfID() {
@@ -295,6 +304,8 @@ public abstract class AI implements Serializable {
 
         AAA,
         ABB,
+        BBA,
+        ABA,
         ABC;
     }
 
@@ -305,16 +316,25 @@ public abstract class AI implements Serializable {
      */
     protected void createTaskForces() {
         /*
-         priority ordering: T(ransport)C(argo)H(ex) on planets: aaa, abb, bba, abc
+         priority ordering: T(ransport)C(argo)H(ex) on planets: AAA, ABB, BBA, ABA, ABC
          */
+        long c1 = 0;
+        long c2 = 0;
+        long c3 = 0;
+        long c4 = 0;
+        logger.debug(year_since_start + " createTaskForces() troops, targets, transports: " + stacks_land_battle_free.size() + "," + free_enemy_structures.size() + "," + units_space_trasport.size());
         Task_Loop state = Task_Loop.AAA;
         next_triplet:
         while (!stacks_land_battle_free.isEmpty() && !free_enemy_structures.isEmpty() && !units_space_trasport.isEmpty()) { 
+            ++c1;
             for (Iterator<List<Unit>> c_it = stacks_land_battle_free.iterator(); c_it.hasNext();) {
+                ++c2;
                 List<Unit> stack = c_it.next();
                 for (Iterator<Structure> h_it = free_enemy_structures.iterator(); h_it.hasNext();) {
+                    ++c3;
                     Structure target = h_it.next();
                     for (Iterator<Unit> t_it = units_space_trasport.iterator(); t_it.hasNext();) {
+                        ++c4;
                         Unit transport = t_it.next();
                         switch (state) {
                             case AAA:
@@ -326,6 +346,20 @@ public abstract class AI implements Serializable {
                                 break;
                             case ABB:
                                 if (stack.get(0).p_idx == target.p_idx) {
+                                    updateCollections(c_it, h_it, t_it);
+                                    createTaskForce(target, stack, transport);
+                                    continue next_triplet;
+                                }
+                                break;
+                            case BBA:
+                                if (stack.get(0).p_idx == transport.p_idx) {
+                                    updateCollections(c_it, h_it, t_it);
+                                    createTaskForce(target, stack, transport);
+                                    continue next_triplet;
+                                }
+                                break;
+                            case ABA:
+                                if (target.p_idx == transport.p_idx) {
                                     updateCollections(c_it, h_it, t_it);
                                     createTaskForce(target, stack, transport);
                                     continue next_triplet;
@@ -347,6 +381,12 @@ public abstract class AI implements Serializable {
                     state = Task_Loop.ABB;
                     break;
                 case ABB:
+                    state = Task_Loop.BBA;
+                    break;
+                case BBA:
+                    state = Task_Loop.ABA;
+                    break;
+                case ABA:
                     state = Task_Loop.ABC;
                     break;
                 case ABC:
@@ -355,6 +395,7 @@ public abstract class AI implements Serializable {
                     throw new AssertionError();
             }
         }
+        logger.debug(year_since_start + " createTaskForces() loops: " + c1 + "," + c2 + "," + c3 + "," + c4);
     }
 
     private void createTaskForce(Structure target, List<Unit> stack, Unit transport) {
@@ -385,11 +426,11 @@ public abstract class AI implements Serializable {
      */
     protected void createTaskForceScouts() {
         if (!enemy_structures.isEmpty()) {
-            logger.debug("No scouts created.");
+            logger.debug(year_since_start + " No scouts created.");
             return;
         }
         for (Integer integer : known_galaxy.getEdge()) {
-            logger.debug("  scout considering planet " + planets.get(integer).name);
+            logger.debug(year_since_start + "   scout considering planet " + planets.get(integer).name);
             int dist = Integer.MAX_VALUE;
             Unit chosen_scout = null;
             String s_dist = "";
@@ -401,7 +442,7 @@ public abstract class AI implements Serializable {
                     s_dist += dist + " ";
                 }
             }
-            logger.debug(" " + s_dist);
+            logger.debug(year_since_start + "  " + s_dist);
             if (chosen_scout != null) {
                 TaskForceScout tf = new TaskForceScout(game, integer, nextTfID());
                 tf.add(chosen_scout);
@@ -410,7 +451,7 @@ public abstract class AI implements Serializable {
                 task_force_scouts.add(tf);
             }
         }
-        logger.debug("Scouts : " + task_force_scouts.size());
+        logger.debug(year_since_start + " Scouts : " + task_force_scouts.size());
     }
 
     /**
@@ -420,7 +461,7 @@ public abstract class AI implements Serializable {
      * @param faction
      */
     protected void findAssets(int faction) {
-        logger.debug("Ai.findAssets()");
+        logger.debug(year_since_start + " Ai.findAssets()");
         long time = System.nanoTime();
         clear();
         // find own units and enemy units
@@ -441,15 +482,12 @@ public abstract class AI implements Serializable {
         enemy_units.sort(Comp.unit_xy);
         enemy_units.sort(Comp.unit_cidx);
         enemy_units.sort(Comp.unit_pidx);
-        // group units
+        // group own units
         for (Unit unit : units) {
             if (unit.task_force > 0) {
             } else if (unit.type == C.NESTER_UNIT_TYPE) {
                 units_engineer.add(unit);
-            } else if (unit.type_data.non_combat == 0 && (unit.move_type == C.MoveType.FOOT
-                    || unit.move_type == C.MoveType.WHEEL
-                    || unit.move_type == C.MoveType.TREAD
-                    || unit.move_type == C.MoveType.HOVER)) {
+            } else if (AI.isGroundTroop(unit)) {
                 units_land_battle.add(unit);
                 unit.setSelected(true);
             } else if (unit.move_type == C.MoveType.AIR) {
@@ -462,7 +500,14 @@ public abstract class AI implements Serializable {
                 }
             }
         }
-
+        // group enemy units
+        for (Unit unit : enemy_units) {
+            if (unit.in_space) {
+                enemy_units_in_space.add(unit);
+            } else {
+                enemy_units_on_planet.add(unit);
+            }
+        }
         for (Structure s : all_structures) {
             if (s.type == C.MONASTERY || s.type == C.ALIEN_RUINS || s.type == C.RUINS) {
                 continue;
@@ -492,11 +537,11 @@ public abstract class AI implements Serializable {
             // if on continent with no friendly force in place or en-route
             if (((s.task_force >> faction) & 0x1) == 0 && continents.get(s.p_idx).get(game.getHexFromPXY(s.p_idx, s.x, s.y).getLandNr()).getAssetCount(faction).ground_combat == 0) {
                 free_enemy_structures.add(s);
-                logger.debug("  free enemy city : " + game.getPlanet(s.p_idx).name + " " + s.x + "," + s.y);
+                logger.debug(year_since_start + "   free enemy city : " + game.getPlanet(s.p_idx).name + " " + s.x + "," + s.y);
             }
         }
         known_galaxy = new KnownGalaxy(game, faction);
-        //logger.debug("Ai.findAssets() end " + (System.nanoTime() - time) / 1_000_000d + "ms");
+        //logger.debug(year_since_start + " Ai.findAssets() end " + (System.nanoTime() - time) / 1_000_000d + "ms");
     }
 
     private void addToContinents(Structure s) {
@@ -525,6 +570,9 @@ public abstract class AI implements Serializable {
         units_space_trasport.clear();
         stacks_land_battle_free.clear();
         enemy_units.clear();
+        enemy_units_at_sea.clear();
+        enemy_units_in_space.clear();
+        enemy_units_on_planet.clear();
         structures.clear();
         enemy_structures.clear();
         free_enemy_structures.clear();
@@ -548,6 +596,9 @@ public abstract class AI implements Serializable {
         int p_idx = -1;
         int c_idx = Integer.MIN_VALUE;
         for (Unit unit : units_land_battle) {
+            if (unit.in_space) {
+                throw new AIFatalException();
+            }
             if (p_idx != unit.p_idx) {
                 if (p_idx != -1) {
                     current_continent.add(current_units);
@@ -587,16 +638,16 @@ public abstract class AI implements Serializable {
      * @param map
      */
     protected void conquerContinent(int p_idx, int c_idx, LinkedHashSet<List<Unit>> stacks, Hex[][] map) throws AIException {
-        logger.debug("Ai.conquerContinent() " + planets.get(p_idx).name + "," + c_idx);
+        logger.debug(year_since_start + " Ai.conquerContinent() " + planets.get(p_idx).name + "," + c_idx);
         for (List<Unit> stack : stacks) {
             String tmp = "";
             for (Unit u : stack) {
                 tmp += u.type_data.abbrev + " ";
                 if (u.in_space) {
-                    throw new AIFatalException("Ground stack " + u.p_idx + "," + u.x + "," + u.y + " with in_space flag.");
+                    throw new AIFatalException("Ground unit " + u.p_idx + "," + u.x + "," + u.y + "," + u.getUnit_no() + " with in_space flag.");
                 }
             }
-            logger.debug("  stacks (" + stacks.size() + ") on continent: " + stack.hashCode() + " " + stack.size() + " " + stack.get(0).x + "," + stack.get(0).y + " " + tmp + stack);
+            logger.debug(year_since_start + "   stacks (" + stacks.size() + ") on continent: " + stack.hashCode() + " " + stack.size() + " " + stack.get(0).x + "," + stack.get(0).y + " " + tmp + stack);
         }
         game.setSelectedFaction(-1, -1);
         long time = System.nanoTime();
@@ -609,7 +660,7 @@ public abstract class AI implements Serializable {
                 tmp += ((target.getStructure() != null) ? target.getStructure().type : "null") + ":" + target.getX() + "," + target.getY() + " ";
 
             }
-            logger.debug("  targets (" + targets.size() + ") on continent: " + tmp);
+            logger.debug(year_since_start + "   targets (" + targets.size() + ") on continent: " + tmp);
         }
         while (!targets.isEmpty() && !stacks.isEmpty()) {
             Hex h = null;
@@ -633,7 +684,7 @@ public abstract class AI implements Serializable {
                     }
                 }
             }
-            logger.debug("     dist " + dist + " " + s_dists);
+            logger.debug(year_since_start + "      dist " + dist + " " + s_dists);
             if (!targets.remove(h)) {
                 throw new AIException(h.toString());
             }
@@ -644,13 +695,18 @@ public abstract class AI implements Serializable {
             game.setCurrentPlanetNr(p_idx);
             game.setSelectedPoint(new Point(s.get(0).x, s.get(0).y), -1);
             LinkedList<Hex> path = PathFind.findPath(game, pg, h, map[s.get(0).x][s.get(0).y]);
+            if (path == null) {
+                logger.debug(year_since_start + " No path to target, canceling movement ...");
+                selectLandUnits(game.getSelectedStack(), false);
+                continue;
+            }
             game.setPath(path);
             String s_moves = "";
             while (game.getPath().size() > 1 && Util.moveCapable(game) && moveToNextHex(path, s)) {
                 game.setSelectedPoint(new Point(s.get(0).x, s.get(0).y), -1);
                 s_moves += game.getPath().size() + " ";
             }
-            logger.debug("     " + s.get(0).x + "," + s.get(0).y + " path " + s_moves);
+            logger.debug(year_since_start + "      " + s.get(0).x + "," + s.get(0).y + " path " + s_moves);
             // TODO if path.size() == 1 try to capture any routed enemies
             selectLandUnits(game.getSelectedStack(), false);
 
@@ -662,9 +718,9 @@ public abstract class AI implements Serializable {
             stacks_land_battle_free.add(stack);
         }
         if (s_idle_stacks.length() > 0) {
-            logger.debug("  idle stacks (" + stacks.size() + ") : " + s_idle_stacks);
+            logger.debug(year_since_start + "   idle stacks (" + stacks.size() + ") : " + s_idle_stacks);
         }
-        //logger.debug("Ai.conquerContinent() end " + (System.nanoTime() - time) / 1_000_000d + "ms");
+        //logger.debug(year_since_start + " Ai.conquerContinent() end " + (System.nanoTime() - time) / 1_000_000d + "ms");
     }
 
     private void selectLandUnits(List<Unit> s, boolean selected) {
@@ -735,13 +791,13 @@ public abstract class AI implements Serializable {
         boolean stack_moving = true;
         // handle non-combat stacks and agora sales
         if (!Util.anyCombat(moving_stack)) {
-////            logger.debug("PW4 non-combat stack");
+////            logger.debug(year_since_start + " PW4 non-combat stack");
 //            boolean agora_sale = false;
             if (city != null && city.owner != faction.x) {
 //                if (city.type == C.AGORA && city.owner == C.LEAGUE
 //                        && game.getDiplomacy().getDiplomaticState(city.owner, faction.x) != C.DS_WAR
 //                        && Util.anyCargoPods(moving_stack)) {
-////                    logger.debug(" + agora sale");
+////                    logger.debug(year_since_start + "  + agora sale");
 //                    agora_sale = true;
 //                } else {
 //                    stop();
@@ -756,19 +812,19 @@ public abstract class AI implements Serializable {
         if (city == null) {
             //1.1: no enemy units in stack
             if (stack.isEmpty() || stack.get(0).owner == faction.x) {
-//                logger.debug("PW4 1.1");
+//                logger.debug(year_since_start + " PW4 1.1");
                 stack_moving = tryToMove();
                 //1.4: enemy units in stack
             } else {
-//                logger.debug("PW4 1.4");
+//                logger.debug(year_since_start + " PW4 1.4");
                 //1.4.1: only non ground combatants in stack
                 if (game.isCapture()) {
-//                    logger.debug("PW4 1.4.1");
+//                    logger.debug(year_since_start + " PW4 1.4.1");
                     game.capture(faction);
 //                    stack_moving = false;
                     //1.4.2: ground combatants in stack
                 } else {
-//                    logger.debug("PW4 1.4.2");
+//                    logger.debug(year_since_start + " PW4 1.4.2");
                     combat();
 //                    stack_moving = false;
                 }
@@ -780,7 +836,7 @@ public abstract class AI implements Serializable {
         } else {
             //4.1: no units in stack
             if (stack.isEmpty()) {
-//                logger.debug("PW4 4.1");
+//                logger.debug(year_since_start + " PW4 4.1");
                 game.captureCity(city, faction.x, faction.y);
                 stack_moving = tryToMove();
 //                stack_moving = false;
@@ -788,13 +844,13 @@ public abstract class AI implements Serializable {
             } else {
                 //4.4.1: only non ground combatants in stack
                 if (game.isCapture()) {
-//                    logger.debug("PW4 4.4.1");
+//                    logger.debug(year_since_start + " PW4 4.4.1");
                     game.capture(faction);
                     game.captureCity(city, faction.x, faction.y);
 //                    stack_moving = false;
                     //4.4.2: ground combatants in stack
                 } else {
-//                    logger.debug("PW4 4.4.2");
+//                    logger.debug(year_since_start + " PW4 4.4.2");
                     combat();
 //                    stack_moving = false;
                 }
@@ -846,9 +902,9 @@ public abstract class AI implements Serializable {
             }
         }
         if (s_targets.length() > 0) {
-            logger.debug("     cities: " + s_targets);
+            logger.debug(year_since_start + "      cities: " + s_targets);
         }
-        for (Unit u : enemy_units) {            
+        for (Unit u : enemy_units_on_planet) {
             if (u.p_idx == p_idx) {
                 Hex tmp = map[u.x][u.y];
                 if (tmp.getLandNr() == c_idx) {
@@ -872,7 +928,7 @@ public abstract class AI implements Serializable {
         for (Unit unit : units_recon) {
             if (p_idx != unit.p_idx) {
                 if (p_idx != -1) {
-                    logger.debug(" call Ai.reconPlanet()");
+                    logger.debug(year_since_start + "  call Ai.reconPlanet()");
                     reconPlanet(current_units, p_idx);
                     current_units.clear();
                 }

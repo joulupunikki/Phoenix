@@ -244,7 +244,7 @@ public class Battle implements Serializable {
         int dmg = 0;
         // the strength/armor ratio, start with armor effect
         double ratio = 1.0 / def.type_data.armor;
-        System.out.println("A/D ratio " + atk.type_data.abbrev + " -> " + def.type_data.abbrev + " after armor: " + ratio);
+        //System.out.println("A/D ratio " + atk.type_data.abbrev + " -> " + def.type_data.abbrev + " after armor: " + ratio);
         // adjust for combat orders
         switch (strategy) {
             case ASSAULT:
@@ -258,7 +258,7 @@ public class Battle implements Serializable {
             default:
                 throw new AssertionError();
         }
-        System.out.println("A/D ratio after orders (" + strategy.toString() + "): " + ratio);
+        //System.out.println("A/D ratio after orders (" + strategy.toString() + "): " + ratio);
         // adjust for attacker xp
         if (game.getEfs_ini().experience_combat_effect) {
             switch (Unit.XP.values()[atk.experience]) {
@@ -273,7 +273,7 @@ public class Battle implements Serializable {
                 default:
                     throw new AssertionError();
             }
-            System.out.println("A/D ratio after atk xp (" + atk.experience + "): " + ratio);
+            //System.out.println("A/D ratio after atk xp (" + atk.experience + "): " + ratio);
             // adjust for defender xp
             switch (Unit.XP.values()[def.experience]) {
                 case ELITE:
@@ -287,7 +287,7 @@ public class Battle implements Serializable {
                 default:
                     throw new AssertionError();
             }
-            System.out.println("A/D ratio after def xp (" + def.experience + "): " + ratio);
+            //System.out.println("A/D ratio after def xp (" + def.experience + "): " + ratio);
         }
         // adjust for attack strength
         switch (atk_type) {
@@ -321,7 +321,7 @@ public class Battle implements Serializable {
             default:
                 throw new AssertionError();
         }
-        System.out.println("A/D ratio FINAL: " + ratio);
+        //System.out.println("A/D ratio FINAL: " + ratio);
         int dmg_index = -1;
         // find damage index ... were you drunk when you did this ?
         if (ratio < 3) {

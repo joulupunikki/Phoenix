@@ -369,5 +369,10 @@ public class Planet implements Serializable {
     public void omniscience(int turn) {
         spotted[turn] = true;
         planet_grid.omniscience(turn);
+        for (List<Unit> space_stack : space_stacks) {
+            for (Unit u : space_stack) {
+                u.spotted[turn] = true;
+            }
+        }
     }
 }

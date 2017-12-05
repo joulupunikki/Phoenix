@@ -38,6 +38,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import util.C;
+import util.Util;
 
 /**
  * A class representing a unit object. Contains the units location, loyalty,
@@ -51,6 +52,10 @@ public class Unit implements Serializable {
      *
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * number of units created since loading of class Unit
+     */
+    private static int unit_counter = 0;
     public int p_idx; // short  
     public int x; // short     
     public int y; //short       
@@ -68,7 +73,7 @@ public class Unit implements Serializable {
     public int health;     //char 
     public int health_tmp; // used and initialized during battles
     public int sect;       //char
-    int unit_no;     //int 
+    private int unit_no;     //int
     int flags;      //UINT 
     int used_unit_type; //char  
     int used_unitt_lvl; //char 
@@ -109,6 +114,20 @@ public class Unit implements Serializable {
         if (this.experience < XP.ELITE.ordinal()) {
             this.experience++;
         }
+    }
+
+    /**
+     * @return the unit_no
+     */
+    public int getUnit_no() {
+        return unit_no;
+    }
+
+    /**
+     * @param unit_no the unit_no to set
+     */
+    private void setUnit_no(int unit_no) {
+        this.unit_no = unit_no;
     }
 
     public enum XP {
@@ -155,7 +174,7 @@ public class Unit implements Serializable {
         this.health = 100;
         this.health_tmp = 100;
         this.sect = 0;
-        this.unit_no = 0;
+        this.unit_no = ++unit_counter;
         this.flags = 0;
         this.used_unit_type = 0;
         this.used_unitt_lvl = 0;
@@ -219,6 +238,7 @@ public class Unit implements Serializable {
         GalaxyReader.readByte(fc, count.getSet(1));
         prev_owner = owner;
         unit_no = GalaxyReader.readInt(fc, count.getSet(4));
+        unit_no = ++unit_counter;
         flags = GalaxyReader.readInt(fc, count.getSet(4));
         used_unit_type = GalaxyReader.readByte(fc, count.getSet(1));
         used_unitt_lvl = GalaxyReader.readByte(fc, count.getSet(1));
@@ -338,7 +358,7 @@ public class Unit implements Serializable {
         orders = 0;
         sect = 0;
         prev_owner = owner;
-        unit_no = 0;
+        unit_no = ++unit_counter;
         flags = 0;
         used_unit_type = 0;
         used_unitt_lvl = 0;
@@ -385,6 +405,7 @@ public class Unit implements Serializable {
             u.setSelected(this.isSelected());
             rv = true;
         }
+        Util.followUnit(u, "embark/" + rv);
         return rv;
     }
 
@@ -400,6 +421,7 @@ public class Unit implements Serializable {
             u.carrier = null;
             rv = true;
         }
+        Util.followUnit(u, "disembark/" + rv);
         return rv;
     }
 

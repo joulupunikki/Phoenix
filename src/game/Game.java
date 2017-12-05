@@ -554,7 +554,7 @@ public class Game implements Serializable {
     public void endTurn() {
         endTurnHousekeeping();
         advanceTurn();
-        while (!human_ctrl[turn] || factions[turn].isEliminated() || (year - C.STARTING_YEAR < 162 && Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && !checkDebugStop(false))) { //&& !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
+        while (!human_ctrl[turn] || factions[turn].isEliminated() || (Gui.getMainArgs().hasOption(C.OPT_AI_TEST) && year - C.STARTING_YEAR < Integer.parseInt(Gui.getMainArgs().getOptionValue(C.OPT_AI_TEST, "10")) && !checkDebugStop(false))) { //&& !ai.isMapped(C.SYMBIOT, 17) && !ai.isMapped(C.SYMBIOT, 18) && !ai.isMapped(C.SYMBIOT, 19) && !ai.isMapped(C.SYMBIOT, 20))) {
             endTurnHousekeeping();
             advanceTurn();
         }
@@ -1066,6 +1066,7 @@ public class Game implements Serializable {
         for (Unit unit : stack) {
             if (unit.isSelected()) {
                 selected.add(unit);
+                Util.followUnit(unit, "ground");
             }
         }
         Util.unSelectAll(stack2);
@@ -1106,10 +1107,14 @@ public class Game implements Serializable {
         List<Unit> stack = source.space_stacks[selected_faction.y];
         List<Unit> stack2 = destination.space_stacks[selected_faction.y];
         List<Unit> selected = new LinkedList<>();
-        for (Unit unit : stack) {
+        for (Unit unit : Util.xS(stack)) {
             if (unit.isSelected()) {
-                selected.add(unit);
+                Util.followUnit(unit, "space");
+                if (unit.carrier == null) {
+                    selected.add(unit);
+                }
             }
+
         }
         Util.unSelectAll(stack2);
 
@@ -1145,6 +1150,7 @@ public class Game implements Serializable {
         for (Unit unit : stack) {
             if (unit.isSelected()) {
                 selected.add(unit);
+                Util.followUnit(unit, "launch");
             }
         }
 
@@ -1192,6 +1198,7 @@ public class Game implements Serializable {
         for (Unit unit : stack) {
             if (unit.isSelected()) {
                 selected.add(unit);
+                Util.followUnit(unit, "landing");
             }
         }
         Util.unSelectAll(stack2);

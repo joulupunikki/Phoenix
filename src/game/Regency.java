@@ -262,6 +262,9 @@ public class Regency implements Serializable {
      * @param game
      */
     public void resolveElections(Game game) {
+        if (election_level > C.ELECTION_LEVEL.FINAL_EMPEROR) {
+            return;
+        }
         may_set_offices = false;
         if (years_till_elections < 0) {
             switch (years_till_elections) {
@@ -295,6 +298,7 @@ public class Regency implements Serializable {
             }
         }
         // Second: decide results based on votes and election level
+        System.out.println(election_level);
         switch (election_level) {
             case C.ELECTION_LEVEL.REGENT:
                 years_till_elections = game.getEfs_ini().regency_term_length;

@@ -71,6 +71,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.math3.util.FastMath;
+import phoenix.Phoenix;
 
 /**
  * A motley crew of utilities, candidate for separation.
@@ -222,6 +223,12 @@ public class Util {
         game.getDiplomacy().addToCompensationMatrix(perpetrator, unit.owner, loss);
     }
 
+    public static void followUnit(Unit unit, String msg) {
+        if (Phoenix.FOLLOW_UNIT > 0 && unit.getUnit_no() == Phoenix.FOLLOW_UNIT) {
+            System.out.println("Unit " + unit.getUnit_no() + ", tf " + unit.task_force + "," + msg + " move at " + unit.p_idx + "," + unit.in_space + "," + unit.x + "," + unit.y);
+        }
+    }
+
     /**
      * Iterator for going thru Hexes of a planet. Will first go thru column 0
      * then column 1 etc. Semantics: next returns next Hex in order, when all
@@ -326,18 +333,6 @@ public class Util {
         Collections.sort(pods, Comp.unit_pidx);
 
         return pods;
-    }
-
-    public static List<Unit> xStack(List<Unit> stack) { // Returns a temporary stack with cargo listed separately
-        List<Unit> ret_val = new LinkedList<>();
-        for (Unit unit : stack) {
-            ret_val.add(unit);
-            for (Unit cargo : unit.cargo_list) {
-                ret_val.add(cargo);
-            }
-        }
-        return ret_val;
-
     }
 
     public static Point resolveSpaceMapOrigin(Point p, WindowSize ws) {
